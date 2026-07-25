@@ -11,6 +11,8 @@ docker run -p 8082:8082 -p 61613:61613 ghcr.io/vyuvaraj/servqueue:latest
 ## Key Features
 
 * **WASM Transform Engine**: Leverage a sandboxed, pure-Go WASM runtime (`wazero`) to execute inline stream processing filters on topics.
+* **OPFS Embedded Browser Broker (`@servverse/queue-wasm`)**: Embedded Web Worker event log running inside browser Web Workers via Origin Private File System (`FileSystemSyncAccessHandle`) for local-first & offline-first PWAs.
+* **Offline Outbox & Reconnect Relay**: Background synchronization worker streaming unacknowledged offline event ranges in exact sequence to remote backend ServQueue clusters upon network reconnection.
 * **STOMP Protocol Server**: Built-in TCP endpoint (`tcp://localhost:61613`) supporting standard STOMP subscription frames (`CONNECT`, `SUBSCRIBE`, `SEND`, `DISCONNECT`).
 * **HTTP REST API**: Publish messages, subscribe, clear configurations, and query stats over HTTP (`http://localhost:8082`).
 * **Telemetry & Context**: Out-of-the-box support for distributed trace propagation and execution logging.
@@ -22,16 +24,16 @@ docker run -p 8082:8082 -p 61613:61613 ghcr.io/vyuvaraj/servqueue:latest
 ```
 ServQueue/
 ├── pkg/
-│   ├── broker/
-│   │   ├── engine.go     # Message dispatch, subscriber routing, & transform hooks
-│   │   └── wasm.go       # Wazero integration for WASI execution sandboxing
-│   ├── stomp/
-│   │   └── server.go     # STOMP protocol frame decoder/encoder & TCP server
-│   └── web/
-│       └── server.go     # HTTP JSON administration & publish endpoints
-├── main.go               # Entrypoint & bootstrap configuration
-├── ROADMAP.md            # Feature planning and progression tracker
-└── README.md             # This documentation
+│   ├── core/         # StorageDriver interface, offset indexing, & LogEngine
+│   ├── opfs/         # Web Worker Origin Private File System (OPFS) WAL driver
+│   ├── relay/        # Outbox synchronization worker & reconnect relay
+│   ├── wasm/         # WASM/JS FFI bridge & @servverse/queue-wasm npm package
+│   ├── broker/       # Message dispatch, subscriber routing, & transform hooks
+│   ├── stomp/        # STOMP protocol frame decoder/encoder & TCP server
+│   └── web/          # HTTP JSON administration & publish endpoints
+├── main.go           # Entrypoint & bootstrap configuration
+├── ROADMAP.md        # Feature planning and progression tracker
+└── README.md         # This documentation
 ```
 
 ---

@@ -394,6 +394,9 @@ func main() {
 	case "lsp-action":
 		runLspActionCmd(os.Args[2:])
 
+	case "plugin":
+		runPluginCmd()
+
 	default:
 		printUsage()
 	}
@@ -417,6 +420,8 @@ func printUsage() {
 	fmt.Println("  serv add <go-package>                      Generate .srv.d declaration for a Go package")
 	fmt.Println("  serv install <package-name>                Install a third-party Serv module")
 	fmt.Println("  serv publish <package-dir>                 Publish a Serv module to the registry")
+	fmt.Println("  serv plugin pull <plugin-name>             Pull pre-compiled WASM plugin binary from vyuvaraj/serv-wasm-plugins")
+	fmt.Println("  serv plugin list                           List community WASM plugins and local installed plugins")
 	fmt.Println("  serv debug <file.srv>                       Debug a Serv file (requires dlv: go install github.com/go-delve/delve/cmd/dlv@latest)")
 	fmt.Println("  serv dockerize <file.srv>                  Generate a Dockerfile for the Serv service")
 	fmt.Println("  serv deploy --target <target> [file.srv]   Generate deploy config (fly, railway, render, k8s, docker)")

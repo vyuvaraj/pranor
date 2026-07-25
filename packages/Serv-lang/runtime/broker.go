@@ -127,6 +127,9 @@ func InitBroker(url string) {
 				LogInfo("Connected to AMQP/RabbitMQ broker successfully")
 			}
 		}
+	} else if strings.HasPrefix(url, "servqueue://opfs") || strings.HasPrefix(url, "servqueue://embedded") {
+		LogInfo("Initializing ServQueue OPFS Embedded Event Broker (browser/edge WASM mode)")
+		return
 	} else if strings.HasPrefix(url, "kafka://") {
 		kafkaBrokerAddr = strings.TrimPrefix(url, "kafka://")
 		LogInfo("Targeting Kafka Broker Address: ", kafkaBrokerAddr)

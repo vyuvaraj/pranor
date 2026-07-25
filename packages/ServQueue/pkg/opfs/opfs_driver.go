@@ -58,19 +58,42 @@ func (o *OPFSDriver) recoverFromDisk() error {
 	}
 
 	lines := strings.Split(string(data), "\n")
+	var validEntries []core.LogEntry
+	corrupted := false
+
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		if line == "" {
 			continue
 		}
 		var entry core.LogEntry
-		if err := json.Unmarshal([]byte(line), &entry); err == nil {
-			o.entries = append(o.entries, entry)
-			if entry.Offset > o.offsets[entry.Topic] {
-				o.offsets[entry.Topic] = entry.Offset
-			}
+		if err := json.Unmarshal([]byte(line), &entry); err != nil {
+			corrupted = true
+			break // Stop at first corrupted frame boundary
+		}
+		validEntries = append(validEntries, entry)
+		if entry.Offset > o.offsets[entry.Topic] {
+			o.offsets[entry.Topic] = entry.Offset
 		}
 	}
+
+	o.entries = validEntries
+
+	// If corruption detected at boundary, auto-truncate file to clean valid state
+	if corrupted {
+		_ = o.fileHandle.Close()
+		_ = os.Truncate(o.walPath, 0)
+		file, err := os.OpenFile(o.walPath, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0644)
+		if err == nil {
+			o.fileHandle = file
+			for _, entry := range o.entries {
+				lineData, _ := json.Marshal(entry)
+				_, _ = o.fileHandle.Write(append(lineData, '\n'))
+			}
+			_ = o.fileHandle.Sync()
+		}
+	}
+
 	return nil
 }
 

@@ -124,8 +124,9 @@ func (m *MemoryDriver) Close() error {
 
 // Engine represents the ServQueue embedded log engine.
 type Engine struct {
-	driver StorageDriver
-	mu     sync.RWMutex
+	driver        StorageDriver
+	encryptionKey []byte
+	mu            sync.RWMutex
 }
 
 func NewEngine(driver StorageDriver) *Engine {
@@ -137,16 +138,55 @@ func NewEngine(driver StorageDriver) *Engine {
 	}
 }
 
+// SetEncryptionKey configures 256-bit AES-GCM encryption key for payload at rest.
+func (e *Engine) SetEncryptionKey(key []byte) error {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	if len(key) != 32 {
+		return fmt.Errorf("engine: key must be 32 bytes for AES-256")
+	}
+	e.encryptionKey = make([]byte, 32)
+	copy(e.encryptionKey, key)
+	return nil
+}
+
 func (e *Engine) Enqueue(topic, payload string) (LogEntry, error) {
 	e.mu.Lock()
 	defer e.mu.Unlock()
-	return e.driver.Append(topic, payload)
+
+	writePayload := payload
+	if len(e.encryptionKey) == 32 {
+		enc, err := EncryptPayload(payload, e.encryptionKey)
+		if err != nil {
+			return LogEntry{}, fmt.Errorf("engine: encryption failed: %w", err)
+		}
+		writePayload = "ENC:" + enc
+	}
+
+	return e.driver.Append(topic, writePayload)
 }
 
 func (e *Engine) Dequeue(topic string, startOffset, limit uint64) ([]LogEntry, error) {
 	e.mu.RLock()
 	defer e.mu.RUnlock()
-	return e.driver.ReadRange(topic, startOffset, limit)
+
+	entries, err := e.driver.ReadRange(topic, startOffset, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(e.encryptionKey) == 32 {
+		for i := range entries {
+			if len(entries[i].Payload) > 4 && entries[i].Payload[:4] == "ENC:" {
+				dec, err := DecryptPayload(entries[i].Payload[4:], e.encryptionKey)
+				if err == nil {
+					entries[i].Payload = dec
+				}
+			}
+		}
+	}
+
+	return entries, nil
 }
 
 func (e *Engine) GetPendingSync(limit uint64) ([]LogEntry, error) {

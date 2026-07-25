@@ -33,3 +33,15 @@ export class ServQueueEmbedded {
    */
   getPendingSync(limit?: number): Promise<LogEntry[]>;
 }
+
+export class ServQueueSharedWorkerCoordinator {
+  constructor(workerUrl?: string);
+  /**
+   * Broadcast event to SharedWorker across all connected browser tabs
+   */
+  broadcast(topic: string, payload: string | object): void;
+  /**
+   * Subscribe to multi-tab BroadcastChannel events
+   */
+  onEvent(callback: (entry: LogEntry) => void): void;
+}

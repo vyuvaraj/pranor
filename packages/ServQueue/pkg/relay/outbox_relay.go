@@ -79,6 +79,8 @@ func (r *OutboxRelay) SyncNow() error {
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-ServQueue-Outbox-Sync", "true")
+	req.Header.Set("X-WebTransport-Mode", "quic-multiplex")
+	req.Header.Set("Sec-WebTransport-Http3-Draft", "draft02")
 
 	resp, err := r.client.Do(req)
 	if err != nil {

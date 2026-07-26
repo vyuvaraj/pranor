@@ -18,6 +18,7 @@ type LogEntry struct {
 type StorageDriver interface {
 	Append(topic, payload string) (LogEntry, error)
 	ReadRange(topic string, startOffset, limit uint64) ([]LogEntry, error)
+	SeekToTime(topic string, targetTimestamp int64) (uint64, error)
 	GetUnsynced(limit uint64) ([]LogEntry, error)
 	MarkSynced(offsets []uint64) error
 	Recover() ([]LogEntry, error)
@@ -70,6 +71,21 @@ func (m *MemoryDriver) ReadRange(topic string, startOffset, limit uint64) ([]Log
 		}
 	}
 	return result, nil
+}
+
+func (m *MemoryDriver) SeekToTime(topic string, targetTimestamp int64) (uint64, error) {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+
+	for _, entry := range m.entries {
+		if entry.Topic == topic && entry.Timestamp >= targetTimestamp {
+			return entry.Offset, nil
+		}
+	}
+	if offset, ok := m.offsets[topic]; ok {
+		return offset, nil
+	}
+	return 0, nil
 }
 
 func (m *MemoryDriver) GetUnsynced(limit uint64) ([]LogEntry, error) {
@@ -187,6 +203,12 @@ func (e *Engine) Dequeue(topic string, startOffset, limit uint64) ([]LogEntry, e
 	}
 
 	return entries, nil
+}
+
+func (e *Engine) SeekToTime(topic string, targetTimestamp int64) (uint64, error) {
+	e.mu.RLock()
+	defer e.mu.RUnlock()
+	return e.driver.SeekToTime(topic, targetTimestamp)
 }
 
 func (e *Engine) GetPendingSync(limit uint64) ([]LogEntry, error) {

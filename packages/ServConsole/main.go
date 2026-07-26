@@ -175,6 +175,8 @@ func main() {
 	mux.HandleFunc("/api/runbooks/execute", tabs.HandleExecuteRunbook)
 	mux.HandleFunc("/api/provision/store", provision.HandleProvisionStore)
 	mux.HandleFunc("/api/provision/queue", provision.HandleProvisionQueue)
+	mux.HandleFunc("/api/queue/inspector", tabs.HandleQueueInspector)
+	mux.HandleFunc("/api/queue/tail", tabs.HandleQueueTailStream)
 	mux.HandleFunc("/api/diagnostics/exec", tabs.HandleDiagnosticExec)
 	mux.HandleFunc("/api/dev/services", launcher.HandleDevServices)
 	mux.HandleFunc("/api/dev/restart", launcher.HandleDevRestart)

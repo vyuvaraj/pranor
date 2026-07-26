@@ -64,6 +64,10 @@ func (s *Server) Start() error {
 	mux.HandleFunc("/api/v1/stats", s.handleStats)
 	mux.HandleFunc("/api/replay", s.handleReplay)
 	mux.HandleFunc("/api/v1/replay", s.handleReplay)
+	mux.HandleFunc("/api/replay/time", s.handleSeekToTime)
+	mux.HandleFunc("/api/v1/replay/time", s.handleSeekToTime)
+	mux.HandleFunc("/api/seekToTime", s.handleSeekToTime)
+	mux.HandleFunc("/api/v1/seekToTime", s.handleSeekToTime)
 	mux.HandleFunc("/api/offsets", s.handleOffsets)
 	mux.HandleFunc("/api/v1/offsets", s.handleOffsets)
 	mux.HandleFunc("/api/stats/ws", s.handleStatsWS)
@@ -687,6 +691,68 @@ func (s *Server) handleReplay(w http.ResponseWriter, r *http.Request) {
 		"status":  "replay_completed",
 		"topic":   req.Topic,
 		"records": records,
+	})
+}
+
+func (s *Server) handleSeekToTime(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Topic     string `json:"topic"`
+		Timestamp int64  `json:"timestamp"`
+		TimeStr   string `json:"time,omitempty"`
+	}
+
+	switch r.Method {
+	case http.MethodPost:
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			WriteJSONError(w, r, "Bad request: invalid JSON body", "ERR_BAD_REQUEST_BODY", http.StatusBadRequest)
+			return
+		}
+	case http.MethodGet:
+		req.Topic = r.URL.Query().Get("topic")
+		if tsStr := r.URL.Query().Get("timestamp"); tsStr != "" {
+			if parsed, err := strconv.ParseInt(tsStr, 10, 64); err == nil {
+				req.Timestamp = parsed
+			}
+		}
+		req.TimeStr = r.URL.Query().Get("time")
+	default:
+		WriteJSONError(w, r, "Method not allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+		return
+	}
+
+	if req.Topic == "" {
+		WriteJSONError(w, r, "Missing topic parameter", "ERR_MISSING_TOPIC_PARAMETER", http.StatusBadRequest)
+		return
+	}
+
+	targetTs := req.Timestamp
+	if targetTs == 0 && req.TimeStr != "" {
+		if t, err := time.Parse(time.RFC3339, req.TimeStr); err == nil {
+			targetTs = t.UnixNano()
+		} else if d, err := time.ParseDuration(req.TimeStr); err == nil {
+			targetTs = time.Now().Add(-d).UnixNano()
+		}
+	}
+
+	tenant, _ := r.Context().Value("tenant-id").(string)
+	namespacedTopic, err := s.namespaceTopic(req.Topic, tenant)
+	if err != nil {
+		WriteJSONError(w, r, err.Error(), "ERR_FORBIDDEN", http.StatusForbidden)
+		return
+	}
+
+	offset, err := s.engine.SeekToTime(r.Context(), namespacedTopic, targetTs)
+	if err != nil {
+		WriteJSONError(w, r, "Seek to time failed: "+err.Error(), "ERR_SEEK_FAILED", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"status":           "seek_successful",
+		"topic":            req.Topic,
+		"target_timestamp": targetTs,
+		"target_offset":    offset,
 	})
 }
 

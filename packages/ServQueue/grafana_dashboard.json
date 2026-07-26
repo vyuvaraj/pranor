@@ -1,0 +1,88 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "title": "ServQueue Messages Published Total",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "servqueue_messages_published_total",
+          "legendFormat": "Published Messages"
+        }
+      ]
+    },
+    {
+      "title": "Queue Depth / WAL Entries",
+      "type": "gauge",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+      "targets": [
+        {
+          "expr": "servqueue_queue_depth",
+          "legendFormat": "WAL Entries"
+        }
+      ]
+    },
+    {
+      "title": "Consumer Lag",
+      "type": "gauge",
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "expr": "servqueue_consumer_lag",
+          "legendFormat": "Consumer Lag"
+        }
+      ]
+    },
+    {
+      "title": "WASM Stream Executions",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
+      "targets": [
+        {
+          "expr": "servqueue_wasm_executions_total",
+          "legendFormat": "WASM Executions"
+        }
+      ]
+    },
+    {
+      "title": "Throughput Over Time",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "targets": [
+        {
+          "expr": "rate(servqueue_messages_published_total[1m])",
+          "legendFormat": "Publish Rate (msg/s)"
+        }
+      ]
+    },
+    {
+      "title": "WASM Filter Latency & Errors",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "targets": [
+        {
+          "expr": "rate(servqueue_wasm_execution_errors_total[1m])",
+          "legendFormat": "WASM Errors/s"
+        }
+      ]
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["servqueue", "messaging", "servverse"],
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "ServQueue Ecosystem Overview Dashboard",
+  "version": 1
+}

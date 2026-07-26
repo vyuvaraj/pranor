@@ -1110,6 +1110,28 @@ func (e *BrokerEngine) ReplayMessages(ctx context.Context, topic string, startOf
 	return count, nil
 }
 
+func (e *BrokerEngine) SeekToTime(ctx context.Context, topic string, targetTimestamp int64) (int64, error) {
+	if e.wal == nil {
+		return 0, fmt.Errorf("WAL is not initialized")
+	}
+
+	entries, err := e.wal.Recover()
+	if err != nil {
+		return 0, err
+	}
+
+	var topicOffset int64
+	for _, entry := range entries {
+		if entry.Topic == topic {
+			if entry.Timestamp >= targetTimestamp {
+				return topicOffset, nil
+			}
+			topicOffset++
+		}
+	}
+	return topicOffset, nil
+}
+
 func matchTopic(pattern, topic string) bool {
 	if pattern == topic {
 		return true

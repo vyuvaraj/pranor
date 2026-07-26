@@ -143,6 +143,21 @@ func (o *OPFSDriver) ReadRange(topic string, startOffset, limit uint64) ([]core.
 	return result, nil
 }
 
+func (o *OPFSDriver) SeekToTime(topic string, targetTimestamp int64) (uint64, error) {
+	o.mu.RLock()
+	defer o.mu.RUnlock()
+
+	for _, entry := range o.entries {
+		if entry.Topic == topic && entry.Timestamp >= targetTimestamp {
+			return entry.Offset, nil
+		}
+	}
+	if offset, ok := o.offsets[topic]; ok {
+		return offset, nil
+	}
+	return 0, nil
+}
+
 func (o *OPFSDriver) GetUnsynced(limit uint64) ([]core.LogEntry, error) {
 	o.mu.RLock()
 	defer o.mu.RUnlock()

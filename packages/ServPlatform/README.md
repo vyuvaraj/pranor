@@ -1,0 +1,267 @@
+# ServPlatform
+
+`ServPlatform` is the unified platform layer for the **Servverse** ecosystem — providing a single-binary embedded monolith runtime (`servd`), platform-wide chaos injection, a cluster administration CLI (`servctl`), unified health/readiness APIs, and production deployment manifest generation (Docker Compose & Helm).
+
+---
+
+## Table of Contents
+- [Key Features](#key-features)
+- [Architecture](#architecture)
+- [Components](#components)
+  - [servd — Single-Binary Unified Runtime](#servd--single-binary-unified-runtime)
+  - [Unified Chaos Injection Engine](#unified-chaos-injection-engine)
+  - [servctl — Cluster Administration CLI](#servctl--cluster-administration-cli)
+  - [Unified Health & Readiness API](#unified-health--readiness-api)
+  - [Distribution Manifest Generator](#distribution-manifest-generator)
+- [Getting Started](#getting-started)
+
+---
+
+## Key Features
+
+- **Single-binary `servd` runtime**: Embed all Servverse components into one unified process for local development and small deployments
+- **Unified chaos engine**: Inject faults (network, CPU, memory, disk, clock skew) platform-wide from a single API
+- **`servctl` CLI**: Cluster-wide administration — list services/nodes, restart services, apply config
+- **Unified health API**: `/health`, `/ready`, and `/api/v1/platform/health/rollup` endpoints aggregating all component health
+- **Deployment manifest generator**: Programmatically generate `docker-compose.yml` and Helm `values.yaml` for production deployments
+
+---
+
+## Architecture
+
+```
+ServPlatform
+├── pkg/platform/     → servd unified runtime (component registry, start/stop/shutdown)
+├── pkg/chaos/        → Unified chaos injection engine (network/CPU/memory/disk/clock)
+├── pkg/cli/          → servctl cluster administration CLI
+├── pkg/health/       → Unified health, readiness & rollup metrics API
+└── pkg/distribution/ → Docker Compose & Helm chart manifest generator
+```
+
+---
+
+## Components
+
+### servd — Single-Binary Unified Runtime
+
+`servd` allows running the entire Servverse stack as a single embedded binary — ideal for local development, CI/CD pipelines, and small self-hosted deployments.
+
+**API: `GET /api/v1/servd/components`**
+
+```json
+{
+  "components": [
+    { "name": "servgate",   "running": true },
+    { "name": "servqueue",  "running": true },
+    { "name": "servstore",  "running": true },
+    { "name": "servmesh",   "running": false },
+    { "name": "servtrace",  "running": true }
+  ]
+}
+```
+
+**Usage in code:**
+
+```go
+rt := platform.NewServdRuntime()
+rt.RegisterComponent("servgate")
+rt.RegisterComponent("servqueue")
+rt.RegisterComponent("servstore")
+
+rt.StartComponent("servgate")
+rt.StartComponent("servqueue")
+
+// Graceful shutdown
+defer rt.Shutdown(ctx)
+```
+
+---
+
+### Unified Chaos Injection Engine
+
+Inject faults platform-wide from a single API, targeting individual nodes or services.
+
+**Fault types:** `network` · `cpu` · `memory` · `disk` · `clock_skew`
+
+**API: `POST /api/v1/platform/chaos/faults`**
+
+```bash
+# Inject 30% network packet loss on node-1 for 60 seconds
+curl -X POST http://servplatform:8096/api/v1/platform/chaos/faults \
+  -d '{
+    "kind": "network",
+    "target_node": "node-1",
+    "intensity": 0.3,
+    "duration": 60000000000
+  }'
+# → { "id": "fault-1", "kind": "network", "target_node": "node-1", "intensity": 0.3, "active": true }
+
+# Inject CPU spike at 80% intensity on node-2
+curl -X POST http://servplatform:8096/api/v1/platform/chaos/faults \
+  -d '{"kind": "cpu", "target_node": "node-2", "intensity": 0.8, "duration": 30000000000}'
+
+# Abort a fault
+curl -X DELETE http://servplatform:8096/api/v1/platform/chaos/faults/fault-1
+
+# List active faults
+curl http://servplatform:8096/api/v1/platform/chaos/faults
+```
+
+**Intensity:** `0.0` (no impact) → `1.0` (full impact, e.g., 100% packet loss, max CPU load)
+
+---
+
+### servctl — Cluster Administration CLI
+
+`servctl` is the Servverse cluster-wide administration CLI. It communicates with ServPlatform to manage the entire stack.
+
+```bash
+# List all services
+servctl get services
+# → ["servgate", "servqueue", "servstore", "servmesh", "servtrace"]
+
+# List cluster nodes
+servctl get nodes
+# → ["node-1", "node-2", "node-3"]
+
+# Restart a service
+servctl restart service payment-api
+# → service 'payment-api' restarted successfully
+
+# Apply cluster-wide configuration
+servctl apply config --file cluster-config.json
+
+# JSON output mode (for scripting)
+servctl --json get services
+```
+
+**Available commands:**
+
+| Command | Description |
+|---------|-------------|
+| `servctl get services` | List all registered services |
+| `servctl get nodes` | List all cluster nodes |
+| `servctl restart service <name>` | Restart a named service |
+| `servctl apply config` | Apply cluster-wide configuration |
+
+---
+
+### Unified Health & Readiness API
+
+Aggregate health across all platform components with a single endpoint.
+
+**Endpoints:**
+
+| Path | Description |
+|------|-------------|
+| `GET /health` | Liveness probe — `200 OK` if all components healthy, `503` if any failing |
+| `GET /ready` | Readiness probe — `200 OK` only if all components registered and healthy |
+| `GET /api/v1/platform/health/rollup` | Full per-component breakdown |
+
+```bash
+# Liveness check
+curl http://servplatform:8096/health
+# → { "ok": true }   HTTP 200 (all healthy)
+# → { "ok": false }  HTTP 503 (degraded)
+
+# Full rollup
+curl http://servplatform:8096/api/v1/platform/health/rollup
+# → {
+#     "healthy": false,
+#     "total": 5, "passing": 4, "failing": 1,
+#     "components": [
+#       { "name": "servgate",  "healthy": true,  "latency_ns": 2000000 },
+#       { "name": "servstore", "healthy": false, "message": "disk full" },
+#       ...
+#     ]
+#   }
+```
+
+**Reporting health from a component:**
+
+```go
+api := health.NewUnifiedHealthAPI()
+api.ReportHealth(health.ComponentHealth{
+    Name:    "servgate",
+    Healthy: true,
+    Latency: 2 * time.Millisecond,
+})
+```
+
+---
+
+### Distribution Manifest Generator
+
+Programmatically generate production deployment manifests for Docker Compose and Helm.
+
+**Docker Compose:**
+
+```go
+gen := distribution.NewDistributionGenerator()
+components := []distribution.ComponentSpec{
+    {Name: "servgate",  Image: "ghcr.io/vyuvaraj/servgate:latest",  Port: 8080, Replicas: 2, EnvVars: map[string]string{"LOG_LEVEL": "info"}},
+    {Name: "servqueue", Image: "ghcr.io/vyuvaraj/servqueue:latest", Port: 9090, Replicas: 3},
+    {Name: "servstore", Image: "ghcr.io/vyuvaraj/servstore:latest", Port: 7070, Replicas: 2},
+}
+
+compose := gen.GenerateDockerCompose(components)
+// compose.Content:
+// version: '3.8'
+// services:
+//   servgate:
+//     image: ghcr.io/vyuvaraj/servgate:latest
+//     ports:
+//       - "8080:8080"
+//     environment:
+//       LOG_LEVEL: info
+//   ...
+```
+
+**Helm Values:**
+
+```go
+helm := gen.GenerateHelmValues(components)
+// helm.Content:
+// # Servverse Production Helm Values
+// global:
+//   imageTag: latest
+// services:
+//   servgate:
+//     enabled: true
+//     replicas: 2
+//     image: ghcr.io/vyuvaraj/servgate:latest
+//     port: 8080
+//   ...
+```
+
+---
+
+## Getting Started
+
+ServPlatform is used as a Go library embedded within the Servverse monorepo.
+
+```go
+import (
+    "github.com/vyuvaraj/serv/packages/ServPlatform/pkg/platform"
+    "github.com/vyuvaraj/serv/packages/ServPlatform/pkg/health"
+    "github.com/vyuvaraj/serv/packages/ServPlatform/pkg/chaos"
+    "github.com/vyuvaraj/serv/packages/ServPlatform/pkg/cli"
+    "github.com/vyuvaraj/serv/packages/ServPlatform/pkg/distribution"
+)
+```
+
+For `servctl`, run:
+
+```bash
+go run ./cmd/servctl/main.go get services
+```
+
+### Package Structure
+
+| Package | Description |
+|---------|-------------|
+| `pkg/platform` | `ServdRuntime` — single-binary component registry |
+| `pkg/chaos` | `UnifiedChaosEngine` — platform-wide fault injection |
+| `pkg/cli` | `ServctlCLI` — cluster administration CLI |
+| `pkg/health` | `UnifiedHealthAPI` — /health, /ready, /rollup |
+| `pkg/distribution` | `DistributionGenerator` — Docker Compose & Helm output |

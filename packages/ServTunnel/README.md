@@ -4,195 +4,184 @@
 docker run -p 8092:8092 ghcr.io/vyuvaraj/servtunnel:latest
 ```
 
-`ServTunnel` is a secure, instant tunneling service for exposing local Serv services to the internet during development. It is part of the **Serv-verse** ecosystem.
+`ServTunnel` is a secure, instant tunneling service for exposing local Servverse services to the internet during development and testing. One command creates a public URL that forwards requests to your local machine — ideal for webhook testing, OAuth callbacks, mobile app dev, and sharing work in progress.
 
-One command creates a public URL that forwards requests to your local machine — ideal for webhook testing, OAuth callbacks, and sharing work-in-progress.
+---
+
+## Table of Contents
+- [Key Features](#key-features)
+- [Architecture](#architecture)
+- [API Endpoints](#api-endpoints)
+- [Getting Started](#getting-started)
+- [Request Inspection & Replay](#request-inspection--replay)
+- [Authentication & Access Control](#authentication--access-control)
+- [Resilience & Reconnection](#resilience--reconnection)
+- [Configuration](#configuration)
 
 ---
 
 ## Key Features
 
-* **Subdomain-based routing**: Each tunnel gets a unique subdomain (e.g., `myapp.servverse.net`).
-* **WebSocket transport**: Firewall-friendly, no special network configuration needed.
-* **Request inspection**: Built-in ring buffer captures requests for debugging and replay.
-* **OTel propagation**: Forwards `traceparent` headers natively through the tunnel.
-* **Colorful terminal output**: Real-time request log with status codes and latency.
-* **Health & telemetry**: Standard `/healthz`, `/readyz` endpoints via ServShared.
+### 🌐 Core Tunneling
+- **Subdomain-based routing**: Each tunnel gets a unique subdomain (e.g., `myapp.servverse.net`)
+- **WebSocket transport**: Firewall-friendly tunneling over WebSocket — no special network configuration required
+- **WebSocket connection multiplexing**: Binary-framed multiplexed streams (`4-byte StreamID + 1-byte Type + 4-byte PayloadLen`) allow multiple simultaneous requests over a single WebSocket connection
+- **OTel traceparent propagation**: `traceparent` and `tracestate` headers forwarded natively through the tunnel for distributed tracing continuity
 
----
+### 🔍 Request Inspection & Replay
+- **Full request & response body capture**: Ring-buffer captures all requests and responses for debugging
+- **Replay-on-demand**: Replay any captured request to your local service with one API call
+- **Real-time request log**: Colorful terminal output with status codes, latency, and method — like a local dev proxy
 
-## Project Structure
+### 🔒 Authentication & Access Control
+- **JWT auth gating**: Require a valid JWT token to open a tunnel connection — prevents unauthorized forwarding
+- **API-key auth**: Alternative to JWT; pass a static API key in the `Authorization` header
+- **Shareable tunnel URLs with expiry**: Generate a time-limited shareable URL (e.g., valid for 1h) — auto-expires after
+- **One-time access tokens**: Single-use tunnel URLs that invalidate after first use
 
-```
-ServTunnel/
-├── pkg/
-│   ├── server/
-│   │   └── server.go      # Relay server: HTTP listener + WebSocket hub
-│   ├── client/
-│   │   └── client.go      # CLI client: WS connection + local HTTP proxy
-│   ├── tunnel/
-│   │   └── protocol.go    # Wire protocol types (JSON-framed messages)
-│   ├── inspector/
-│   │   └── inspector.go   # Request inspection ring buffer + REST API
-│   └── otel/
-│       └── otel.go        # ServShared OTel delegation
-├── main.go                # Entry point with server/client subcommands
-├── main_test.go           # Integration tests
-├── ROADMAP.md             # Feature planning
-└── README.md              # This documentation
-```
-
----
-
-## Quick Start
-
-### 1. Build
-
-```bash
-go build -o servtunnel .
-```
-
-### 2. Start the Relay Server
-
-```bash
-./servtunnel server --port 8443 --domain localhost
-```
-
-The relay will listen on `:8443` and route requests based on subdomain in the `Host` header.
-
-### 3. Start a Tunnel Client
-
-In another terminal, with a local service running on port 8080:
-
-```bash
-./servtunnel client 8080 --relay ws://localhost:8443/ws/connect --subdomain myapp
-```
-
-You'll see:
-
-```
-  ╔═══════════════════════════════════════╗
-  ║         ServTunnel Client              ║
-  ╚═══════════════════════════════════════╝
-
-  Local service:  http://localhost:8080
-  Relay server:   ws://localhost:8443/ws/connect
-
-  ✓ Tunnel established!
-
-  Public URL:     http://myapp.localhost:8443
-  Subdomain:      myapp
-
-  ─────────────────────────────────────────
-  Forwarding requests... (Ctrl+C to stop)
-  ─────────────────────────────────────────
-```
-
-### 4. Send Requests Through the Tunnel
-
-```bash
-curl -H "Host: myapp.localhost" http://localhost:8443/api/hello
-```
-
-The request will be forwarded to `http://localhost:8080/api/hello` through the tunnel.
-
----
-
-## Standalone Tunnel (ngrok / Localtunnel Alternative)
-
-ServTunnel works as a generic, zero-dependency, self-hosted alternative to ngrok, localtunnel, or cloudflared. You can use it to expose **any local HTTP server** (Python Flask, Node Express, React Dev Server, Go API, PHP, etc.) to the local network or public internet.
-
-### Expose Any Local App/Service
-
-Simply compile or download `servtunnel`, launch your local application, and run the tunnel client:
-
-1. **Start your local web app** (e.g. Node Express on port `3000`):
-   ```bash
-   npm run dev # listening on http://localhost:3000
-   ```
-
-2. **Expose port 3000** using a public or shared ServTunnel relay server:
-   ```bash
-   ./servtunnel client 3000 --relay ws://relay.yourdomain.com:8443/ws/connect --subdomain dev-app
-   ```
-
-3. **Access publicly**:
-   Your app is now securely exposed at:
-   `http://dev-app.relay.yourdomain.com:8443`
-
-
-## Management APIs
-
-### List Active Tunnels
-
-```bash
-curl http://localhost:8443/api/tunnels
-```
-
-### Inspect Captured Requests
-
-```bash
-curl http://localhost:8443/api/inspect
-```
-
-### Get a Single Captured Request
-
-```bash
-curl http://localhost:8443/api/inspect/req-1
-```
-
-### Health Check
-
-```bash
-curl http://localhost:8443/healthz
-curl http://localhost:8443/readyz
-```
+### 🔄 Resilience & Reconnection
+- **Persistent reconnect with exponential backoff**: Client auto-reconnects on disconnect; configurable max retries, initial delay, max delay, and jitter multiplier
+- **Connection state recovery**: In-flight requests are retried on reconnect within configurable grace window
+- **Health & readiness probes**: Standard `/healthz` and `/readyz` endpoints for container orchestration
 
 ---
 
 ## Architecture
 
 ```
-External Service (Stripe, etc.)
-        │ HTTPS
-        ▼
-┌─────────────────────────────┐
-│   ServTunnel Relay Server   │
-│  subdomain.servverse.net    │
-├─────────────────────────────┤
-│ Host header → subdomain     │
-│ → lookup WebSocket conn     │
-│ → forward as JSON frame     │
-└──────────────┬──────────────┘
-               │ WebSocket
-               ▼
-┌─────────────────────────────┐
-│   ServTunnel Client (CLI)   │
-│   servtunnel client 8080    │
-├─────────────────────────────┤
-│ Receives JSON frame         │
-│ → HTTP request to localhost │
-│ → sends response back       │
-└─────────────────────────────┘
+Browser / Webhook Sender
+         │ HTTPS request to myapp.servverse.net
+         ▼
+┌─────────────────────────┐
+│      ServTunnel Server   │
+│                         │
+│  Subdomain Router        │
+│    myapp → Conn#1        │
+│  WS Multiplexer          │
+│    (StreamID framing)    │
+└──────────┬──────────────┘
+           │ WebSocket (multiplexed)
+           ▼
+ServTunnel Client (local machine)
+           │
+           ▼
+Local Service (http://localhost:3000)
 ```
 
 ---
 
-## Environment Variables
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/v1/tunnels` | Create a new tunnel |
+| `GET` | `/api/v1/tunnels` | List active tunnels |
+| `DELETE` | `/api/v1/tunnels/{id}` | Close a tunnel |
+| `GET` | `/api/v1/tunnels/{id}/requests` | Browse captured requests (ring buffer) |
+| `POST` | `/api/v1/tunnels/{id}/replay/{reqID}` | Replay a captured request |
+| `POST` | `/api/v1/tunnels/{id}/share` | Generate a shareable URL with expiry |
+| `GET` | `/healthz` | Liveness probe |
+| `GET` | `/readyz` | Readiness probe |
+
+---
+
+## Getting Started
+
+### Server (self-hosted)
+
+```bash
+docker run -p 8092:8092 \
+  -e SERVTUNNEL_DOMAIN=servverse.net \
+  -e SERVTUNNEL_JWT_SECRET=my-secret \
+  -e SERVTUNNEL_OTEL_ENDPOINT=http://servtrace:4318 \
+  ghcr.io/vyuvaraj/servtunnel:latest
+```
+
+### Client (local machine)
+
+```bash
+# Install client
+go install github.com/vyuvaraj/serv/packages/ServTunnel/cmd/servtunnel@latest
+
+# Expose local port 3000 to a public URL
+servtunnel --server wss://tunnel.servverse.net --local http://localhost:3000
+
+# Output:
+# ✓ Tunnel active: https://abc123.servverse.net
+# Forwarding: https://abc123.servverse.net → http://localhost:3000
+# Press Ctrl+C to close tunnel
+```
+
+---
+
+## Request Inspection & Replay
+
+All requests are captured in a ring buffer:
+
+```bash
+# View captured requests
+curl http://localhost:8092/api/v1/tunnels/tun-abc/requests
+
+# Replay a specific captured request
+curl -X POST http://localhost:8092/api/v1/tunnels/tun-abc/replay/req-001
+```
+
+The terminal client shows real-time request logs:
+
+```
+[2026-07-26 11:42:00] POST /webhook/payment    200  43ms
+[2026-07-26 11:42:01] GET  /api/orders/123     200  12ms
+[2026-07-26 11:42:03] POST /webhook/payment    500  89ms  ← error highlighted
+```
+
+---
+
+## Authentication & Access Control
+
+```bash
+# Create a tunnel with JWT auth requirement
+servtunnel --server wss://tunnel.servverse.net \
+  --local http://localhost:3000 \
+  --auth jwt \
+  --jwt-token eyJhbGciOi...
+
+# Generate a shareable URL (expires in 1 hour)
+curl -X POST http://localhost:8092/api/v1/tunnels/tun-abc/share \
+  -d '{"expires_in": "1h", "one_time": false}'
+# → { "url": "https://abc123.servverse.net?token=xyz789", "expires_at": "..." }
+```
+
+---
+
+## Resilience & Reconnection
+
+Configure reconnect behavior in the client:
+
+```bash
+servtunnel \
+  --server wss://tunnel.servverse.net \
+  --local http://localhost:3000 \
+  --reconnect-max-retries 10 \
+  --reconnect-initial-delay 500ms \
+  --reconnect-max-delay 30s \
+  --reconnect-jitter 0.2
+```
+
+---
+
+## Configuration
+
+### Server Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SERVTUNNEL_ADDR` | `:8443` | Server listen address |
-| `SERVTUNNEL_DOMAIN` | `localhost` | Base domain for subdomains |
-| `SERVTUNNEL_RELAY` | `ws://localhost:8443/ws/connect` | Client relay URL |
-| `OTEL_ENDPOINT` | (none) | OpenTelemetry collector endpoint |
+| `SERVTUNNEL_PORT` | `8092` | HTTP/WebSocket listener port |
+| `SERVTUNNEL_DOMAIN` | — | Base domain for subdomains (e.g. `servverse.net`) |
+| `SERVTUNNEL_JWT_SECRET` | — | JWT signing secret for auth gating |
+| `SERVTUNNEL_MAX_RING_BUFFER` | `100` | Max captured requests per tunnel |
+| `SERVTUNNEL_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
+| `SERVTUNNEL_TLS_CERT` | — | TLS certificate path |
+| `SERVTUNNEL_TLS_KEY` | — | TLS key path |
 
----
-
-## Verification
-
-Run the test suite:
-
-```bash
-go test ./... -v
-```
+### Wildcard DNS
+Configure your DNS provider to point `*.servverse.net` to the ServTunnel server IP. See [docs/wildcard_dns.md](docs/wildcard_dns.md) for detailed setup.

@@ -4,71 +4,182 @@
 docker run -p 8085:8085 ghcr.io/vyuvaraj/servcron:latest
 ```
 
-ServCron is the distributed scheduling service for the Servverse ecosystem. It coordinates and executes scheduled tasks configured via `every` or `cron` declarations with distributed leader election, exactly-once scheduling semantics, and automatic S3-compatible persistence.
+`ServCron` is the distributed, fault-tolerant job scheduling service for the **Servverse** ecosystem. It supports interval and cron scheduling, exactly-once semantics, DAG job chaining, Serv-lang cron-as-code declarations, persistent S3 job registries, and full OTel tracing.
 
-## Features
+---
 
-- **Interval & Cron Execution**: Run tasks periodically at fixed intervals (e.g. `10s`, `1m`) or standard 5-field cron patterns (e.g. `0 9 * * 1-5` for weekdays at 9 AM).
-- **Dynamic Load Balancing**: Competes and distributes scheduled execution slots across active cluster nodes using Redis-based locks.
-- **Persistent Job Registry**: Automatically persist and reload task definitions to/from a `ServStore` S3 bucket JSON schema (`jobs.json`) to prevent task definition losses during node crashes or restarts.
-- **Job Execution Audit History**: Automatically records execution timestamps, duration metrics, response status codes, and response bodies, writing structured logs directly to S3 (`audit/<jobID>_<timestamp>.json`).
-- **OTel Tracing Integration**: Emits client spans for job triggers and propagates `traceparent` headers to downstream callback requests for unified distributed tracing in `ServConsole`.
+## Table of Contents
+- [Key Features](#key-features)
+- [Architecture](#architecture)
+- [API Endpoints](#api-endpoints)
+- [Scheduling Expressions](#scheduling-expressions)
+- [DAG Job Chaining](#dag-job-chaining)
+- [Cron-as-Code (Serv-lang)](#cron-as-code-serv-lang)
+- [Getting Started](#getting-started)
+
+---
+
+## Key Features
+
+### ⏰ Core Scheduling
+- **Interval & cron execution**: Run jobs at fixed intervals (e.g., `10s`, `5m`, `2h`) or standard 5-field cron patterns (e.g., `0 9 * * 1-5` for weekdays at 9 AM)
+- **Exactly-once scheduling semantics**: Distributed Redis-based leader election ensures only one node fires each scheduled job, even across a cluster
+- **Dynamic load balancing**: Distributes job execution slots across active cluster nodes
+
+### 🔗 DAG Job Chaining
+- **Multi-step job graphs**: Define jobs with dependency constraints — `job-c` only runs after `job-a` AND `job-b` succeed
+- **Topological sort execution**: Automatically resolves execution order from the dependency graph
+- **Fan-out / fan-in patterns**: Parallelize independent steps, then synchronize at a join step
+
+### 🔁 Retry Policies
+- **Configurable retry count**: Per-job max retry attempts
+- **Backoff strategies**: Fixed, linear, or exponential backoff between retries
+- **Jitter**: Randomized jitter on backoff to prevent thundering herds
+- **Dead-letter after exhaustion**: After all retries fail, job moves to a dead-letter audit record
+
+### 📋 Cron-as-Code (Serv-lang)
+- **Define jobs in `.serv` files**: Declare scheduled jobs using Serv-lang `cron` and `every` syntax
+- **Version control your schedules**: Job definitions live alongside application code
+- **Hot-reload**: ServCron watches `.serv` files for changes and automatically re-registers modified jobs
+
+### 💾 Persistence
+- **Persistent job registry to ServStore S3**: Job definitions serialized to `jobs.json` in a ServStore bucket — survive node restarts
+- **Execution audit history**: Every job execution is logged to `audit/<jobID>_<timestamp>.json` (execution time, duration, response status, response body)
+- **Automatic restore on startup**: Reloads all job definitions from S3 on node boot
+
+### 🔭 Observability
+- **OTel tracing**: Client spans for every job trigger; `traceparent` header propagated to downstream callback HTTP requests
+- **Prometheus metrics**: Job fire rate, success/failure counters, execution duration histograms
+- **Execution history API**: Query past executions for any job
+
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                      ServCron                            │
+│                                                         │
+│  ┌───────────────────────────────────────────────────┐  │
+│  │  Scheduler (interval + cron expression evaluator) │  │
+│  └────────────────────┬──────────────────────────────┘  │
+│                       │                                 │
+│  ┌────────────────────▼──────────────────────────────┐  │
+│  │  Leader Election (Redis-based distributed lock)   │  │
+│  │  → only one node fires each job per tick          │  │
+│  └────────────────────┬──────────────────────────────┘  │
+│                       │                                 │
+│  ┌────────────────────▼──────────────────────────────┐  │
+│  │  DAG Runner (topological sort + fan-out/join)     │  │
+│  └────────────────────┬──────────────────────────────┘  │
+│                       │                                 │
+│  ┌────────────────────▼──────────────────────────────┐  │
+│  │  HTTP Callback Dispatcher (with traceparent)      │  │
+│  └────────────────────┬──────────────────────────────┘  │
+│                       │                                 │
+│  ┌────────────────────▼──────────────────────────────┐  │
+│  │  Retry Engine + Audit Log (→ ServStore S3)        │  │
+│  └───────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────┘
+```
 
 ---
 
 ## API Endpoints
 
-### 1. Health Checks
-- `GET /healthz` - Health check.
-- `GET /readyz` - Readiness check.
-- `GET /health` - Detailed health status showing the node's current cluster role (`leader` or `follower`).
-
-### 2. Jobs Administration
-- `GET /api/jobs` or `GET /api/v1/jobs`
-  * Lists all registered scheduled jobs.
-- `POST /api/jobs` or `POST /api/v1/jobs`
-  * Registers a new scheduled job.
-  * Body structure:
-    ```json
-    {
-      "id": "my-cron-job",
-      "cron": "*/5 * * * *",
-      "target_url": "http://localhost:8080/my-endpoint",
-      "payload": "{\"test\":true}"
-    }
-    ```
-- `DELETE /api/jobs/{id}` or `DELETE /api/v1/jobs/{id}`
-  * Deletes a scheduled job from the registry.
-- `POST /api/jobs/{id}/run` or `POST /api/v1/jobs/{id}/run`
-  * Manually triggers job execution immediately.
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/v1/jobs` | Create a scheduled job |
+| `GET` | `/api/v1/jobs` | List all jobs |
+| `GET` | `/api/v1/jobs/{id}` | Get job definition and status |
+| `PUT` | `/api/v1/jobs/{id}` | Update a job |
+| `DELETE` | `/api/v1/jobs/{id}` | Delete a job |
+| `POST` | `/api/v1/jobs/{id}/run` | Trigger a job manually |
+| `GET` | `/api/v1/jobs/{id}/history` | Execution history for a job |
+| `POST` | `/api/v1/dag` | Define a DAG job chain |
+| `GET` | `/api/v1/dag/{id}` | Get DAG execution state |
+| `/metrics` | `GET` | Prometheus metrics |
+| `/healthz` | `GET` | Liveness probe |
 
 ---
 
-## Configuration (Environment Variables)
+## Scheduling Expressions
 
-Configure ServCron dynamically using these environment variables or fallback to JSON-manifest service discovery:
+```bash
+# Every 30 seconds
+curl -X POST http://servcron:8085/api/v1/jobs \
+  -d '{"name": "health-check", "schedule": "30s", "callback_url": "http://myapp/health", "retry": {"max": 3, "backoff": "exponential"}}'
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | HTTP Server port | `8087` |
-| `REDIS_URL` | Redis URL for distributed lease locks (e.g. `redis://localhost:6379`). Uses standalone election if unset. | *(Standalone)* |
-| `REDIS_LOCK_KEY` | Lock key name in Redis | `servcron:leader:lock` |
-| `REDIS_LEASE_DURATION` | Lock lease duration | `15s` |
-| `SERV_STORE_ENDPOINT` | ServStore S3-compatible service URL. | `http://localhost:8081` |
-| `SERV_STORE_BUCKET` | Dedicated S3 bucket for jobs and audit logs. | `serv-cron` |
-| `SERV_STORE_AUTH_TOKEN` | Bearer token authorization secret for S3 writes. | `gateway-secret-token` |
-| `SERVVERSE_DISCOVERY` | JSON discovery manifest mapping `store` endpoint and auth token. | *(Disabled)* |
+# Every weekday at 9 AM (cron)
+curl -X POST http://servcron:8085/api/v1/jobs \
+  -d '{"name": "daily-report", "schedule": "0 9 * * 1-5", "callback_url": "http://myapp/reports/daily"}'
+
+# Every hour
+curl -X POST http://servcron:8085/api/v1/jobs \
+  -d '{"name": "cache-warmer", "schedule": "1h", "callback_url": "http://myapp/cache/warm"}'
+```
 
 ---
 
-## Running Locally
+## DAG Job Chaining
 
 ```bash
-go run main.go --addr :8087 --redis-url redis://localhost:6379
+curl -X POST http://servcron:8085/api/v1/dag \
+  -d '{
+    "name": "nightly-pipeline",
+    "schedule": "0 2 * * *",
+    "steps": [
+      { "id": "extract", "callback_url": "http://etl/extract", "depends_on": [] },
+      { "id": "transform", "callback_url": "http://etl/transform", "depends_on": ["extract"] },
+      { "id": "load-a", "callback_url": "http://etl/load/warehouse", "depends_on": ["transform"] },
+      { "id": "load-b", "callback_url": "http://etl/load/reporting", "depends_on": ["transform"] },
+      { "id": "notify", "callback_url": "http://notify/done", "depends_on": ["load-a", "load-b"] }
+    ]
+  }'
 ```
 
-### Verification Suite
-Run integration and unit tests:
-```bash
-go test -v ./...
+This runs `extract` → `transform` → `load-a` and `load-b` in parallel → `notify`.
+
+---
+
+## Cron-as-Code (Serv-lang)
+
+Define jobs in a `.serv` file alongside your application code:
+
+```serv
+// jobs.serv
+cron "daily-report" at "0 9 * * 1-5" {
+  call POST "http://myapp/reports/daily"
+}
+
+every 30s "health-check" {
+  call GET "http://myapp/health"
+    retry max=3 backoff=exponential
+}
 ```
+
+ServCron auto-reloads job definitions when `.serv` files change.
+
+---
+
+## Getting Started
+
+```bash
+docker run -p 8085:8085 \
+  -e SERVCRON_REDIS_URL=redis://redis:6379 \
+  -e SERVCRON_SERVSTORE_BUCKET=servcron-jobs \
+  -e SERVCRON_SERVSTORE_URL=http://servstore:7070 \
+  -e SERVCRON_OTEL_ENDPOINT=http://servtrace:4318 \
+  ghcr.io/vyuvaraj/servcron:latest
+```
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SERVCRON_PORT` | `8085` | HTTP listener port |
+| `SERVCRON_REDIS_URL` | — | Redis URL for distributed leader election |
+| `SERVCRON_SERVSTORE_URL` | — | ServStore URL for job persistence |
+| `SERVCRON_SERVSTORE_BUCKET` | `servcron-jobs` | S3 bucket name for job registry |
+| `SERVCRON_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
+| `SERVCRON_SERV_FILES_DIR` | — | Directory to watch for `.serv` job definitions |

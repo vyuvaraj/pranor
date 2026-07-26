@@ -1,501 +1,257 @@
 # ServStore
 
 ```bash
-docker run -p 8081:8081 ghcr.io/vyuvaraj/servstore:latest
+docker run -p 7070:7070 ghcr.io/vyuvaraj/servstore:latest
 ```
 
-[![Go](https://img.shields.io/badge/Go-1.22%2B-00ADD8?logo=go&logoColor=white)](https://go.dev)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Build](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/vyuvaraj/ServStore)
-[![S3 Compatible](https://img.shields.io/badge/S3-Compatible-FF9900?logo=amazon-s3&logoColor=white)](https://github.com/vyuvaraj/ServStore)
-[![WASM](https://img.shields.io/badge/WASM-Compute--Near--Data-654FF0?logo=webassembly&logoColor=white)](https://github.com/vyuvaraj/ServStore)
-
-> A cloud-native, distributed, AI-native, S3-compatible object storage engine.  
-> ServStore is an open-source alternative to MinIO — built for strong consistency, high scalability, and intelligent data access.
+`ServStore` is a high-performance, S3-compatible distributed object storage system for the **Servverse** ecosystem. It combines classical cloud storage (erasure coding, multi-region replication) with advanced capabilities: AI-native semantic vector search, browser-local OPFS sync, P2P chunk seeding, and Git-like bucket branching.
 
 ---
 
-## About
-
-ServStore is a **production-grade distributed object storage engine** written in pure Go. It was designed to be a self-hostable, cloud-native alternative to MinIO and AWS S3 — while going further with an AI-native storage layer that brings semantic search, time travel queries, and serverless compute-near-data directly into the storage engine.
-
-| Property | Detail |
-|---|---|
-| **Author** | [yuvaraj](https://github.com/vyuvaraj) |
-| **Language** | Go 1.22+ |
-| **License** | Apache 2.0 |
-| **S3 API** | AWS S3 REST compatible (Signature V4) |
-| **Consensus** | Raft-based strong consistency |
-| **WASM Runtime** | wazero (pure-Go, zero-CGO) |
-| **Status** | Phases 1–6 complete ✅ |
-
-ServStore now combines a production-grade distributed storage engine with a full AI-native layer: semantic search, time travel queries, serverless compute-near-data (WASM), and hybrid cloud cold-storage tiering.
+## Table of Contents
+- [Key Features](#key-features)
+- [Architecture](#architecture)
+- [API Endpoints](#api-endpoints)
+- [Vector Search (AI-Native)](#vector-search-ai-native)
+- [Bucket Branching](#bucket-branching)
+- [Browser / P2P](#browser--p2p)
+- [Security](#security)
+- [Observability](#observability)
+- [Getting Started](#getting-started)
+- [Enterprise Edition](#enterprise-edition)
 
 ---
 
 ## Key Features
 
-### S3 Compatibility & Core Storage
-* **S3-Compatible REST API**: Full support for bucket and object lifecycle — `PUT`, `GET`, `DELETE`, `HEAD`, list, delete markers, and S3-style XML responses.
-* **S3 Multipart Uploads**: `InitiateMultipartUpload`, `UploadPart`, `CompleteMultipartUpload`, and `AbortMultipartUpload` for streaming large files.
-* **Object Versioning**: Enabled / Suspended / Disabled states matching AWS S3 semantics. Delete markers and permanent version deletion supported.
-* **Object Locking (WORM)**: Write-once-read-many locks with configurable retain-until dates. Locked objects reject modification and deletion until expiry.
-* **Lifecycle Policies**: Auto-expire objects after N days. Configurable prefix-scoped rules applied by a background goroutine.
+### ☁️ Core Object Storage
+- **100% S3 Wire Protocol Compatibility**: Drop-in replacement for AWS S3 — works with all existing S3 clients (boto3, aws-sdk, etc.)
+- **Erasure Coding (Reed-Solomon)**: Configurable data/parity shard ratios for space-efficient fault tolerance
+- **Standalone daemon** (`servstored`): Production-ready daemon with graceful shutdown and health probes
+- **Dual-CLI**: `servstore` and `serv store` CLI for bucket/object management
+- **Multi-language client SDKs**: Go, Python, TypeScript/JS, Rust
 
-### Security & Access Control
-* **AWS Signature V4 Authentication**: Full HMAC-SHA256 request signing compatible with any S3 SDK.
-* **AES-256-GCM Encryption-at-Rest**: Optional per-object encryption enabled via `--encryption-key`. Passphrase is SHA-256 derived. Fully transparent to S3 clients.
-* **TLS 1.3 Enforcement**: Optional HTTPS with forced TLS 1.3 minimum. Graceful HTTP fallback when not configured.
-* **JWT / OIDC / LDAP Integration**: Console and API authentication via configurable identity providers.
-* **RBAC**: Role-based access control with user policy management (`PutUserPolicy`, `GetUserPolicy`, `DeleteUserPolicy`).
+### 🔀 Tiering & Replication
+- **Multi-cloud S3 bucket tiering**: Hot/warm/cold tier management — auto-migrate objects to cheaper storage tiers based on last-access time
+- **Cold archive mirroring**: Mirror rarely-accessed objects to AWS Glacier, Azure Archive, or GCS Nearline
+- **Multi-region active-active CRDT replication**: Conflict-free replicated data types for last-write-wins semantics across regions
+- **Cross-region active-active bucket replication**: Sync buckets across cloud regions with configurable consistency guarantees
 
-### Distributed System
-* **Gossip Membership Protocol**: Lightweight node discovery and failure detection. Nodes detect and evict unresponsive peers automatically.
-* **Raft Consensus Engine**: All metadata mutations proposed through Raft for strong consistency across the cluster.
-* **Consistent Hash Ring**: Virtual-node hash ring (CRUSH-style) for balanced data placement. Node weight adjustable at runtime.
-* **Horizontal Scaling**: Add nodes dynamically via `POST /console/cluster/join`. Background rebalancer redistributes existing objects to new nodes without downtime.
-* **Peer-to-Peer Auto-healing**: Detects offline nodes, identifies under-replicated objects, and rebuilds replicas in the background.
-* **Reed-Solomon Erasure Coding**: Configurable data/parity shard ratio (default 2+1). Tolerates shard loss without full replication overhead.
-* **Cross-Region Replication (CRR)**: Asynchronously replicates PUT/DELETE across geographic regions. Loop-prevention via `X-ServStore-Region-Source` headers. Active-active topology.
-* **BLAKE3 Data Integrity**: End-to-end checksums computed on PUT, validated on GET. Detects bit rot and storage corruption on-the-fly with failover to healthy replicas.
+### 🤖 AI-Native Vector Search
+- **Automatic embedding generation**: Text objects are automatically embedded on `PUT` using configurable embedding models
+- **Hybrid keyword + vector semantic search (RRF)**: Reciprocal Rank Fusion combines BM25 keyword scores with vector similarity for optimal relevance
+- **Per-bucket vector index namespace management**: Isolated vector index per bucket; configurable distance metrics (Cosine, Euclidean, DotProduct)
+- **ANN query API**: `k`-nearest-neighbor queries with min-score filtering, metadata filters, and hybrid mode
+- **Persistent mmap-backed HNSW graph engine**: High-performance Hierarchical Navigable Small World graph with incremental node insertion and mmap persistence for zero-copy access
 
-### AI-Native Storage Engine (Phase 5)
-* **Content-Addressed Storage (CAS)**: Enable deduplication on any bucket. Objects are stored as `cas-<blake3>`, with reference-counted GC — data is only deleted when the last reference is removed.
-* **Time Travel Queries**: Retrieve the state of any object at any historical timestamp: `GET /<bucket>/<key>?at=2025-01-01T00:00:00Z`. Resolved against version `LastModified` metadata — no extra storage overhead.
-* **Semantic Search**: Built-in TF-IDF vector indexing on text objects. Cosine similarity ranking. S3-compatible query API: `GET /<bucket>?query=semantic&q=<text>&max-results=N`. Encryption-aware (decrypts before indexing).
-* **Auto-Embedding Pipeline**: Text documents (`.txt`, `.md`, `text/*`) are automatically indexed on `PutObject` — no explicit pipeline step required.
-* **Serverless WASM Transforms (Compute Near Data)**: Upload any WASI-compatible `.wasm` binary as an object. Execute it server-side against any other object via `POST /<bucket>/<wasm>?transform=true&target-key=<obj>&mem-limit=64&timeout=30`. Powered by `wazero` — pure-Go, zero-CGO, zero-host-filesystem-access.
-* **WASM Sandbox Limits**: Configurable memory page ceiling and wall-clock timeout per invocation. Each call gets a fresh, isolated `wazero.Runtime` instance — no shared mutable state.
-* **Cold Storage Tiering**: Async archival of cold CAS blocks to any S3-compatible cold-storage backend (AWS S3 Glacier, Backblaze B2, MinIO). Transparent re-hydration on `GetObject`. `.cold` stub tracks remote URL, archive time, and size. Zero new dependencies — uses stdlib `net/http`.
+### 🌿 Bucket Branching (Git-like)
+- **Copy-on-Write (CoW) virtual metadata pointer engine**: Branch a bucket in O(1) — no data copy; branches share storage until modified
+- **Bucket branch diff & merge**: `servstore diff branch-a branch-b` shows changed objects; merge branches with conflict resolution
+- **Isolated virtual namespace router**: Each branch gets its own S3-compatible namespace; branches are fully isolated
+- **REST API**: `POST /api/v1/buckets/{name}/branch`, `POST /api/v1/buckets/{name}/merge`
+- **CLI**: `servstore branch create`, `servstore branch diff`, `servstore branch merge`
 
-### Observability & Operations
-* **OpenTelemetry Tracing**: Lightweight custom OTel client exporting spans for all HTTP routes and storage I/O. Zero external dependencies.
-* **Prometheus Metrics**: Custom registry exposing request rate, latency histograms, storage utilization, in-flight connection counts, and cluster state at `/metrics`.
-* **Structured JSON Logging**: All requests logged in structured `slog` JSON format with trace IDs, method, path, status, and duration.
+### 🌐 Browser & P2P
+- **OPFS local sync** (`@servverse/store-wasm`): Browser-local object storage using Origin Private File System; syncs to server when online
+- **WebTorrent P2P chunk seeder**: Seed object chunks via WebTorrent — reduce CDN egress costs
+- **WebRTC peer signaling relay**: Broker WebRTC connections between peers for direct chunk transfer
+- **P2P SHA-256 integrity verification**: All chunks verified cryptographically before acceptance
 
-### Developer Experience
-* **Single-Binary Deployment**: Frontend web console assets are embedded directly into the compiled Go binary. Zero file dependencies at runtime.
-* **Web Console**: Premium glassmorphic dark-mode admin UI with drag-and-drop uploads, bucket management, versioning controls, and object version history viewer.
-* **ServStore CLI (`servstore-cli`)**: Terminal client supporting `mb`, `rb`, `ls`, `put`, `get`, `rm`, `policy`, and cluster management commands against any ServStore endpoint.
-* **serv-lang Native Client**: Out-of-the-box integration with the [serv-lang](file:///f:/Don/Serv/Serv-lang) DSL standard library (`stdlib/s3.srv`), supporting bucket creation, versioning, CRUD, time travel, and semantic search.
+### 🔍 S3 Select
+- **S3 Select engine**: Query CSV, JSON, and Parquet objects with SQL expressions without downloading entire objects
 
 ---
 
-## Directory Structure
-```text
-ServStore/
-├── cmd/
-│   ├── servstore/
-│   │   └── main.go                   # Server entry point, CLI flags, TLS & encryption config
-│   ├── servstore-cli/
-│   │   └── main.go                   # CLI client (mb, rb, ls, put, get, rm, policy)
-│   ├── operator/
-│   │   └── main.go                   # Kubernetes Operator Manager binary
-│   └── csi-driver/
-│       └── main.go                   # CSI Node Plugin gRPC stub
-├── deploy/
-│   ├── crds/                         # Kubernetes Custom Resource Definitions (CRDs)
-│   │   ├── servstorebucket.yaml
-│   │   ├── servstorecluster.yaml
-│   │   └── servstorecredential.yaml
-│   └── helm/
-│       └── servstore/                # Kubernetes Helm Chart for Cluster & Operator
-├── pkg/
-│   ├── auth/
-│   │   └── auth.go                   # AWS Signature V4 authentication + JWT/OIDC/LDAP
-│   ├── cluster/
-│   │   ├── membership.go             # Gossip protocol, node timeouts & Hash Ring logic
-│   │   ├── healing.go                # P2P auto-healing & dynamic rebalancing
-│   │   ├── crr.go                    # Cross-Region Replication (CRR) Manager
-│   │   ├── placement.go              # Consistent hashing ring implementation
-│   │   ├── raft_node.go              # Raft consensus node for consistent metadata
-│   │   ├── rebalance_test.go         # Integration tests for dynamic scale-out rebalancing
-│   │   └── crr_test.go               # Integration tests for Cross-Region Replication
-│   ├── metrics/
-│   │   ├── metrics.go                # Zero-dependency Prometheus metrics registry
-│   │   └── metrics_test.go           # Unit tests for metrics serialisation
-│   ├── operator/
-│   │   ├── register.go               # Scheme registration for CRDs
-│   │   ├── types.go                  # Go spec and status structures for CRDs
-│   │   └── controllers/
-│   │       ├── cluster_controller.go # StatefulSet & Rolling Upgrade reconciler
-│   │       ├── bucket_controller.go  # S3 bucket configuration reconciler
-│   │       ├── credential_controller.go # Secret to S3 policy mapping reconciler
-│   │       └── operator_test.go      # Operator unit tests
-│   ├── otel/
-│   │   ├── otel.go                   # Lightweight OpenTelemetry tracing client
-│   │   └── otel_test.go              # Unit tests for OTel tracing
-│   ├── ratelimit/
-│   │   ├── limiter.go                # Tenant-isolated token-bucket rate limiter
-│   │   └── limiter_test.go           # Limiter unit tests
-│   ├── s3/
-│   │   ├── api.go                    # S3 API router, gateway handlers & failover routing
-│   │   ├── xml.go                    # S3-compliant XML request/response models
-│   │   └── integrity_failover_test.go # Integration tests for BLAKE3 data integrity failover
-│   ├── storage/
-│   │   ├── store.go                  # StorageEngine interface definition
-│   │   ├── local_store.go            # Versioned storage, CAS, encryption, WASM, cold tier
-│   │   ├── crypto.go                 # AES-256-GCM encrypt/decrypt helpers
-│   │   ├── vector.go                 # TF-IDF tokeniser & cosine similarity engine
-│   │   ├── cold_tier.go              # Cold storage tiering — archive, stub, re-hydration
-│   │   ├── cas_test.go               # Integration tests for CAS deduplication
-│   │   ├── semantic_test.go          # Integration tests for semantic search
-│   │   ├── time_travel_test.go       # Integration tests for time travel queries
-│   │   ├── cold_tier_test.go         # Integration tests for cold storage tiering
-│   │   ├── integrity_test.go         # Unit tests for BLAKE3 checksums & bit rot detection
-│   │   ├── crypto_test.go            # Unit tests for encryption round-trips
-│   │   └── local_store_test.go       # Storage engine test suite (versioning, multipart, WORM)
-│   ├── wasm/
-│   │   ├── runner.go                 # Sandboxed wazero WASI execution engine
-│   │   └── runner_test.go            # Tests for WASM execution (uppercase, passthrough, limits)
-│   └── web/
-│       ├── server.go                 # Web Console static asset and API router wrapper
-│       └── assets/                   # Web Console files (index.html, style.css, app.js)
-├── go.mod                            # Module definition (github.com/tetratelabs/wazero added)
-├── roadmap.md                        # Phase-wise implementation roadmap
-└── README.md                         # Product documentation
+## Architecture
+
 ```
+┌────────────────────────────────────────────────────────────┐
+│                        ServStore                            │
+│                                                            │
+│  ┌─────────────────────────────────────────────────────┐  │
+│  │              S3 Wire Protocol Router                 │  │
+│  │  GET/PUT/DELETE/LIST/SELECT compatible with AWS S3   │  │
+│  └───────────────────────┬─────────────────────────────┘  │
+│                           │                                │
+│  ┌────────────┐  ┌────────▼──────┐  ┌────────────────┐   │
+│  │ CoW Branch │  │  Object Store │  │  Vector Index  │   │
+│  │  Namespaces│  │  (Reed-Solomon│  │  (HNSW + RRF)  │   │
+│  └────────────┘  │   Erasure)    │  └────────────────┘   │
+│                  └───────┬───────┘                         │
+│  ┌────────────┐  ┌───────▼───────┐  ┌────────────────┐   │
+│  │   S3 Select│  │  Tiered Store │  │  CRDT Repl.    │   │
+│  │   Engine   │  │  Hot/Warm/Cold│  │  Multi-Region  │   │
+│  └────────────┘  └───────────────┘  └────────────────┘   │
+│                                                            │
+│  ┌────────────────────────────────────────────────────┐   │
+│  │         P2P / OPFS / WebRTC Layer (Browser)         │   │
+│  └────────────────────────────────────────────────────┘   │
+└────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## API Endpoints
+
+### S3 Compatible (use any S3 client)
+| Method | Path | Description |
+|--------|------|-------------|
+| `PUT` | `/{bucket}/{key}` | Upload object (triggers auto-embedding if text) |
+| `GET` | `/{bucket}/{key}` | Download object |
+| `DELETE` | `/{bucket}/{key}` | Delete object |
+| `GET` | `/{bucket}?list-type=2` | List objects in bucket |
+| `POST` | `/{bucket}/{key}?select` | S3 Select query (CSV/JSON/Parquet) |
+
+### ServStore-Specific APIs
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/v1/buckets` | Create bucket |
+| `POST` | `/api/v1/buckets/{name}/branch` | Create a CoW branch |
+| `POST` | `/api/v1/buckets/{name}/merge` | Merge a branch back |
+| `GET` | `/api/v1/buckets/{name}/diff` | Diff two branches |
+| `POST` | `/api/v1/search/vector` | Vector ANN search |
+| `POST` | `/api/v1/search/hybrid` | Hybrid keyword+vector search (RRF) |
+| `GET` | `/api/v1/search/namespaces` | List vector index namespaces per bucket |
+| `GET` | `/api/v1/tiers/{bucket}/policy` | Get tiering policy |
+| `PUT` | `/api/v1/tiers/{bucket}/policy` | Set tiering policy |
+| `/metrics` | `GET` | Prometheus metrics |
+
+---
+
+## Vector Search (AI-Native)
+
+Objects uploaded to enabled buckets are automatically embedded:
+
+```bash
+# Upload a text document — embedding generated automatically
+aws s3 cp docs/manual.txt s3://my-bucket/manual.txt \
+  --endpoint-url http://servstore:7070
+
+# Hybrid search (keyword + vector, RRF combined)
+curl -X POST http://servstore:7070/api/v1/search/hybrid \
+  -d '{"bucket": "my-bucket", "query": "installation guide", "k": 5, "metric": "cosine"}'
+
+# Pure vector ANN search
+curl -X POST http://servstore:7070/api/v1/search/vector \
+  -d '{"bucket": "my-bucket", "vector": [0.12, -0.34, ...], "k": 10, "min_score": 0.8}'
+```
+
+### Vector Index Configuration
+
+```json
+{
+  "bucket": "my-bucket",
+  "vector_index": {
+    "enabled": true,
+    "embedding_model": "text-embedding-3-small",
+    "dimensions": 1536,
+    "metric": "cosine",
+    "hnsw": { "m": 16, "ef_construction": 200 }
+  }
+}
+```
+
+---
+
+## Bucket Branching
+
+```bash
+# Create a branch (instant, no data copy)
+servstore branch create my-bucket --name feature-x
+
+# Make changes to the branch
+aws s3 cp new-file.txt s3://my-bucket@feature-x/new-file.txt
+
+# Diff branch vs main
+servstore branch diff my-bucket feature-x
+
+# Merge branch back
+servstore branch merge my-bucket --source feature-x --into main
+```
+
+---
+
+## Browser / P2P
+
+```bash
+npm install @servverse/store-wasm
+```
+
+```typescript
+import { ServStore } from '@servverse/store-wasm';
+
+const store = new ServStore({ bucket: 'my-bucket', syncUrl: 'https://store.servverse.net' });
+
+// Works offline via OPFS
+await store.put('key', new Uint8Array([1, 2, 3]));
+const data = await store.get('key');
+
+// P2P chunk seeding (reduces server egress)
+await store.enableP2PSeed({ torrentTracker: 'wss://tracker.servverse.net' });
+```
+
+---
+
+## Security
+
+| Feature | Description |
+|---------|-------------|
+| Blind-Store E2EE | Client-side encryption; server never sees plaintext |
+| FIPS 140-3 + HSM Key Unsealing | Hardware security module key management |
+| WORM Object Lock | Write-Once-Read-Many immutable objects |
+| Merkle Immutability Ledger | Tamper-evident audit chain for every object write |
+| io_uring + Direct I/O | Bypasses page cache for NVMe-level throughput (EE) |
+
+---
+
+## Observability
+
+- **Prometheus `/metrics`**: Object throughput, IOPS, cache hit rates, vector index query latency, tiering migration stats
+- **OTel tracing**: Per-request spans for upload, download, search, and compaction operations
+- **ServConsole Inspector**: Bucket browser, vector index namespace management, tiering policy editor
 
 ---
 
 ## Getting Started
 
-### Prerequisites
-* Go 1.22 or higher
-
-### 1. Run Tests
 ```bash
-go test ./...
+docker run -p 7070:7070 \
+  -e SERVSTORE_DATA_DIR=/data \
+  -e SERVSTORE_ERASURE_DATA_SHARDS=6 \
+  -e SERVSTORE_ERASURE_PARITY_SHARDS=2 \
+  -e SERVSTORE_OTEL_ENDPOINT=http://servtrace:4318 \
+  -v store-data:/data \
+  ghcr.io/vyuvaraj/servstore:latest
+
+# Use with any S3 client
+export AWS_ACCESS_KEY_ID=servstore
+export AWS_SECRET_ACCESS_KEY=servstore
+aws s3 mb s3://my-bucket --endpoint-url http://localhost:7070
+aws s3 cp myfile.txt s3://my-bucket/ --endpoint-url http://localhost:7070
 ```
 
-### 2. Build the Server
-```bash
-go build -o servstore ./cmd/servstore
-```
+### Environment Variables
 
-### 3. Run the Server
-
-**Basic (no auth, port 9000):**
-```bash
-./servstore
-```
-
-**With AWS Signature V4 auth:**
-```bash
-./servstore --auth --access-key "yourAccessKey" --secret-key "yourSecretKey"
-```
-
-**With AES-256 encryption at rest:**
-```bash
-./servstore --encryption-key "my-strong-passphrase"
-```
-
-**With TLS 1.3:**
-```bash
-openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 365 -nodes -subj "/CN=localhost"
-./servstore --tls-cert ./server.crt --tls-key ./server.key
-```
-
-**With OpenTelemetry tracing:**
-```bash
-$env:OTEL_ENDPOINT="http://localhost:4318"
-$env:OTEL_SERVICE_NAME="servstore"
-./servstore
-```
-
-### 4. Open the Web Console
-Navigate to [http://localhost:9000](http://localhost:9000). From here you can:
-* Create and delete buckets.
-* Toggle versioning (Enabled / Suspended).
-* Drag and drop files to upload them.
-* Inspect metadata, download past versions, or permanently delete them.
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SERVSTORE_PORT` | `7070` | HTTP listener port |
+| `SERVSTORE_DATA_DIR` | `./data` | Object storage root directory |
+| `SERVSTORE_ERASURE_DATA_SHARDS` | `6` | Reed-Solomon data shards |
+| `SERVSTORE_ERASURE_PARITY_SHARDS` | `2` | Reed-Solomon parity shards |
+| `SERVSTORE_VECTOR_ENABLED` | `false` | Enable auto-embedding & HNSW index |
+| `SERVSTORE_EMBEDDING_MODEL` | — | Embedding model endpoint URL |
+| `SERVSTORE_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
+| `SERVSTORE_S3_TIER_COLD_URL` | — | Cold tier S3 endpoint |
 
 ---
 
-## AI-Native API Examples
+## Enterprise Edition
 
-### Semantic Search
-```bash
-# Upload text documents (auto-indexed on ingest)
-aws s3api put-object --bucket docs --key raft.txt --body raft.txt --content-type text/plain --endpoint-url http://localhost:9000
-
-# Semantic search — returns ranked XML like ListObjects
-curl "http://localhost:9000/docs?query=semantic&q=consensus+metadata+replication&max-results=3"
-```
-
-### Time Travel
-```bash
-# Retrieve object state at a specific point in time
-curl "http://localhost:9000/mybucket/config.json?at=2025-06-01T12:00:00Z"
-
-# Via aws CLI
-aws s3api get-object --bucket mybucket --key config.json \
-  --query-string '?at=2025-06-01T12:00:00Z' /tmp/config-snapshot.json \
-  --endpoint-url http://localhost:9000
-```
-
-### WASM Compute-Near-Data
-```bash
-# Build and upload a WASI transform binary
-GOOS=wasip1 GOARCH=wasm go build -o uppercase.wasm ./transforms/uppercase/
-aws s3api put-object --bucket transforms --key uppercase.wasm --body uppercase.wasm --endpoint-url http://localhost:9000
-
-# Upload the data to transform
-aws s3api put-object --bucket transforms --key hello.txt --body hello.txt --endpoint-url http://localhost:9000
-
-# Execute the transform server-side (returns transformed bytes)
-curl -X POST "http://localhost:9000/transforms/uppercase.wasm?transform=true&target-key=hello.txt&mem-limit=64&timeout=30"
-```
-
-### Cold Storage Tiering
-```bash
-# Configure cold tiering for a CAS bucket
-curl -X PUT "http://localhost:9000/mybucket?cold-tier" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "endpoint": "https://s3.amazonaws.com",
-    "remote_bucket": "cold-archive",
-    "region": "us-east-1",
-    "access_key": "AKIA...",
-    "secret_key": "...",
-    "min_age_days": 30,
-    "scan_interval_min": 60
-  }'
-
-# Trigger an immediate sweep
-curl -X POST "http://localhost:9000/mybucket?cold-tier&sweep"
-# {"archived":5,"errors":[]}
-
-# GetObject transparently re-hydrates archived blocks — no API changes needed
-aws s3api get-object --bucket mybucket --key archived.bin /tmp/out.bin --endpoint-url http://localhost:9000
-```
-
----
-
-## Kubernetes & Cloud-Native Deployment (Phase 4)
-
-ServStore includes a custom Kubernetes Operator, Helm Chart package, and Container Storage Interface (CSI) node plugin.
-
-### 1. Custom Resource Definitions (CRDs)
-Deploy ServStore resources declaratively in Kubernetes:
-```yaml
-# Create a 3-node S3 storage cluster with Reed-Solomon Erasure Coding enabled
-apiVersion: storage.servstore.io/v1alpha1
-kind: ServStoreCluster
-metadata:
-  name: my-s3-cluster
-spec:
-  replicas: 3
-  image: ghcr.io/vyuvaraj/servstore:latest
-  erasureCoding:
-    enabled: true
-    dataShards: 2
-    parityShards: 1
-  storage:
-    size: 50Gi
-```
-
-### 2. Deploy using Helm
-```bash
-# Template or deploy the cluster and operator
-helm install my-release ./deploy/helm/servstore
-```
-
-### 3. Tenant Rate Limiting
-Apply QoS rate limits per namespace/tenant:
-```bash
-# Set rate-limiting header in requests to S3 Gateway
-curl -H "X-ServStore-Namespace: tenant-alpha" http://localhost:9000/mybucket/file.txt
-```
-If traffic limits are exceeded, ServStore responds with `HTTP 429 Too Many Requests` and a dynamic `Retry-After` header.
-
----
-
-## Enterprise Hardening & Performance (Phase 6)
-
-### 1. Resiliency & Chaos Mesh
-Manifests are provided in `deploy/chaos/` to execute automated testing:
-- **`pod-chaos.yaml`**: Intermittently fails pods to verify Raft leader re-election stability.
-- **`network-chaos.yaml`**: Simulates packet loss and network delay to verify gossip protocols.
-- **`io-chaos.yaml`**: Injects simulated read/write disk errors on `/data` to test S3 gateway failover routing.
-
-### 2. Direct I/O Bypass
-For objects larger than 16MB, ServStore automatically uses sector-aligned Direct I/O (`FILE_FLAG_NO_BUFFERING` on Windows) to bypass the OS page cache for direct disk throughput.
-
-### 3. Parallel Hashing
-When processing large objects (>8MB), ServStore automatically parallelizes BLAKE3 checksum calculations across multiple CPU threads using concurrent chunk hashing, performing root tree reduction.
-
----
-
-
-## Roadmap
-
-See [roadmap.md](roadmap.md) for the full phase-by-phase implementation plan. **All Phases 1–6 are now 100% complete and fully verified.**
-
----
-
-## Contributing
-
-Contributions are welcome! Here's how to get started:
-
-1. **Fork** the repository and create a feature branch:
-   ```bash
-   git checkout -b feature/my-feature
-   ```
-2. **Make your changes** — follow Go conventions, add tests for new functionality.
-3. **Run the tests** before submitting:
-   ```bash
-   go test ./...
-   ```
-4. **Open a Pull Request** against the `main` branch with a clear description of what you changed and why.
-
-Please open an [issue](https://github.com/vyuvaraj/ServStore/issues) first for major feature proposals so we can discuss the design before implementation begins.
-
-### Code Style
-- Standard Go formatting (`gofmt` / `goimports`)
-- All exported identifiers must have doc comments
-- New packages must include at least one `_test.go` file
-
----
-
-## License
-
-Copyright © 2024 [vyuvaraj](https://github.com/vyuvaraj)
-
-Licensed under the **Apache License, Version 2.0**. You may not use this project except in compliance with the License.
-
-A copy of the license is included in this repository: [LICENSE](LICENSE)
-
-```
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-```
-
----
-
-## Use Without Servverse (Standalone Quickstart)
-
-`ServStore` is fully standalone by default and functions as a standard, independent S3-compatible storage engine:
-1. Run `ServStore`:
-   ```bash
-   ./servstore --port 8081 --dir ./data
-   ```
-2. Interact with it using any standard S3 client (e.g. `aws-cli` or `minio-go` SDK) by specifying `http://localhost:8081` as the endpoint:
-   ```bash
-   aws s3 mb s3://my-bucket --endpoint-url http://localhost:8081
-   ```
-
-## S3 Client Compatibility Guide (SA.17)
-
-`ServStore` is compatible with any client or library that supports AWS Signature Version 4. Below are integration guides for the most common S3 tools.
-
-### 1. AWS CLI (`aws-cli`)
-Configure your credentials:
-```bash
-aws configure set aws_access_key_id admin
-aws configure set aws_secret_access_key secret
-aws configure set default.region us-east-1
-```
-Run commands by passing the `--endpoint-url` flag:
-```bash
-# Create a bucket
-aws s3 mb s3://test-bucket --endpoint-url http://localhost:8081
-
-# List buckets
-aws s3 ls --endpoint-url http://localhost:8081
-
-# Upload an object
-aws s3 cp document.txt s3://test-bucket/document.txt --endpoint-url http://localhost:8081
-
-# List objects
-aws s3 ls s3://test-bucket/ --endpoint-url http://localhost:8081
-```
-
-### 2. Python (`boto3`)
-Instantiate the S3 client with your local endpoint:
-```python
-import boto3
-from botocore.client import Config
-
-s3 = boto3.client(
-    's3',
-    endpoint_url='http://localhost:8081',
-    aws_access_key_id='admin',
-    aws_secret_access_key='secret',
-    config=Config(signature_version='s3v4'),
-    region_name='us-east-1'
-)
-
-# Create bucket
-s3.create_bucket(Bucket='my-bucket')
-
-# Upload file
-s3.upload_file('local.txt', 'my-bucket', 'remote.txt')
-
-# Download file
-s3.download_file('my-bucket', 'remote.txt', 'downloaded.txt')
-```
-
-### 3. MinIO Client (`mc`)
-Set up an alias for your local ServStore instance:
-```bash
-mc alias set servstore http://localhost:8081 admin secret
-```
-Now perform standard object operations:
-```bash
-# Create a bucket
-mc mb servstore/my-bucket
-
-# Copy a file
-mc cp local.png servstore/my-bucket/remote.png
-
-# Search / List
-mc ls servstore/my-bucket
-```
-
-### 4. `s3cmd`
-Create or modify your `~/.s3cfg` configuration file:
-```ini
-[default]
-access_key = admin
-secret_key = secret
-host_base = localhost:8081
-host_bucket = %(bucket)s.localhost:8081
-use_https = False
-signature_v4 = True
-```
-Use `s3cmd` normally:
-```bash
-s3cmd mb s3://my-bucket
-s3cmd put file.txt s3://my-bucket/
-s3cmd la
-```
-
-### 5. `rclone`
-Configure an `rclone` remote named `servstore`:
-```bash
-rclone config create servstore s3 \
-    provider Other \
-    env_auth false \
-    access_key_id admin \
-    secret_access_key secret \
-    endpoint http://localhost:8081
-```
-Perform synchronization and directory listing operations:
-```bash
-# List buckets
-rclone lsd servstore:
-
-# Sync local folder
-rclone sync /path/to/local/folder servstore:my-bucket/backup
-```
-
----
-
-<p align="center">
-  Built with ❤️ in Go · <a href="https://github.com/vyuvaraj/ServStore">github.com/vyuvaraj/ServStore</a>
-</p>
-
+| Feature | Tier |
+|---------|------|
+| Blind-Store E2EE & FIPS HSM | EE |
+| Cross-Region Active-Active Replication | EE |
+| io_uring & Direct I/O NVMe Acceleration | EE |
+| WORM Object Lock & Merkle Ledger | EE |
+| Enterprise Multi-Tenant CoW Encryption | EE |
+| Enterprise P2P Token-Gated Content DRM | EE |

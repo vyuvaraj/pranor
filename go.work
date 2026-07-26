@@ -12,6 +12,7 @@ use (
 	./packages/ServLock
 	./packages/ServMail
 	./packages/ServMesh
+	./packages/ServPlatform
 	./packages/ServPool
 	./packages/ServQueue
 	./packages/ServRegistry

@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.4.0
+
+### Added
+- **`async` & `concurrent` Syntax & Snippets (VS.G1)**: Full TextMate grammar highlighting and code snippets for `async fn`, `async` task calls, and `concurrent {}` parallel blocks.
+- **`servctl` Cluster Administration Integration (VS.G2)**: Command palette command `Serv: servctl Cluster Administration` to run `servctl get services`, `servctl get nodes`, `servctl restart service`, and `servctl apply config`.
+- **`serv diff` Breaking Change Detector (VS.G3)**: Command `Serv: Check Breaking API Changes (serv diff)` to run schema diffing against git base branch (`main`) with dedicated output logging.
+- **Multi-Target Client Code Generation (VS.G4)**: Commands `Serv: Generate Rust Client Code` (`--lang rust`) and `Serv: Generate Python Client Code` (`--lang python`).
+- **Platform Chaos Control Panel (VS.G5)**: Dedicated Webview panel to trigger/abort network delay, CPU stress, memory pressure, disk throttle, and clock skew faults across cluster nodes (`PL.G3`).
+- **WASM Playground & ServConsole Export (VS.G6)**: Deep-linking command `Serv: Export Current File to WASM Playground` (`playground.servverse.dev`).
+- **`servd` Single-Binary Unified Console Webview (VS.G7)**: Unified multi-tab webview console (`serv.openServdConsole`) with auto-detection for `servd` single-binary status and health rollups.
+
 ## 3.3.0
 
 ### Added

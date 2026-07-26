@@ -2,7 +2,7 @@
   "name": "serv-vscode",
   "displayName": "Serv Programming Language Support",
   "description": "Full language support for the Serv programming language (.srv files) — syntax highlighting, diagnostics, autocomplete, hover, go-to-definition, and LSP.",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "publisher": "vyuvaraj",
   "engines": {
     "vscode": "^1.75.0"
@@ -119,10 +119,10 @@
       ]
     },
     "menus": {
-      "view/title": [
+      "editor/title/run": [
         {
-          "command": "serv.refreshServices",
-          "when": "view == serv-services-panel",
+          "command": "serv.run",
+          "when": "editorLangId == serv",
           "group": "navigation"
         }
       ]
@@ -304,16 +304,7 @@
         "key": "ctrl+shift+t",
         "when": "editorLangId == serv"
       }
-    ],
-    "menus": {
-      "editor/title/run": [
-        {
-          "command": "serv.run",
-          "when": "editorLangId == serv",
-          "group": "navigation"
-        }
-      ]
-    }
+    ]
   },
   "dependencies": {
     "vscode-languageclient": "^9.0.1"
@@ -324,5 +315,8 @@
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/vyuvaraj/Serv-lang/issues"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.9.2"
   }
 }

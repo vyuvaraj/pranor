@@ -65,6 +65,13 @@ Visual Webviews integrated directly into the workspace to observe and simulate l
 | `serv.inspectMail` | **ServMail Queue** | Email queue with queued/sent/bounced counts and per-item status |
 | `serv.viewTunnels` | **ServTunnel Sessions** | Active tunnel sessions with client IP, target, protocol, duration, bytes in/out |
 | `serv.deploy` | **One-Click Deploy** | Deploy the current service to ServCloud with live build log (compile → test → package → provision → URL) |
+| `serv.servctl` | **servctl CLI** | Cluster administration tool (`get services`, `get nodes`, `restart service`, `apply config`) |
+| `serv.checkBreakingChanges` | **serv diff** | Breaking change detector against git base branch (`main`) |
+| `serv.generateRust` | **Rust Codegen** | Generate Rust client code (`serv generate --lang rust`) |
+| `serv.generatePython` | **Python Codegen** | Generate Python client code (`serv generate --lang python`) |
+| `serv.controlChaos` | **Platform Chaos Control** | Platform fault injection engine panel (network, CPU, memory, disk, clock skew) |
+| `serv.exportToPlayground` | **WASM Playground** | Export current `.srv` file directly to `playground.servverse.dev` |
+| `serv.openServdConsole` | **servd Platform Console** | Single-binary embedded monolith console with component monitoring & health rollups |
 
 ---
 

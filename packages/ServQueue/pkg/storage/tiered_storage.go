@@ -46,6 +46,46 @@ func (m *TieredStorageManager) OffloadOldSegment(localPath string) error {
 	return nil
 }
 
+type AutoCompactionWorker struct {
+	TTL          time.Duration
+	MaxSegmentMB int64
+	mu           sync.Mutex
+	PurgedCount  uint64
+}
+
+func NewAutoCompactionWorker(ttl time.Duration, maxSegmentMB int64) *AutoCompactionWorker {
+	if ttl <= 0 {
+		ttl = 24 * time.Hour
+	}
+	if maxSegmentMB <= 0 {
+		maxSegmentMB = 100
+	}
+	return &AutoCompactionWorker{
+		TTL:          ttl,
+		MaxSegmentMB: maxSegmentMB,
+	}
+}
+
+func (w *AutoCompactionWorker) CompactAndPurgeExpired(entries []LogEntry) ([]LogEntry, int) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	cutoff := time.Now().Add(-w.TTL).UnixNano()
+	var retained []LogEntry
+	purged := 0
+
+	for _, e := range entries {
+		if e.Timestamp > 0 && e.Timestamp < cutoff {
+			purged++
+		} else {
+			retained = append(retained, e)
+		}
+	}
+
+	w.PurgedCount += uint64(purged)
+	return retained, purged
+}
+
 // FetchRemoteSegment retrieves cold WAL segment data from S3 / ServStore.
 func (m *TieredStorageManager) FetchRemoteSegment(remoteURL string) ([]byte, error) {
 	req, err := http.NewRequest("GET", remoteURL, nil)

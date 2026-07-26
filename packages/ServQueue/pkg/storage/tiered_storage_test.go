@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 )
 
 func TestTieredStorageOffloadAndFetch(t *testing.T) {
@@ -44,5 +45,19 @@ func TestTieredStorageOffloadAndFetch(t *testing.T) {
 
 	if string(data) != "mock_wal_segment_data" {
 		t.Errorf("Unexpected remote segment data: %s", string(data))
+	}
+}
+
+func TestAutoCompactionWorker(t *testing.T) {
+	worker := NewAutoCompactionWorker(1*time.Hour, 50)
+
+	entries := []LogEntry{
+		{Topic: "orders", Payload: "p1", Timestamp: time.Now().Add(-2 * time.Hour).UnixNano()},
+		{Topic: "orders", Payload: "p2", Timestamp: time.Now().UnixNano()},
+	}
+
+	retained, purged := worker.CompactAndPurgeExpired(entries)
+	if purged != 1 || len(retained) != 1 {
+		t.Errorf("Expected 1 purged and 1 retained, got purged=%d, retained=%d", purged, len(retained))
 	}
 }

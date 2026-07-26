@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
+	mathrand "math/rand"
 	"net/http"
 	"os"
 	"strconv"
@@ -38,17 +40,24 @@ var SyslogEmitFunc = func(entry map[string]interface{}) {
 }
 
 type Job struct {
-	ID           string    `json:"id"`
-	Interval     string    `json:"interval,omitempty"`  // duration string e.g. "10s", "1m"
-	Cron         string    `json:"cron,omitempty"`      // standard 5-field cron e.g. "0 9 * * 1-5"
-	TargetURL    string    `json:"target_url"`
-	Payload      string    `json:"payload,omitempty"`
-	NextTopic    string    `json:"next_topic,omitempty"`
-	NextRun      time.Time `json:"next_run"`
-	LastRun      time.Time `json:"last_run,omitempty"`
-	Status       string    `json:"status"`              // "active", "paused"
-	LastOutcome  string    `json:"last_outcome,omitempty"`
-	FailureCount int       `json:"failure_count"`
+	ID               string    `json:"id"`
+	Interval         string    `json:"interval,omitempty"`  // duration string e.g. "10s", "1m"
+	Cron             string    `json:"cron,omitempty"`      // standard 5-field cron e.g. "0 9 * * 1-5"
+	TargetURL        string    `json:"target_url"`
+	Payload          string    `json:"payload,omitempty"`
+	NextTopic        string    `json:"next_topic,omitempty"`
+	NextRun          time.Time `json:"next_run"`
+	LastRun          time.Time `json:"last_run,omitempty"`
+	Status           string    `json:"status"`              // "active", "paused"
+	LastOutcome      string    `json:"last_outcome,omitempty"`
+	FailureCount     int       `json:"failure_count"`
+	OnSuccess        string    `json:"on_success,omitempty"`
+	OnFailure        string    `json:"on_failure,omitempty"`
+	MaxRetries       int       `json:"max_retries,omitempty"`
+	RetryDelayMs     int       `json:"retry_delay_ms,omitempty"`
+	RetryBackoffMult float64   `json:"retry_backoff_mult,omitempty"`
+	RetryCount       int       `json:"retry_count,omitempty"`
+	LastRetryAt      time.Time `json:"last_retry_at,omitempty"`
 }
 
 type JobAuditLog struct {
@@ -258,7 +267,9 @@ func (s *Scheduler) AddJob(job *Job) error {
 		return err
 	}
 	job.NextRun = next
-	job.Status = "active"
+	if job.Status == "" {
+		job.Status = "active"
+	}
 
 	s.jobs[job.ID] = job
 	s.mu.Unlock()
@@ -327,6 +338,9 @@ func (s *Scheduler) checkAndRunJobs() {
 
 	now := time.Now()
 	for _, job := range s.jobs {
+		if job.Cron == "" && job.Interval == "" {
+			continue // Trigger-only / callback job with no periodic schedule
+		}
 		if job.Status == "active" && now.After(job.NextRun) {
 			next, err := s.calculateNextRun(job, now)
 			if err != nil {
@@ -348,57 +362,119 @@ func (s *Scheduler) checkAndRunJobs() {
 	}
 }
 
+// CalculateRetryDelay computes the delay for a given retry attempt using exponential backoff and ±10% jitter.
+func CalculateRetryDelay(retryDelayMs int, backoffMult float64, attempt int) time.Duration {
+	if backoffMult <= 0 {
+		backoffMult = 1.0
+	}
+	base := float64(retryDelayMs) * math.Pow(backoffMult, float64(attempt))
+	// Random jitter +-10%
+	jitter := (mathrand.Float64() * 0.2) - 0.1 // [-0.10, +0.10]
+	delayMs := base * (1.0 + jitter)
+	if delayMs < 0 {
+		delayMs = 0
+	}
+	return time.Duration(delayMs) * time.Millisecond
+}
+
 func (s *Scheduler) executeJob(job *Job) {
-	log.Printf("Executing job '%s' -> %s", job.ID, job.TargetURL)
+	s.executeJobWithDepth(job, 1)
+}
 
-	traceID := generateTraceID()
-	spanID := generateSpanID()
-	traceparent := fmt.Sprintf("00-%s-%s-01", traceID, spanID)
-
-	req, err := http.NewRequest(http.MethodPost, job.TargetURL, bytes.NewBufferString(job.Payload))
-	if err != nil {
-		log.Printf("Failed to create request for job %s: %v", job.ID, err)
-		return
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("traceparent", traceparent)
-
-	span := ServShared.Span{
-		TraceID:   traceID,
-		SpanID:    spanID,
-		Name:      fmt.Sprintf("servcron:TRIGGER %s", job.ID),
-		Kind:      3,
-		StartTime: time.Now().UnixNano(),
-	}
+func (s *Scheduler) executeJobWithDepth(job *Job, depth int) {
+	log.Printf("Executing job '%s' (depth %d) -> %s", job.ID, depth, job.TargetURL)
 
 	startTime := time.Now()
-	resp, err := s.client.Do(req)
-	duration := time.Since(startTime).Milliseconds()
 
+	var resp *http.Response
+	var err error
 	var statusCode int
 	var errStr string
 	var respBody string
 
-	var attrs map[string]interface{}
+	makeRequest := func() (*http.Response, error) {
+		traceID := generateTraceID()
+		spanID := generateSpanID()
+		traceparent := fmt.Sprintf("00-%s-%s-01", traceID, spanID)
+
+		var req *http.Request
+		var reqErr error
+		if job.Payload != "" {
+			req, reqErr = http.NewRequest(http.MethodPost, job.TargetURL, bytes.NewBufferString(job.Payload))
+		} else {
+			req, reqErr = http.NewRequest(http.MethodPost, job.TargetURL, nil)
+		}
+		if reqErr != nil {
+			return nil, reqErr
+		}
+
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("traceparent", traceparent)
+
+		span := ServShared.Span{
+			TraceID:   traceID,
+			SpanID:    spanID,
+			Name:      fmt.Sprintf("servcron:TRIGGER %s", job.ID),
+			Kind:      3,
+			StartTime: time.Now().UnixNano(),
+		}
+
+		res, doErr := s.client.Do(req)
+		var attrs map[string]interface{}
+		if doErr != nil {
+			attrs = map[string]interface{}{"error": doErr.Error()}
+		} else {
+			attrs = map[string]interface{}{"status_code": res.StatusCode}
+		}
+		ServShared.EndSpan(&span, doErr, attrs)
+		return res, doErr
+	}
+
+	resp, err = makeRequest()
+	isSuccess := func(r *http.Response, e error) bool {
+		return e == nil && r != nil && r.StatusCode >= 200 && r.StatusCode < 300
+	}
+
+	retryAttempt := 0
+	for !isSuccess(resp, err) && retryAttempt < job.MaxRetries {
+		delay := CalculateRetryDelay(job.RetryDelayMs, job.RetryBackoffMult, retryAttempt)
+		if delay > 0 {
+			time.Sleep(delay)
+		}
+
+		retryAttempt++
+		s.mu.Lock()
+		if j, exists := s.jobs[job.ID]; exists {
+			j.RetryCount = retryAttempt
+			j.LastRetryAt = time.Now()
+		}
+		s.mu.Unlock()
+
+		if resp != nil && resp.Body != nil {
+			resp.Body.Close()
+		}
+		resp, err = makeRequest()
+	}
+
+	duration := time.Since(startTime).Milliseconds()
+
 	if err != nil {
-		attrs = map[string]interface{}{"error": err.Error()}
 		errStr = err.Error()
 		log.Printf("Execution of job '%s' failed: %v", job.ID, err)
-	} else {
+	} else if resp != nil {
 		defer resp.Body.Close()
 		statusCode = resp.StatusCode
-		attrs = map[string]interface{}{"status_code": resp.StatusCode}
 		log.Printf("Execution of job '%s' completed with status %d", job.ID, resp.StatusCode)
-		
 		bodyBytes, _ := io.ReadAll(io.LimitReader(resp.Body, 1024))
 		respBody = string(bodyBytes)
 	}
 
+	finalSuccess := isSuccess(resp, err)
+
 	s.mu.Lock()
 	if j, exists := s.jobs[job.ID]; exists {
 		j.LastRun = startTime
-		if err != nil || statusCode < 200 || statusCode >= 300 {
+		if !finalSuccess {
 			j.LastOutcome = "failed"
 			j.FailureCount++
 		} else {
@@ -408,11 +484,9 @@ func (s *Scheduler) executeJob(job *Job) {
 	}
 	s.mu.Unlock()
 
-	ServShared.EndSpan(&span, err, attrs)
-
 	// Emit structured syslog-style execution record
 	outcome := "success"
-	if err != nil || statusCode < 200 || statusCode >= 300 {
+	if !finalSuccess {
 		outcome = "failed"
 	}
 	SyslogEmitFunc(map[string]interface{}{
@@ -427,8 +501,34 @@ func (s *Scheduler) executeJob(job *Job) {
 
 	go s.saveAuditLogToS3(job.ID, startTime, duration, statusCode, errStr, respBody)
 
-	if job.NextTopic != "" && err == nil && statusCode >= 200 && statusCode < 300 {
+	if finalSuccess && job.NextTopic != "" {
 		go s.publishToQueue(job.NextTopic, job.ID)
+	}
+
+	// Trigger DAG Job Chain (OnSuccess / OnFailure)
+	if depth < 10 {
+		var nextJobID string
+		if finalSuccess {
+			nextJobID = job.OnSuccess
+		} else {
+			nextJobID = job.OnFailure
+		}
+
+		if nextJobID != "" {
+			s.mu.RLock()
+			nextJob, exists := s.jobs[nextJobID]
+			var shouldTrigger bool
+			var nextJobCopy Job
+			if exists && nextJob.Status == "active" {
+				shouldTrigger = true
+				nextJobCopy = *nextJob
+			}
+			s.mu.RUnlock()
+
+			if shouldTrigger {
+				go s.executeJobWithDepth(&nextJobCopy, depth+1)
+			}
+		}
 	}
 }
 
@@ -499,7 +599,7 @@ func (s *Scheduler) calculateNextRun(job *Job, from time.Time) (time.Time, error
 	}
 
 	if job.Interval == "" {
-		return time.Time{}, fmt.Errorf("missing interval or cron configuration")
+		return time.Time{}, nil // unscheduled job (trigger-only / callback)
 	}
 
 	dur, err := time.ParseDuration(job.Interval)

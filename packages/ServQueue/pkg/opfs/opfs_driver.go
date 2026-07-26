@@ -97,19 +97,30 @@ func (o *OPFSDriver) recoverFromDisk() error {
 	return nil
 }
 
-func (o *OPFSDriver) Append(topic, payload string) (core.LogEntry, error) {
+func (o *OPFSDriver) Append(topic, payload string, metadata ...map[string]string) (core.LogEntry, error) {
 	o.mu.Lock()
 	defer o.mu.Unlock()
 
 	currentOffset := o.offsets[topic] + 1
 	o.offsets[topic] = currentOffset
 
+	var tp string
+	if len(metadata) > 0 && metadata[0] != nil {
+		for k, v := range metadata[0] {
+			if strings.EqualFold(k, "traceparent") {
+				tp = v
+				break
+			}
+		}
+	}
+
 	entry := core.LogEntry{
-		Offset:    currentOffset,
-		Topic:     topic,
-		Payload:   payload,
-		Timestamp: time.Now().UnixNano(),
-		Synced:    false,
+		Offset:      currentOffset,
+		Topic:       topic,
+		Payload:     payload,
+		Timestamp:   time.Now().UnixNano(),
+		Synced:      false,
+		Traceparent: tp,
 	}
 
 	data, err := json.Marshal(entry)

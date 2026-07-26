@@ -3,20 +3,22 @@ package core
 import (
 	"crypto/sha256"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 )
 
 type LogEntry struct {
-	Offset    uint64 `json:"offset"`
-	Topic     string `json:"topic"`
-	Payload   string `json:"payload"`
-	Timestamp int64  `json:"timestamp"`
-	Synced    bool   `json:"synced"`
+	Offset      uint64 `json:"offset"`
+	Topic       string `json:"topic"`
+	Payload     string `json:"payload"`
+	Timestamp   int64  `json:"timestamp"`
+	Synced      bool   `json:"synced"`
+	Traceparent string `json:"traceparent,omitempty"`
 }
 
 type StorageDriver interface {
-	Append(topic, payload string) (LogEntry, error)
+	Append(topic, payload string, metadata ...map[string]string) (LogEntry, error)
 	ReadRange(topic string, startOffset, limit uint64) ([]LogEntry, error)
 	SeekToTime(topic string, targetTimestamp int64) (uint64, error)
 	GetUnsynced(limit uint64) ([]LogEntry, error)
@@ -39,19 +41,30 @@ func NewMemoryDriver() *MemoryDriver {
 	}
 }
 
-func (m *MemoryDriver) Append(topic, payload string) (LogEntry, error) {
+func (m *MemoryDriver) Append(topic, payload string, metadata ...map[string]string) (LogEntry, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
 	currentOffset := m.offsets[topic] + 1
 	m.offsets[topic] = currentOffset
 
+	var tp string
+	if len(metadata) > 0 && metadata[0] != nil {
+		for k, v := range metadata[0] {
+			if strings.EqualFold(k, "traceparent") {
+				tp = v
+				break
+			}
+		}
+	}
+
 	entry := LogEntry{
-		Offset:    currentOffset,
-		Topic:     topic,
-		Payload:   payload,
-		Timestamp: time.Now().UnixNano(),
-		Synced:    false,
+		Offset:      currentOffset,
+		Topic:       topic,
+		Payload:     payload,
+		Timestamp:   time.Now().UnixNano(),
+		Synced:      false,
+		Traceparent: tp,
 	}
 	m.entries = append(m.entries, entry)
 	return entry, nil
@@ -166,7 +179,8 @@ func (e *Engine) SetEncryptionKey(key []byte) error {
 	return nil
 }
 
-func (e *Engine) Enqueue(topic, payload string) (LogEntry, error) {
+// Append appends a log entry to the topic with optional metadata (e.g., traceparent header).
+func (e *Engine) Append(topic, payload string, metadata ...map[string]string) (LogEntry, error) {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 
@@ -179,7 +193,11 @@ func (e *Engine) Enqueue(topic, payload string) (LogEntry, error) {
 		writePayload = "ENC:" + enc
 	}
 
-	return e.driver.Append(topic, writePayload)
+	return e.driver.Append(topic, writePayload, metadata...)
+}
+
+func (e *Engine) Enqueue(topic, payload string) (LogEntry, error) {
+	return e.Append(topic, payload)
 }
 
 func (e *Engine) Dequeue(topic string, startOffset, limit uint64) ([]LogEntry, error) {

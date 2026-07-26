@@ -447,8 +447,9 @@ func TestSchedulerOutcomeTracking(t *testing.T) {
 	}
 
 	sched.Start()
-	time.Sleep(300 * time.Millisecond)
+	time.Sleep(200 * time.Millisecond)
 	sched.Stop()
+	time.Sleep(100 * time.Millisecond)
 
 	jobs := sched.GetJobs()
 	if len(jobs) != 1 {

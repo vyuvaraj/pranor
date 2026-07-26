@@ -54,3 +54,66 @@ func TestEngineMemoryDriver(t *testing.T) {
 		t.Errorf("Expected 0 pending sync entries after ACK, got %d", len(pendingAfter))
 	}
 }
+
+func TestEngineAppendWithTraceparent(t *testing.T) {
+	driver := NewMemoryDriver()
+	engine := NewEngine(driver)
+	defer engine.Close()
+
+	tp := "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
+	meta := map[string]string{"traceparent": tp}
+
+	entry, err := engine.Append("logs", "test payload", meta)
+	if err != nil {
+		t.Fatalf("Append failed: %v", err)
+	}
+
+	if entry.Traceparent != tp {
+		t.Errorf("Expected traceparent %s, got %s", tp, entry.Traceparent)
+	}
+
+	// Verify Dequeue retrieves entry with Traceparent intact
+	dequeued, err := engine.Dequeue("logs", 1, 10)
+	if err != nil {
+		t.Fatalf("Dequeue failed: %v", err)
+	}
+	if len(dequeued) != 1 {
+		t.Fatalf("Expected 1 dequeued entry, got %d", len(dequeued))
+	}
+	if dequeued[0].Traceparent != tp {
+		t.Errorf("Dequeued entry expected traceparent %s, got %s", tp, dequeued[0].Traceparent)
+	}
+}
+
+func TestEngineAppendWithoutTraceparent(t *testing.T) {
+	driver := NewMemoryDriver()
+	engine := NewEngine(driver)
+	defer engine.Close()
+
+	entry, err := engine.Append("logs", "payload without traceparent")
+	if err != nil {
+		t.Fatalf("Append failed: %v", err)
+	}
+
+	if entry.Traceparent != "" {
+		t.Errorf("Expected empty traceparent, got %s", entry.Traceparent)
+	}
+}
+
+func TestEngineAppendCaseInsensitiveTraceparentKey(t *testing.T) {
+	driver := NewMemoryDriver()
+	engine := NewEngine(driver)
+	defer engine.Close()
+
+	tp := "00-11111111111111111111111111111111-2222222222222222-01"
+	meta := map[string]string{"TraceParent": tp}
+
+	entry, err := engine.Append("logs", "case test", meta)
+	if err != nil {
+		t.Fatalf("Append failed: %v", err)
+	}
+
+	if entry.Traceparent != tp {
+		t.Errorf("Expected traceparent %s, got %s", tp, entry.Traceparent)
+	}
+}

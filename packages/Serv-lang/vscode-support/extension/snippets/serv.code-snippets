@@ -20,6 +20,25 @@
     ],
     "description": "Declare a function"
   },
+  "Async Function Declaration": {
+    "prefix": "asyncfn",
+    "body": [
+      "async fn ${1:name}(${2:params}) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Declare an async fire-and-forget task function"
+  },
+  "Concurrent Parallel Block": {
+    "prefix": "concurrent",
+    "body": [
+      "let ${1:results} = concurrent {",
+      "\t${2:key1}: ${3:expr1},",
+      "\t${4:key2}: ${5:expr2}",
+      "}"
+    ],
+    "description": "Execute tasks concurrently in parallel"
+  },
   "Typed Function": {
     "prefix": "fnt",
     "body": [

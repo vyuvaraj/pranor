@@ -258,6 +258,34 @@
       {
         "command": "serv.openPlayground",
         "title": "Serv: Open Web Playground"
+      },
+      {
+        "command": "serv.servctl",
+        "title": "Serv: servctl Cluster Administration"
+      },
+      {
+        "command": "serv.checkBreakingChanges",
+        "title": "Serv: Check Breaking API Changes (serv diff)"
+      },
+      {
+        "command": "serv.generateRust",
+        "title": "Serv: Generate Rust Client Code"
+      },
+      {
+        "command": "serv.generatePython",
+        "title": "Serv: Generate Python Client Code"
+      },
+      {
+        "command": "serv.controlChaos",
+        "title": "Serv: Platform Chaos Control Panel"
+      },
+      {
+        "command": "serv.exportToPlayground",
+        "title": "Serv: Export Current File to WASM Playground"
+      },
+      {
+        "command": "serv.openServdConsole",
+        "title": "Serv: Open servd Unified Platform Console"
       }
     ],
     "keybindings": [

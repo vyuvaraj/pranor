@@ -7,14 +7,6 @@ import (
 	"net"
 )
 
-type XDPDDoSAction int
-
-const (
-	XDPPass XDPDDoSAction = iota
-	XDPDrop
-	XDPAbort
-)
-
 type XDPKernelFilter struct {
 	InterfaceName string
 	Enabled       bool

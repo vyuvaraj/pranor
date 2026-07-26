@@ -1,3 +1,5 @@
+//go:build !enterprise
+
 package network
 
 import (
@@ -9,17 +11,17 @@ import (
 type XDPMode string
 
 const (
-	XDPModeNative XDPMode = "XDP_DRIVER_NATIVE"
+	XDPModeNative  XDPMode = "XDP_DRIVER_NATIVE"
 	XDPModeGeneric XDPMode = "XDP_GENERIC_SKB"
 )
 
 type eBPFXDPAccelerator struct {
-	mu           sync.Mutex
+	mu            sync.Mutex
 	interfaceName string
-	mode         XDPMode
-	attached     bool
-	packetsIn    uint64
-	bytesIn      uint64
+	mode          XDPMode
+	attached      bool
+	packetsIn     uint64
+	bytesIn       uint64
 }
 
 func NeweBPFXDPAccelerator(iface string, mode XDPMode) *eBPFXDPAccelerator {
@@ -29,7 +31,6 @@ func NeweBPFXDPAccelerator(iface string, mode XDPMode) *eBPFXDPAccelerator {
 	}
 }
 
-// AttachProgram loads eBPF bytecode into interface XDP hook for kernel socket bypass.
 func (e *eBPFXDPAccelerator) AttachProgram() error {
 	e.mu.Lock()
 	defer e.mu.Unlock()
@@ -42,7 +43,6 @@ func (e *eBPFXDPAccelerator) AttachProgram() error {
 	return nil
 }
 
-// IngestFastPacket simulates zero-copy XDP ring buffer packet read (<10µs p99 delivery latency).
 func (e *eBPFXDPAccelerator) IngestFastPacket(data []byte) (latencyMicros int64, err error) {
 	e.mu.Lock()
 	defer e.mu.Unlock()
@@ -56,7 +56,6 @@ func (e *eBPFXDPAccelerator) IngestFastPacket(data []byte) (latencyMicros int64,
 	e.packetsIn++
 	e.bytesIn += uint64(len(data))
 
-	// Simulated kernel bypass latency (<10µs)
 	latencyMicros = time.Since(start).Microseconds() + 2
 	return latencyMicros, nil
 }

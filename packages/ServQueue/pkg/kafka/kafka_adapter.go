@@ -1,3 +1,5 @@
+//go:build !enterprise
+
 package kafka
 
 import (
@@ -77,11 +79,10 @@ func (s *Server) HandleRequest(hdr KafkaHeader, body []byte) ([]byte, string, st
 		if s.engine != nil {
 			_, _ = s.engine.Publish(context.Background(), topic, payloadStr)
 		}
-		// Kafka produce response
-		respPayload := []byte{0, 0, 0, 1, 0, 0} // ErrorCode = 0 (Success)
+		respPayload := []byte{0, 0, 0, 1, 0, 0}
 		return EncodeHeaderResponse(hdr.CorrelationId, respPayload), topic, payloadStr, nil
 	case ApiKeyMetadata:
-		respPayload := []byte{0, 0, 0, 0} // Single broker metadata
+		respPayload := []byte{0, 0, 0, 0}
 		return EncodeHeaderResponse(hdr.CorrelationId, respPayload), "", "", nil
 	case ApiKeyFetch, ApiKeyListOffsets:
 		respPayload := []byte{0, 0, 0, 0}
@@ -101,21 +102,28 @@ func (s *Server) Start() error {
 	s.running = true
 	s.mu.Unlock()
 
-	go func() {
-		for {
-			conn, err := l.Accept()
-			if err != nil {
-				s.mu.Lock()
-				if !s.running {
-					s.mu.Unlock()
-					return
-				}
-				s.mu.Unlock()
-				continue
+	for {
+		conn, err := l.Accept()
+		if err != nil {
+			s.mu.Lock()
+			running := s.running
+			s.mu.Unlock()
+			if !running {
+				return nil
 			}
-			go s.handleConnection(conn)
+			continue
 		}
-	}()
+		go s.handleConnection(conn)
+	}
+}
+
+func (s *Server) Stop() error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.running = false
+	if s.listener != nil {
+		return s.listener.Close()
+	}
 	return nil
 }
 
@@ -126,34 +134,21 @@ func (s *Server) handleConnection(conn net.Conn) {
 		if err != nil {
 			return
 		}
-
-		bodyLen := int(hdr.Size) - 8
+		bodyLen := int(hdr.Size) - 10
 		if bodyLen < 0 {
 			return
 		}
-
 		body := make([]byte, bodyLen)
-		if bodyLen > 0 {
-			if _, err := io.ReadFull(conn, body); err != nil {
-				return
-			}
+		if _, err := io.ReadFull(conn, body); err != nil {
+			return
 		}
 
 		resp, _, _, err := s.HandleRequest(hdr, body)
 		if err != nil {
 			return
 		}
-		if resp != nil {
-			_, _ = conn.Write(resp)
+		if _, err := conn.Write(resp); err != nil {
+			return
 		}
-	}
-}
-
-func (s *Server) Stop() {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.running = false
-	if s.listener != nil {
-		_ = s.listener.Close()
 	}
 }

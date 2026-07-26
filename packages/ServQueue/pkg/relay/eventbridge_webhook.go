@@ -1,3 +1,5 @@
+//go:build !enterprise
+
 package relay
 
 import (
@@ -71,7 +73,6 @@ func (r *EventBridgeRelay) Dispatch(ctx context.Context, topic, id, payload stri
 
 	eventData, _ := json.Marshal(event)
 
-	// Forward to registered webhooks
 	for _, wh := range r.Webhooks {
 		req, err := http.NewRequestWithContext(ctx, "POST", wh.TargetURL, bytes.NewBuffer(eventData))
 		if err != nil {
@@ -88,7 +89,6 @@ func (r *EventBridgeRelay) Dispatch(ctx context.Context, topic, id, payload stri
 		}
 	}
 
-	// Forward to AWS EventBridge mock endpoints
 	for _, eb := range r.EventBridge {
 		if eb.EndpointURL != "" {
 			ebBody := map[string]interface{}{

@@ -1,3 +1,5 @@
+//go:build !enterprise
+
 package wasm
 
 import (
@@ -10,14 +12,14 @@ import (
 type GuardrailAction string
 
 const (
-	ActionAllow    GuardrailAction = "ALLOW"
-	ActionBlock    GuardrailAction = "BLOCK"
-	ActionRedact   GuardrailAction = "REDACT"
+	ActionAllow  GuardrailAction = "ALLOW"
+	ActionBlock  GuardrailAction = "BLOCK"
+	ActionRedact GuardrailAction = "REDACT"
 )
 
 type GuardrailResult struct {
-	Action      GuardrailAction `json:"action"`
-	Reason      string          `json:"reason"`
+	Action       GuardrailAction `json:"action"`
+	Reason       string          `json:"reason"`
 	CleanPayload string          `json:"clean_payload"`
 }
 
@@ -27,7 +29,6 @@ type AIGuardrailEngine struct {
 }
 
 func NewAIGuardrailEngine() *AIGuardrailEngine {
-	// Common LLM prompt injection and exfiltration attack patterns
 	patterns := []string{
 		`(?i)ignore\s+previous\s+instructions`,
 		`(?i)system\s+prompt\s+override`,
@@ -49,7 +50,6 @@ func NewAIGuardrailEngine() *AIGuardrailEngine {
 	}
 }
 
-// EvaluatePayload inspects incoming event payload for AI prompt injections and security threats.
 func (a *AIGuardrailEngine) EvaluatePayload(payload string) GuardrailResult {
 	a.mu.RLock()
 	defer a.mu.RUnlock()
@@ -64,7 +64,6 @@ func (a *AIGuardrailEngine) EvaluatePayload(payload string) GuardrailResult {
 		}
 	}
 
-	// Redact credit card numbers (PII protection)
 	ccReg := regexp.MustCompile(`\b(?:\d[ -]*?){13,16}\b`)
 	cleanPayload := ccReg.ReplaceAllString(payload, "[REDACTED_PII]")
 

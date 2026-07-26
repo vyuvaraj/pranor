@@ -1,3 +1,5 @@
+//go:build !enterprise
+
 package security
 
 import (
@@ -33,7 +35,6 @@ func NewHSMKeyUnsealer(provider HSMProvider, slotID uint32, pin string) *HSMKeyU
 	}
 }
 
-// UnsealMasterKey performs FIPS 140-3 compliant hardware key unsealing.
 func (h *HSMKeyUnsealer) UnsealMasterKey() ([]byte, error) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
@@ -42,7 +43,6 @@ func (h *HSMKeyUnsealer) UnsealMasterKey() ([]byte, error) {
 		return nil, fmt.Errorf("hsm: missing required PIN for slot %d", h.slotID)
 	}
 
-	// Generate FIPS-certified 256-bit unsealed master key from HSM hardware entropy
 	key := make([]byte, 32)
 	_, err := rand.Read(key)
 	if err != nil {
@@ -53,7 +53,6 @@ func (h *HSMKeyUnsealer) UnsealMasterKey() ([]byte, error) {
 	return key, nil
 }
 
-// GetMasterKeyFingerprint returns SHA-256 fingerprint of the HSM unsealed master key.
 func (h *HSMKeyUnsealer) GetMasterKeyFingerprint() (string, error) {
 	h.mu.Lock()
 	defer h.mu.Unlock()

@@ -1,3 +1,5 @@
+//go:build !enterprise
+
 package mirror
 
 import (
@@ -16,7 +18,7 @@ type EventRecord struct {
 }
 
 type CRDTState struct {
-	mu     sync.RWMutex
+	mu      sync.RWMutex
 	records map[string]EventRecord
 }
 

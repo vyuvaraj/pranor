@@ -1,7 +1,8 @@
+//go:build !enterprise
+
 package storage
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"net/http"
@@ -20,7 +21,7 @@ type TieredStorageManager struct {
 	offloader *Offloader
 	config    TieredStorageConfig
 	mu        sync.Mutex
-	offloaded map[string]string // filename -> s3URL
+	offloaded map[string]string
 }
 
 func NewTieredStorageManager(config TieredStorageConfig) *TieredStorageManager {
@@ -32,7 +33,6 @@ func NewTieredStorageManager(config TieredStorageConfig) *TieredStorageManager {
 	}
 }
 
-// OffloadOldSegment archives closed local WAL segments to S3 / ServStore cloud storage.
 func (m *TieredStorageManager) OffloadOldSegment(localPath string) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
@@ -86,7 +86,6 @@ func (w *AutoCompactionWorker) CompactAndPurgeExpired(entries []LogEntry) ([]Log
 	return retained, purged
 }
 
-// FetchRemoteSegment retrieves cold WAL segment data from S3 / ServStore.
 func (m *TieredStorageManager) FetchRemoteSegment(remoteURL string) ([]byte, error) {
 	req, err := http.NewRequest("GET", remoteURL, nil)
 	if err != nil {
@@ -98,15 +97,13 @@ func (m *TieredStorageManager) FetchRemoteSegment(remoteURL string) ([]byte, err
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("tiered_storage: download failed: %w", err)
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("tiered_storage: HTTP status %d", resp.StatusCode)
+		return nil, fmt.Errorf("remote fetch status: %d", resp.StatusCode)
 	}
 
-	buf := new(bytes.Buffer)
-	_, err = io.Copy(buf, resp.Body)
-	return buf.Bytes(), err
+	return io.ReadAll(resp.Body)
 }

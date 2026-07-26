@@ -1,3 +1,5 @@
+//go:build !enterprise
+
 package security
 
 import (
@@ -24,7 +26,6 @@ type MerkleAuditLedger struct {
 
 func NewMerkleAuditLedger() *MerkleAuditLedger {
 	ledger := &MerkleAuditLedger{}
-	// Genesis record
 	genesis := AuditRecord{
 		Index:       0,
 		Operation:   "GENESIS",
@@ -46,7 +47,6 @@ func computeHash(record AuditRecord) string {
 	return fmt.Sprintf("%x", h)
 }
 
-// AppendAuditRecord appends a cryptographically chained audit record.
 func (m *MerkleAuditLedger) AppendAuditRecord(operation, actor, detail string) AuditRecord {
 	m.mu.Lock()
 	defer m.mu.Unlock()
@@ -65,7 +65,6 @@ func (m *MerkleAuditLedger) AppendAuditRecord(operation, actor, detail string) A
 	return record
 }
 
-// VerifyLedgerIntegrity verifies cryptographic hash chain continuity across all records.
 func (m *MerkleAuditLedger) VerifyLedgerIntegrity() (bool, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
@@ -87,7 +86,6 @@ func (m *MerkleAuditLedger) VerifyLedgerIntegrity() (bool, error) {
 	return true, nil
 }
 
-// GetRecords returns audit chain records.
 func (m *MerkleAuditLedger) GetRecords() []AuditRecord {
 	m.mu.RLock()
 	defer m.mu.RUnlock()

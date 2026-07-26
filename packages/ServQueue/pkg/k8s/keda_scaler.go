@@ -1,3 +1,5 @@
+//go:build !enterprise
+
 package k8s
 
 import (
@@ -6,7 +8,7 @@ import (
 )
 
 type KEDAScaler struct {
-	TargetTopic  string
+	TargetTopic        string
 	TargetLagThreshold int64
 }
 
@@ -20,7 +22,7 @@ func NewKEDAScaler(targetTopic string, targetLagThreshold int64) *KEDAScaler {
 		targetLagThreshold = 100
 	}
 	return &KEDAScaler{
-		TargetTopic:  targetTopic,
+		TargetTopic:        targetTopic,
 		TargetLagThreshold: targetLagThreshold,
 	}
 }

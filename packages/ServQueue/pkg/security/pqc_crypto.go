@@ -1,3 +1,5 @@
+//go:build !enterprise
+
 package security
 
 import (
@@ -22,7 +24,6 @@ func NewPQCHybridEngine() *PQCHybridEngine {
 	}
 }
 
-// GenerateKeyPair generates a hybrid quantum-safe key pair.
 func (p *PQCHybridEngine) GenerateKeyPair() (*PQCKeyPair, error) {
 	pubKey := make([]byte, 64)
 	privKey := make([]byte, 64)
@@ -40,7 +41,6 @@ func (p *PQCHybridEngine) GenerateKeyPair() (*PQCKeyPair, error) {
 	}, nil
 }
 
-// EncapsulateSecret performs Kyber768 Key Encapsulation Mechanism (KEM).
 func (p *PQCHybridEngine) EncapsulateSecret(peerPubKey []byte) (ciphertext []byte, sharedSecret []byte, err error) {
 	if len(peerPubKey) == 0 {
 		return nil, nil, fmt.Errorf("pqc: empty peer public key")
@@ -52,7 +52,6 @@ func (p *PQCHybridEngine) EncapsulateSecret(peerPubKey []byte) (ciphertext []byt
 		return nil, nil, err
 	}
 
-	// Derive quantum-safe 256-bit shared secret
 	h := sha256.New()
 	h.Write(peerPubKey)
 	h.Write(ciphertext)
@@ -61,7 +60,6 @@ func (p *PQCHybridEngine) EncapsulateSecret(peerPubKey []byte) (ciphertext []byt
 	return ciphertext, sharedSecret, nil
 }
 
-// SignToken generates ML-DSA Dilithium post-quantum digital signature.
 func (p *PQCHybridEngine) SignToken(privKey []byte, message []byte) ([]byte, error) {
 	if len(privKey) == 0 {
 		return nil, fmt.Errorf("pqc: empty private key")

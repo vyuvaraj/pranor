@@ -218,7 +218,8 @@ func (d *ServStoreDaemon) handleWebAdminUI(w http.ResponseWriter, r *http.Reques
 <body>
     <div class="card">
         <h1>📦 ServStore Storage Console</h1>
-        <p>Standalone S3-Compatible Object Store Daemon (<span class="badge">servstored v2.0.0</span>)</p>
+        <p>Standalone S3-Compatible Object Store Daemon (<span class="badge" id="version-badge">servstored v2.0.0</span>)</p>
+        <p>Uptime: <span id="uptime">0s</span> | Total Buckets: <span id="bucket-count">0</span></p>
     </div>
     <div class="card">
         <h2>Active Buckets</h2>
@@ -227,15 +228,46 @@ func (d *ServStoreDaemon) handleWebAdminUI(w http.ResponseWriter, r *http.Reques
                 <tr>
                     <th>Bucket Name</th>
                     <th>Region</th>
-                    <th>Storage Usage</th>
-                    <th>WORM Status</th>
+                    <th>Status</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr><td>default-bucket</td><td>us-east-1</td><td>12.4 GB</td><td>Disabled</td></tr>
+            <tbody id="bucket-tbody">
+                <tr><td colspan="3">Loading buckets...</td></tr>
             </tbody>
         </table>
     </div>
+    <script>
+        async function loadData() {
+            try {
+                const healthRes = await fetch('/api/v1/health');
+                if (healthRes.ok) {
+                    const health = await healthRes.json();
+                    document.getElementById('uptime').textContent = Math.round(health.uptime_sec || 0) + 's';
+                    document.getElementById('bucket-count').textContent = health.bucket_count || 0;
+                }
+
+                const bucketsRes = await fetch('/api/v1/buckets');
+                if (bucketsRes.ok) {
+                    const buckets = await bucketsRes.json();
+                    const tbody = document.getElementById('bucket-tbody');
+                    tbody.innerHTML = '';
+                    if (buckets.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="3">No active buckets found</td></tr>';
+                    } else {
+                        buckets.forEach(b => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = '<td>' + b + '</td><td>us-east-1</td><td><span class="badge">Active</span></td>';
+                            tbody.appendChild(tr);
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to load admin stats:", err);
+            }
+        }
+        loadData();
+        setInterval(loadData, 5000);
+    </script>
 </body>
 </html>`
 	w.Write([]byte(html))

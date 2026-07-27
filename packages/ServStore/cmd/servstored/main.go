@@ -27,8 +27,7 @@ func main() {
 		log.Fatalf("Failed to initialize servstored: %v", err)
 	}
 
-	_ = port
-	_ = adminPort
+	d.SetPorts(*port, *adminPort)
 
 	go daemon.RunDaemonSignalHandler(d)
 

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"sync"
 	"syscall"
 	"time"
@@ -54,6 +55,19 @@ func NewServStoreDaemon(configPath string) (*ServStoreDaemon, error) {
 		}
 	}
 
+	if envPort := os.Getenv("PORT"); envPort != "" {
+		if !strings.HasPrefix(envPort, ":") {
+			envPort = ":" + envPort
+		}
+		cfg.Addr = envPort
+	}
+	if envAdminPort := os.Getenv("ADMIN_PORT"); envAdminPort != "" {
+		if !strings.HasPrefix(envAdminPort, ":") {
+			envAdminPort = ":" + envAdminPort
+		}
+		cfg.AdminAddr = envAdminPort
+	}
+
 	storeEngine, err := storage.NewLocalStore(cfg.DataDir)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize storage engine at %s: %w", cfg.DataDir, err)
@@ -88,6 +102,23 @@ func NewServStoreDaemon(configPath string) (*ServStoreDaemon, error) {
 	}
 
 	return d, nil
+}
+
+func (d *ServStoreDaemon) SetPorts(s3Port, adminPort string) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	if s3Port != "" {
+		if !strings.HasPrefix(s3Port, ":") {
+			s3Port = ":" + s3Port
+		}
+		d.config.Addr = s3Port
+	}
+	if adminPort != "" {
+		if !strings.HasPrefix(adminPort, ":") {
+			adminPort = ":" + adminPort
+		}
+		d.config.AdminAddr = adminPort
+	}
 }
 
 func (d *ServStoreDaemon) Start() error {

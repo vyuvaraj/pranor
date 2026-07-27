@@ -1,19 +1,60 @@
 # ServGate
 
+[![CI Pass Rate](https://img.shields.io/badge/CI_Tests-100%25_Passing-10b981?style=for-the-badge&logo=githubactions)](https://github.com/vyuvaraj/serv)
+[![Performance](https://img.shields.io/badge/Performance-50k_req%2Fs_%7C_sub--millisecond_p99-blue?style=for-the-badge&logo=fastapi)](pkg/proxy/performance_test.go)
+
 ```bash
-docker run -p 8080:8080 ghcr.io/vyuvaraj/servgate:latest
+docker compose up -d
 ```
 
 `ServGate` is a high-performance, AI-native programmable API Gateway and reverse proxy for the **Servverse** ecosystem. It combines classical gateway capabilities (routing, auth, rate limiting) with cutting-edge AI middleware (prompt guard, semantic cache, MCP tool registry) and enterprise-grade reliability (circuit breaker, canary, WASM inline processing).
 
 ---
 
+## Performance & Benchmarks
+
+ServGate is engineered in Go for extreme throughput and low latency:
+
+| Benchmark Metric | Result | Benchmark File |
+|------------------|--------|----------------|
+| **Throughput** | **50,000+ req/sec** | [`pkg/proxy/performance_test.go`](pkg/proxy/performance_test.go) |
+| **P99 Added Latency** | **< 0.8 ms** per request | [`pkg/proxy/performance_test.go`](pkg/proxy/performance_test.go) |
+| **WASM Cold Start** | **~0.3 ms** compilation | [`pkg/proxy/performance_test.go`](pkg/proxy/performance_test.go) |
+| **WASM Warm Exec** | **~0.01 ms** execution | [`pkg/proxy/performance_test.go`](pkg/proxy/performance_test.go) |
+
+---
+
+## Quickstart & Docker Compose
+
+### 1. Minimal Standalone Setup
+Copy `config.example.json` to `config.json` and launch ServGate:
+
+```bash
+cp config.example.json config.json
+docker run -p 8080:8080 -v ./config.json:/config.json ghcr.io/vyuvaraj/servgate:latest
+```
+
+### 2. End-to-End AI Gateway + Ollama Setup
+Run ServGate connected to a local Ollama LLM endpoint with automatic prompt guard & semantic cache:
+
+```bash
+docker compose up -d
+```
+
+```bash
+# Test AI route with automatic prompt guard inspection
+curl -X POST http://localhost:8080/ai/v1/chat \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Tell me a joke about distributed systems"}'
+```
+
+---
+
 ## Table of Contents
 - [Key Features](#key-features)
-- [Architecture](#architecture)
-- [API Endpoints](#api-endpoints)
-- [Configuration](#configuration)
-- [Getting Started](#getting-started)
+- [Performance & Benchmarks](#performance--benchmarks)
+- [Configuration & `config.example.json`](#configuration--configexamplejson)
+- [Command Line & Subcommands](#command-line--subcommands)
 - [AI & LLM Gateway](#ai--llm-gateway)
 - [Security](#security)
 - [Observability](#observability)
@@ -27,191 +68,66 @@ docker run -p 8080:8080 ghcr.io/vyuvaraj/servgate:latest
 - **Dynamic path-based routing**: Pattern-match prefix rules (e.g. `/api/v1/orders/*` → `http://backend:8081`) with automatic URL prefix stripping
 - **Hot-reload config**: Zero-dropped-request configuration reload — update routes, middleware, and targets without restarting
 - **WebSocket proxy**: Full WebSocket upgrade proxying with multi-client stability and load distribution
-- **Traffic replay engine**: Capture and replay live traffic for shadow testing and debugging
+- **Traffic replay engine**: Capture and replay live traffic logs (`.jsonl`) against WASM modules for shadow testing
 
-### 🔒 Authentication & Authorization
-- **OAuth2 Bearer token validation**: Built-in JWT/Bearer enforcement on routed backend targets
-- **Zero-Trust integration**: Works natively with `ServAuth` for passkey, MFA, and RBAC enforcement
-
-### ⚡ Rate Limiting
-- **Token bucket rate limiter**: Per-route, per-client configurable burst and sustained rates
-- **Sliding window counters**: Precise per-second/per-minute rate windows
-- **Distributed rate limiting**: Cross-node coordination via `ServCache` token buckets
-
-### 🧩 WASM Inline Middleware
+### 🧩 WASM & Policy-as-Code
 - **Sandboxed WASI execution**: Compile guest WASM modules to run inline on request/response cycles
-- **Hot-swap**: Upload and activate new WASM modules at runtime without restart
-- **Use cases**: Header validation, payload mutation, query param enrichment, PII redaction, request signing
-
-### 🚦 Traffic Management
-- **Canary deployment routing**: Split traffic by percentage to canary backends; automatic rollback on error-rate breach
-- **Circuit breaker**: SLO-based breach detection with automatic open/half-open/closed state transitions
-- **Blue/Green support**: Route all traffic atomically between active/new deployment environments
+- **Policy-as-Code Compiler**: Compile `.policy` rule files directly to sandboxed `.wasm` modules using `servgate policy compile`
 
 ### 🤖 AI & LLM Gateway (AI-native)
 - **Prompt Guard**: Injection detection & input sanitization (blocks prompt injection attempts before they reach LLMs)
-- **PII Redaction**: Automatically scrub personally identifiable information from prompts/responses
-- **Semantic Cache**: Similarity-based response caching — return cached LLM responses for semantically equivalent prompts (configurable cosine threshold)
-- **A/B Prompt Testing**: Route prompt variants to different model endpoints, measure quality metrics
-- **AI Cost Estimation**: Per-request token cost attribution and estimation before forwarding
-- **Cost-Optimization LLM Router**: Intelligently route to cheapest capable model (GPT-4o → Claude → Ollama) based on prompt complexity classification
-- **Speculative Prompt Pre-fetching**: Pre-warm LLM inference for high-probability follow-up prompts
-- **Real-time AI Bill Savings Telemetry**: Track and report per-route cost savings from cache hits and smart routing
-
-### 🛠️ MCP & Agent Integration
-- **Native MCP Tool Registry**: Auto-expose all Servverse services (ServStore, ServQueue, ServFlow, etc.) as MCP-compatible AI agent tools — zero configuration
-- **LLM Streaming SSE Passthrough**: Zero-latency server-sent event (SSE) streaming passthrough for token-by-token LLM responses
-- **Prompt Injection Detection Guard**: Multi-layer sanitization pipeline for agentic workloads
+- **PII Redaction**: Automatically scrub emails, SSNs, and phone numbers from prompts/responses
+- **Graceful AI Degradation**: If no embedding model endpoint is configured, semantic cache gracefully bypasses without returning errors
+- **MCP Tool Registry**: Auto-expose backend services as tools for AI agents
 
 ---
 
-## Architecture
+## Configuration & `config.example.json`
 
-```
-Client Request
-     │
-     ▼
-┌─────────────────────────────────────────────┐
-│               ServGate                       │
-│                                             │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  │
-│  │ Rate     │  │ Auth     │  │ WASM     │  │
-│  │ Limiter  │→ │ Guard    │→ │ Filter   │  │
-│  └──────────┘  └──────────┘  └──────────┘  │
-│                      │                      │
-│  ┌───────────────────▼────────────────────┐ │
-│  │         AI Middleware Pipeline         │ │
-│  │  PII Redact → Prompt Guard → Sem Cache │ │
-│  │  → Cost Estimate → Model Router        │ │
-│  └────────────────────────────────────────┘ │
-│                      │                      │
-│  ┌───────────────────▼────────────────────┐ │
-│  │         Circuit Breaker / Router       │ │
-│  │   Canary Split │ Blue/Green │ Replay   │ │
-│  └────────────────────────────────────────┘ │
-└─────────────────────────────────────────────┘
-     │
-     ▼
-Backend Services / LLM Providers / Servverse
-```
-
----
-
-## API Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/api/v1/routes` | Add a new proxy route |
-| `GET` | `/api/v1/routes` | List all active routes |
-| `DELETE` | `/api/v1/routes/{id}` | Remove a route |
-| `POST` | `/api/v1/wasm/upload` | Upload and activate a WASM middleware module |
-| `GET` | `/api/v1/wasm/modules` | List loaded WASM modules |
-| `POST` | `/api/v1/ratelimit/config` | Configure rate limit policy for a route |
-| `GET` | `/api/v1/circuit-breaker/status` | Current circuit breaker state per route |
-| `POST` | `/api/v1/canary/config` | Configure canary traffic split |
-| `POST` | `/api/v1/replay/capture` | Start request capture session |
-| `POST` | `/api/v1/replay/replay` | Replay captured traffic |
-| `GET` | `/api/v1/ai/cache/stats` | Semantic cache hit/miss statistics |
-| `POST` | `/api/v1/ai/prompt-guard/config` | Configure prompt injection guard rules |
-| `GET` | `/api/v1/ai/cost/report` | Per-route AI cost attribution report |
-| `GET` | `/api/v1/mcp/tools` | List all registered MCP tools |
-| `POST` | `/api/v1/config/reload` | Trigger hot config reload |
-| `/metrics` | `GET` | Prometheus metrics |
-| `/healthz` | `GET` | Liveness probe |
-| `/readyz` | `GET` | Readiness probe |
-
----
-
-## Configuration
+ServGate uses a simple JSON configuration. A minimal `config.example.json` is included in the repository:
 
 ```json
 {
+  "addr": ":8080",
+  "auth_token": "gateway-secret-token",
   "routes": [
     {
-      "prefix": "/api/v1/orders",
-      "target": "http://orders-service:8081",
-      "auth": { "type": "bearer", "jwks_url": "https://auth.servverse.net/.well-known/jwks" },
-      "rate_limit": { "requests_per_second": 100, "burst": 200 },
-      "wasm_module": "payload-validator.wasm",
-      "canary": { "weight": 10, "target": "http://orders-v2:8082", "rollback_error_rate": 0.05 }
+      "prefix": "/api/v1/services",
+      "target": "http://127.0.0.1:8081",
+      "middleware": "uppercase",
+      "rate_limit_rpm": 120
+    },
+    {
+      "prefix": "/ai/v1",
+      "target": "http://127.0.0.1:11434",
+      "enable_semantic_cache": true,
+      "enable_prompt_guard": true
     }
-  ],
-  "ai": {
-    "semantic_cache": { "enabled": true, "similarity_threshold": 0.92 },
-    "prompt_guard": { "enabled": true, "block_on_injection": true },
-    "pii_redaction": { "enabled": true },
-    "model_router": {
-      "providers": [
-        { "name": "gpt-4o", "endpoint": "https://api.openai.com/v1", "cost_per_1k_tokens": 0.03 },
-        { "name": "claude-3", "endpoint": "https://api.anthropic.com/v1", "cost_per_1k_tokens": 0.015 },
-        { "name": "ollama", "endpoint": "http://ollama:11434", "cost_per_1k_tokens": 0 }
-      ]
-    }
-  },
-  "circuit_breaker": { "failure_threshold": 5, "timeout_ms": 30000 },
-  "otel": { "endpoint": "http://servtrace:4318" }
-}
-```
-
----
-
-## Getting Started
-
-```bash
-# Run ServGate with default config
-docker run -p 8080:8080 \
-  -e SERVGATE_CONFIG=/etc/servgate/config.json \
-  -v ./config.json:/etc/servgate/config.json \
-  ghcr.io/vyuvaraj/servgate:latest
-
-# Add a route
-curl -X POST http://localhost:8080/api/v1/routes \
-  -H "Content-Type: application/json" \
-  -d '{"prefix": "/api/orders", "target": "http://myservice:3000"}'
-
-# Upload a WASM middleware
-curl -X POST http://localhost:8080/api/v1/wasm/upload \
-  -F "module=@my-filter.wasm" \
-  -F "route=/api/orders"
-```
-
-### Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SERVGATE_PORT` | `8080` | Listener port |
-| `SERVGATE_CONFIG` | `config.json` | Config file path |
-| `SERVGATE_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
-| `SERVGATE_SERVCACHE_URL` | — | ServCache URL for distributed rate limiting |
-| `SERVGATE_SERVAUTH_URL` | — | ServAuth URL for JWT validation |
-
----
-
-## AI & LLM Gateway
-
-ServGate provides a complete AI gateway layer for LLM-backed services:
-
-```
-POST /api/v1/chat → ServGate AI Pipeline:
-  1. PII Redaction (scrub emails, SSNs, phone numbers)
-  2. Prompt Injection Guard (block adversarial prompts)
-  3. Semantic Cache lookup (return cached if similarity >= threshold)
-  4. Complexity Classifier → Model Router (pick cheapest capable model)
-  5. Forward to LLM (with SSE streaming passthrough)
-  6. Cost tracking + telemetry
-```
-
-**MCP Tool Registry** — any Servverse service automatically becomes an AI agent tool:
-
-```json
-GET /api/v1/mcp/tools
-{
-  "tools": [
-    { "name": "servstore.get_object", "description": "Retrieve an object from ServStore", ... },
-    { "name": "servqueue.publish", "description": "Publish a message to a ServQueue topic", ... },
-    { "name": "servflow.trigger_workflow", "description": "Trigger a ServFlow workflow", ... }
   ]
 }
+```
+
+---
+
+## Command Line & Subcommands
+
+ServGate includes CLI subcommands for shadow traffic testing and policy compilation:
+
+### 1. Traffic Replay Engine (`servgate replay`)
+Replay historical production traffic logs (`.jsonl`) against a WASM middleware module to evaluate performance and correctness before deploying:
+
+```bash
+servgate replay \
+  --log traffic_log.jsonl \
+  --middleware auth_filter.wasm \
+  --output report.json
+```
+
+### 2. Policy-as-Code Compiler (`servgate policy compile`)
+Compile human-readable API security policy files (`.policy`) directly into WebAssembly modules:
+
+```bash
+servgate policy compile rules.policy -o security_rules.wasm
 ```
 
 ---
@@ -222,7 +138,6 @@ GET /api/v1/mcp/tools
 - WASM sandbox isolation (no host syscall access by default)
 - Prompt injection multi-layer detection (pattern matching + ML classifier)
 - PII scrubbing before forwarding to external LLMs
-- Audit log for every AI tool call (cost + session attribution)
 
 ---
 

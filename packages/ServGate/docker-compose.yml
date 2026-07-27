@@ -1,0 +1,23 @@
+# ServGate + Ollama AI Gateway
+# Usage: docker compose up -d
+# ServGate: http://localhost:8080
+# Ollama:   http://localhost:11434
+
+services:
+  servgate:
+    build: .
+    container_name: servgate
+    ports:
+      - "8080:8080"
+    environment:
+      SERVGATE_AI_EMBEDDING_URL: http://ollama:11434/api/embed
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: servgate-ollama
+    ports:
+      - "11434:11434"
+    restart: unless-stopped

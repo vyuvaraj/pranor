@@ -1,0 +1,39 @@
+{
+  "//": "ServGate Gateway Configuration Example",
+  "addr": ":8080",
+  "//addr": "Listening address and port for the gateway server",
+
+  "auth_token": "gateway-secret-token",
+  "//auth_token": "Optional bearer token for authenticating admin API calls (/api/v1/admin/routes, /api/v1/admin/middleware)",
+
+  "tls_cert": "",
+  "//tls_cert": "Path to TLS certificate file (leave empty for plain HTTP or Let's Encrypt autocert)",
+
+  "tls_key": "",
+  "//tls_key": "Path to TLS key file",
+
+  "routes": [
+    {
+      "prefix": "/api/v1/services",
+      "//prefix": "URL path prefix matched by incoming requests",
+
+      "target": "http://127.0.0.1:8081",
+      "//target": "Upstream service URL to proxy matching requests to",
+
+      "middleware": "uppercase",
+      "//middleware": "Optional WASM middleware identifier compiled/registered on the gateway",
+
+      "rate_limit_rpm": 120,
+      "//rate_limit_rpm": "Max allowed requests per minute per IP for this route (0 = unlimited)"
+    },
+    {
+      "prefix": "/ai/v1",
+      "target": "http://127.0.0.1:11434",
+      "enable_semantic_cache": true,
+      "//enable_semantic_cache": "Enable AI semantic response caching (gracefully disabled if embedding service is offline)",
+
+      "enable_prompt_guard": true,
+      "//enable_prompt_guard": "Sanitize and inspect inputs for AI prompt injection attempts"
+    }
+  ]
+}

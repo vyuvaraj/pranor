@@ -9,6 +9,12 @@
       "target": "http://127.0.0.1:8081",
       "middleware": "uppercase",
       "rate_limit_rpm": 60
+    },
+    {
+      "prefix": "/ai/v1",
+      "target": "http://127.0.0.1:11434",
+      "enable_semantic_cache": true,
+      "enable_prompt_guard": true
     }
   ]
 }

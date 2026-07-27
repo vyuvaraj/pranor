@@ -1,6 +1,6 @@
 data/
 build/
-servstore
-servstore-cli
+/servstore
+/servstore-cli
 *.exe
 *.log

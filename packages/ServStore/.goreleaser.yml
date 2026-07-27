@@ -20,10 +20,10 @@ builds:
       - -X main.commit={{.Commit}}
       - -X main.buildDate={{.Date}}
 
-  # CLI tool (installable by end users)
+  # Single unified CLI tool for operators and users
   - id: servstore-cli
-    main: ./cmd/servstore-cli
-    binary: servstore-cli
+    main: ./cmd/servstore
+    binary: servstore
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     env:

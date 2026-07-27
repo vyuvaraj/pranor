@@ -1,10 +1,52 @@
 # ServStore
 
+[![S3 Conformance](https://img.shields.io/badge/S3_Conformance-96%2F96_Operations_Pass-10b981?style=for-the-badge&logo=amazons3)](pkg/s3/s3_compliance_test.go)
+[![Go Version](https://img.shields.io/badge/Go-1.24%2B-00ADD8?style=for-the-badge&logo=go)](go.mod)
+
 ```bash
-docker run -p 7070:7070 ghcr.io/vyuvaraj/servstore:latest
+docker compose up -d
 ```
 
 `ServStore` is a high-performance, S3-compatible distributed object storage system for the **Servverse** ecosystem. It combines classical cloud storage (erasure coding, multi-region replication) with advanced capabilities: AI-native semantic vector search, browser-local OPFS sync, P2P chunk seeding, and Git-like bucket branching.
+
+---
+
+## Quickstart (S3 & AI Vector Search in 30 Seconds)
+
+### 1. Launch ServStore Standalone Daemon & Admin Console
+```bash
+docker compose up -d
+# S3 API listening at http://localhost:9000
+# Admin Console UI listening at http://localhost:9001/ui/
+```
+
+### 2. Standard S3 Operations (via AWS S3 CLI or `servstore` CLI)
+```bash
+export AWS_ACCESS_KEY_ID=minioadmin
+export AWS_SECRET_ACCESS_KEY=minioadmin
+
+# Create a bucket and upload a document via AWS CLI
+aws s3 mb s3://knowledge --endpoint-url http://localhost:9000
+aws s3 cp ./deploy/helm/servstore/README.md s3://knowledge/deploy-guide.md --endpoint-url http://localhost:9000
+
+# Or use the unified servstore CLI
+servstore mb s3://knowledge
+servstore put knowledge deploy-guide.md ./deploy/helm/servstore/README.md
+servstore ls knowledge
+```
+
+### 3. AI-Native Semantic Vector Search (End-to-End)
+Text uploaded to ServStore is automatically indexed and vectorized on `PUT`. Query semantically without external vector databases:
+
+```bash
+curl -X POST http://localhost:9000/api/v1/search/hybrid \
+  -H "Content-Type: application/json" \
+  -d '{
+    "bucket": "knowledge",
+    "query": "how to deploy helm chart to Kubernetes",
+    "k": 5
+  }'
+```
 
 ---
 
@@ -12,12 +54,13 @@ docker run -p 7070:7070 ghcr.io/vyuvaraj/servstore:latest
 - [Key Features](#key-features)
 - [Architecture](#architecture)
 - [API Endpoints](#api-endpoints)
+- [Unified CLI Reference](#unified-cli-reference)
 - [Vector Search (AI-Native)](#vector-search-ai-native)
 - [Bucket Branching](#bucket-branching)
 - [Browser / P2P](#browser--p2p)
 - [Security](#security)
 - [Observability](#observability)
-- [Getting Started](#getting-started)
+- [Getting Started & Docker Compose](#getting-started--docker-compose)
 - [Enterprise Edition](#enterprise-edition)
 
 ---
@@ -25,10 +68,10 @@ docker run -p 7070:7070 ghcr.io/vyuvaraj/servstore:latest
 ## Key Features
 
 ### ☁️ Core Object Storage
-- **100% S3 Wire Protocol Compatibility**: Drop-in replacement for AWS S3 — works with all existing S3 clients (boto3, aws-sdk, etc.)
+- **100% S3 Wire Protocol Compatibility**: Drop-in replacement for AWS S3 — works with all existing S3 clients (aws-cli, boto3, aws-sdk-js, etc.)
 - **Erasure Coding (Reed-Solomon)**: Configurable data/parity shard ratios for space-efficient fault tolerance
-- **Standalone daemon** (`servstored`): Production-ready daemon with graceful shutdown and health probes
-- **Dual-CLI**: `servstore` and `serv store` CLI for bucket/object management
+- **Standalone daemon** (`servstored`): Production-ready daemon serving S3 API (`:9000`) and Admin Console (`:9001`)
+- **Unified CLI (`servstore`)**: Single CLI for object storage management, IAM policies, and cluster administration
 - **Multi-language client SDKs**: Go, Python, TypeScript/JS, Rust
 
 ### 🔀 Tiering & Replication
@@ -115,6 +158,30 @@ docker run -p 7070:7070 ghcr.io/vyuvaraj/servstore:latest
 | `GET` | `/api/v1/tiers/{bucket}/policy` | Get tiering policy |
 | `PUT` | `/api/v1/tiers/{bucket}/policy` | Set tiering policy |
 | `/metrics` | `GET` | Prometheus metrics |
+
+---
+
+## Unified CLI Reference (`servstore`)
+
+ServStore ships a single, unified CLI tool (`servstore`) that connects to both the S3 API endpoint and the Admin management API:
+
+```bash
+# Global flags
+servstore --endpoint http://localhost:9000 --admin-endpoint http://localhost:9001 <command>
+
+# S3 & Data Management
+servstore mb s3://my-bucket                    # Make bucket
+servstore rb s3://my-bucket                    # Remove bucket
+servstore ls s3://my-bucket                    # List bucket contents
+servstore put my-bucket photo.jpg ./photo.jpg  # Upload object
+servstore get my-bucket photo.jpg ./dest.jpg   # Download object
+servstore rm my-bucket photo.jpg               # Delete object
+servstore lock my-bucket photo.jpg 30d         # WORM Object Lock (30 days)
+
+# Admin & Server Health
+servstore status                               # Daemon status & uptime
+servstore admin-buckets                        # List buckets via Admin API
+```
 
 ---
 
@@ -212,21 +279,6 @@ await store.enableP2PSeed({ torrentTracker: 'wss://tracker.servverse.net' });
 
 ---
 
-## Getting Started
-
-```bash
-docker run -p 7070:7070 \
-  -e SERVSTORE_DATA_DIR=/data \
-  -e SERVSTORE_ERASURE_DATA_SHARDS=6 \
-  -e SERVSTORE_ERASURE_PARITY_SHARDS=2 \
-  -e SERVSTORE_OTEL_ENDPOINT=http://servtrace:4318 \
-  -v store-data:/data \
-  ghcr.io/vyuvaraj/servstore:latest
-
-# Use with any S3 client
-export AWS_ACCESS_KEY_ID=servstore
-export AWS_SECRET_ACCESS_KEY=servstore
-aws s3 mb s3://my-bucket --endpoint-url http://localhost:7070
 aws s3 cp myfile.txt s3://my-bucket/ --endpoint-url http://localhost:7070
 ```
 

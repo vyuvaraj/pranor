@@ -11,6 +11,10 @@ import (
 	"sync"
 	"syscall"
 	"time"
+
+	"github.com/vyuvaraj/serv/packages/ServStore/pkg/auth"
+	"github.com/vyuvaraj/serv/packages/ServStore/pkg/s3"
+	"github.com/vyuvaraj/serv/packages/ServStore/pkg/storage"
 )
 
 type StorageConfig struct {
@@ -24,6 +28,9 @@ type StorageConfig struct {
 type ServStoreDaemon struct {
 	config      StorageConfig
 	configPath  string
+	store       storage.StorageEngine
+	auth        *auth.AuthProvider
+	gateway     *s3.Gateway
 	server      *http.Server
 	adminServer *http.Server
 	mu          sync.RWMutex
@@ -47,14 +54,36 @@ func NewServStoreDaemon(configPath string) (*ServStoreDaemon, error) {
 		}
 	}
 
+	storeEngine, err := storage.NewLocalStore(cfg.DataDir)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize storage engine at %s: %w", cfg.DataDir, err)
+	}
+
+	accessKey := os.Getenv("AWS_ACCESS_KEY_ID")
+	if accessKey == "" {
+		accessKey = "minioadmin"
+	}
+	secretKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
+	if secretKey == "" {
+		secretKey = "minioadmin"
+	}
+	authProvider := auth.NewAuthProvider(accessKey, secretKey, false)
+
+	gateway := s3.NewGateway(storeEngine, authProvider, nil, nil, 2, false, 2, 1)
+
 	d := &ServStoreDaemon{
 		config:     cfg,
 		configPath: configPath,
+		store:      storeEngine,
+		auth:       authProvider,
+		gateway:    gateway,
 		buckets:    make(map[string]bool),
 		startedAt:  time.Now(),
 	}
 
+	ctx := context.Background()
 	for _, b := range cfg.DefaultBuckets {
+		_ = storeEngine.CreateBucket(ctx, b)
 		d.buckets[b] = true
 	}
 
@@ -103,21 +132,8 @@ func (d *ServStoreDaemon) createS3Handler() http.Handler {
 		w.Write([]byte(`{"status":"ok","daemon":"servstored"}`))
 	})
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Server", "ServStore/2.0.0 (S3-Compatible)")
-		w.Header().Set("X-Amz-Request-Id", fmt.Sprintf("tx-%d", time.Now().UnixNano()))
-
-		if r.Method == http.MethodGet && r.URL.Path == "/" {
-			// ListBuckets S3 XML response
-			w.Header().Set("Content-Type", "application/xml")
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(`<?xml version="1.0" encoding="UTF-8"?><ListAllMyBucketsResult><Buckets><Bucket><Name>default-bucket</Name></Bucket></Buckets></ListAllMyBucketsResult>`))
-			return
-		}
-
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`<?xml version="1.0" encoding="UTF-8"?><Response><Status>SUCCESS</Status></Response>`))
-	})
+	// Delegate all S3 API requests to the real s3.Gateway
+	mux.Handle("/", d.gateway)
 
 	return mux
 }
@@ -126,8 +142,12 @@ func (d *ServStoreDaemon) handleHealth(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	d.mu.RLock()
 	uptime := time.Since(d.startedAt).Seconds()
-	bucketCount := len(d.buckets)
 	d.mu.RUnlock()
+
+	bucketCount := 0
+	if buckets, err := d.store.ListBuckets(r.Context()); err == nil {
+		bucketCount = len(buckets)
+	}
 
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"status":       "UP",
@@ -140,15 +160,18 @@ func (d *ServStoreDaemon) handleHealth(w http.ResponseWriter, r *http.Request) {
 
 func (d *ServStoreDaemon) handleBuckets(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	d.mu.RLock()
-	defer d.mu.RUnlock()
 
 	if r.Method == http.MethodGet {
-		bucketList := make([]string, 0, len(d.buckets))
-		for b := range d.buckets {
-			bucketList = append(bucketList, b)
+		buckets, err := d.store.ListBuckets(r.Context())
+		if err != nil {
+			http.Error(w, fmt.Sprintf("failed to list buckets: %v", err), http.StatusInternalServerError)
+			return
 		}
-		json.NewEncoder(w).Encode(bucketList)
+		bucketNames := make([]string, 0, len(buckets))
+		for _, b := range buckets {
+			bucketNames = append(bucketNames, b.Name)
+		}
+		json.NewEncoder(w).Encode(bucketNames)
 		return
 	}
 
@@ -160,7 +183,16 @@ func (d *ServStoreDaemon) handleBuckets(w http.ResponseWriter, r *http.Request) 
 			http.Error(w, "missing bucket name", http.StatusBadRequest)
 			return
 		}
+
+		if err := d.store.CreateBucket(r.Context(), req.Name); err != nil {
+			http.Error(w, fmt.Sprintf("failed to create bucket: %v", err), http.StatusInternalServerError)
+			return
+		}
+
+		d.mu.Lock()
 		d.buckets[req.Name] = true
+		d.mu.Unlock()
+
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(map[string]string{"bucket": req.Name, "status": "created"})
 		return

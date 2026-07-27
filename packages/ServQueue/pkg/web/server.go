@@ -54,6 +54,7 @@ func (s *Server) Start() error {
 	mux.HandleFunc("/api/topics/", s.handleTopics)
 	mux.HandleFunc("/api/v1/topics/", s.handleTopics)
 	mux.HandleFunc("/api/v1/events/", s.handleEvents)
+	mux.HandleFunc("/api/v1/subscribe/", s.handleSubscribeSSE)
 	mux.HandleFunc("/api/topics", s.handleListTopics)
 	mux.HandleFunc("/api/v1/topics", s.handleListTopics)
 	mux.HandleFunc("/api/publish", s.handlePublish)
@@ -1004,6 +1005,59 @@ func (s *Server) handleTail(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				return
 			}
+		case <-r.Context().Done():
+			return
+		}
+	}
+}
+
+func (s *Server) handleSubscribeSSE(w http.ResponseWriter, r *http.Request) {
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		WriteJSONError(w, r, "Streaming unsupported", "ERR_STREAMING_UNSUPPORTED", http.StatusBadRequest)
+		return
+	}
+
+	parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+	var topic string
+	if len(parts) >= 4 && parts[1] == "v1" {
+		topic = parts[3]
+	} else if len(parts) >= 3 {
+		topic = parts[2]
+	}
+
+	if topic == "" {
+		topic = r.URL.Query().Get("topic")
+	}
+	if topic == "" {
+		WriteJSONError(w, r, "Missing topic", "ERR_MISSING_TOPIC", http.StatusBadRequest)
+		return
+	}
+
+	tenant, _ := r.Context().Value("tenant-id").(string)
+	namespacedTopic, err := s.namespaceTopic(topic, tenant)
+	if err != nil {
+		WriteJSONError(w, r, err.Error(), "ERR_FORBIDDEN", http.StatusForbidden)
+		return
+	}
+
+	ch := s.engine.Subscribe(namespacedTopic)
+	defer s.engine.Unsubscribe(namespacedTopic, ch)
+
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
+	w.WriteHeader(http.StatusOK)
+	flusher.Flush()
+
+	for {
+		select {
+		case msg, open := <-ch:
+			if !open {
+				return
+			}
+			fmt.Fprintf(w, "event: message\ndata: %s\n\n", msg)
+			flusher.Flush()
 		case <-r.Context().Done():
 			return
 		}

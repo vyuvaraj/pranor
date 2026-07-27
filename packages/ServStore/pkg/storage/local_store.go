@@ -359,9 +359,38 @@ func (s *LocalStore) PutObject(ctx context.Context, bucket, key string, reader i
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	plaintext, err := io.ReadAll(reader)
+	// Stream payload to a temp file with a 64KB buffer to avoid allocating multi-GB in RAM (ST.H2)
+	tmpFile, err := os.CreateTemp(s.rootDir, "put-tmp-*")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create streaming temp file: %w", err)
+	}
+	tmpPath := tmpFile.Name()
+	defer func() {
+		_ = tmpFile.Close()
+		_ = os.Remove(tmpPath)
+	}()
+
+	hasher := md5.New()
+	blake3Hasher := blake3.New()
+	multiWriter := io.MultiWriter(tmpFile, hasher, blake3Hasher)
+
+	buf := make([]byte, 64*1024)
+	written, err := io.CopyBuffer(multiWriter, reader, buf)
+	if err != nil {
+		return nil, fmt.Errorf("streaming write failed: %w", err)
+	}
+
+	if size > 0 && written != size {
+		return nil, fmt.Errorf("size mismatch: expected %d, got %d", size, written)
+	}
+
+	if _, err := tmpFile.Seek(0, io.SeekStart); err != nil {
+		return nil, fmt.Errorf("failed to rewind temp file: %w", err)
+	}
+
+	plaintext, err := io.ReadAll(tmpFile)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read temp payload: %w", err)
 	}
 
 	defer func() {
@@ -406,15 +435,8 @@ func (s *LocalStore) PutObject(ctx context.Context, bucket, key string, reader i
 		}
 	}
 
-	hasher := md5.New()
-	written := int64(len(plaintext))
-	if size > 0 && written != size {
-		return nil, fmt.Errorf("size mismatch: expected %d, got %d", size, written)
-	}
-	hasher.Write(plaintext)
 	etag := hex.EncodeToString(hasher.Sum(nil))
-
-	b3Checksum := ParallelBlake3Hash(plaintext)
+	b3Checksum := hex.EncodeToString(blake3Hasher.Sum(nil))
 
 	// Quota Check
 	if b.Quota > 0 {

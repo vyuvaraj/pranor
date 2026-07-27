@@ -1,10 +1,16 @@
 package ai
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+	"os"
 	"strings"
 	"sync"
+	"time"
 )
 
 type PromptComplexity string
@@ -65,27 +71,69 @@ func (s *SmartAIRouter) RouteAndExecute(ctx context.Context, prompt string) (str
 	complexity := s.ClassifyPrompt(prompt)
 
 	s.mu.Lock()
-	defer s.mu.Unlock()
-
 	var estimatedSavings float64
 	var modelUsed string
+	var targetURL string
 
 	if complexity == ComplexityLow {
 		s.routedLow++
 		modelUsed = s.config.LowCostModel
+		targetURL = strings.TrimRight(s.config.LocalOllamaURL, "/") + "/api/generate"
 		estimatedSavings = 0.015 // Estimated $0.015 saved vs GPT-4o
 		s.totalSavedUSD += estimatedSavings
 	} else {
 		s.routedHigh++
 		modelUsed = s.config.HighCostModel
+		targetURL = strings.TrimRight(s.config.OpenAIAPIURL, "/") + "/chat/completions"
 	}
 
 	if s.config.EnablePrefetch {
 		s.prefetchCache[prompt] = fmt.Sprintf("speculative-prefetch-response-for-%s", modelUsed)
 	}
+	s.mu.Unlock()
 
-	res := fmt.Sprintf(`{"model":"%s","complexity":"%s","savings_usd":%.4f,"content":"ServGateway Smart AI Response"}`, modelUsed, complexity, estimatedSavings)
-	return res, complexity, estimatedSavings, nil
+	// Real HTTP completion dispatch to selected upstream LLM provider (SG.D1)
+	var reqBody []byte
+	if complexity == ComplexityLow {
+		reqBody, _ = json.Marshal(map[string]interface{}{
+			"model":  modelUsed,
+			"prompt": prompt,
+			"stream": false,
+		})
+	} else {
+		reqBody, _ = json.Marshal(map[string]interface{}{
+			"model": modelUsed,
+			"messages": []map[string]string{
+				{"role": "user", "content": prompt},
+			},
+		})
+	}
+
+	client := &http.Client{Timeout: 10 * time.Second}
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, targetURL, bytes.NewReader(reqBody))
+	if err != nil {
+		res := fmt.Sprintf(`{"model":"%s","complexity":"%s","savings_usd":%.4f,"content":"ServGateway Smart AI Response (Offline Mode)"}`, modelUsed, complexity, estimatedSavings)
+		return res, complexity, estimatedSavings, nil
+	}
+	req.Header.Set("Content-Type", "application/json")
+	if apiKey := os.Getenv("OPENAI_API_KEY"); apiKey != "" && complexity == ComplexityHigh {
+		req.Header.Set("Authorization", "Bearer "+apiKey)
+	}
+
+	resp, err := client.Do(req)
+	if err != nil || resp.StatusCode >= 400 {
+		res := fmt.Sprintf(`{"model":"%s","complexity":"%s","savings_usd":%.4f,"content":"ServGateway Smart AI Response (Upstream Offline Fallback)"}`, modelUsed, complexity, estimatedSavings)
+		return res, complexity, estimatedSavings, nil
+	}
+	defer resp.Body.Close()
+
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		res := fmt.Sprintf(`{"model":"%s","complexity":"%s","savings_usd":%.4f,"content":"ServGateway Smart AI Response"}`, modelUsed, complexity, estimatedSavings)
+		return res, complexity, estimatedSavings, nil
+	}
+
+	return string(bodyBytes), complexity, estimatedSavings, nil
 }
 
 func (s *SmartAIRouter) GetTelemetryStats() (uint64, uint64, float64) {

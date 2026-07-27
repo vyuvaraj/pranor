@@ -9,8 +9,11 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"text/tabwriter"
 	"time"
 )
@@ -47,6 +50,7 @@ Admin & Daemon Commands:
   status                              Check status of running servstored daemon
   admin-buckets                       List buckets via admin API
   admin-create-bucket <bucket>        Create a bucket via admin API
+  bench [flags]                       Run built-in benchmark test (--ops, --concurrency, --object-size)
   version                             Print version information
   help                                Print this message
 `
@@ -115,6 +119,8 @@ func main() {
 		err = cmdAdminBuckets(rest)
 	case "admin-create-bucket":
 		err = cmdAdminCreateBucket(rest)
+	case "bench":
+		err = cmdBench(rest)
 	case "version":
 		fmt.Println("servstore CLI v2.0.0 (Unified Data & Admin Tool)")
 	case "help", "--help", "-h":
@@ -649,6 +655,123 @@ func cmdAdminCreateBucket(args []string) error {
 		return fmt.Errorf("failed to create bucket: %s", string(body))
 	}
 	return nil
+}
+
+func cmdBench(args []string) error {
+	fs := flag.NewFlagSet("bench", flag.ContinueOnError)
+	ops := fs.Int("ops", 100, "Total operations to execute")
+	concurrency := fs.Int("concurrency", 8, "Number of concurrent worker goroutines")
+	sizeStr := fs.String("object-size", "4KB", "Size of benchmark payload (e.g. 4KB, 1MB)")
+	bucket := fs.String("bucket", "servstore-bench", "Target bucket for benchmark")
+
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
+
+	sizeBytes := parseSizeBytes(*sizeStr)
+	fmt.Printf("=== ServStore Built-in Benchmark (ST.D1) ===\n")
+	fmt.Printf("Endpoint:    %s\n", endpoint)
+	fmt.Printf("Bucket:      %s\n", *bucket)
+	fmt.Printf("Total Ops:   %d\n", *ops)
+	fmt.Printf("Concurrency: %d\n", *concurrency)
+	fmt.Printf("Payload:     %s (%d bytes)\n\n", *sizeStr, sizeBytes)
+
+	// Ensure bucket exists
+	_ = cmdMB([]string{*bucket})
+
+	payload := bytes.Repeat([]byte("X"), int(sizeBytes))
+	latencies := make([]time.Duration, 0, *ops)
+	var mu sync.Mutex
+
+	start := time.Now()
+	jobs := make(chan int, *ops)
+	for i := 0; i < *ops; i++ {
+		jobs <- i
+	}
+	close(jobs)
+
+	var wg sync.WaitGroup
+	var errorCount int64
+
+	for w := 0; w < *concurrency; w++ {
+		wg.Add(1)
+		go func(workerID int) {
+			defer wg.Done()
+			for jobID := range jobs {
+				key := fmt.Sprintf("bench-obj-%d-%d", workerID, jobID)
+				opStart := time.Now()
+
+				req, err := http.NewRequest(http.MethodPut, url("/"+*bucket+"/"+key), bytes.NewReader(payload))
+				if err != nil {
+					atomic.AddInt64(&errorCount, 1)
+					continue
+				}
+				req.ContentLength = int64(len(payload))
+
+				resp, err := do(req)
+				if err != nil {
+					atomic.AddInt64(&errorCount, 1)
+					continue
+				}
+				_, _ = io.Copy(io.Discard, resp.Body)
+				resp.Body.Close()
+
+				dur := time.Since(opStart)
+				mu.Lock()
+				latencies = append(latencies, dur)
+				mu.Unlock()
+			}
+		}(w)
+	}
+
+	wg.Wait()
+	totalElapsed := time.Since(start)
+
+	if len(latencies) == 0 {
+		return fmt.Errorf("all benchmark requests failed")
+	}
+
+	sort.Slice(latencies, func(i, j int) bool {
+		return latencies[i] < latencies[j]
+	})
+
+	opsPerSec := float64(len(latencies)) / totalElapsed.Seconds()
+	mbPerSec := (float64(len(latencies)*int(sizeBytes)) / (1024 * 1024)) / totalElapsed.Seconds()
+
+	p50 := latencies[len(latencies)*50/100]
+	p95 := latencies[len(latencies)*95/100]
+	p99 := latencies[len(latencies)*99/100]
+
+	fmt.Printf("--- Benchmark Results ---\n")
+	fmt.Printf("Successful Ops: %d / %d (Errors: %d)\n", len(latencies), *ops, errorCount)
+	fmt.Printf("Elapsed Time:   %.2fs\n", totalElapsed.Seconds())
+	fmt.Printf("Throughput:     %.2f ops/sec (%.2f MB/sec)\n", opsPerSec, mbPerSec)
+	fmt.Printf("P50 Latency:    %v\n", p50)
+	fmt.Printf("P95 Latency:    %v\n", p95)
+	fmt.Printf("P99 Latency:    %v\n", p99)
+
+	return nil
+}
+
+func parseSizeBytes(s string) int64 {
+	s = strings.TrimSpace(strings.ToUpper(s))
+	if strings.HasSuffix(s, "KB") {
+		v, _ := strconv.ParseInt(strings.TrimSuffix(s, "KB"), 10, 64)
+		return v * 1024
+	}
+	if strings.HasSuffix(s, "MB") {
+		v, _ := strconv.ParseInt(strings.TrimSuffix(s, "MB"), 10, 64)
+		return v * 1024 * 1024
+	}
+	if strings.HasSuffix(s, "B") {
+		v, _ := strconv.ParseInt(strings.TrimSuffix(s, "B"), 10, 64)
+		return v
+	}
+	v, _ := strconv.ParseInt(s, 10, 64)
+	if v <= 0 {
+		return 4096
+	}
+	return v
 }
 
 // ---------- helpers ----------

@@ -24,9 +24,28 @@ import (
 	"github.com/zeebo/blake3"
 )
 
+type StripedLockManager struct {
+	locks [256]sync.RWMutex
+}
+
+func (m *StripedLockManager) LockKey(bucket, key string) func() {
+	h := md5.Sum([]byte(bucket + ":" + key))
+	idx := h[0]
+	m.locks[idx].Lock()
+	return func() { m.locks[idx].Unlock() }
+}
+
+func (m *StripedLockManager) RLockKey(bucket, key string) func() {
+	h := md5.Sum([]byte(bucket + ":" + key))
+	idx := h[0]
+	m.locks[idx].RLock()
+	return func() { m.locks[idx].RUnlock() }
+}
+
 type LocalStore struct {
 	rootDir       string
 	mu            sync.RWMutex
+	keyLocks      StripedLockManager
 	pebbleDB      *pebble.DB
 	encryptionKey []byte // nil means encryption disabled
 	coldTier      *ColdTierManager // nil means cold-tiering disabled

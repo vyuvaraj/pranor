@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
@@ -51,6 +52,7 @@ Admin & Daemon Commands:
   admin-buckets                       List buckets via admin API
   admin-create-bucket <bucket>        Create a bucket via admin API
   bench [flags]                       Run built-in benchmark test (--ops, --concurrency, --object-size)
+  serve-static [flags]                Host a bucket as a static website (--bucket, --port)
   version                             Print version information
   help                                Print this message
 `
@@ -121,6 +123,8 @@ func main() {
 		err = cmdAdminCreateBucket(rest)
 	case "bench":
 		err = cmdBench(rest)
+	case "serve-static":
+		err = cmdServeStatic(rest)
 	case "version":
 		fmt.Println("servstore CLI v2.0.0 (Unified Data & Admin Tool)")
 	case "help", "--help", "-h":
@@ -751,6 +755,94 @@ func cmdBench(args []string) error {
 	fmt.Printf("P99 Latency:    %v\n", p99)
 
 	return nil
+}
+
+func cmdServeStatic(args []string) error {
+	fs := flag.NewFlagSet("serve-static", flag.ContinueOnError)
+	bucket := fs.String("bucket", "my-site", "Target bucket containing static files")
+	port := fs.String("port", "3000", "Port to serve static website on")
+	indexFile := fs.String("index", "index.html", "Default index file")
+	notFoundFile := fs.String("404", "404.html", "Custom 404 error page")
+
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
+
+	listenAddr := ":" + strings.TrimPrefix(*port, ":")
+	fmt.Printf("=== ServStore Static Site Host (ST.D5) ===\n")
+	fmt.Printf("Hosting Bucket: %s\n", *bucket)
+	fmt.Printf("Listening On:   http://localhost%s\n\n", listenAddr)
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		reqPath := strings.TrimPrefix(r.URL.Path, "/")
+		if reqPath == "" || strings.HasSuffix(reqPath, "/") {
+			reqPath += *indexFile
+		}
+
+		// Attempt fetch from ServStore S3 API
+		resp, err := doRequest(http.MethodGet, url("/"+*bucket+"/"+reqPath), nil)
+		if err == nil && resp.StatusCode == http.StatusOK {
+			defer resp.Body.Close()
+			setMimeType(w, reqPath, resp.Header.Get("Content-Type"))
+			w.WriteHeader(http.StatusOK)
+			_, _ = io.Copy(w, resp.Body)
+			return
+		}
+		if resp != nil {
+			resp.Body.Close()
+		}
+
+		// Fallback to 404 page
+		resp404, err404 := doRequest(http.MethodGet, url("/"+*bucket+"/"+*notFoundFile), nil)
+		if err404 == nil && resp404.StatusCode == http.StatusOK {
+			defer resp404.Body.Close()
+			setMimeType(w, *notFoundFile, "text/html")
+			w.WriteHeader(http.StatusNotFound)
+			_, _ = io.Copy(w, resp404.Body)
+			return
+		}
+		if resp404 != nil {
+			resp404.Body.Close()
+		}
+
+		http.Error(w, "404 Not Found", http.StatusNotFound)
+	})
+
+	return http.ListenAndServe(listenAddr, nil)
+}
+
+func doRequest(method, targetURL string, body io.Reader) (*http.Response, error) {
+	req, err := http.NewRequest(method, targetURL, body)
+	if err != nil {
+		return nil, err
+	}
+	return do(req)
+}
+
+func setMimeType(w http.ResponseWriter, fileName, headerContentType string) {
+	if headerContentType != "" && headerContentType != "application/octet-stream" {
+		w.Header().Set("Content-Type", headerContentType)
+		return
+	}
+	ext := strings.ToLower(filepath.Ext(fileName))
+	switch ext {
+	case ".html", ".htm":
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	case ".css":
+		w.Header().Set("Content-Type", "text/css; charset=utf-8")
+	case ".js":
+		w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
+	case ".json":
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	case ".svg":
+		w.Header().Set("Content-Type", "image/svg+xml")
+	case ".png":
+		w.Header().Set("Content-Type", "image/png")
+	case ".jpg", ".jpeg":
+		w.Header().Set("Content-Type", "image/jpeg")
+	default:
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	}
 }
 
 func parseSizeBytes(s string) int64 {

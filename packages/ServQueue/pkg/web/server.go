@@ -73,6 +73,7 @@ func (s *Server) Start() error {
 	mux.HandleFunc("/api/v1/offsets", s.handleOffsets)
 	mux.HandleFunc("/api/stats/ws", s.handleStatsWS)
 	mux.HandleFunc("/api/v1/stats/ws", s.handleStatsWS)
+	mux.HandleFunc("/ws/subscribe/", s.handleSubscribeWS)
 	mux.HandleFunc("/api/admin/offloader", s.handleConfigureOffloader)
 	mux.HandleFunc("/api/v1/admin/offloader", s.handleConfigureOffloader)
 
@@ -100,8 +101,8 @@ func (s *Server) Start() error {
 	wsChain := ServShared.AuthMiddleware(s.tenantAndTokenMiddleware(mux))
 
 	dispatcher := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Bypass hijacking-incompatible middlewares for WebSocket stats endpoints
-		if r.URL.Path == "/api/stats/ws" || r.URL.Path == "/api/v1/stats/ws" {
+		// Bypass hijacking-incompatible middlewares for WebSocket endpoints
+		if r.URL.Path == "/api/stats/ws" || r.URL.Path == "/api/v1/stats/ws" || strings.HasPrefix(r.URL.Path, "/ws/subscribe/") {
 			wsChain.ServeHTTP(w, r)
 			return
 		}
@@ -1058,6 +1059,56 @@ func (s *Server) handleSubscribeSSE(w http.ResponseWriter, r *http.Request) {
 			}
 			fmt.Fprintf(w, "event: message\ndata: %s\n\n", msg)
 			flusher.Flush()
+		case <-r.Context().Done():
+			return
+		}
+	}
+}
+
+func (s *Server) handleSubscribeWS(w http.ResponseWriter, r *http.Request) {
+	upgrader := websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool { return true },
+	}
+
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Printf("handleSubscribeWS: upgrade failed: %v", err)
+		return
+	}
+	defer conn.Close()
+
+	parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+	var topic string
+	if len(parts) >= 3 {
+		topic = parts[2]
+	}
+	if topic == "" {
+		topic = r.URL.Query().Get("topic")
+	}
+	if topic == "" {
+		conn.WriteMessage(websocket.TextMessage, []byte(`{"error":"missing_topic"}`))
+		return
+	}
+
+	tenant, _ := r.Context().Value("tenant-id").(string)
+	namespacedTopic, err := s.namespaceTopic(topic, tenant)
+	if err != nil {
+		conn.WriteMessage(websocket.TextMessage, []byte(`{"error":"forbidden"}`))
+		return
+	}
+
+	ch := s.engine.Subscribe(namespacedTopic)
+	defer s.engine.Unsubscribe(namespacedTopic, ch)
+
+	for {
+		select {
+		case msg, open := <-ch:
+			if !open {
+				return
+			}
+			if err := conn.WriteMessage(websocket.TextMessage, []byte(msg)); err != nil {
+				return
+			}
 		case <-r.Context().Done():
 			return
 		}

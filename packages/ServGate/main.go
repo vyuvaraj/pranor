@@ -73,6 +73,10 @@ var (
 )
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "dashboard" {
+		runDashboardCommand()
+		return
+	}
 	if len(os.Args) > 1 && os.Args[1] == "replay" {
 		runReplayCommand()
 		return
@@ -944,6 +948,48 @@ func withAdminRateLimit(limit int, next http.HandlerFunc) http.HandlerFunc {
 			proxy.WriteJSONError(w, r, "Too Many Requests", "ERR_RATE_LIMIT_EXCEEDED", http.StatusTooManyRequests)
 			return
 		}
-		next(w, r)
+		next.ServeHTTP(w, r)
+	}
+}
+
+func runDashboardCommand() {
+	fs := flag.NewFlagSet("dashboard", flag.ExitOnError)
+	adminEndpoint := fs.String("endpoint", "http://localhost:8080", "ServGate admin API endpoint URL")
+	interval := fs.Duration("interval", 1*time.Second, "Refresh interval")
+	if err := fs.Parse(os.Args[2:]); err != nil {
+		log.Fatalf("Dashboard: failed to parse arguments: %v", err)
+	}
+
+	targetURL := strings.TrimRight(*adminEndpoint, "/") + "/api/v1/admin/connections"
+	client := &http.Client{Timeout: 2 * time.Second}
+
+	fmt.Print("\033[2J\033[H") // Clear terminal
+	fmt.Printf("=== ServGate Live Traffic Dashboard (TUI - SG.D2) ===\n")
+	fmt.Printf("Endpoint: %s | Refresh Interval: %v\n\n", targetURL, *interval)
+
+	for {
+		resp, err := client.Get(targetURL)
+		if err != nil {
+			fmt.Printf("\r\033[K[ERR] Failed to poll ServGate stats: %v", err)
+		} else {
+			body, _ := io.ReadAll(resp.Body)
+			resp.Body.Close()
+
+			var stats map[string]interface{}
+			if err := json.Unmarshal(body, &stats); err == nil {
+				fmt.Print("\033[H") // Move cursor to top left
+				fmt.Println("=== ServGate Live Traffic Dashboard (TUI - SG.D2) ===")
+				fmt.Printf("Endpoint: %s | Time: %s\n", targetURL, time.Now().Format("15:04:05"))
+				fmt.Println(strings.Repeat("-", 70))
+				fmt.Printf("Active Connections: %v\n", stats["active_connections"])
+				fmt.Printf("Total Requests:     %v\n", stats["total_requests"])
+				fmt.Printf("Cache Hit Ratio:    %v%%\n", stats["cache_hit_rate"])
+				fmt.Printf("Circuit Breakers:   %v (Open: %v)\n", stats["circuit_breakers_total"], stats["circuit_breakers_open"])
+				fmt.Printf("Avg P99 Latency:    %v ms\n", stats["p99_latency_ms"])
+				fmt.Println(strings.Repeat("-", 70))
+				fmt.Println("Press Ctrl+C to exit")
+			}
+		}
+		time.Sleep(*interval)
 	}
 }

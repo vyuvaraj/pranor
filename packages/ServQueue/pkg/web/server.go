@@ -562,12 +562,24 @@ func (s *Server) handlePublish(w http.ResponseWriter, r *http.Request) {
 
 	if req.Schedule != "" || req.DeliverAt != "" {
 		// SQ.D3 Delayed & Cron-Scheduled Message Engine
+		var delay time.Duration = 5 * time.Second
+		if req.DeliverAt != "" {
+			if targetTime, err := time.Parse(time.RFC3339, req.DeliverAt); err == nil {
+				if d := time.Until(targetTime); d > 0 {
+					delay = d
+				}
+			}
+		}
+
+		s.engine.ScheduleDelayed(r.Context(), namespacedTopic, req.Payload, delay)
+
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"status":     "scheduled",
 			"topic":      namespacedTopic,
 			"schedule":   req.Schedule,
 			"deliver_at": req.DeliverAt,
+			"delay_ms":   delay.Milliseconds(),
 			"message_id": req.MessageID,
 		})
 		return

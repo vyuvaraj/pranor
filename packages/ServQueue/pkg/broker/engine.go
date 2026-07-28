@@ -1224,3 +1224,17 @@ func (e *BrokerEngine) GetGroupOffset(groupName, topic string) int64 {
 	return e.groupOffsets[groupName][topic]
 }
 
+// ScheduleDelayed schedules a message payload to be published to a topic after delay (SQ.D3)
+func (e *BrokerEngine) ScheduleDelayed(ctx context.Context, topic string, payload string, delay time.Duration) {
+	if e.timeWheel != nil {
+		e.timeWheel.AddJob(delay, func() {
+			_, _ = e.Publish(context.Background(), topic, payload)
+		})
+	} else {
+		go func() {
+			time.Sleep(delay)
+			_, _ = e.Publish(context.Background(), topic, payload)
+		}()
+	}
+}
+

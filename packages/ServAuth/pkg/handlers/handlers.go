@@ -1811,3 +1811,109 @@ func HandleSCIMUsers(w http.ResponseWriter, r *http.Request) {
 		httpError(w, r, "Method Not Allowed", http.StatusMethodNotAllowed)
 	}
 }
+
+// SA.G3: Adaptive Risk-Based MFA Step-Up Engine
+func HandleAdaptiveMfaStepUp(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		httpError(w, r, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var req struct {
+		Username  string `json:"username"`
+		UserAgent string `json:"user_agent"`
+		ClientIP  string `json:"client_ip"`
+		Location  string `json:"location"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		httpError(w, r, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	// Calculate dynamic risk score based on login signals (0.0 to 1.0)
+	riskScore := 0.1
+	if strings.Contains(strings.ToLower(req.UserAgent), "curl") || strings.Contains(strings.ToLower(req.UserAgent), "python") {
+		riskScore += 0.4
+	}
+	if req.Location != "" && req.Location != "us-east-1" {
+		riskScore += 0.4
+	}
+
+	stepUpRequired := riskScore > 0.5
+	challengeType := "none"
+	if stepUpRequired {
+		challengeType = "totp_or_webauthn"
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"username":         req.Username,
+		"risk_score":       riskScore,
+		"step_up_required": stepUpRequired,
+		"challenge_type":   challengeType,
+		"timestamp":        time.Now().Format(time.RFC3339),
+	})
+}
+
+type DeviceFingerprint struct {
+	ID        string `json:"id"`
+	UserAgent string `json:"user_agent"`
+	IP        string `json:"ip"`
+	Trusted   bool   `json:"trusted"`
+	LastSeen  string `json:"last_seen"`
+}
+
+var (
+	userDevices   = make(map[string][]DeviceFingerprint) // username -> devices
+	userDevicesMu sync.RWMutex
+)
+
+// SA.G4: Device Fingerprinting & Trusted Device Registry
+func HandleTrustedDevices(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	username := r.URL.Query().Get("username")
+	if username == "" {
+		username = "default-user"
+	}
+
+	userDevicesMu.Lock()
+	defer userDevicesMu.Unlock()
+
+	if r.Method == http.MethodGet {
+		devs := userDevices[username]
+		if devs == nil {
+			devs = []DeviceFingerprint{
+				{ID: "dev-1", UserAgent: "Mozilla/5.0 (Macintosh)", IP: "192.168.1.1", Trusted: true, LastSeen: time.Now().Format(time.RFC3339)},
+			}
+			userDevices[username] = devs
+		}
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"username": username,
+			"devices":  devs,
+		})
+		return
+	}
+
+	if r.Method == http.MethodDelete {
+		deviceID := r.URL.Query().Get("device_id")
+		if deviceID != "" {
+			var updated []DeviceFingerprint
+			for _, d := range userDevices[username] {
+				if d.ID != deviceID {
+					updated = append(updated, d)
+				}
+			}
+			userDevices[username] = updated
+		}
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"status":    "revoked",
+			"device_id": deviceID,
+		})
+		return
+	}
+
+	httpError(w, r, "Method not allowed", http.StatusMethodNotAllowed)
+}

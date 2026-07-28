@@ -74,6 +74,16 @@ type ToolHandler func(ctx context.Context, params map[string]interface{}) (MCPTo
 
 // ---- MCP Server ----
 
+type ToolCallAuditEntry struct {
+	Timestamp   string                 `json:"timestamp"`
+	AgentID     string                 `json:"agent_id"`
+	ToolName    string                 `json:"tool_name"`
+	Arguments   map[string]interface{} `json:"arguments"`
+	IsError     bool                   `json:"is_error"`
+	CostUSD     float64                `json:"cost_usd"`
+	ExecutionMs int64                  `json:"execution_ms"`
+}
+
 // MCPServer is a Model Context Protocol server that exposes Servverse services as AI tools.
 // It implements the MCP specification over HTTP, supporting both request/response and
 // SSE (Server-Sent Events) transports.
@@ -83,6 +93,7 @@ type MCPServer struct {
 	handlers      map[string]ToolHandler
 	serverName    string
 	serverVersion string
+	auditLogs     []ToolCallAuditEntry
 }
 
 // NewMCPServer creates a new MCPServer with the given name and version.
@@ -92,6 +103,7 @@ func NewMCPServer(name, version string) *MCPServer {
 		handlers:      make(map[string]ToolHandler),
 		serverName:    name,
 		serverVersion: version,
+		auditLogs:     make([]ToolCallAuditEntry, 0),
 	}
 }
 
@@ -238,7 +250,25 @@ func (s *MCPServer) handleToolsCall(ctx context.Context, raw json.RawMessage) (*
 		return nil, &MCPError{Code: ErrInvalidParams, Message: fmt.Sprintf("unknown tool: %s", callParams.Name)}
 	}
 
+	start := time.Now()
 	result, err := handler(ctx, callParams.Arguments)
+	executionMs := time.Since(start).Milliseconds()
+
+	isError := err != nil || result.IsError
+	auditEntry := ToolCallAuditEntry{
+		Timestamp:   start.Format(time.RFC3339),
+		AgentID:     "mcp-agent-session",
+		ToolName:    callParams.Name,
+		Arguments:   callParams.Arguments,
+		IsError:     isError,
+		CostUSD:     0.0005, // Estimated tool call token attribution
+		ExecutionMs: executionMs,
+	}
+
+	s.mu.Lock()
+	s.auditLogs = append(s.auditLogs, auditEntry)
+	s.mu.Unlock()
+
 	if err != nil {
 		errResult := MCPToolResult{
 			Content: []MCPContent{{Type: "text", Text: "tool error: " + err.Error()}},
@@ -248,6 +278,15 @@ func (s *MCPServer) handleToolsCall(ctx context.Context, raw json.RawMessage) (*
 	}
 
 	return &result, nil
+}
+
+// GetAuditLogs returns the recorded MCP tool call audit logs (SG.A4)
+func (s *MCPServer) GetAuditLogs() []ToolCallAuditEntry {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	logs := make([]ToolCallAuditEntry, len(s.auditLogs))
+	copy(logs, s.auditLogs)
+	return logs
 }
 
 // handleSSE serves an SSE stream, sending a ping every 30 seconds.

@@ -1194,3 +1194,33 @@ func (e *BrokerEngine) RouteToDLQForTest(ctx context.Context, sourceTopic string
 	e.routeToDLQ(ctx, sourceTopic, payload, reason)
 }
 
+// SQ.H3: Durable Consumer Subscription Reconnect Engine
+func (e *BrokerEngine) CommitGroupOffset(groupName, topic string, offset int64) error {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	if e.groupOffsets == nil {
+		e.groupOffsets = make(map[string]map[string]int64)
+	}
+	if e.groupOffsets[groupName] == nil {
+		e.groupOffsets[groupName] = make(map[string]int64)
+	}
+	e.groupOffsets[groupName][topic] = offset
+
+	if e.wal != nil {
+		payloadStr := fmt.Sprintf(`{"group":"%s","offset":%d}`, groupName, offset)
+		_ = e.wal.Append(topic, payloadStr)
+	}
+	return nil
+}
+
+func (e *BrokerEngine) GetGroupOffset(groupName, topic string) int64 {
+	e.mu.RLock()
+	defer e.mu.RUnlock()
+
+	if e.groupOffsets == nil || e.groupOffsets[groupName] == nil {
+		return 0
+	}
+	return e.groupOffsets[groupName][topic]
+}
+

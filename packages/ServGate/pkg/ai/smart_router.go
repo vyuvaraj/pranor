@@ -58,13 +58,39 @@ func NewSmartAIRouter(cfg SmartAIRouterConfig) *SmartAIRouter {
 }
 
 func (s *SmartAIRouter) ClassifyPrompt(prompt string) PromptComplexity {
-	wordCount := len(strings.Fields(prompt))
-	hasComplexSyntax := strings.Contains(prompt, "refactor") || strings.Contains(prompt, "architecture") || strings.Contains(prompt, "proof") || strings.Contains(prompt, "analyze")
+	// SG.H4: Multi-feature prompt complexity scoring engine
+	words := strings.Fields(prompt)
+	wordCount := len(words)
 
-	if wordCount < 50 && !hasComplexSyntax {
-		return ComplexityLow
+	score := 0
+	if wordCount > 80 {
+		score += 3
+	} else if wordCount > 30 {
+		score += 1
 	}
-	return ComplexityHigh
+
+	// Code syntax detection
+	codeKeywords := []string{"```", "func ", "def ", "class ", "interface", "struct ", "function", "import ", "select ", "where "}
+	for _, kw := range codeKeywords {
+		if strings.Contains(prompt, kw) {
+			score += 2
+			break
+		}
+	}
+
+	// Reasoning / mathematical complexity indicators
+	reasoningKeywords := []string{"refactor", "architecture", "proof", "analyze", "benchmark", "optimize", "step-by-step", "explain why", "compare"}
+	lowerPrompt := strings.ToLower(prompt)
+	for _, kw := range reasoningKeywords {
+		if strings.Contains(lowerPrompt, kw) {
+			score += 2
+		}
+	}
+
+	if score >= 3 {
+		return ComplexityHigh
+	}
+	return ComplexityLow
 }
 
 func (s *SmartAIRouter) RouteAndExecute(ctx context.Context, prompt string) (string, PromptComplexity, float64, error) {

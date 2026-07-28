@@ -411,3 +411,42 @@ func openDB(connStr string) (*sql.DB, error) {
 	// Default: treat as SQLite file path
 	return sql.Open("sqlite", connStr)
 }
+
+func runMigrateStatus(target, dbConn string) {
+	if dbConn == "" {
+		dbConn = os.Getenv("DATABASE_URL")
+	}
+	if dbConn == "" {
+		dbConn = "sqlite://serv.db"
+	}
+
+	db, err := openDB(dbConn)
+	if err != nil {
+		fmt.Printf("Failed to connect to database: %v\n", err)
+		os.Exit(1)
+	}
+	defer db.Close()
+
+	fmt.Printf("=== Serv-lang Migration Status (SL.H4) ===\n")
+	fmt.Printf("Database: %s\n\n", dbConn)
+
+	rows, err := db.Query("SELECT table_name, applied_at FROM serv_schema_migrations ORDER BY applied_at ASC")
+	if err != nil {
+		fmt.Println("No migration tracking table found (`serv_schema_migrations`). Run `serv migrate` first.")
+		return
+	}
+	defer rows.Close()
+
+	count := 0
+	fmt.Printf("%-30s %-25s\n", "MIGRATION / TABLE", "APPLIED AT")
+	fmt.Println(strings.Repeat("-", 60))
+	for rows.Next() {
+		var name, appliedAt string
+		if err := rows.Scan(&name, &appliedAt); err == nil {
+			fmt.Printf("%-30s %-25s\n", name, appliedAt)
+			count++
+		}
+	}
+	fmt.Println(strings.Repeat("-", 60))
+	fmt.Printf("Total applied migration(s): %d\n", count)
+}

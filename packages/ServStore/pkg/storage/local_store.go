@@ -1093,11 +1093,13 @@ func (s *LocalStore) DeleteObject(ctx context.Context, bucket, key, versionID st
 	}
 }
 
-// Helper to list keys in .metadata recursively
+// Helper to list keys in .metadata recursively with upper bound seek optimization (ST.H4)
 func (s *LocalStore) scanMetadataKeys(bucket string) ([]string, error) {
 	prefix := []byte("o:" + bucket + ":")
+	upperBound := append([]byte("o:" + bucket + ";")) // ';' is ASCII 59, after ':' (ASCII 58)
 	iter, err := s.pebbleDB.NewIter(&pebble.IterOptions{
 		LowerBound: prefix,
+		UpperBound: upperBound,
 	})
 	if err != nil {
 		return nil, err
@@ -1105,7 +1107,7 @@ func (s *LocalStore) scanMetadataKeys(bucket string) ([]string, error) {
 	defer iter.Close()
 
 	var keys []string
-	for iter.First(); iter.Valid() && bytes.HasPrefix(iter.Key(), prefix); iter.Next() {
+	for iter.First(); iter.Valid(); iter.Next() {
 		k := string(iter.Key())
 		parts := strings.SplitN(k, ":", 3)
 		if len(parts) == 3 {

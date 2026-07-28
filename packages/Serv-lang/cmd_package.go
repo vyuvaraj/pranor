@@ -91,7 +91,23 @@ func addPackage(pkgPath string) {
 		os.Exit(1)
 	}
 
+	// SL.H9: Update serv.toml package resolution manifest
+	if tomlBytes, err := os.ReadFile("serv.toml"); err == nil {
+		tomlContent := string(tomlBytes)
+		if !strings.Contains(tomlContent, pkgPath) {
+			newEntry := fmt.Sprintf("\n[dependencies]\n\"%s\" = \"latest\"\n", pkgPath)
+			if strings.Contains(tomlContent, "[dependencies]") {
+				newEntry = fmt.Sprintf("  \"%s\" = \"latest\"\n", pkgPath)
+				tomlContent = strings.Replace(tomlContent, "[dependencies]\n", "[dependencies]\n"+newEntry, 1)
+			} else {
+				tomlContent += newEntry
+			}
+			_ = os.WriteFile("serv.toml", []byte(tomlContent), 0644)
+		}
+	}
+
 	fmt.Printf("✓ Generated declaration: %s (%d functions)\n", declFile, len(functions))
+	fmt.Printf("✓ Updated package manifest: serv.toml (SL.H9)\n")
 	fmt.Printf("\nUsage in your .srv file:\n")
 	fmt.Printf("  import %s from \"%s\"\n", pkgName, pkgPath)
 	fmt.Printf("  let result = %s.FunctionName(args)\n", pkgName)

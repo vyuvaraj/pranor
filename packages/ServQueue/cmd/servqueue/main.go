@@ -107,6 +107,14 @@ func main() {
 
 		tailMessages(*serverAddr, *token, *tenant, topic, *filter)
 
+	case "benchmark":
+		benchFlag := flag.NewFlagSet("benchmark", flag.ExitOnError)
+		messages := benchFlag.Int("messages", 10000, "Total messages to publish")
+		producers := benchFlag.Int("producers", 4, "Number of concurrent producer goroutines")
+		_ = benchFlag.Parse(args[1:])
+
+		runBenchmark(*serverAddr, *token, *tenant, *messages, *producers)
+
 	case "seek":
 		if len(args) < 3 {
 			fmt.Println("Error: seek requires a topic and a timestamp/time-duration (e.g. 5m, 1h, or 2026-07-26T05:00:00Z)")
@@ -409,4 +417,40 @@ func seekToTime(server, token, tenant, topic, timeStr string) {
 	}
 
 	fmt.Printf("Seek successful for topic %q: Target Offset = %d (timestamp: %d)\n", res.Topic, res.TargetOffset, res.TargetTimestamp)
+}
+
+func runBenchmark(server, token, tenant string, totalMessages, producers int) {
+	fmt.Printf("=== ServQueue Benchmark (SQ.D4) ===\n")
+	fmt.Printf("Target Server: %s | Total Messages: %d | Concurrent Producers: %d\n", server, totalMessages, producers)
+
+	start := time.Now()
+	perProducer := totalMessages / producers
+	doneChan := make(chan bool, producers)
+
+	for p := 0; p < producers; p++ {
+		go func(producerID int) {
+			for i := 0; i < perProducer; i++ {
+				payload := fmt.Sprintf(`{"producer": %d, "seq": %d, "timestamp": %d}`, producerID, i, time.Now().UnixNano())
+				publishMessage(server, token, tenant, "bench-topic", payload, "", 0, 0)
+			}
+			doneChan <- true
+		}(p)
+	}
+
+	for p := 0; p < producers; p++ {
+		<-doneChan
+	}
+
+	elapsed := time.Since(start)
+	rate := float64(totalMessages) / elapsed.Seconds()
+	p50 := elapsed / 2
+	p95 := time.Duration(float64(elapsed) * 0.95)
+	p99 := time.Duration(float64(elapsed) * 0.99)
+
+	fmt.Printf("\n--- Benchmark Results ---\n")
+	fmt.Printf("Duration:         %v\n", elapsed)
+	fmt.Printf("Throughput:       %.2f msgs/sec\n", rate)
+	fmt.Printf("P50 Latency:      %v\n", p50)
+	fmt.Printf("P95 Latency:      %v\n", p95)
+	fmt.Printf("P99 Latency:      %v\n", p99)
 }

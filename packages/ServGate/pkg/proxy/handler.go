@@ -76,7 +76,8 @@ type Route struct {
 	PromptGuard        bool              `json:"prompt_guard,omitempty"`        // AI Prompt Guard
 	PiiRedact          bool              `json:"pii_redact,omitempty"`          // AI PII Redaction
 	SemanticCache      bool              `json:"semantic_cache,omitempty"`      // AI Semantic Cache
-	ValidationSchema   map[string]string `json:"validation_schema,omitempty"`   // Edge request validation rules
+	OpenAPISpec            string            `json:"openapi_spec,omitempty"`           // Path to OpenAPI 3.0 spec for request validation (SG.D3)
+	ValidationSchema       map[string]string `json:"validation_schema,omitempty"`   // Edge request validation rules
 	IPAllowlist        []string          `json:"ip_allowlist,omitempty"`        // Allowed IP or CIDR list
 	IPBlocklist        []string          `json:"ip_blocklist,omitempty"`        // Blocked IP or CIDR list
 	AccessLog          bool              `json:"access_log,omitempty"`          // Enable structured JSONL access logging

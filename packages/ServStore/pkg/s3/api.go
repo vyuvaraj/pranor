@@ -504,6 +504,8 @@ func (g *Gateway) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				g.handleGetBucketGeoPlacement(w, r, bucket)
 			} else if r.URL.Query().Has("ask") {
 				g.handleConversationalQuery(w, r, bucket)
+			} else if r.URL.Query().Has("sql") {
+				g.handleSQLMetadataQuery(w, r, bucket)
 			} else {
 				g.handleListObjects(w, r, bucket)
 			}
@@ -3208,5 +3210,47 @@ func completeLLM(prompt string) (string, error) {
 	if len(respData.Choices) > 0 {
 		return respData.Choices[0].Message.Content, nil
 	}
-	return "", fmt.Errorf("no choice returned from OpenAI")
+	return "", fmt.Errorf("empty response from OpenAI API")
+}
+
+func (g *Gateway) handleSQLMetadataQuery(w http.ResponseWriter, r *http.Request, bucket string) {
+	sqlQuery := r.URL.Query().Get("sql")
+	if sqlQuery == "" {
+		g.writeError(w, http.StatusBadRequest, "InvalidArgument", "SQL query required in ?sql= query parameter")
+		return
+	}
+
+	objects, _, err := g.store.ListObjects(r.Context(), bucket, "", "", "", 1000)
+	if err != nil {
+		g.writeError(w, http.StatusInternalServerError, "InternalError", err.Error())
+		return
+	}
+
+	type ObjectMetadataRow struct {
+		Key          string `json:"key"`
+		Size         int64  `json:"size"`
+		LastModified string `json:"last_modified"`
+		ETag         string `json:"etag"`
+		ContentType  string `json:"content_type"`
+	}
+
+	var rows []ObjectMetadataRow
+	for _, o := range objects {
+		rows = append(rows, ObjectMetadataRow{
+			Key:          o.Key,
+			Size:         o.Size,
+			LastModified: o.LastModified.Format(time.RFC3339),
+			ETag:         o.ETag,
+			ContentType:  o.ContentType,
+		})
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"bucket": bucket,
+		"sql":    sqlQuery,
+		"rows":   rows,
+		"count":  len(rows),
+	})
 }

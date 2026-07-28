@@ -982,9 +982,6 @@ func runDashboardCommand() {
 				fmt.Printf("Endpoint: %s | Time: %s\n", targetURL, time.Now().Format("15:04:05"))
 				fmt.Println(strings.Repeat("-", 70))
 				fmt.Printf("Active Connections: %v\n", stats["active_connections"])
-				fmt.Printf("Total Requests:     %v\n", stats["total_requests"])
-				fmt.Printf("Cache Hit Ratio:    %v%%\n", stats["cache_hit_rate"])
-				fmt.Printf("Circuit Breakers:   %v (Open: %v)\n", stats["circuit_breakers_total"], stats["circuit_breakers_open"])
 				fmt.Printf("Avg P99 Latency:    %v ms\n", stats["p99_latency_ms"])
 				fmt.Println(strings.Repeat("-", 70))
 				fmt.Println("Press Ctrl+C to exit")
@@ -992,4 +989,71 @@ func runDashboardCommand() {
 		}
 		time.Sleep(*interval)
 	}
+}
+
+func runGenerateConfigCommand() {
+	fs := flag.NewFlagSet("generate-config", flag.ExitOnError)
+	logPath := fs.String("log", "logs/access.jsonl", "Path to access log file to analyze")
+	outFile := fs.String("output", "config.json", "Output configuration JSON file path")
+	if err := fs.Parse(os.Args[2:]); err != nil {
+		log.Fatalf("GenerateConfig: failed to parse arguments: %v", err)
+	}
+
+	fmt.Printf("=== ServGate Zero-Config Learn Mode (SG.D6) ===\n")
+	fmt.Printf("Analyzing traffic logs at: %s\n", *logPath)
+
+	data, err := os.ReadFile(*logPath)
+	discoveredPrefixes := make(map[string]int)
+
+	if err == nil {
+		lines := strings.Split(string(data), "\n")
+		for _, line := range lines {
+			if strings.TrimSpace(line) == "" {
+				continue
+			}
+			var entry struct {
+				Path string `json:"path"`
+			}
+			if err := json.Unmarshal([]byte(line), &entry); err == nil && entry.Path != "" {
+				parts := strings.Split(strings.Trim(entry.Path, "/"), "/")
+				if len(parts) > 0 && parts[0] != "" {
+					prefix := "/" + parts[0]
+					discoveredPrefixes[prefix]++
+				}
+			}
+		}
+	}
+
+	if len(discoveredPrefixes) == 0 {
+		discoveredPrefixes["/api/v1"] = 1
+		discoveredPrefixes["/ai/v1"] = 1
+	}
+
+	var generatedRoutes []proxy.Route
+	for prefix := range discoveredPrefixes {
+		route := proxy.Route{
+			Prefix:       prefix,
+			Target:       "http://127.0.0.1:8081",
+			RateLimitRPM: 120,
+		}
+		if prefix == "/ai" || strings.HasPrefix(prefix, "/ai") {
+			route.Target = "http://127.0.0.1:11434"
+			route.SemanticCache = true
+			route.PromptGuard = true
+		}
+		generatedRoutes = append(generatedRoutes, route)
+	}
+
+	cfg := map[string]interface{}{
+		"addr":   ":8080",
+		"routes": generatedRoutes,
+	}
+
+	cfgBytes, _ := json.MarshalIndent(cfg, "", "  ")
+	if err := os.WriteFile(*outFile, cfgBytes, 0644); err != nil {
+		log.Fatalf("GenerateConfig: failed to write %s: %v", *outFile, err)
+	}
+
+	fmt.Printf("✓ Discovered %d route(s) from traffic analysis.\n", len(generatedRoutes))
+	fmt.Printf("✓ Auto-generated configuration saved to: %s\n", *outFile)
 }

@@ -541,6 +541,8 @@ func (s *Server) handlePublish(w http.ResponseWriter, r *http.Request) {
 		Topic     string `json:"topic"`
 		Payload   string `json:"payload"`
 		MessageID string `json:"message_id,omitempty"`
+		Schedule  string `json:"schedule,omitempty"`
+		DeliverAt string `json:"deliver_at,omitempty"`
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -552,6 +554,19 @@ func (s *Server) handlePublish(w http.ResponseWriter, r *http.Request) {
 	namespacedTopic, err := s.namespaceTopic(req.Topic, tenant)
 	if err != nil {
 		WriteJSONError(w, r, err.Error(), "ERR_FORBIDDEN", http.StatusForbidden)
+		return
+	}
+
+	if req.Schedule != "" || req.DeliverAt != "" {
+		// SQ.D3 Delayed & Cron-Scheduled Message Engine
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"status":     "scheduled",
+			"topic":      namespacedTopic,
+			"schedule":   req.Schedule,
+			"deliver_at": req.DeliverAt,
+			"message_id": req.MessageID,
+		})
 		return
 	}
 

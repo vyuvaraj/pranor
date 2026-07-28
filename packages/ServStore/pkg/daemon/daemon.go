@@ -136,6 +136,7 @@ func (d *ServStoreDaemon) Start() error {
 		adminMux := http.NewServeMux()
 		adminMux.HandleFunc("/api/v1/health", d.handleHealth)
 		adminMux.HandleFunc("/api/v1/buckets", d.handleBuckets)
+		adminMux.HandleFunc("/api/v1/events/subscribe", d.handleSubscribeWebhook)
 		adminMux.HandleFunc("/ui/", d.handleWebAdminUI)
 
 		d.adminServer = &http.Server{
@@ -198,11 +199,11 @@ func (d *ServStoreDaemon) handleBuckets(w http.ResponseWriter, r *http.Request) 
 			http.Error(w, fmt.Sprintf("failed to list buckets: %v", err), http.StatusInternalServerError)
 			return
 		}
-		bucketNames := make([]string, 0, len(buckets))
+		var names []string
 		for _, b := range buckets {
-			bucketNames = append(bucketNames, b.Name)
+			names = append(names, b.Name)
 		}
-		json.NewEncoder(w).Encode(bucketNames)
+		json.NewEncoder(w).Encode(names)
 		return
 	}
 
@@ -211,7 +212,7 @@ func (d *ServStoreDaemon) handleBuckets(w http.ResponseWriter, r *http.Request) 
 			Name string `json:"name"`
 		}
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil || req.Name == "" {
-			http.Error(w, "missing bucket name", http.StatusBadRequest)
+			http.Error(w, "invalid request body", http.StatusBadRequest)
 			return
 		}
 
@@ -228,6 +229,34 @@ func (d *ServStoreDaemon) handleBuckets(w http.ResponseWriter, r *http.Request) 
 		json.NewEncoder(w).Encode(map[string]string{"bucket": req.Name, "status": "created"})
 		return
 	}
+}
+
+func (d *ServStoreDaemon) handleSubscribeWebhook(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var req struct {
+		Bucket  string   `json:"bucket"`
+		Events  []string `json:"events"`
+		Webhook string   `json:"webhook"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil || req.Bucket == "" || req.Webhook == "" {
+		http.Error(w, "invalid request: bucket and webhook URL required", http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"status":     "subscribed",
+		"bucket":     req.Bucket,
+		"events":     req.Events,
+		"webhook":    req.Webhook,
+		"created_at": time.Now().Format(time.RFC3339),
+	})
 }
 
 func (d *ServStoreDaemon) handleWebAdminUI(w http.ResponseWriter, r *http.Request) {

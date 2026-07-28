@@ -162,6 +162,8 @@ func main() {
 	mux.HandleFunc("/api/logs", pkgdashboards.HandleGetLogs)
 	mux.HandleFunc("/api/slo", pkgdashboards.HandleSLO)
 	mux.HandleFunc("/api/cost-estimation", pkgdashboards.HandleCostEstimation)
+	mux.HandleFunc("/api/v1/console/cost-attribution", pkgdashboards.HandleCostAttribution)
+	mux.HandleFunc("/api/v1/console/ai-assistant", pkgdashboards.HandleAIAssistantChat)
 	mux.HandleFunc("/api/dashboards", pkgdashboards.HandleDashboards)
 	mux.HandleFunc("/api/capacity-planning", pkgdashboards.HandleCapacityPlanning)
 	mux.HandleFunc("/api/correlation-timeline", pkgdashboards.HandleCorrelationTimeline)

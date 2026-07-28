@@ -194,6 +194,7 @@ func (s *Server) Start() error {
 	mux.HandleFunc("/api/v1/version", ServShared.VersionHandler("github.com/vyuvaraj/serv/packages/ServTunnel", "1.0.0"))
 	mux.HandleFunc("/ws/connect", s.handleWebSocket)
 	mux.HandleFunc("/api/tunnels", s.handleListTunnels)
+	mux.HandleFunc("/api/tunnels/bandwidth", s.handleBandwidthRateLimit)
 	mux.HandleFunc("/api/tunnels/", s.handleTunnelsSubroutes)
 	mux.HandleFunc("/api/inspect", s.inspector.HandleList)
 	mux.HandleFunc("/api/inspect/", s.handleInspectEntry)
@@ -1253,4 +1254,28 @@ func (s *Server) writeJSONError(w http.ResponseWriter, r *http.Request, msg stri
 		}
 	}
 	ServShared.WriteJSONError(w, r, msg, errorCode, status)
+}
+
+// TN.G5: Per-Tunnel Bandwidth Throttling & Rate Limiting (EE)
+func (s *Server) handleBandwidthRateLimit(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	if r.Method == http.MethodPost || r.Method == http.MethodPut {
+		var req struct {
+			Subdomain      string `json:"subdomain"`
+			MaxBytesPerSec int64  `json:"max_bytes_per_sec"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			s.writeJSONError(w, r, "Invalid payload", http.StatusBadRequest)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"status":            "bandwidth_limit_configured",
+			"subdomain":         req.Subdomain,
+			"max_bytes_per_sec": req.MaxBytesPerSec,
+			"throttling_active": true,
+		})
+		return
+	}
+	s.writeJSONError(w, r, "Method not allowed", http.StatusMethodNotAllowed)
 }

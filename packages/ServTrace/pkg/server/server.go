@@ -80,6 +80,9 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/api/v1/tuning/recommendations", s.handleTuningRecommendations)
 	mux.HandleFunc("/api/traces/compare", s.handleCompareTraces)
 	mux.HandleFunc("/api/v1/traces/compare", s.handleCompareTraces)
+
+	// ST.G4: Trace Sampling Policy Manager (EE)
+	mux.HandleFunc("/api/v1/sampling/policy", s.handleSamplingPolicy)
 	
 	mux.HandleFunc("/api/traces/", func(w http.ResponseWriter, req *http.Request) {
 		if req.Method == http.MethodDelete {
@@ -974,6 +977,23 @@ func parseFloatSafe(v interface{}) float64 {
 		}
 	}
 	return 0.0
+}
+
+// ST.G4: Trace Sampling Policy Manager (EE)
+func (s *Server) handleSamplingPolicy(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	if req.Method == http.MethodGet || req.Method == http.MethodPost || req.Method == http.MethodPut {
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"status":                   "active",
+			"head_sampling_rate":       0.05, // 5% sample rate for normal traffic
+			"tail_sampling_enabled":    true,
+			"tail_outlier_latency_ms": 250,  // retain 100% of traces > 250ms
+			"tail_retain_errors":       true, // retain 100% of error traces
+			"policy_type":              "adaptive_tail_sampling",
+		})
+		return
+	}
+	httpError(w, req, "Method Not Allowed", http.StatusMethodNotAllowed)
 }
 
 

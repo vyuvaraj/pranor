@@ -77,6 +77,7 @@ type SemanticCache struct {
 	entries     []CacheEntry
 	threshold   float64
 	maxCapacity int
+	hits        int // total cache hits for cost-savings attribution
 }
 
 func NewSemanticCache(threshold float64) *SemanticCache {
@@ -87,6 +88,13 @@ func NewSemanticCache(threshold float64) *SemanticCache {
 		threshold:   threshold,
 		maxCapacity: 1000, // Bounded LRU capacity
 	}
+}
+
+// Hits returns the number of cache hits recorded for cost savings attribution.
+func (sc *SemanticCache) Hits() int {
+	sc.mu.RLock()
+	defer sc.mu.RUnlock()
+	return sc.hits
 }
 
 func tokenize(text string) map[string]float64 {
@@ -135,11 +143,13 @@ func (c *SemanticCache) Get(prompt string) ([]byte, bool) {
 	for _, entry := range c.entries {
 		sim := cosineSimilarity(tf, entry.TermFreq, mag, entry.Magnitude)
 		if sim >= c.threshold {
+			c.hits++ // Track hits for cost-savings attribution (SG.D5)
 			return entry.Response, true
 		}
 	}
 	return nil, false
 }
+
 
 func (c *SemanticCache) Set(prompt string, response []byte) {
 	tf := tokenize(prompt)

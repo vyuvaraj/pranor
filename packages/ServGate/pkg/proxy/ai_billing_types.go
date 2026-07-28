@@ -31,3 +31,16 @@ func (a *AIBillingTracker) GetMetrics() map[string]interface{} {
 
 // SetBudget configures limits.
 func (a *AIBillingTracker) SetBudget(tenantID string, cfg *BudgetConfig) {}
+
+// BillingSnapshot is a per-route cost snapshot for the cost attribution dashboard (SG.D5).
+type BillingSnapshot struct {
+	TotalTokens  int
+	TotalCostUSD float64
+	RequestCount int
+}
+
+// GetSnapshot returns zero-value snapshot in OSS build (EE enriches this).
+func (a *AIBillingTracker) GetSnapshot(routePrefix string) BillingSnapshot {
+	return BillingSnapshot{}
+}
+

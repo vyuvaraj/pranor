@@ -597,6 +597,46 @@ func main() {
 	mux.HandleFunc("/api/admin/ai-billing", withAdminRateLimit(60, handleAIBilling))
 	mux.HandleFunc("/api/v1/admin/ai-billing", withAdminRateLimit(60, handleAIBilling))
 
+	// SG.D5: Per-Route AI Token & Cost Attribution Dashboard
+	handleAICostAttribution := func(w http.ResponseWriter, r *http.Request) {
+		if cfg.AuthToken != "" {
+			token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+			if token != cfg.AuthToken {
+				http.Error(w, `{"error":"unauthorized"}`, http.StatusUnauthorized)
+				return
+			}
+		}
+		if r.Method != http.MethodGet {
+			http.Error(w, `{"error":"method_not_allowed"}`, http.StatusMethodNotAllowed)
+			return
+		}
+		attribution := handler.GetPerRouteCostAttribution()
+		totalCost := 0.0
+		totalTokens := 0
+		totalSavings := 0.0
+		for _, e := range attribution {
+			totalCost += e.TotalCostUSD
+			totalTokens += e.TotalTokens
+			totalSavings += e.EstimatedSavings
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"routes":          attribution,
+			"summary": map[string]interface{}{
+				"total_cost_usd":      totalCost,
+				"total_tokens":        totalTokens,
+				"estimated_savings":   totalSavings,
+				"savings_percent":     func() float64 {
+					if totalCost+totalSavings == 0 { return 0 }
+					return totalSavings / (totalCost + totalSavings) * 100
+				}(),
+			},
+		})
+	}
+	mux.HandleFunc("/api/admin/ai-cost-attribution", withAdminRateLimit(60, handleAICostAttribution))
+	mux.HandleFunc("/api/v1/admin/ai-cost-attribution", withAdminRateLimit(60, handleAICostAttribution))
+
+
 	handleMetricsWS := func(w http.ResponseWriter, r *http.Request) {
 		if cfg.AuthToken != "" {
 			token := r.Header.Get("Authorization")

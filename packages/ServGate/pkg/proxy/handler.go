@@ -2420,6 +2420,97 @@ func (cb *CircuitBreaker) calculateP99() time.Duration {
 	return sorted[idx]
 }
 
+// RouteCostEntry holds per-route AI token and cost attribution data (SG.D5).
+type RouteCostEntry struct {
+	RoutePrefix       string  `json:"route_prefix"`
+	TotalTokens       int     `json:"total_tokens"`
+	TotalCostUSD      float64 `json:"total_cost_usd"`
+	RequestCount      int     `json:"request_count"`
+	AvgTokensPerReq   float64 `json:"avg_tokens_per_req"`
+	AvgCostPerReq     float64 `json:"avg_cost_per_req"`
+	SemanticCacheHits int     `json:"semantic_cache_hits"`
+	EstimatedSavings  float64 `json:"estimated_savings_usd"`
+}
+
+// GetPerRouteCostAttribution returns per-route AI token usage and cost data (SG.D5).
+// It draws from apiTokenUsage and apiCostUsage tracked per request, correlates
+// them with route prefixes, and includes semantic cache savings.
+func (h *GatewayHandler) GetPerRouteCostAttribution() []RouteCostEntry {
+	h.apiUsageMu.Lock()
+	defer h.apiUsageMu.Unlock()
+
+	h.routesMu.RLock()
+	routes := h.routes
+	h.routesMu.RUnlock()
+
+	// Accumulate cost per route prefix
+	routeTokens := make(map[string]int)
+	routeCosts := make(map[string]float64)
+	routeRequests := make(map[string]int)
+
+	// Map apiTokenUsage keys (route prefix) to route entries
+	for key, tokens := range h.apiTokenUsage {
+		routeTokens[key] += tokens
+		routeRequests[key]++
+	}
+	for key, cost := range h.apiCostUsage {
+		routeCosts[key] += cost
+	}
+
+	// Include AI billing tracker data per route
+	if h.aiBilling != nil {
+		for _, route := range routes {
+			snapshot := h.aiBilling.GetSnapshot(route.Prefix)
+			if snapshot.TotalCostUSD > 0 {
+				routeTokens[route.Prefix] += snapshot.TotalTokens
+				routeCosts[route.Prefix] += snapshot.TotalCostUSD
+				routeRequests[route.Prefix] += snapshot.RequestCount
+			}
+		}
+	}
+
+	// Build result list for all known routes
+	seen := make(map[string]bool)
+	var entries []RouteCostEntry
+
+	for _, route := range routes {
+		prefix := route.Prefix
+		if seen[prefix] {
+			continue
+		}
+		seen[prefix] = true
+
+		tokens := routeTokens[prefix]
+		cost := routeCosts[prefix]
+		reqs := routeRequests[prefix]
+		if reqs == 0 {
+			reqs = 1
+		}
+
+		// Estimate semantic cache savings: cache hit saves ~avg cost per req
+		cacheHits := 0
+		if sc, ok := h.semanticCaches[prefix]; ok && sc != nil {
+			cacheHits = sc.Hits()
+		}
+		avgCost := cost / float64(reqs)
+		savings := avgCost * float64(cacheHits)
+
+		entries = append(entries, RouteCostEntry{
+			RoutePrefix:       prefix,
+			TotalTokens:       tokens,
+			TotalCostUSD:      cost,
+			RequestCount:      reqs,
+			AvgTokensPerReq:   float64(tokens) / float64(reqs),
+			AvgCostPerReq:     avgCost,
+			SemanticCacheHits: cacheHits,
+			EstimatedSavings:  savings,
+		})
+	}
+
+	return entries
+}
+
+
 
 
 

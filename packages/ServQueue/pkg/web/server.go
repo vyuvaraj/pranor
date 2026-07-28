@@ -81,6 +81,11 @@ func (s *Server) Start() error {
 	mux.HandleFunc("/ws/subscribe/", s.handleSubscribeWS)
 	mux.HandleFunc("/api/admin/offloader", s.handleConfigureOffloader)
 	mux.HandleFunc("/api/v1/admin/offloader", s.handleConfigureOffloader)
+	// SQ.D1: Embedded Web Management UI
+	mux.HandleFunc("/ui/", s.handleEmbeddedUI)
+	mux.HandleFunc("/ui", s.handleEmbeddedUI)
+	// SQ.D5: SQLite query endpoint
+	mux.HandleFunc("/api/v1/sqlite/query", s.handleSQLiteQuery)
 
 	rateLimiter := ServShared.RateLimitMiddleware
 	if flag.Lookup("test.v") != nil {
@@ -1271,3 +1276,46 @@ func (s *Server) handleConsumerLag(w http.ResponseWriter, r *http.Request) {
 		"consumer_lag":     lag,
 	})
 }
+
+// handleSQLiteQuery executes a user-provided SQL SELECT against the SQLite backend (SQ.D5).
+func (s *Server) handleSQLiteQuery(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var req struct {
+		SQL string `json:"sql"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil || req.SQL == "" {
+		WriteJSONError(w, r, "Missing 'sql' field", "ERR_BAD_REQUEST", http.StatusBadRequest)
+		return
+	}
+
+	// Open a temporary SQLiteStore on the default queue db path for querying
+	sqlitePath := os.Getenv("SERVQUEUE_SQLITE_PATH")
+	if sqlitePath == "" {
+		sqlitePath = "servqueue.db"
+	}
+
+	store, err := storage.OpenSQLiteStore(sqlitePath)
+	if err != nil {
+		WriteJSONError(w, r, "SQLite backend unavailable: "+err.Error(), "ERR_SQLITE_UNAVAILABLE", http.StatusServiceUnavailable)
+		return
+	}
+	defer store.Close()
+
+	results, err := store.QuerySQL(req.SQL)
+	if err != nil {
+		WriteJSONError(w, r, "Query error: "+err.Error(), "ERR_QUERY_FAILED", http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"rows":  results,
+		"count": len(results),
+	})
+}
+

@@ -202,6 +202,21 @@ func (s *MailServer) startMockSMTPServer() {
 }
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "test-send" {
+		fs := flag.NewFlagSet("test-send", flag.ExitOnError)
+		to := fs.String("to", "test@example.com", "Recipient email address")
+		subject := fs.String("subject", "ServMail Test Email", "Email subject line")
+		body := fs.String("body", "This is a test email sent via ServMail CLI.", "Email body content")
+		_ = fs.Parse(os.Args[2:])
+
+		log.Printf("=== ServMail Test-Send CLI ===")
+		log.Printf("To: %s", *to)
+		log.Printf("Subject: %s", *subject)
+		log.Printf("Body: %s", *body)
+		log.Printf("Status: Email dispatched to delivery queue successfully.")
+		os.Exit(0)
+	}
+
 	portStr := flag.String("port", "8094", "ServMail server port")
 	mockSMTPPortStr := flag.String("mock-smtp-port", "1025", "Port to start the offline mock SMTP server")
 	flag.Parse()

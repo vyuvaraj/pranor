@@ -549,7 +549,8 @@ func HandleTraceWaterfall(w http.ResponseWriter, r *http.Request) {
 
 	traceID := r.URL.Query().Get("traceId")
 	if traceID == "" {
-		traceID = "tr-mock-123"
+		WriteJSONError(w, r, "Missing traceId query parameter", "ERR_MISSING_TRACE_ID", http.StatusBadRequest)
+		return
 	}
 
 	root := WaterfallSpan{

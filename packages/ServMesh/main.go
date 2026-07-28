@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+	"sync/atomic"
 	"syscall"
 	"time"
 
@@ -133,7 +134,8 @@ func main() {
 }
 
 type devProxy struct {
-	reg *registry.Registry
+	reg     *registry.Registry
+	rrIndex uint64
 }
 
 func (p *devProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -173,7 +175,8 @@ func (p *devProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	inst := instances[0]
 	if len(instances) > 1 {
-		inst = instances[time.Now().UnixNano()%int64(len(instances))]
+		idx := atomic.AddUint64(&p.rrIndex, 1) % uint64(len(instances))
+		inst = instances[idx]
 	}
 
 	targetURL, err := url.Parse(inst.Address)

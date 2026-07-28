@@ -46,11 +46,11 @@ func (r *HealthRegistry) Check() map[string]string {
 	return results
 }
 
-// HealthzHandler returns 200 OK if the service is running.
+// HealthzHandler returns standardized 200 OK JSON status.
 func HealthzHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write([]byte(`{"status":"healthy"}`))
+	_, _ = w.Write([]byte(`{"status":"UP","service":"serv","version":"1.0.0"}`))
 }
 
 // ReadyzHandler executes all registered health checks and returns 200 if OK, 503 if any check fails.

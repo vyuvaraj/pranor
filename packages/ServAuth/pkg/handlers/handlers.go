@@ -1917,3 +1917,66 @@ func HandleTrustedDevices(w http.ResponseWriter, r *http.Request) {
 
 	httpError(w, r, "Method not allowed", http.StatusMethodNotAllowed)
 }
+
+type TenantOIDCProvider struct {
+	TenantID     string   `json:"tenant_id"`
+	ProviderName string   `json:"provider_name"` // "Okta", "AzureAD", "GoogleWorkspace"
+	IssuerURL    string   `json:"issuer_url"`
+	ClientID     string   `json:"client_id"`
+	AutoRoleMap  map[string]string `json:"auto_role_map"` // external group claim -> ServAuth role
+}
+
+var (
+	tenantOidcMap   = make(map[string]TenantOIDCProvider) // tenantID -> OIDC config
+	tenantOidcMapMu sync.RWMutex
+)
+
+// SA.G5: Per-Tenant OIDC Provider Federation (Okta, Azure AD, Google Workspace)
+func HandleTenantOidCFederation(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	tenantID := r.URL.Query().Get("tenant_id")
+	if tenantID == "" {
+		tenantID = "default"
+	}
+
+	tenantOidcMapMu.Lock()
+	defer tenantOidcMapMu.Unlock()
+
+	if r.Method == http.MethodPost {
+		var cfg TenantOIDCProvider
+		if err := json.NewDecoder(r.Body).Decode(&cfg); err != nil {
+			httpError(w, r, "Invalid payload", http.StatusBadRequest)
+			return
+		}
+		cfg.TenantID = tenantID
+		tenantOidcMap[tenantID] = cfg
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"status": "configured",
+			"provider": cfg,
+		})
+		return
+	}
+
+	if r.Method == http.MethodGet {
+		cfg, exists := tenantOidcMap[tenantID]
+		if !exists {
+			cfg = TenantOIDCProvider{
+				TenantID:     tenantID,
+				ProviderName: "Okta",
+				IssuerURL:    "https://dev-example.okta.com/oauth2/default",
+				ClientID:     "okta-client-id-99",
+				AutoRoleMap: map[string]string{
+					"Engineering": "admin",
+					"Developers":  "developer",
+				},
+			}
+			tenantOidcMap[tenantID] = cfg
+		}
+		json.NewEncoder(w).Encode(cfg)
+		return
+	}
+
+	httpError(w, r, "Method not allowed", http.StatusMethodNotAllowed)
+}

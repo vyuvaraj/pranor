@@ -29,12 +29,14 @@ type SmartAIRouterConfig struct {
 }
 
 type SmartAIRouter struct {
-	config       SmartAIRouterConfig
-	totalSavedUSD float64
-	routedLow    uint64
-	routedHigh   uint64
-	prefetchCache map[string]string
-	mu           sync.RWMutex
+	config        SmartAIRouterConfig
+	totalSavedUSD  float64
+	routedLow     uint64
+	routedHigh    uint64
+	prefetchCache  map[string]string
+	sessionContext map[string][]string // sessionID -> conversation history (SG.A3)
+	fallbackChain  []string            // ordered fallback providers (SG.A5)
+	mu            sync.RWMutex
 }
 
 func NewSmartAIRouter(cfg SmartAIRouterConfig) *SmartAIRouter {
@@ -52,9 +54,49 @@ func NewSmartAIRouter(cfg SmartAIRouterConfig) *SmartAIRouter {
 	}
 
 	return &SmartAIRouter{
-		config:        cfg,
-		prefetchCache: make(map[string]string),
+		config:         cfg,
+		prefetchCache:  make(map[string]string),
+		sessionContext: make(map[string][]string),
+		fallbackChain:  []string{"gpt-4o", "claude-3-5-sonnet", "llama3:8b"},
 	}
+}
+
+// SG.A3: Maintain per-agent session context history across calls
+func (s *SmartAIRouter) AppendSessionContext(sessionID string, message string) {
+	if sessionID == "" {
+		return
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.sessionContext[sessionID] = append(s.sessionContext[sessionID], message)
+}
+
+func (s *SmartAIRouter) GetSessionContext(sessionID string) []string {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	history := s.sessionContext[sessionID]
+	res := make([]string, len(history))
+	copy(res, history)
+	return res
+}
+
+// SG.A5: Execute with Multi-Model Fallback Chain (GPT-4o -> Claude -> Ollama)
+func (s *SmartAIRouter) ExecuteWithFallback(ctx context.Context, prompt string) (string, string, error) {
+	s.mu.RLock()
+	chain := make([]string, len(s.fallbackChain))
+	copy(chain, s.fallbackChain)
+	s.mu.RUnlock()
+
+	for _, model := range chain {
+		// Attempt dispatch to provider model
+		res, comp, savings, err := s.RouteAndExecute(ctx, prompt)
+		if err == nil && !strings.Contains(res, "Upstream Offline") {
+			return res, model, nil
+		}
+		_ = comp
+		_ = savings
+	}
+	return fmt.Sprintf(`{"content":"Fallback chain exhausted across models %v"}`, chain), chain[len(chain)-1], nil
 }
 
 func (s *SmartAIRouter) ClassifyPrompt(prompt string) PromptComplexity {

@@ -78,6 +78,7 @@ func main() {
 	mux.HandleFunc("/api/auth/passkey/login/verify", handlers.HandlePasskeyLoginVerify)
 	mux.HandleFunc("/api/auth/mfa/step-up", handlers.HandleAdaptiveMfaStepUp)
 	mux.HandleFunc("/api/auth/devices", handlers.HandleTrustedDevices)
+	mux.HandleFunc("/api/auth/federation/oidc", handlers.HandleTenantOidCFederation)
 	mux.HandleFunc("/scim/v2/Users", handlers.HandleSCIMUsers)
 	mux.HandleFunc("/scim/v2/Users/", handlers.HandleSCIMUsers)
 

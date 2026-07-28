@@ -127,6 +127,8 @@ func main() {
 		err = cmdServeStatic(rest)
 	case "import":
 		err = cmdImport(rest)
+	case "presign":
+		err = cmdPresign(rest)
 	case "version":
 		fmt.Println("servstore CLI v2.0.0 (Unified Data & Admin Tool)")
 	case "help", "--help", "-h":
@@ -935,5 +937,27 @@ func cmdImport(args []string) error {
 	fmt.Printf("✓ Created destination bucket %q\n", destBucket)
 	fmt.Printf("✓ Mirrored 12 object(s) [1.2 GB total] from %s\n", *fromSource)
 	fmt.Printf("✓ BLAKE3 integrity verification complete.\n")
+	return nil
+}
+
+func cmdPresign(args []string) error {
+	fs := flag.NewFlagSet("presign", flag.ExitOnError)
+	expiresSec := fs.Int("expires", 3600, "Presigned URL expiration in seconds")
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
+
+	if fs.NArg() < 1 {
+		return fmt.Errorf("usage: servstore presign <bucket/key> [--expires 3600]")
+	}
+
+	targetPath := strings.TrimPrefix(fs.Arg(0), "/")
+	now := time.Now().Unix()
+	expiresAt := now + int64(*expiresSec)
+
+	signature := fmt.Sprintf("%x", sha256.Sum256([]byte(fmt.Sprintf("%s:%d:%s", targetPath, expiresAt, secretKey))))
+	presignedURL := fmt.Sprintf("%s/%s?X-Amz-Expires=%d&X-Amz-Signature=%s", strings.TrimRight(endpoint, "/"), targetPath, *expiresSec, signature)
+
+	fmt.Println(presignedURL)
 	return nil
 }

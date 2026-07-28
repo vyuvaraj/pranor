@@ -73,9 +73,10 @@ type CacheEntry struct {
 }
 
 type SemanticCache struct {
-	mu        sync.RWMutex
-	entries   []CacheEntry
-	threshold float64
+	mu          sync.RWMutex
+	entries     []CacheEntry
+	threshold   float64
+	maxCapacity int
 }
 
 func NewSemanticCache(threshold float64) *SemanticCache {
@@ -83,7 +84,8 @@ func NewSemanticCache(threshold float64) *SemanticCache {
 		threshold = 0.85 // Default threshold
 	}
 	return &SemanticCache{
-		threshold: threshold,
+		threshold:   threshold,
+		maxCapacity: 1000, // Bounded LRU capacity
 	}
 }
 
@@ -148,6 +150,11 @@ func (c *SemanticCache) Set(prompt string, response []byte) {
 
 	c.mu.Lock()
 	defer c.mu.Unlock()
+
+	// LRU eviction if max capacity reached
+	if len(c.entries) >= c.maxCapacity {
+		c.entries = c.entries[1:]
+	}
 
 	c.entries = append(c.entries, CacheEntry{
 		Prompt:    prompt,

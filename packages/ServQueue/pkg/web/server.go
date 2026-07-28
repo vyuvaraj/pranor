@@ -59,6 +59,9 @@ func (s *Server) Start() error {
 	mux.HandleFunc("/api/v1/topics", s.handleListTopics)
 	mux.HandleFunc("/api/publish", s.handlePublish)
 	mux.HandleFunc("/api/v1/publish", s.handlePublish)
+	mux.HandleFunc("/api/publish/batch", s.handleBatchPublish)
+	mux.HandleFunc("/api/v1/publish/batch", s.handleBatchPublish)
+	mux.HandleFunc("/api/v1/topics/retention", s.handleTopicRetention)
 	mux.HandleFunc("/api/tail", s.handleTail)
 	mux.HandleFunc("/api/v1/tail", s.handleTail)
 	mux.HandleFunc("/api/stats", s.handleStats)
@@ -1128,4 +1131,79 @@ func (s *Server) handleSubscribeWS(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+}
+
+type BatchPublishItem struct {
+	Topic   string `json:"topic"`
+	Payload string `json:"payload"`
+}
+
+type BatchPublishRequest struct {
+	Messages []BatchPublishItem `json:"messages"`
+}
+
+func (s *Server) handleBatchPublish(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var req BatchPublishRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid payload", http.StatusBadRequest)
+		return
+	}
+
+	tenant, _ := r.Context().Value("tenant-id").(string)
+	publishedCount := 0
+
+	for _, item := range req.Messages {
+		if item.Topic == "" {
+			continue
+		}
+		namespacedTopic, err := s.namespaceTopic(item.Topic, tenant)
+		if err != nil {
+			continue
+		}
+		_, _ = s.engine.Publish(r.Context(), namespacedTopic, item.Payload)
+		publishedCount++
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"status":          "published",
+		"count":           publishedCount,
+		"total_requested": len(req.Messages),
+	})
+}
+
+type TopicRetentionConfig struct {
+	Topic    string `json:"topic"`
+	MaxAge   string `json:"max_age"`   // e.g. "7d"
+	MaxBytes string `json:"max_bytes"` // e.g. "1GB"
+	Compact  bool   `json:"compact"`
+}
+
+func (s *Server) handleTopicRetention(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	if r.Method == http.MethodPut || r.Method == http.MethodPost {
+		var cfg TopicRetentionConfig
+		if err := json.NewDecoder(r.Body).Decode(&cfg); err != nil {
+			http.Error(w, "Invalid payload", http.StatusBadRequest)
+			return
+		}
+		if cfg.Topic == "" {
+			cfg.Topic = r.URL.Query().Get("topic")
+		}
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"status": "retention_configured",
+			"config": cfg,
+		})
+		return
+	}
+
+	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 }

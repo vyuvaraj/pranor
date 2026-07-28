@@ -956,6 +956,20 @@ func (h *GatewayHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// Request Validation Schema & OpenAPI Spec enforcement
+	if len(matchedRoute.ValidationSchema) > 0 && (r.Method == http.MethodPost || r.Method == http.MethodPut || r.Method == http.MethodPatch) {
+		bodyBytes, err := io.ReadAll(r.Body)
+		if err == nil {
+			r.Body.Close()
+			r.Body = io.NopCloser(bytes.NewReader(bodyBytes))
+
+			if vErr := ValidateRequest(bodyBytes, matchedRoute.ValidationSchema); vErr != nil {
+				WriteJSONError(w, r, vErr.Error(), "ERR_VALIDATION_FAILED", http.StatusBadRequest)
+				return
+			}
+		}
+	}
+
 	// MCP (Model Context Protocol) handler
 	if matchedRoute.MCPEnabled && r.Method == http.MethodPost {
 		bodyBytes, err := io.ReadAll(r.Body)

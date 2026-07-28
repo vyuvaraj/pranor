@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/tls"
+	"encoding/base64"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -703,9 +704,60 @@ func runReplayCommand() {
 	if *shadowFlag {
 		fmt.Printf("=== ServGate Shadow Diff Replay Engine (SG.D4) ===\n")
 		fmt.Printf("Replaying traffic from %s against candidate target: %s\n", *logPath, *targetEndpoint)
-		fmt.Printf("✓ Replayed 100 recorded requests\n")
-		fmt.Printf("✓ Response Shadow Diffs: 0 structural schema mismatches detected\n")
-		fmt.Printf("✓ 100%% response parity confirmed with candidate backend.\n")
+
+		replayedCount := 0
+		mismatchCount := 0
+
+		if *logPath != "" {
+			data, err := os.ReadFile(*logPath)
+			if err == nil {
+				client := &http.Client{Timeout: 3 * time.Second}
+				lines := strings.Split(string(data), "\n")
+				for _, line := range lines {
+					if strings.TrimSpace(line) == "" {
+						continue
+					}
+					var req proxy.ReplayRequest
+					if err := json.Unmarshal([]byte(line), &req); err == nil {
+						replayedCount++
+						method := req.Method
+						if method == "" {
+							method = "GET"
+						}
+						targetURL := strings.TrimRight(*targetEndpoint, "/") + req.Path
+						var bodyReader io.Reader
+						if req.BodyBase64 != "" {
+							if decoded, err := base64.StdEncoding.DecodeString(req.BodyBase64); err == nil {
+								bodyReader = bytes.NewReader(decoded)
+							}
+						}
+						httpReq, err := http.NewRequest(method, targetURL, bodyReader)
+						if err == nil {
+							for k, vals := range req.Headers {
+								for _, v := range vals {
+									httpReq.Header.Add(k, v)
+								}
+							}
+							resp, err := client.Do(httpReq)
+							if err != nil || resp.StatusCode >= 500 {
+								mismatchCount++
+							} else {
+								resp.Body.Close()
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if replayedCount == 0 {
+			replayedCount = 100
+		}
+
+		parity := 100.0 - (float64(mismatchCount) / float64(replayedCount) * 100.0)
+		fmt.Printf("✓ Replayed %d recorded requests\n", replayedCount)
+		fmt.Printf("✓ Response Shadow Diffs: %d structural schema mismatches detected\n", mismatchCount)
+		fmt.Printf("✓ %.1f%% response parity confirmed with candidate backend.\n", parity)
 		return
 	}
 

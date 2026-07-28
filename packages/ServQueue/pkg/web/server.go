@@ -62,6 +62,8 @@ func (s *Server) Start() error {
 	mux.HandleFunc("/api/publish/batch", s.handleBatchPublish)
 	mux.HandleFunc("/api/v1/publish/batch", s.handleBatchPublish)
 	mux.HandleFunc("/api/v1/topics/retention", s.handleTopicRetention)
+	mux.HandleFunc("/api/v1/consumers/lag", s.handleConsumerLag)
+	mux.HandleFunc("/api/consumers/lag", s.handleConsumerLag)
 	mux.HandleFunc("/api/tail", s.handleTail)
 	mux.HandleFunc("/api/v1/tail", s.handleTail)
 	mux.HandleFunc("/api/stats", s.handleStats)
@@ -1218,4 +1220,54 @@ func (s *Server) handleTopicRetention(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+}
+
+func (s *Server) handleConsumerLag(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	group := r.URL.Query().Get("group")
+	topic := r.URL.Query().Get("topic")
+
+	if group == "" {
+		parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+		for i, part := range parts {
+			if part == "consumers" && i+2 < len(parts) && parts[i+2] == "lag" {
+				group = parts[i+1]
+				break
+			}
+		}
+	}
+
+	if group == "" {
+		group = "default-group"
+	}
+
+	tenant, _ := r.Context().Value("tenant-id").(string)
+	if topic != "" {
+		if nt, err := s.namespaceTopic(topic, tenant); err == nil {
+			topic = nt
+		}
+	} else {
+		topic = "default-topic"
+	}
+
+	committedOffset := s.engine.GetGroupOffset(group, topic)
+	latestOffset := s.engine.GetTopicOffset(topic)
+	lag := latestOffset - committedOffset
+	if lag < 0 {
+		lag = 0
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"group":            group,
+		"topic":            topic,
+		"committed_offset": committedOffset,
+		"latest_offset":    latestOffset,
+		"consumer_lag":     lag,
+	})
 }

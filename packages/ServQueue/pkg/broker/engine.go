@@ -1224,6 +1224,25 @@ func (e *BrokerEngine) GetGroupOffset(groupName, topic string) int64 {
 	return e.groupOffsets[groupName][topic]
 }
 
+func (e *BrokerEngine) GetTopicOffset(topic string) int64 {
+	e.mu.RLock()
+	defer e.mu.RUnlock()
+
+	if e.wal != nil {
+		entries, err := e.wal.Recover()
+		if err == nil {
+			var count int64 = 0
+			for _, entry := range entries {
+				if entry.Topic == topic {
+					count++
+				}
+			}
+			return count
+		}
+	}
+	return 0
+}
+
 // ScheduleDelayed schedules a message payload to be published to a topic after delay (SQ.D3)
 func (e *BrokerEngine) ScheduleDelayed(ctx context.Context, topic string, payload string, delay time.Duration) {
 	if e.timeWheel != nil {

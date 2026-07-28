@@ -1,6 +1,11 @@
 # ServTunnel
 
 ```bash
+servtunnel client --port 3000 --server tunnel.servverse.net
+# → Exposes local port 3000 at https://abc123.tunnel.servverse.net
+```
+
+```bash
 docker run -p 8092:8092 ghcr.io/vyuvaraj/servtunnel:latest
 ```
 

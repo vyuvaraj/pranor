@@ -62,6 +62,18 @@ docker run -p 8089:8089 ghcr.io/vyuvaraj/servflow:latest
 
 ## Architecture
 
+```json
+{
+  "id": "order-checkout-flow",
+  "name": "Order Checkout Pipeline",
+  "tasks": [
+    { "name": "reserve-inventory", "action": "http://inventory-svc/reserve" },
+    { "name": "process-payment", "action": "http://payment-svc/charge", "depends_on": ["reserve-inventory"], "compensate_action": "http://payment-svc/refund" },
+    { "name": "ship-order", "action": "http://shipping-svc/label", "depends_on": ["process-payment"] }
+  ]
+}
+```
+
 ```
 Define Workflow (POST /api/workflows/define)
   └── DAG Spec: steps, dependencies, compensations, WASM modules

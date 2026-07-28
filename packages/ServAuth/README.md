@@ -1,6 +1,13 @@
 # ServAuth
 
 ```bash
+# 5-Minute Auth Quickstart
+curl -X POST http://localhost:8086/api/auth/register -d '{"username":"dev","password":"secretpassword"}'
+curl -X POST http://localhost:8086/api/auth/login -d '{"username":"dev","password":"secretpassword"}'
+# → Returns JWT token; pass header 'Authorization: Bearer <token>' to protected APIs
+```
+
+```bash
 docker run -p 8086:8086 ghcr.io/vyuvaraj/servauth:latest
 ```
 

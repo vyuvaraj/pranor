@@ -1,5 +1,5 @@
 // Serv Standard Library: Batch Processing
-// Import: import { createBatch, addToBatch, processBatch, batchSize } from "stdlib/batch.srv"
+// Import: import { createBatch, addToBatch, processBatch, batchSize } from "stdlib/batch.pnr"
 //
 // Accumulate items and process them in batches — common for
 // bulk DB writes, API calls, and event processing.

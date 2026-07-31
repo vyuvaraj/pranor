@@ -1,6 +1,6 @@
 // Serv Example 44: Using External Packages
 // Prerequisites: serv add github.com/google/uuid
-// Build: serv build examples/44_package_usage.srv -o pkg_demo.exe
+// Build: pranor build examples/44_package_usage.pnr -o pkg_demo.exe
 //
 // Demonstrates importing and using Go packages via declarations.
 

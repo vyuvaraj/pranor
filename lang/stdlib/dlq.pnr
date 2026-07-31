@@ -1,5 +1,5 @@
 // Serv Standard Library: Dead Letter Queue (DLQ) Pattern
-// Import: import { createDLQ, sendToDLQ, dlqSize, retryFromDLQ } from "stdlib/dlq.srv"
+// Import: import { createDLQ, sendToDLQ, dlqSize, retryFromDLQ } from "stdlib/dlq.pnr"
 //
 // When message processing fails after retries, messages go to a DLQ
 // for later investigation or reprocessing.

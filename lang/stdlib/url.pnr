@@ -1,5 +1,5 @@
 // Serv Standard Library: URL & Query String Helpers
-// Import: import { encodeURI, parseQuery, buildQuery, joinPath } from "stdlib/url.srv"
+// Import: import { encodeURI, parseQuery, buildQuery, joinPath } from "stdlib/url.pnr"
 
 // Encode a string for use in a URL (spaces -> %20, etc.)
 export fn encodeURI(value) {

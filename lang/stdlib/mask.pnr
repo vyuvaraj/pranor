@@ -1,5 +1,5 @@
 // Serv Standard Library: PII Data Masking
-// Import: import { maskEmail, maskPhone, maskCard, maskString } from "stdlib/mask.srv"
+// Import: import { maskEmail, maskPhone, maskCard, maskString } from "stdlib/mask.pnr"
 //
 // Mask personally identifiable information for logs, API responses,
 // and audit trails. Never log raw PII.

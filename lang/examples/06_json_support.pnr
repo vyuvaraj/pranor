@@ -1,6 +1,6 @@
 // Serv Example 06: Native JSON support
 // Run this example:
-//   .\serv.exe run examples/06_json_support.srv
+//   .\pranor.exe run examples/06_json_support.pnr
 
 every 4s {
     log.info("Starting JSON demonstration...")

@@ -1,11 +1,11 @@
 // Serv Example 45: Using the Standard Library
-// Build: serv build examples/45_stdlib_usage.srv -o stdlib_demo.exe
+// Build: pranor build examples/45_stdlib_usage.pnr -o stdlib_demo.exe
 //
 // Demonstrates importing reusable modules from stdlib/
 
-import { bearerToken, requireAuth } from "../stdlib/auth.srv"
-import { ok, badRequest, notFound } from "../stdlib/response.srv"
-import { required, isEmail } from "../stdlib/validation.srv"
+import { bearerToken, requireAuth } from "../stdlib/auth.pnr"
+import { ok, badRequest, notFound } from "../stdlib/response.pnr"
+import { required, isEmail } from "../stdlib/validation.pnr"
 
 server "8080"
 

@@ -12,7 +12,7 @@ import (
 func TestHandleRun(t *testing.T) {
 	// Prepare test server
 	// Set the servExePath relative to the test location if needed, but since it's testing
-	// fallback to go run should work if serv.exe is not found.
+	// fallback to go run should work if pranor.exe is not found.
 	// For testing, let's ensure we point to the repository root.
 	servExePath = "" // Force fallback to 'go run main.go' in tests or resolve it:
 	

@@ -10,4 +10,4 @@ WORKDIR /app
 COPY --from=builder /app/servconsole .
 COPY web/ ./web/
 EXPOSE 8083
-ENTRYPOINT ["./servconsole"]
+ENTRYPOINT ["./pranorconsole"]

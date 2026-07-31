@@ -8,4 +8,4 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/servcache .
 EXPOSE 8086
-ENTRYPOINT ["./servcache"]
+ENTRYPOINT ["./pranorcache"]

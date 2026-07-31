@@ -35,8 +35,8 @@ CMD ["/service"]
 
 Priority (highest to lowest):
 
-1. `--port` CLI flag: `./service --port 9090`
-2. `PORT` env var: `PORT=9090 ./service`
+1. `--port` CLI flag: `./pranorice --port 9090`
+2. `PORT` env var: `PORT=9090 ./pranorice`
 3. Config file: `server.port: "9090"` in `config.yml`
 4. Source declaration: `server "8080"`
 
@@ -89,8 +89,8 @@ If any key is missing at startup, the service exits with an error message showin
 Set environment variables to enable:
 
 ```bash
-OTEL_ENDPOINT=http://localhost:4318 ./service
-OTEL_SERVICE_NAME=my-service ./service
+OTEL_ENDPOINT=http://localhost:4318 ./pranorice
+OTEL_SERVICE_NAME=my-service ./pranorice
 ```
 
 **Auto-instrumented:**
@@ -116,10 +116,10 @@ Auto-generated endpoints (no code needed):
 
 ```bash
 # JSON output (for log aggregators)
-LOG_FORMAT=json ./service
+LOG_FORMAT=json ./pranorice
 
 # Set level
-LOG_LEVEL=debug ./service
+LOG_LEVEL=debug ./pranorice
 ```
 
 Output format (JSON mode):
@@ -269,7 +269,7 @@ FROM ghcr.io/user/pranor:latest
 WORKDIR /app
 COPY myservice.pnr .
 RUN pranor build myservice.pnr -o service
-CMD ["./service"]
+CMD ["./pranorice"]
 ```
 
 ### Complete Release Checklist

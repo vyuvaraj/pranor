@@ -1,5 +1,5 @@
 // Serv Standard Library: Validation Helpers
-// Import: import { isEmail, isURL, minLength, maxLength, required } from "stdlib/validation.srv"
+// Import: import { isEmail, isURL, minLength, maxLength, required } from "stdlib/validation.pnr"
 
 // Check if a string is a valid email format
 export fn isEmail(value) {

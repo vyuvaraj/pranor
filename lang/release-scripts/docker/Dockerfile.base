@@ -1,9 +1,9 @@
-# Serv base image for building and running .srv services.
+# Serv base image for building and running .pnr services.
 # Usage:
 #   FROM serv:latest
-#   COPY myservice.srv .
-#   RUN serv build myservice.srv -o service
-#   CMD ["./service"]
+#   COPY myservice.pnr .
+#   RUN pranor build myservice.pnr -o service
+#   CMD ["./pranorice"]
 #
 # Build this image:
 #   docker build -t serv:latest -f release-scripts/docker/Dockerfile.base .

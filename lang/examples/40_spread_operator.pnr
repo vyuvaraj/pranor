@@ -1,5 +1,5 @@
 // Serv Example 40: Spread Operator
-// Build: serv build examples/40_spread_operator.srv -o spread_demo.exe
+// Build: pranor build examples/40_spread_operator.pnr -o spread_demo.exe
 //
 // Syntax: { ...source, key: value }
 // Merges all key-value pairs from source into the new map.

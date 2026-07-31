@@ -32,12 +32,12 @@ func OrchestrateStartup() {
 	}{
 		{"github.com/vyuvaraj/pranor/vault", "./Pranor Vault.exe", []string{}, 8081},
 		{"github.com/vyuvaraj/pranor/pulse", "./Pranor Pulse.exe", []string{}, 8082},
-		{"ServDB", "./servdb.exe", []string{}, 8097},
+		{"ServDB", "./pranordb.exe", []string{}, 8097},
 		{"github.com/vyuvaraj/pranor/auth", "./Pranor Auth.exe", []string{}, 8098},
 		{"github.com/vyuvaraj/pranor/gate", "./Pranor Gate.exe", []string{}, 8080},
 		{"github.com/vyuvaraj/pranor/mesh", "./Pranor Mesh.exe", []string{}, 8089},
 		{"github.com/vyuvaraj/pranor/chrono", "./Pranor Chrono.exe", []string{}, 8087},
-		{"ServDocs", "./servdocs.exe", []string{}, 8084},
+		{"ServDocs", "./pranordocs.exe", []string{}, 8084},
 	}
 
 	for _, svc := range services {

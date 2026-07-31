@@ -1,5 +1,5 @@
 // Serv Standard Library: Object Diff & Change Detection
-// Import: import { hasChanged, fieldChanged } from "stdlib/diff.srv"
+// Import: import { hasChanged, fieldChanged } from "stdlib/diff.pnr"
 //
 // Useful for audit logs, webhooks, and detecting mutations.
 

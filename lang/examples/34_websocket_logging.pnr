@@ -1,6 +1,6 @@
 // Serv Example 34: WebSocket & Structured Logging
-// Lint: serv lint examples/34_websocket_logging.srv
-// Build: serv build examples/34_websocket_logging.srv -o test_ws.exe
+// Lint: pranor lint examples/34_websocket_logging.pnr
+// Build: pranor build examples/34_websocket_logging.pnr -o test_ws.exe
 //
 // To enable JSON logging, set: LOG_FORMAT=json
 // To set log level: LOG_LEVEL=debug

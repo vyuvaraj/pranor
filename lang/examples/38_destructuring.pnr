@@ -1,5 +1,5 @@
 // Serv Example 38: Destructuring
-// Build: serv build examples/38_destructuring.srv -o destruct_demo.exe
+// Build: pranor build examples/38_destructuring.pnr -o destruct_demo.exe
 //
 // Syntax: let { field1, field2 } = expr
 // Extracts named fields from maps or structs into local variables.

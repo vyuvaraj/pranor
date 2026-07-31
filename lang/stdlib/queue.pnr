@@ -1,5 +1,5 @@
 // Serv Standard Library: Queue Client
-// Import: import { publishMessage } from "stdlib/queue.srv"
+// Import: import { publishMessage } from "stdlib/queue.pnr"
 
 // Publish to a queue/topic broker
 export fn publishMessage(topic, msg) {

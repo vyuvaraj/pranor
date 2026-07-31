@@ -1,5 +1,5 @@
 // Serv Example 46: Generic Constraints
-// Build: serv build examples/46_generic_constraints.srv -o generics_demo.exe
+// Build: pranor build examples/46_generic_constraints.pnr -o generics_demo.exe
 //
 // Syntax: fn name[T: Constraint](params) -> returnType
 // Constraints: Comparable, Numeric, Ordered, Integer, Float, Signed, Unsigned

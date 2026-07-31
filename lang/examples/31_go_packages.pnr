@@ -1,6 +1,6 @@
 // Serv Example 31: Go Package Declarations
-// Lint: serv lint examples/31_go_packages.srv
-// Build: serv build examples/31_go_packages.srv -o test_gopkg.exe
+// Lint: pranor lint examples/31_go_packages.pnr
+// Build: pranor build examples/31_go_packages.pnr -o test_gopkg.exe
 //
 // This demonstrates calling Go packages directly from Serv
 // using declare module + import alias from "path"

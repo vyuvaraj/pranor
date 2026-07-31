@@ -1,5 +1,5 @@
 // Serv Standard Library: Idempotency Key Pattern
-// Import: import { checkIdempotency, markProcessed, isProcessed } from "stdlib/idempotency.srv"
+// Import: import { checkIdempotency, markProcessed, isProcessed } from "stdlib/idempotency.pnr"
 //
 // Prevents duplicate processing of requests using idempotency keys.
 // Critical for payment processing, webhook handlers, and job runners.

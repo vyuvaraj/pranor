@@ -1,5 +1,5 @@
 // Serv Standard Library: Pagination Helpers
-// Import: import { paginate, pageResponse } from "stdlib/pagination.srv"
+// Import: import { paginate, pageResponse } from "stdlib/pagination.pnr"
 
 // Calculate offset from page number and page size
 export fn offset(page, pageSize) {

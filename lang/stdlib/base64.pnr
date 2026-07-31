@@ -1,5 +1,5 @@
 // Serv Standard Library: Base64 Encoding/Decoding
-// Import: import { encode, decode } from "stdlib/base64.srv"
+// Import: import { encode, decode } from "stdlib/base64.pnr"
 //
 // For full base64 support, use: serv add encoding/base64
 // These are convenience wrappers.

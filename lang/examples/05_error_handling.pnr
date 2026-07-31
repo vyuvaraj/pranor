@@ -1,6 +1,6 @@
 // Serv Example 05: Try-Catch Error Handling
 // Run this example:
-//   .\serv.exe run examples/05_error_handling.srv
+//   .\pranor.exe run examples/05_error_handling.pnr
 
 every 4s {
     log.info("Attempting connection to a down server...")

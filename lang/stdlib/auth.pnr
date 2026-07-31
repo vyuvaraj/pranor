@@ -1,5 +1,5 @@
 // Serv Standard Library: Auth Helpers
-// Import: import { bearerToken, basicAuth, requireAuth } from "stdlib/auth.srv"
+// Import: import { bearerToken, basicAuth, requireAuth } from "stdlib/auth.pnr"
 
 // Extract Bearer token from Authorization header
 export fn bearerToken(req) {

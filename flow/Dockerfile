@@ -7,4 +7,4 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/servflow .
 EXPOSE 8096
-ENTRYPOINT ["./servflow"]
+ENTRYPOINT ["./pranorflow"]

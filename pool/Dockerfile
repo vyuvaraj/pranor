@@ -7,4 +7,4 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/servdb .
 EXPOSE 8097
-ENTRYPOINT ["./servdb"]
+ENTRYPOINT ["./pranordb"]

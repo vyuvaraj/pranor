@@ -1,5 +1,5 @@
 // Serv Standard Library: Rate Limiting
-// Import: import { createLimiter, isAllowed, remaining } from "stdlib/ratelimit.srv"
+// Import: import { createLimiter, isAllowed, remaining } from "stdlib/ratelimit.pnr"
 //
 // Per-key rate limiting using atomic counters.
 // For route-level rate limiting, use the built-in `limit` keyword on routes.

@@ -129,7 +129,7 @@ fn safeDiv(a: int, b: int) {
 // --- Phase 5: Static Analysis Features ---
 // (These are compile-time checks, not runtime features)
 // Unused variables, unreachable code, type mismatches, dead imports
-// are all caught by `serv lint` — this file should compile clean.
+// are all caught by `pranor lint` — this file should compile clean.
 
 // --- Phase 7: Testing ---
 

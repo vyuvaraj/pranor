@@ -1,5 +1,5 @@
 // Serv Standard Library: Health Check Helpers
-// Import: import { checkResult, healthy, unhealthy, degraded } from "stdlib/health.srv"
+// Import: import { checkResult, healthy, unhealthy, degraded } from "stdlib/health.pnr"
 //
 // Use to build custom health check responses beyond the auto-generated /health.
 

@@ -1,4 +1,4 @@
-﻿# Dockerfile.goreleaser
+# Dockerfile.goreleaser
 # Used by goreleaser only -- expects a pre-built binary in the build context.
 # The standard Dockerfile (multi-stage, builds from source) is used for local dev.
 
@@ -8,4 +8,4 @@ WORKDIR /app
 COPY servconsole .
 COPY web/ ./web/
 EXPOSE 8083
-ENTRYPOINT ["./servconsole"]
+ENTRYPOINT ["./pranorconsole"]

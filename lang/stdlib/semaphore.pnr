@@ -1,5 +1,5 @@
 // Serv Standard Library: Semaphore / Concurrency Limiter
-// Import: import { createSemaphore, acquire, release, available } from "stdlib/semaphore.srv"
+// Import: import { createSemaphore, acquire, release, available } from "stdlib/semaphore.pnr"
 //
 // Controls concurrent access to a shared resource.
 // For spawn-level limits, use `spawn(N)` syntax instead.

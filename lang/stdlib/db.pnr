@@ -1,5 +1,5 @@
 // Serv Standard Library: Database Client
-// Import: import { query, querySafe, queryPage } from "stdlib/db.srv"
+// Import: import { query, querySafe, queryPage } from "stdlib/db.pnr"
 
 export fn query(sql: string, args: any) {
     return db.query(sql, args)

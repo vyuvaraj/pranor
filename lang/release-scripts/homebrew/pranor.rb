@@ -32,7 +32,7 @@ class Serv < Formula
     bin.install "serv-lsp"
 
     # Install runtime, stdlib, and module files alongside the binary
-    # These are needed for compilation (serv.exe finds them relative to itself)
+    # These are needed for compilation (pranor.exe finds them relative to itself)
     libexec.install "runtime"
     libexec.install "stdlib"
     libexec.install "go.mod"
@@ -57,6 +57,6 @@ class Serv < Formula
 
     # Verify init works
     system bin/"serv", "init", "test-project"
-    assert_predicate testpath/"test-project/main.srv", :exist?
+    assert_predicate testpath/"test-project/main.pnr", :exist?
   end
 end

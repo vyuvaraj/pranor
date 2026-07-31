@@ -1,5 +1,5 @@
 // Serv Standard Library: JWT Helpers (simplified)
-// Import: import { jwtEncode, jwtDecode, jwtIsExpired } from "stdlib/jwt.srv"
+// Import: import { jwtEncode, jwtDecode, jwtIsExpired } from "stdlib/jwt.pnr"
 //
 // Note: For production JWT, use serv add github.com/golang-jwt/jwt/v5
 // These are lightweight helpers for basic token patterns.

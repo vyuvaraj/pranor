@@ -1,6 +1,6 @@
 // Serv Example 32: Generics
-// Lint: serv lint examples/32_generics.srv
-// Build: serv build examples/32_generics.srv -o test_generics.exe
+// Lint: pranor lint examples/32_generics.pnr
+// Build: pranor build examples/32_generics.pnr -o test_generics.exe
 
 server "8080"
 

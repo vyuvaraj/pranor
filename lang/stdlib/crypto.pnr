@@ -1,5 +1,5 @@
 // Serv Standard Library: Crypto & Security Helpers
-// Import: import { hashPassword, verifyPassword, randomToken, hmacSign } from "stdlib/crypto.srv"
+// Import: import { hashPassword, verifyPassword, randomToken, hmacSign } from "stdlib/crypto.pnr"
 
 // Hash a password (returns a hex-encoded SHA256 hash with salt prefix)
 export fn hashPassword(password) {

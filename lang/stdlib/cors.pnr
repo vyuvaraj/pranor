@@ -1,5 +1,5 @@
 // Serv Standard Library: CORS (Cross-Origin Resource Sharing)
-// Import: import { corsResponse, allowOrigin, preflightResponse } from "stdlib/cors.srv"
+// Import: import { corsResponse, allowOrigin, preflightResponse } from "stdlib/cors.pnr"
 //
 // Helpers for handling CORS in API services.
 

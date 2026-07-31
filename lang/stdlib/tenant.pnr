@@ -1,5 +1,5 @@
 // Serv Standard Library: Multi-Tenancy Helpers
-// Import: import { extractTenant, tenantConfig, isTenantActive } from "stdlib/tenant.srv"
+// Import: import { extractTenant, tenantConfig, isTenantActive } from "stdlib/tenant.pnr"
 //
 // Common patterns for multi-tenant SaaS services.
 

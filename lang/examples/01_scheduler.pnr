@@ -1,6 +1,6 @@
 // Serv Example 01: Schedulers
 // Run this example:
-//   $env:BACKUP_CRON="*/10 * * * * *"; .\serv.exe run examples/01_scheduler.srv
+//   $env:BACKUP_CRON="*/10 * * * * *"; .\pranor.exe run examples/01_scheduler.pnr
 
 // Run a job every 5 seconds
 

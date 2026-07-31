@@ -1,5 +1,5 @@
 // Serv Standard Library: Math Utilities
-// Import: import { min, max, clamp, abs, round, percent } from "stdlib/math.srv"
+// Import: import { min, max, clamp, abs, round, percent } from "stdlib/math.pnr"
 
 // Return the smaller of two values
 export fn min(a, b) {

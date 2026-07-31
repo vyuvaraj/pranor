@@ -1,5 +1,5 @@
 // Serv Standard Library: Dynamic Scheduler
-// Import: import { scheduleAfter, scheduleEvery, isScheduled } from "stdlib/scheduler.srv"
+// Import: import { scheduleAfter, scheduleEvery, isScheduled } from "stdlib/scheduler.pnr"
 //
 // For static scheduling use the `every` and `cron` keywords.
 // This module is for dynamically created schedules at runtime.

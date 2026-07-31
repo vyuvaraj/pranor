@@ -1,5 +1,5 @@
 // Serv Standard Library: Common Middleware Presets
-// Import: import { corsHeaders, requestId, logRequest } from "stdlib/middleware.srv"
+// Import: import { corsHeaders, requestId, logRequest } from "stdlib/middleware.pnr"
 //
 // Note: These are helper functions to use INSIDE middleware declarations.
 // Define your middleware using the `middleware` keyword and call these inside.

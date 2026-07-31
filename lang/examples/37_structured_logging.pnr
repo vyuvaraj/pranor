@@ -1,5 +1,5 @@
 // Serv Example 37: Enhanced Structured Logging
-// Build: serv build examples/37_structured_logging.srv -o logging_demo.exe
+// Build: pranor build examples/37_structured_logging.pnr -o logging_demo.exe
 //
 // Features demonstrated:
 // - log.info/warn/error/debug — basic level logging

@@ -1,5 +1,5 @@
 // Serv Standard Library: S3/ServStore Client
-// Import: import { init, put, get, delete, list, at, search } from "stdlib/s3.srv"
+// Import: import { init, put, get, delete, list, at, search } from "stdlib/s3.pnr"
 
 export fn newClient(endpoint, accessKey, secretKey) {
     return s3.init(endpoint, accessKey, secretKey)

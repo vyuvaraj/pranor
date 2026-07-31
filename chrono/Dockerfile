@@ -8,4 +8,4 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/servcron .
 EXPOSE 8087
-ENTRYPOINT ["./servcron"]
+ENTRYPOINT ["./pranorcron"]

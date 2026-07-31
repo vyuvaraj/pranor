@@ -339,7 +339,7 @@ function startLspClient(context, lspPath) {
 }
 
 function activateBasicMode(context) {
-    // Minimal diagnostics via serv lint (fallback when LSP is not available)
+    // Minimal diagnostics via pranor lint (fallback when LSP is not available)
     const cp = require('child_process');
     const diagnosticCollection = vscode.languages.createDiagnosticCollection('serv');
     context.subscriptions.push(diagnosticCollection);
@@ -1839,7 +1839,7 @@ function runTestsWithGutter(gutterManager) {
 
     const outputChannel = vscode.window.createOutputChannel('Pranor Tests');
     outputChannel.show(true);
-    outputChannel.appendLine(`\u25b6 serv test "${path.basename(filePath)}"`);
+    outputChannel.appendLine(`\u25b6 pranor test "${path.basename(filePath)}"`);
     outputChannel.appendLine('─'.repeat(60));
 
     const proc = spawn(servPath, ['test', filePath], {
@@ -2682,7 +2682,7 @@ function _generateProjectFiles(name, templateId) {
 
     files['serv.toml'] = `[project]\nname = "${name}"\nversion = "0.1.0"\n\n[server]\nport = 8080\nenv = "development"\n\n[database]\ndriver = "sqlite"\ndsn = "./${name}.db"\n`;
     files['.gitignore'] = `*.db\n*.bin\ndist/\n.pnr-cache/\n`;
-    files['README.md'] = `# ${name}\n\nA Pranor service.\n\n## Run\n\n\`\`\`bash\npranor run main.pnr\n\`\`\`\n\n## Test\n\n\`\`\`bash\nserv test tests/\n\`\`\`\n`;
+    files['README.md'] = `# ${name}\n\nA Pranor service.\n\n## Run\n\n\`\`\`bash\npranor run main.pnr\n\`\`\`\n\n## Test\n\n\`\`\`bash\npranor test tests/\n\`\`\`\n`;
 
     switch (templateId) {
         case 'api':
@@ -2854,7 +2854,7 @@ class ServCoverageManager {
 
         const out = vscode.window.createOutputChannel('Pranor Coverage');
         out.show(true);
-        out.appendLine(`\u25b6 serv test --coverage "${path.basename(filePath)}"`);
+        out.appendLine(`\u25b6 pranor test --coverage "${path.basename(filePath)}"`);
         out.appendLine('\u2500'.repeat(60));
 
         const proc = spawn(servPath, ['test', '--coverage', filePath], { cwd: path.dirname(filePath) });

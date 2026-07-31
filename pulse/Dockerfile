@@ -8,4 +8,4 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/servqueue .
 EXPOSE 8082 61613
-ENTRYPOINT ["./servqueue"]
+ENTRYPOINT ["./pranorqueue"]

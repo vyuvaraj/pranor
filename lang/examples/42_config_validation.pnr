@@ -1,5 +1,5 @@
 // Serv Example 42: Config Validation
-// Build: serv build examples/42_config_validation.srv -o config_demo.exe
+// Build: pranor build examples/42_config_validation.pnr -o config_demo.exe
 //
 // Validates required config keys exist at startup.
 // If missing, prints helpful error and exits immediately.

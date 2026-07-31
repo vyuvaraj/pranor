@@ -1,6 +1,6 @@
 // Serv Example 04: Python extern bindings
 // Run this example:
-//   .\serv.exe run examples/04_python_binding.srv
+//   .\pranor.exe run examples/04_python_binding.pnr
 
 // Declare the external Python method mapping
 extern fn cleanAndFormatText(inputVal) from "python:./examples/helpers.py:clean_text"

@@ -1,6 +1,6 @@
 // Serv Example 08: Multi-Database Support (SQLite, Postgres, Oracle, MongoDB)
 // Run this example:
-//   .\serv.exe run examples/08_multi_database.srv
+//   .\pranor.exe run examples/08_multi_database.pnr
 
 // Setup connections
 

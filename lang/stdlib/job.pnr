@@ -1,5 +1,5 @@
 // Serv Standard Library: Background Job Helpers
-// Import: import { createJob, startJob, completeJob, failJob, jobStatus } from "stdlib/job.srv"
+// Import: import { createJob, startJob, completeJob, failJob, jobStatus } from "stdlib/job.pnr"
 //
 // Track background job lifecycle — useful with spawn/every/cron blocks.
 

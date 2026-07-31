@@ -71,8 +71,8 @@ func NewOrchestrator(workDir string) (*Orchestrator, error) {
 	servPath := "github.com/vyuvaraj/pranor/lang"
 	if localPath, err := exec.LookPath("github.com/vyuvaraj/pranor/lang"); err == nil {
 		servPath = localPath
-	} else if _, err := os.Stat("../Pranor/serv.exe"); err == nil {
-		servPath, _ = filepath.Abs("../Pranor/serv.exe")
+	} else if _, err := os.Stat("../Pranor/pranor.exe"); err == nil {
+		servPath, _ = filepath.Abs("../Pranor/pranor.exe")
 	} else if _, err := os.Stat("../Pranor/serv"); err == nil {
 		servPath, _ = filepath.Abs("../Pranor/serv")
 	}
@@ -748,7 +748,7 @@ COPY main.go .
 RUN go build -o service main.go
 ENV PORT=%d
 EXPOSE %d
-CMD ["./service"]
+CMD ["./pranorice"]
 `, proc.Port, proc.Port)
 	dockerfile := filepath.Join(srvDir, "Dockerfile")
 	_ = os.WriteFile(dockerfile, []byte(dockerfileCode), 0644)

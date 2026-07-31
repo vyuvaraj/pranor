@@ -1,5 +1,5 @@
 // Serv Standard Library: HTTP Client Helpers
-// Import: import { getJSON, postJSON, isSuccess, isClientError } from "stdlib/http_client.srv"
+// Import: import { getJSON, postJSON, isSuccess, isClientError } from "stdlib/http_client.pnr"
 
 // GET request that auto-parses JSON response
 export fn getJSON(url, headers) {

@@ -1,5 +1,5 @@
 // Serv Standard Library: Retry & Resilience
-// Import: import { withRetry, backoffDelay } from "stdlib/retry.srv"
+// Import: import { withRetry, backoffDelay } from "stdlib/retry.pnr"
 
 // Calculate exponential backoff delay in ms: baseMs * 2^attempt
 export fn backoffDelay(attempt, baseMs) {

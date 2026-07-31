@@ -79,7 +79,7 @@ Write-Host ""
 
 # --- Phase 2: Unit Tests (test-only files) ---
 if ($Phase -eq 0 -or $Phase -eq 2) {
-Write-Host "Phase 2: Unit Tests (serv test)" -ForegroundColor White
+Write-Host "Phase 2: Unit Tests (pranor test)" -ForegroundColor White
 Write-Host "--------------------------------"
 
 $testFiles = @(

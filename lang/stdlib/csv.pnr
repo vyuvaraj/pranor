@@ -1,5 +1,5 @@
 // Serv Standard Library: CSV Parsing
-// Import: import { parseCSV, toCSV, parseRow } from "stdlib/csv.srv"
+// Import: import { parseCSV, toCSV, parseRow } from "stdlib/csv.pnr"
 //
 // Simple CSV helpers for import/export scenarios.
 

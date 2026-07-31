@@ -1,5 +1,5 @@
 // Serv Standard Library: Request Tracing
-// Import: import { startSpan, endSpan, traceId, addTag } from "stdlib/tracing.srv"
+// Import: import { startSpan, endSpan, traceId, addTag } from "stdlib/tracing.pnr"
 //
 // Lightweight tracing for service calls. Creates trace/span IDs
 // and records durations. For full OpenTelemetry, integrate via serv add.

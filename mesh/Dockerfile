@@ -8,4 +8,4 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/servmesh .
 EXPOSE 8089
-ENTRYPOINT ["./servmesh"]
+ENTRYPOINT ["./pranormesh"]

@@ -1,6 +1,6 @@
 // Serv Example 07: Advanced Features
 // Run this example:
-//   .\serv.exe run examples/07_advanced_features.srv
+//   .\pranor.exe run examples/07_advanced_features.pnr
 
 // 1. Setup SQLite Database & Cache
 

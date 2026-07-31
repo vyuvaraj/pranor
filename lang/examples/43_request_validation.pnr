@@ -1,5 +1,5 @@
 // Serv Example 43: Request Validation
-// Build: serv build examples/43_request_validation.srv -o validate_demo.exe
+// Build: pranor build examples/43_request_validation.pnr -o validate_demo.exe
 //
 // Built-in request body validation against a schema.
 // Rules: "required", "string", "int", "float", "bool", "email"

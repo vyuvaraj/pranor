@@ -1,8 +1,8 @@
 // Job Executor — resolves and invokes jobs with retry logic, timeout, and DLQ routing.
 // Equivalent of LocalJobExecutor.java
 
-import { createDlqEntry } from "./dlq.srv"
-import { emitAlert } from "./alert.srv"
+import { createDlqEntry } from "./dlq.pnr"
+import { emitAlert } from "./alert.pnr"
 
 export fn executeWithRetry(job) {
     let maxRetries = 3

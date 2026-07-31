@@ -1,5 +1,5 @@
 // Serv Standard Library: Testing Helpers
-// Import: import { assertEqual, assertNotNil, assertContains } from "stdlib/testing_helpers.srv"
+// Import: import { assertEqual, assertNotNil, assertContains } from "stdlib/testing_helpers.pnr"
 //
 // Use inside test blocks for more expressive assertions.
 

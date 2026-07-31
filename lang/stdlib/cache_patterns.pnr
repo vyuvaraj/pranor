@@ -1,5 +1,5 @@
 // Serv Standard Library: Cache Patterns
-// Import: import { cacheAside, writeThrough, invalidate, cacheKey, cacheTTL } from "stdlib/cache_patterns.srv"
+// Import: import { cacheAside, writeThrough, invalidate, cacheKey, cacheTTL } from "stdlib/cache_patterns.pnr"
 //
 // Standard caching strategies for service data access.
 

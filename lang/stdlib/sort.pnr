@@ -1,5 +1,5 @@
 // Serv Standard Library: Sorting Helpers
-// Import: import { sortAsc, sortDesc, reverse } from "stdlib/sort.srv"
+// Import: import { sortAsc, sortDesc, reverse } from "stdlib/sort.pnr"
 
 // Sort numbers ascending (simple bubble sort for small lists)
 export fn sortAsc(items) {

@@ -1,5 +1,5 @@
 // Serv Standard Library: IP Address Helpers
-// Import: import { extractIP, isPrivate, isTrustedProxy, parseForwarded } from "stdlib/ip.srv"
+// Import: import { extractIP, isPrivate, isTrustedProxy, parseForwarded } from "stdlib/ip.pnr"
 //
 // Extract client IPs from requests, detect private networks,
 // and handle proxy headers for rate-limiting and security.

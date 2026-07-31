@@ -1,5 +1,5 @@
 // Serv Standard Library: In-Process Event Bus
-// Import: import { emit, on } from "stdlib/events.srv"
+// Import: import { emit, on } from "stdlib/events.pnr"
 //
 // Simple pub/sub within a single service. For cross-service messaging,
 // use the built-in broker/subscribe/publish keywords instead.

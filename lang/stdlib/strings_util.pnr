@@ -1,5 +1,5 @@
 // Serv Standard Library: String Utilities
-// Import: import { slugify, truncate, capitalize, padLeft, padRight } from "stdlib/strings_util.srv"
+// Import: import { slugify, truncate, capitalize, padLeft, padRight } from "stdlib/strings_util.pnr"
 
 // Convert string to URL-friendly slug
 export fn slugify(text) {

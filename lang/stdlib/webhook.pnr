@@ -1,5 +1,5 @@
 // Serv Standard Library: Webhook Helpers
-// Import: import { sendWebhook, buildPayload, verifySignature } from "stdlib/webhook.srv"
+// Import: import { sendWebhook, buildPayload, verifySignature } from "stdlib/webhook.pnr"
 //
 // Common patterns for outgoing webhook notifications.
 

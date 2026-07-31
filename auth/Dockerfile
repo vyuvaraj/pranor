@@ -7,4 +7,4 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/servauth .
 EXPOSE 8098
-ENTRYPOINT ["./servauth"]
+ENTRYPOINT ["./pranorauth"]

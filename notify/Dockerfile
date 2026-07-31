@@ -7,4 +7,4 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/servmail .
 EXPOSE 8094
-ENTRYPOINT ["./servmail"]
+ENTRYPOINT ["./pranormail"]

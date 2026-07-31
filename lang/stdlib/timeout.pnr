@@ -1,5 +1,5 @@
 // Serv Standard Library: Timeout Helpers
-// Import: import { withDeadline, isTimedOut, remainingTime, startTimer } from "stdlib/timeout.srv"
+// Import: import { withDeadline, isTimedOut, remainingTime, startTimer } from "stdlib/timeout.pnr"
 //
 // Track operation deadlines and timeouts for request handling.
 

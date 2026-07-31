@@ -1,5 +1,5 @@
 // Serv Standard Library: Cursor-Based Pagination
-// Import: import { encodeCursor, decodeCursor, cursorResponse, hasCursor } from "stdlib/pagination_cursor.srv"
+// Import: import { encodeCursor, decodeCursor, cursorResponse, hasCursor } from "stdlib/pagination_cursor.pnr"
 //
 // Better than offset pagination for large/realtime datasets.
 // The cursor is an opaque token encoding the last seen item's position.

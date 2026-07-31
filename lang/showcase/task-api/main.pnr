@@ -1,9 +1,9 @@
 // Task Manager API — A showcase Serv application
 // Demonstrates: routes, database, caching, scheduled jobs, structs, error handling
 //
-// Run:   serv run main.srv --watch
-// Test:  serv test main.srv
-// Build: serv build main.srv -o task-api.exe
+// Run:   pranor run main.pnr --watch
+// Test:  pranor test main.pnr
+// Build: pranor build main.pnr -o task-api.exe
 
 server "3000"
 database "sqlite://tasks.db"

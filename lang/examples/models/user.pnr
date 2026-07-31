@@ -1,4 +1,4 @@
-// models/user.srv — User model module
+// models/user.pnr — User model module
 
 export struct User {
     id: int

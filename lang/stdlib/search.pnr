@@ -1,5 +1,5 @@
 // Serv Standard Library: Multi-backend Search Client
-// Import: import { query, index } from "stdlib/search.srv"
+// Import: import { query, index } from "stdlib/search.pnr"
 
 export fn query(q: string, options: map) -> any {
     return search.query(q, options)

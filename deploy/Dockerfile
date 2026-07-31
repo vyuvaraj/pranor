@@ -8,4 +8,4 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/servcloud .
 EXPOSE 8085
-ENTRYPOINT ["./servcloud"]
+ENTRYPOINT ["./pranorcloud"]

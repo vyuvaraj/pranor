@@ -1,5 +1,5 @@
 // Serv Example 41: Enums with Values, Type Aliases, Config Validation
-// Build: serv build examples/41_new_features.srv -o features_demo.exe
+// Build: pranor build examples/41_new_features.pnr -o features_demo.exe
 //
 // Demonstrates:
 // - enum with explicit values

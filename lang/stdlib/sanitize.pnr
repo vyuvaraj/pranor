@@ -1,5 +1,5 @@
 // Serv Standard Library: Input Sanitization
-// Import: import { escapeHTML, stripTags, escapeSQL, sanitizeFilename } from "stdlib/sanitize.srv"
+// Import: import { escapeHTML, stripTags, escapeSQL, sanitizeFilename } from "stdlib/sanitize.pnr"
 
 // Escape HTML special characters to prevent XSS
 export fn escapeHTML(input) {

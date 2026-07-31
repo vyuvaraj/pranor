@@ -1,5 +1,5 @@
 // Serv Standard Library: Mail Client
-// Import: import { send } from "stdlib/mail.srv"
+// Import: import { send } from "stdlib/mail.pnr"
 
 export fn send(to: string, subject: string, body: string) {
     return mail.send(to, subject, body)

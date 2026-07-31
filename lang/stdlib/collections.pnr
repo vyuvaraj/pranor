@@ -1,5 +1,5 @@
 // Serv Standard Library: Collection Utilities
-// Import: import { groupBy, unique, flatten, chunk, zip } from "stdlib/collections.srv"
+// Import: import { groupBy, unique, flatten, chunk, zip } from "stdlib/collections.pnr"
 
 // Group items by a key function result
 export fn groupBy(items, keyFn) {

@@ -1,6 +1,6 @@
 // Serv Example 52: Search Adapter
 // Demonstrates full-text search with Meilisearch or Elasticsearch backends.
-// Build: serv build examples/52_search.srv -o test_search.exe
+// Build: pranor build examples/52_search.pnr -o test_search.exe
 
 server "8080"
 search "meilisearch://localhost:7700"

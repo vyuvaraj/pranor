@@ -1,5 +1,5 @@
 // Serv Standard Library: Circuit Breaker Pattern
-// Import: import { createBreaker, callWithBreaker, isOpen, resetBreaker } from "stdlib/circuit_breaker.srv"
+// Import: import { createBreaker, callWithBreaker, isOpen, resetBreaker } from "stdlib/circuit_breaker.pnr"
 //
 // Prevents cascading failures by tracking error rates and opening
 // the circuit when failures exceed a threshold.

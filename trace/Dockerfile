@@ -8,4 +8,4 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/servtrace .
 EXPOSE 8090
-ENTRYPOINT ["./servtrace"]
+ENTRYPOINT ["./pranortrace"]

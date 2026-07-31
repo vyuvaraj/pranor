@@ -1,6 +1,6 @@
 // Serv Example 36: Channels
-// Lint: serv lint examples/36_channels.srv
-// Build: serv build examples/36_channels.srv -o test_channels.exe
+// Lint: pranor lint examples/36_channels.pnr
+// Build: pranor build examples/36_channels.pnr -o test_channels.exe
 //
 // Demonstrates Go channels for concurrent job scheduling patterns.
 

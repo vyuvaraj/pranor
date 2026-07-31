@@ -42,7 +42,7 @@ WORKDIR /app
 COPY . .
 RUN go mod download
 RUN go build -o pranor.exe main.go
-RUN ./serv.exe build %s -o service_bin
+RUN ./pranor.exe build %s -o service_bin
 
 # Stage 2: Create a minimal production container
 FROM alpine:latest
@@ -51,7 +51,7 @@ WORKDIR /root/
 COPY --from=builder /app/service_bin .
 COPY --from=builder /app/scripts/ ./scripts/
 COPY --from=builder /app/examples/ ./examples/
-CMD ["./service_bin"]
+CMD ["./pranorice_bin"]
 `, buildArg)
 
 	dockerfilePath := filepath.Join(targetPath, "Dockerfile")

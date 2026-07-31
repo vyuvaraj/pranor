@@ -1,5 +1,5 @@
 // Serv Standard Library: Date & Time Helpers
-// Import: import { now, timestamp, isExpired, formatDuration } from "stdlib/datetime.srv"
+// Import: import { now, timestamp, isExpired, formatDuration } from "stdlib/datetime.pnr"
 
 // Get current ISO timestamp
 export fn now() {

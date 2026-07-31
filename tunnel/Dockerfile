@@ -8,5 +8,5 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/servtunnel .
 EXPOSE 8443
-ENTRYPOINT ["./servtunnel"]
+ENTRYPOINT ["./pranortunnel"]
 CMD ["server"]

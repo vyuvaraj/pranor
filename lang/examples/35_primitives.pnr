@@ -1,5 +1,5 @@
 // Serv Example 35: Missing Primitives (for regulatory-cron-service port)
-// Lint: serv lint examples/35_primitives.srv
+// Lint: pranor lint examples/35_primitives.pnr
 
 server "8080"
 

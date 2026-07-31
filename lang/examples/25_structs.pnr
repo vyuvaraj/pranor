@@ -1,6 +1,6 @@
 // Serv Example 25: Structs & Methods (Phase 1)
-// Run: serv run examples/25_structs.srv
-// Lint: serv lint examples/25_structs.srv
+// Run: pranor run examples/25_structs.pnr
+// Lint: pranor lint examples/25_structs.pnr
 
 server "8080"
 

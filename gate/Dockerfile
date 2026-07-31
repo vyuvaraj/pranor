@@ -9,4 +9,4 @@ WORKDIR /app
 COPY --from=builder /app/servgate .
 COPY config.json .
 EXPOSE 8080
-ENTRYPOINT ["./servgate"]
+ENTRYPOINT ["./pranorgate"]

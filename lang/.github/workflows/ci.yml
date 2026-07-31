@@ -32,14 +32,14 @@ jobs:
           go-version: '1.26.4'
 
       - name: Build serv compiler
-        run: go build -o serv.exe .
+        run: go build -o pranor.exe .
 
       - name: Compile all examples
         shell: pwsh
         run: |
           $failed = @()
-          Get-ChildItem examples\*.srv | ForEach-Object {
-            & .\serv.exe build $_.FullName -o examples\test_bin.exe
+          Get-ChildItem examples\*.pnr | ForEach-Object {
+            & .\pranor.exe build $_.FullName -o examples\test_bin.exe
             if ($LASTEXITCODE -ne 0) { $failed += $_.Name }
           }
           Remove-Item examples\test_bin.exe -ErrorAction SilentlyContinue
@@ -47,22 +47,22 @@ jobs:
             Write-Host "Failed to compile: $($failed -join ', ')"
             exit 1
           }
-          Write-Host "All $((Get-ChildItem examples\*.srv).Count) examples compiled successfully"
+          Write-Host "All $((Get-ChildItem examples\*.pnr).Count) examples compiled successfully"
 
       - name: Run unit tests
         shell: pwsh
         run: |
           $testFiles = @(
-            "test_sample.srv",
-            "examples\12_static_types.srv",
-            "examples\14_phase3_features.srv",
-            "examples\20_raw_strings.srv",
-            "examples\50_new_features.srv"
+            "test_sample.pnr",
+            "examples\12_static_types.pnr",
+            "examples\14_phase3_features.pnr",
+            "examples\20_raw_strings.pnr",
+            "examples\50_new_features.pnr"
           )
           $failed = @()
           foreach ($file in $testFiles) {
             if (Test-Path $file) {
-              & .\serv.exe test $file
+              & .\pranor.exe test $file
               if ($LASTEXITCODE -ne 0) { $failed += $file }
             }
           }
@@ -76,8 +76,8 @@ jobs:
         shell: pwsh
         run: |
           $unformatted = @()
-          Get-ChildItem examples\*.srv | ForEach-Object {
-            & .\serv.exe fmt --check $_.FullName 2>&1 | Out-Null
+          Get-ChildItem examples\*.pnr | ForEach-Object {
+            & .\pranor.exe fmt --check $_.FullName 2>&1 | Out-Null
             if ($LASTEXITCODE -ne 0) { $unformatted += $_.Name }
           }
           if ($unformatted.Count -gt 0) {
@@ -117,8 +117,8 @@ jobs:
       - name: Compile examples (Linux)
         run: |
           failed=0
-          for f in examples/*.srv; do
-            ./serv build "$f" -o /tmp/test_bin 2>/dev/null
+          for f in examples/*.pnr; do
+            ./pranor build "$f" -o /tmp/test_bin 2>/dev/null
             if [ $? -ne 0 ]; then
               echo "FAIL: $f"
               failed=$((failed+1))

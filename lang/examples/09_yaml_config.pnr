@@ -1,6 +1,6 @@
 // Serv Example 09: YAML Config Support
 // Run this example:
-//   .\serv.exe run examples/09_yaml_config.srv --config examples/app_config.yml
+//   .\pranor.exe run examples/09_yaml_config.pnr --config examples/app_config.yml
 
 let dbUrl = config("database.url")
 let appName = config("app.name")

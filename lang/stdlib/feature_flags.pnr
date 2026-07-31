@@ -1,5 +1,5 @@
 // Serv Standard Library: Feature Flags
-// Import: import { enableFlag, disableFlag, isEnabled, toggleFlag } from "stdlib/feature_flags.srv"
+// Import: import { enableFlag, disableFlag, isEnabled, toggleFlag } from "stdlib/feature_flags.pnr"
 //
 // Simple in-memory feature flags for gradual rollouts and A/B testing.
 // For distributed feature flags, use a config service or database.

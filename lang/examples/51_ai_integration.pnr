@@ -3,7 +3,7 @@
 //
 // Setup:
 //   export OPENAI_API_KEY="sk-..."
-//   serv run examples/51_ai_integration.srv
+//   pranor run examples/51_ai_integration.pnr
 //
 // Test:
 //   curl -X POST http://localhost:8080/summarize -d "The quick brown fox..."

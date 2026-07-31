@@ -1,9 +1,9 @@
 // Serv Example 26: Module System
-// Lint: serv lint examples/26_modules.srv
-// Run:  serv run examples/26_modules.srv
+// Lint: pranor lint examples/26_modules.pnr
+// Run:  pranor run examples/26_modules.pnr
 
 // Named import — only brings in User and createUser
-import { User, createUser } from "./models/user.srv"
+import { User, createUser } from "./models/user.pnr"
 
 server "8080"
 

@@ -1,5 +1,5 @@
 // Serv Standard Library: Metrics Helpers
-// Import: import { counter, gauge, timer, recordLatency } from "stdlib/metrics.srv"
+// Import: import { counter, gauge, timer, recordLatency } from "stdlib/metrics.pnr"
 //
 // Structured wrappers around the built-in metric.inc/metric.gauge.
 

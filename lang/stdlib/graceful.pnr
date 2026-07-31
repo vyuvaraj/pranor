@@ -1,5 +1,5 @@
 // Serv Standard Library: Graceful Shutdown Helpers
-// Import: import { onShutdown, drainConnections, setDrainTimeout } from "stdlib/graceful.srv"
+// Import: import { onShutdown, drainConnections, setDrainTimeout } from "stdlib/graceful.pnr"
 //
 // Helpers for managing service lifecycle during deployments.
 

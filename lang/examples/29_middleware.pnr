@@ -1,6 +1,6 @@
 // Serv Example 29: Middleware
-// Lint: serv lint examples/29_middleware.srv
-// Build: serv build examples/29_middleware.srv -o test_middleware.exe
+// Lint: pranor lint examples/29_middleware.pnr
+// Build: pranor build examples/29_middleware.pnr -o test_middleware.exe
 
 server "8080"
 

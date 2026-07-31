@@ -1,5 +1,5 @@
 // Serv Standard Library: Cache client
-// Import: import { set, get, invalidate } from "stdlib/cache.srv"
+// Import: import { set, get, invalidate } from "stdlib/cache.pnr"
 
 export fn set(key: string, val: any, ttl: string) {
     cache.set(key, val, ttl)

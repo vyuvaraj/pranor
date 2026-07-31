@@ -84,14 +84,14 @@ primary_region = "iad"
 WORKDIR /app
 COPY . .
 RUN go build -o pranor.exe .
-RUN ./serv.exe build %s -o service
+RUN ./pranor.exe build %s -o service
 
 FROM alpine:3.20
 RUN apk --no-cache add ca-certificates
 WORKDIR /app
 COPY --from=builder /app/service .
 EXPOSE %s
-CMD ["./service"]
+CMD ["./pranorice"]
 `, pnrFile, port)
 
 	flyPath := filepath.Join(targetDir, "fly.toml")
@@ -152,13 +152,13 @@ func generateRailwayConfig(targetDir, appName, pnrFile string) {
 WORKDIR /app
 COPY . .
 RUN go build -o pranor.exe .
-RUN ./serv.exe build %s -o service
+RUN ./pranor.exe build %s -o service
 
 FROM alpine:3.20
 RUN apk --no-cache add ca-certificates
 WORKDIR /app
 COPY --from=builder /app/service .
-CMD ["./service"]
+CMD ["./pranorice"]
 `, pnrFile)
 
 	railwayPath := filepath.Join(targetDir, "railway.json")
@@ -197,14 +197,14 @@ services:
 WORKDIR /app
 COPY . .
 RUN go build -o pranor.exe .
-RUN ./serv.exe build %s -o service
+RUN ./pranor.exe build %s -o service
 
 FROM alpine:3.20
 RUN apk --no-cache add ca-certificates
 WORKDIR /app
 COPY --from=builder /app/service .
 EXPOSE %s
-CMD ["./service"]
+CMD ["./pranorice"]
 `, pnrFile, port)
 
 	renderPath := filepath.Join(targetDir, "render.yaml")
@@ -314,14 +314,14 @@ spec:
 WORKDIR /app
 COPY . .
 RUN go build -o pranor.exe .
-RUN ./serv.exe build %s -o service
+RUN ./pranor.exe build %s -o service
 
 FROM alpine:3.20
 RUN apk --no-cache add ca-certificates
 WORKDIR /app
 COPY --from=builder /app/service .
 EXPOSE %s
-CMD ["./service"]
+CMD ["./pranorice"]
 `, pnrFile, port)
 
 	k8sDir := filepath.Join(targetDir, "k8s")

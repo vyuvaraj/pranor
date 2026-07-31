@@ -68,7 +68,7 @@ func init() {
 	}
 
 	if servExePath == "" {
-		log.Println("Warning: serv.exe not found. Execution fallback will run 'go run main.go'")
+		log.Println("Warning: pranor.exe not found. Execution fallback will run 'go run main.go'")
 	} else {
 		log.Printf("Using Serv compiler binary: %s\n", servExePath)
 	}

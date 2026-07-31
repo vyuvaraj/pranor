@@ -6,7 +6,7 @@ build:
 	go build -o servconsole.exe main.go
 
 run: build
-	./servconsole.exe --port=8083
+	./pranorconsole.exe --port=8083
 
 test:
 	go test -v ./...

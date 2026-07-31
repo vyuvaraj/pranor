@@ -1,5 +1,5 @@
 // Serv Standard Library: Config Helpers
-// Import: import { getConfig, requireConfig, configInt, configBool, configList } from "stdlib/config.srv"
+// Import: import { getConfig, requireConfig, configInt, configBool, configList } from "stdlib/config.pnr"
 //
 // Typed config access wrappers for the built-in config() function.
 

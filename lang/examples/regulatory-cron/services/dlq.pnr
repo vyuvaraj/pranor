@@ -44,7 +44,7 @@ export fn replayDlq(entryId: string, jobQueue) {
     return f"replay-{now}"
 }
 
-// Purge expired entries (called by daily cron in main.srv)
+// Purge expired entries (called by daily cron in main.pnr)
 export fn purgeExpiredDlq(replayedRetentionDays: int, pendingRetentionDays: int) {
     let replayedCutoff = time.unix() - (replayedRetentionDays * 86400)
     let pendingCutoff = time.unix() - (pendingRetentionDays * 86400)

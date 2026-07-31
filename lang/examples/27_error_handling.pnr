@@ -1,6 +1,6 @@
 // Serv Example 27: Error Handling with Multi-Return
-// Lint: serv lint examples/27_error_handling.srv
-// Run:  serv run examples/27_error_handling.srv
+// Lint: pranor lint examples/27_error_handling.pnr
+// Run:  pranor run examples/27_error_handling.pnr
 
 server "8080"
 

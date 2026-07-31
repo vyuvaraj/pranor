@@ -6,7 +6,7 @@
 //   - Event subscription with projections updating databases
 //
 // Setup:
-//   serv run examples/52_event_sourcing.srv
+//   pranor run examples/52_event_sourcing.pnr
 //
 // Test:
 //   curl -X POST http://localhost:8080/api/event_store/orders/PlaceOrder -d '{"orderId": "order-abc", "amount": 149.99}'

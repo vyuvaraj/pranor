@@ -1,5 +1,5 @@
 {
-  "_comment": "Pranor service discovery manifest. Copy to services.json and set SERVVERSE_DISCOVERY=./services.json (or pass as inline JSON).",
+  "_comment": "Pranor service discovery manifest. Copy to services.json and set SERVVERSE_DISCOVERY=./pranorices.json (or pass as inline JSON).",
 
   "gate":          "http://localhost:8080",
   "store":         "http://localhost:8081",

@@ -1,5 +1,5 @@
 // Serv Standard Library: Audit Logging
-// Import: import { auditLog, auditAction, auditAccess } from "stdlib/audit.srv"
+// Import: import { auditLog, auditAction, auditAccess } from "stdlib/audit.pnr"
 //
 // Structured audit trail for compliance and security monitoring.
 

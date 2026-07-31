@@ -1,5 +1,5 @@
 // Serv Standard Library: Response Helpers
-// Import: import { ok, created, badRequest, notFound, serverError } from "stdlib/response.srv"
+// Import: import { ok, created, badRequest, notFound, serverError } from "stdlib/response.pnr"
 
 // 200 OK with data
 export fn ok(data) {

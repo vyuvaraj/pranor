@@ -1,6 +1,6 @@
 // Serv Example 30: Async/Await
-// Lint: serv lint examples/30_async_await.srv
-// Build: serv build examples/30_async_await.srv -o test_async.exe
+// Lint: pranor lint examples/30_async_await.pnr
+// Build: pranor build examples/30_async_await.pnr -o test_async.exe
 
 server "8080"
 

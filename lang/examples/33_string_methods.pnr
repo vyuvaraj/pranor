@@ -1,6 +1,6 @@
 // Serv Example 33: String Methods & Closures
-// Lint: serv lint examples/33_string_methods.srv
-// Build: serv build examples/33_string_methods.srv -o test_strings.exe
+// Lint: pranor lint examples/33_string_methods.pnr
+// Build: pranor build examples/33_string_methods.pnr -o test_strings.exe
 
 server "8080"
 

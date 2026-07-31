@@ -1,5 +1,5 @@
 // Serv Example 39: Optional Chaining
-// Build: serv build examples/39_optional_chaining.srv -o optional_demo.exe
+// Build: pranor build examples/39_optional_chaining.pnr -o optional_demo.exe
 //
 // Syntax: expr?.field
 // Returns nil if expr is nil, otherwise accesses .field

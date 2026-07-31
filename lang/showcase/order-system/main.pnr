@@ -3,8 +3,8 @@
 //
 // Flow: API → publish "orders.new" → Worker processes → publish "notifications.send"
 //
-// Run:   serv run main.srv --watch
-// Build: serv build main.srv -o order-system.exe
+// Run:   pranor run main.pnr --watch
+// Build: pranor build main.pnr -o order-system.exe
 //
 // To switch to a real broker, change "in-memory" to:
 //   broker "nats://localhost:4222"
@@ -24,10 +24,10 @@ migration "create_orders" {
 
 // --- Import Modules ---
 
-import "models/order.srv"
-import "handlers/api.srv"
-import "handlers/worker.srv"
-import "handlers/notifier.srv"
+import "models/order.pnr"
+import "handlers/api.pnr"
+import "handlers/worker.pnr"
+import "handlers/notifier.pnr"
 
 // --- Scheduled Jobs ---
 

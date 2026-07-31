@@ -37,7 +37,7 @@ var (
 	tlsKeyFile  string
 	tlsEnabled  bool
 
-	pranor-gateURL string
+	pranorGateURL string
 )
 
 // getCliFlag parses a --flag value from os.Args.
@@ -281,13 +281,13 @@ func resolveServgateAddr(port string) (string, string) {
 func InitServer(port string) {
 	p, gate := resolveServgateAddr(port)
 	serverPort = p
-	pranor-gateURL = gate
+	pranorGateURL = gate
 }
 
 func InitServerTLS(port, certFile, keyFile string) {
 	p, gate := resolveServgateAddr(port)
 	serverPort = p
-	pranor-gateURL = gate
+	pranorGateURL = gate
 	tlsCertFile = certFile
 	tlsKeyFile = keyFile
 	tlsEnabled = true
@@ -672,7 +672,7 @@ func StartServer() interface{} {
 	}()
 
 	LogInfo("Serv service listening on port ", serverPort)
-	if pranor-gateURL != "" {
+	if pranorGateURL != "" {
 		go announceRoutesToPranorGate()
 	}
 
@@ -733,7 +733,7 @@ func announceRoutesToPranorGate() {
 				continue
 			}
 			
-			req, err := http.NewRequest("POST", pranor-gateURL+"/api/routes", strings.NewReader(string(bodyBytes)))
+			req, err := http.NewRequest("POST", pranorGateURL+"/api/routes", strings.NewReader(string(bodyBytes)))
 			if err != nil {
 				continue
 			}

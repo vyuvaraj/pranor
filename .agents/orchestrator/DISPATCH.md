@@ -1,9 +1,9 @@
 ## 2026-07-26T08:57:09Z
-You are the Project Orchestrator for the Go monorepo at `/home/developer/workspace/serv`.
+You are the Project Orchestrator for the Go monorepo at `/home/developer/workspace/pranor`.
 
-Your objective is to orchestrate the implementation of 10 pending OSS roadmap items across 5 Pranor modules (Pranor Auth, Pranor Cache, Pranor Chrono, Pranor Pool, Pranor Pulse) as specified in `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md`.
+Your objective is to orchestrate the implementation of 10 pending OSS roadmap items across 5 Pranor modules (Pranor Auth, Pranor Cache, Pranor Chrono, Pranor Pool, Pranor Pulse) as specified in `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md`.
 
-Your working directory is `/home/developer/workspace/serv/.agents/orchestrator`.
+Your working directory is `/home/developer/workspace/pranor/.agents/orchestrator`.
 Please create your plan (`plan.md`), track progress (`progress.md`), and maintain state (`context.md`) in your folder.
 
 Requirements summary:

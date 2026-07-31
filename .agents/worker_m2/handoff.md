@@ -3,7 +3,7 @@
 **Author:** Worker 2 (Implementer M2)  
 **Date:** 2026-07-26  
 **Target Module:** `packages/Pranor Cache`  
-**Working Directory:** `/home/developer/workspace/serv/.agents/worker_m2`  
+**Working Directory:** `/home/developer/workspace/pranor/.agents/worker_m2`  
 
 ---
 
@@ -16,11 +16,11 @@
    - `packages/Pranor Cache/pkg/tieredttl/policy_test.go`
 
 2. **Command Executions & Verification:**
-   - Run `go build ./...` in `/home/developer/workspace/serv/packages/Pranor Cache`:
+   - Run `go build ./...` in `/home/developer/workspace/pranor/packages/Pranor Cache`:
      ```text
      Command exited with code 0.
      ```
-   - Run `go test -count=1 ./...` in `/home/developer/workspace/serv/packages/Pranor Cache`:
+   - Run `go test -count=1 ./...` in `/home/developer/workspace/pranor/packages/Pranor Cache`:
      ```text
      ok  	github.com/vyuvaraj/pranor/packages/Pranor Cache	0.965s
      ok  	github.com/vyuvaraj/pranor/packages/Pranor Cache/pkg/bloom	0.009s
@@ -29,7 +29,7 @@
      ok  	github.com/vyuvaraj/pranor/packages/Pranor Cache/pkg/server	0.008s
      ok  	github.com/vyuvaraj/pranor/packages/Pranor Cache/pkg/tieredttl	0.060s
      ```
-   - Run `git diff go.mod` in `/home/developer/workspace/serv/packages/Pranor Cache`:
+   - Run `git diff go.mod` in `/home/developer/workspace/pranor/packages/Pranor Cache`:
      ```text
      Command exited with code 0 (Empty output).
      ```
@@ -74,7 +74,7 @@ To independently verify this implementation:
 
 1. **Run Build & Tests:**
    ```bash
-   cd /home/developer/workspace/serv/packages/Pranor Cache
+   cd /home/developer/workspace/pranor/packages/Pranor Cache
    go build ./...
    go test -count=1 ./...
    ```
@@ -82,11 +82,11 @@ To independently verify this implementation:
 
 2. **Check Dependency Integrity:**
    ```bash
-   cd /home/developer/workspace/serv/packages/Pranor Cache
+   cd /home/developer/workspace/pranor/packages/Pranor Cache
    git diff go.mod
    ```
    Must return an empty diff.
 
 3. **Inspect Output Artifacts:**
-   - `/home/developer/workspace/serv/packages/Pranor Cache/pkg/bloom/bloom.go`
-   - `/home/developer/workspace/serv/packages/Pranor Cache/pkg/tieredttl/policy.go`
+   - `/home/developer/workspace/pranor/packages/Pranor Cache/pkg/bloom/bloom.go`
+   - `/home/developer/workspace/pranor/packages/Pranor Cache/pkg/tieredttl/policy.go`

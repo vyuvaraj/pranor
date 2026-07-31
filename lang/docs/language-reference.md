@@ -1,10 +1,10 @@
-# Serv Language Reference
+# Pranor Language Reference
 
 ## Program Structure
 
-A Serv program consists of top-level declarations and statements:
+A Pranor program consists of top-level declarations and statements:
 
-```serv
+```pranor
 server "8080"                    // Infrastructure
 database "sqlite://app.db"       // Database connection
 cache "redis://localhost:6379"   // Cache connection
@@ -17,7 +17,7 @@ broker "nats://localhost:4222"   // Message broker
 
 An `app` block acts as a namespace to group related servers, databases, and APIs within a single logical service boundary:
 
-```serv
+```pranor
 app GatewayService {
     server "8080"
     database "sqlite://app.db"
@@ -30,7 +30,7 @@ app GatewayService {
 
 ## Variables
 
-```serv
+```pranor
 let name = "Alice"               // Type inferred
 let age: int = 30                // Explicit type
 let { x, y } = point            // Destructuring
@@ -53,7 +53,7 @@ let val, err = riskyFunction()   // Multi-return
 
 ### Type Aliases
 
-```serv
+```pranor
 type UserID = int
 type Email = string
 ```
@@ -62,7 +62,7 @@ type Email = string
 
 Types suffixed with `?` allow `nil` values. Without `?`, assigning `nil` is a compile error.
 
-```serv
+```pranor
 let name: string = "Alice"     // Cannot be nil
 let email: string? = nil       // OK — optional type
 
@@ -74,7 +74,7 @@ fn findUser(id: int) -> User? {
 ```
 
 **Compile error example:**
-```serv
+```pranor
 let x: int = nil   // error: cannot assign nil to non-optional type 'int' (use 'int?' to allow nil)
 ```
 
@@ -82,7 +82,7 @@ let x: int = nil   // error: cannot assign nil to non-optional type 'int' (use '
 
 Union types allow a value to be one of several types:
 
-```serv
+```pranor
 fn divide(a: int, b: int) -> int | error {
     if b == 0 {
         return "division by zero"
@@ -97,7 +97,7 @@ fn process(input: string | int) {
 
 ## Functions
 
-```serv
+```pranor
 // Basic function
 fn greet(name) {
     return f"Hello, {name}!"
@@ -143,7 +143,7 @@ cached fn getCachedConfig(key: string) -> string {
 
 ### If/Else
 
-```serv
+```pranor
 if condition {
     // ...
 } else if other {
@@ -155,7 +155,7 @@ if condition {
 
 ### For Loops
 
-```serv
+```pranor
 // Range-based
 for item in items {
     log.info(item)
@@ -174,7 +174,7 @@ for count < 10 {
 
 ### Break & Continue
 
-```serv
+```pranor
 for item in items {
     if item == nil { continue }
     if item == "stop" { break }
@@ -184,7 +184,7 @@ for item in items {
 
 ### Match (Pattern Matching)
 
-```serv
+```pranor
 match status {
     "active" => { log.info("Active") }
     "inactive" => { log.info("Inactive") }
@@ -194,7 +194,7 @@ match status {
 
 ## Structs
 
-```serv
+```pranor
 struct User {
     name: string,
     email: string,
@@ -213,7 +213,7 @@ log.info(user.greet())
 
 ## Enums
 
-```serv
+```pranor
 // Simple (string values)
 enum Color { Red, Green, Blue }
 
@@ -227,7 +227,7 @@ enum HttpStatus {
 
 ## Interfaces
 
-```serv
+```pranor
 interface Serializable {
     fn serialize() -> string
     fn deserialize(data: string)
@@ -236,7 +236,7 @@ interface Serializable {
 
 ## HTTP Routes
 
-```serv
+```pranor
 route "GET" "/users" (req) {
     return { "users": [] }
 }
@@ -274,7 +274,7 @@ route "GET" "/user" (req) -> User {
 
 ## WebSockets
 
-```serv
+```pranor
 ws "/chat" (conn) {
     for true {
         let msg = conn.receive()
@@ -286,7 +286,7 @@ ws "/chat" (conn) {
 
 ## Scheduled Tasks
 
-```serv
+```pranor
 // Fixed interval
 every 5s {
     log.info("Tick")
@@ -300,7 +300,7 @@ cron "0 0 * * *" {
 
 ## Pub/Sub Messaging
 
-```serv
+```pranor
 // Subscribe to a topic
 subscribe "orders.new" (msg) {
     log.info("New order: ", msg)
@@ -312,7 +312,7 @@ publish "notifications" "Order confirmed"
 
 ## Concurrency
 
-```serv
+```pranor
 // Fire and forget
 spawn processOrder(order)
 
@@ -326,7 +326,7 @@ let all = await all([task1(), task2(), task3()])
 
 ## Error Handling
 
-```serv
+```pranor
 // Try/catch (traditional)
 try {
     let result = http.get("http://api.example.com/data")
@@ -355,7 +355,7 @@ The `?` operator calls the expression and:
 
 ## Middleware
 
-```serv
+```pranor
 middleware auth(req) {
     let token = req.params.authorization
     if token == nil {
@@ -370,13 +370,13 @@ route "GET" "/protected" (req) use [auth] {
 
 ## Optional Chaining
 
-```serv
+```pranor
 let city = user?.address?.city    // nil if any part is nil
 ```
 
 ## Spread Operator
 
-```serv
+```pranor
 let defaults = { "timeout": 30, "retries": 3 }
 let config = { ...defaults, "timeout": 60 }
 ```
@@ -395,7 +395,7 @@ let config = { ...defaults, "timeout": 60 }
 
 ### Compound Assignment
 
-```serv
+```pranor
 let count = 0
 count += 1       // count = count + 1
 count -= 1       // count = count - 1
@@ -435,7 +435,7 @@ count %= 3       // count = count % 3
 
 ## Slice Expressions
 
-```serv
+```pranor
 let items = [1, 2, 3, 4, 5]
 let first3 = items[0:3]     // [1, 2, 3]
 let rest = items[2:]         // [3, 4, 5]
@@ -447,7 +447,7 @@ let sub = text[0:5]          // "hello"
 
 ## Imports & Modules
 
-```serv
+```pranor
 // Import a local .pnr module (relative path)
 import "models/user.pnr"
 import { User, Role } from "models/user.pnr"
@@ -472,7 +472,7 @@ import { maskEmail } from "stdlib/mask.pnr"   // also works
 
 ## External Function Bindings
 
-```serv
+```pranor
 // Go package
 extern fn generateID() from "go:github.com/google/uuid:NewString"
 
@@ -482,7 +482,7 @@ extern fn analyze(data) from "python:./scripts/analyzer.py:analyze"
 
 ## Testing
 
-```serv
+```pranor
 test "math works" {
     let result = add(2, 3)
     assert result == 5          // "got X, want 5" on failure
@@ -507,7 +507,7 @@ test "string methods" {
 
 ## Config Validation
 
-```serv
+```pranor
 validate {
     required "db.host",
     required "db.port",
@@ -517,7 +517,7 @@ validate {
 
 ## Request Validation
 
-```serv
+```pranor
 let errors = validate(req.body, {
     "email": "required,email",
     "name": "required,string",
@@ -528,9 +528,9 @@ let errors = validate(req.body, {
 ## Declarative Schema Migrations (`table`)
 
 Declare your database schema natively in `.pnr` files. The compiler generates
-the SQL automatically; `serv migrate` applies it to the live database.
+the SQL automatically; `pranor migrate` applies it to the live database.
 
-```serv
+```pranor
 table users {
     id        int      @primary @autoincrement
     name      string   @required
@@ -559,9 +559,9 @@ table posts {
 | `@unique` | `UNIQUE` | Enforce unique constraint |
 | `@default(value)` | `DEFAULT value` | Set default; use `now` for `CURRENT_TIMESTAMP` |
 
-### Serv → SQL Type Mapping
+### Pranor → SQL Type Mapping
 
-| Serv type | SQL type |
+| Pranor type | SQL type |
 |-----------|----------|
 | `int` | `INTEGER` |
 | `float` | `REAL` |
@@ -569,21 +569,21 @@ table posts {
 | `string` | `TEXT` |
 | `datetime` | `DATETIME` |
 
-### `serv migrate` workflow
+### `pranor migrate` workflow
 
 ```bash
-# Apply all table declarations to the database (default: sqlite://serv.db)
-serv migrate
+# Apply all table declarations to the database (default: sqlite://pranor.db)
+pranor migrate
 
 # Target a specific file or directory
-serv migrate ./schemas/
+pranor migrate ./schemas/
 
 # Override the database connection
-serv migrate --db sqlite://production.db
-serv migrate --db postgres://user:pass@localhost/mydb
+pranor migrate --db sqlite://production.db
+pranor migrate --db postgres://user:pass@localhost/mydb
 ```
 
-`serv migrate` will:
+`pranor migrate` will:
 - **Create** tables that don't exist yet (`CREATE TABLE IF NOT EXISTS`)
 - **Add** missing columns to existing tables (`ALTER TABLE ADD COLUMN`)
 - Skip tables/columns that are already up to date
@@ -594,7 +594,7 @@ serv migrate --db postgres://user:pass@localhost/mydb
 
 For custom logic, constraints, or renaming operations use the `migration` block:
 
-```serv
+```pranor
 migration "add_users_index" {
     db.query("CREATE INDEX idx_users_email ON users (email)")
 }
@@ -608,7 +608,7 @@ Raw migrations are applied in declaration order and tracked in `schema_migration
 
 ## MCP Tools
 
-```serv
+```pranor
 tool "calculator" "Performs math operations" (args) {
     let result = args.a + args.b
     return { "result": result }
@@ -619,7 +619,7 @@ tool "calculator" "Performs math operations" (args) {
 
 Declare autonomous AI agents with system prompts, model routing, and tool bindings:
 
-```serv
+```pranor
 agent SupportBot {
     system "You are a helpful customer support assistant."
     model  "openai://gpt-4o"
@@ -650,7 +650,7 @@ tool "lookup_order" "Look up an order by ID" (args) {
 
 ### 1. Storage Buckets (`bucket`)
 Bind and interact with Pranor Vault S3 storage natively:
-```serv
+```pranor
 bucket media {
     path "pranor-vault://media-bucket"
     allowed_types ["image/jpeg", "image/png", "application/pdf"]
@@ -662,7 +662,7 @@ media.put("user_1_avatar.png", req.body.file)
 
 ### 2. Retrieval-Augmented Generation (`RAG`)
 Declare semantic index and document query stores directly:
-```serv
+```pranor
 rag DocumentIndex {
     source "pranor-vault://docs"
     embed "openai"
@@ -676,7 +676,7 @@ let reply = ai.chat(context)
 
 ### 3. Distributed Mutual Exclusion (`lock` block)
 Scope-level locking backed by the Pranor Lock coordinator:
-```serv
+```pranor
 lock "billing:invoice:42" {
     // Critical Section: Only one instance runs this at a time
     processInvoice(42)
@@ -685,7 +685,7 @@ lock "billing:invoice:42" {
 
 ### 4. Event Handler (`on` block)
 Subscribe to event queues via NATS / Pranor Pulse brokers:
-```serv
+```pranor
 on "user.signup" (event) {
     log.info("New signup recorded: ", event.email)
     sendWelcomeEmail(event.email)
@@ -695,7 +695,7 @@ on "user.signup" (event) {
 
 Read environment variables and secure secrets dynamically:
 
-```serv
+```pranor
 let port = env("PORT")                   // Standard env lookup
 let dbPassword = env.secret("DB_PASS")  // Safe retrieval from configured secret manager
 ```
@@ -704,7 +704,7 @@ let dbPassword = env.secret("DB_PASS")  // Safe retrieval from configured secret
 
 Write raw Go functions directly inside `.pnr` source files. This provides an escape hatch for raw performance or utilizing package features that aren't fully wrapped by the compiler yet:
 
-```serv
+```pranor
 @inline go fn sha256sum(input string) string {
     import "crypto/sha256"
     import "encoding/hex"
@@ -729,7 +729,7 @@ Phase 35 introduces native namespaces for shell execution and direct file system
 ### 1. Shell Command Execution (`exec` namespace)
 Runs a shell command and returns output streams and exit codes:
 
-```serv
+```pranor
 let result = exec.run("echo 'hello world'")
 assert result.exitCode == 0
 assert result.stdout.trim() == "hello world"
@@ -740,7 +740,7 @@ assert result.stdout.trim() == "hello world"
 ### 2. Direct File I/O (`file` namespace)
 Enables reading and writing files directly from the filesystem without registering a `store` block:
 
-```serv
+```pranor
 let tempFile = "./log.txt"
 file.write(tempFile, "Pranor success")
 
@@ -817,7 +817,7 @@ let allFiles = file.list(".")
 
 Enables safe member traversal. If any parent in the path resolves to `nil`, the entire chain short-circuits to `nil` rather than throwing a panic:
 
-```serv
+```pranor
 let city = user?.address?.city
 // If user or user.address is nil, city is set to nil safely
 ```
@@ -826,7 +826,7 @@ let city = user?.address?.city
 
 Merge arrays and maps efficiently using the spread operator syntax:
 
-```serv
+```pranor
 let baseArr = [1, 2]
 let combined = [...baseArr, 3, 4] // [1, 2, 3, 4]
 
@@ -859,7 +859,7 @@ The `time` namespace has been extended to provide complete parsing, formatting, 
 
 Backtick raw string literals are automatically dedented at compile-time by stripping the common leading whitespace prefix from each line:
 
-```serv
+```pranor
 let query = `
     SELECT *
     FROM users
@@ -874,7 +874,7 @@ Allows encoding, decoding, and verification of JSON Web Tokens natively:
 - **`jwt.verify(token string, secret string) map`**: Decodes and verifies the signature and expiration of a token, returning claims.
 - **`jwt.decode(token string) map`**: Decodes a token without verifying its signature, returning claims.
 
-```serv
+```pranor
 let token = jwt.sign({ "sub": "alice", "admin": true }, "my-secret")
 let claims = jwt.verify(token, "my-secret")
 ```
@@ -888,7 +888,7 @@ Provides compression and decompression utilities:
 - **`compress.deflate(data)`**: Deflates string or binary data, returning compressed bytes.
 - **`compress.inflate(bytes)`**: Decompresses deflate bytes, returning a string.
 
-```serv
+```pranor
 let compressed = compress.gzip("hello world")
 let original = compress.ungzip(compressed)
 ```
@@ -901,7 +901,7 @@ Parses and validates semantic version strings:
 - **`semver.compare(v1 string, v2 string) int`**: Compares two versions; returns `-1` if `v1 < v2`, `0` if `v1 == v2`, `1` if `v1 > v2`.
 - **`semver.satisfies(range string, version string) bool`**: Checks if version satisfies range constraints (e.g. `^1.2.3`, `~1.2.3`, `>=2.0.0`).
 
-```serv
+```pranor
 let ok = semver.satisfies("^1.2.3", "1.5.0")
 ```
 
@@ -913,7 +913,7 @@ Simplifies operations on human-readable time spans:
 - **`duration.format(seconds float) string`**: Formats seconds to a standard duration string (like `"2h30m0s"`).
 - **`duration.since(ts time) float`**: Returns seconds elapsed since a past timestamp.
 
-```serv
+```pranor
 let secs = duration.parse("1h15m")
 ```
 
@@ -926,7 +926,7 @@ Provides human-readable value formatting:
 - **`format.percent(val float) string`**: Formats fraction to percentage (e.g. `0.856` -> `"85.6%"`).
 - **`format.plural(count float, singular string, plural string) string`**: Formats count with noun (e.g. `1` -> `"1 item"`, `5` -> `"5 items"`).
 
-```serv
+```pranor
 let label = format.plural(3, "item", "items") // "3 items"
 ```
 
@@ -939,7 +939,7 @@ Provides IP address parsing and classifications:
 - **`ip.inCIDR(ipStr string, cidr string) bool`**: Checks if IP is within specified subnet range.
 - **`ip.version(ipStr string) string`**: Returns `"ipv4"`, `"ipv6"`, or `""`.
 
-```serv
+```pranor
 let private = ip.isPrivate("192.168.1.1") // true
 ```
 
@@ -951,7 +951,7 @@ Exposes basic network lookup functions:
 - **`dns.txt(host string) string`**: Returns resolved TXT strings joined by spaces.
 - **`dns.pnr(service string) map`**: Resolves SRV record to `{ host, port, priority }` map.
 
-```serv
+```pranor
 let ip = dns.lookup("example.com")
 ```
 
@@ -961,7 +961,7 @@ Parses multipart form payload from HTTP request body:
 
 - **`multipart.parse(req Request) map`**: Parses request, returning `{ fields: {...}, files: [{ name, filename, size, content }] }`.
 
-```serv
+```pranor
 let form = multipart.parse(req)
 let username = form.fields.username
 let avatarFile = form.files[0]
@@ -974,7 +974,7 @@ Provides line-by-line and structural differences:
 - **`diff.text(a string, b string) string`**: Generates a unified diff output.
 - **`diff.json(a map, b map) array`**: Computes differences between maps and lists, returning RFC 6902-like patch operations.
 
-```serv
+```pranor
 let d = diff.text("line 1\nline 2", "line 1\nline 3")
 ```
 
@@ -985,7 +985,7 @@ Provides encoding and decoding of protocol buffer structures:
 - **`proto.encode(payload map, schema string) bytes`**: Encodes map to protocol buffer binary format based on the schema.
 - **`proto.decode(data bytes, schema string) map`**: Decodes protocol buffer binary data to map based on the schema.
 
-```serv
+```pranor
 let schema = "syntax = \"proto3\"; message User { string name = 1; int32 age = 2; }"
 let binary = proto.encode({ "name": "alice", "age": 30 }, schema)
 ```
@@ -994,7 +994,7 @@ let binary = proto.encode({ "name": "alice", "age": 30 }, schema)
 
 Group multiple bindings from the same package and resolve method receivers or aliased packages:
 
-```serv
+```pranor
 extern from "go:github.com/google/uuid" {
     fn new_string() from "NewString"
     fn parse(str) from "Parse"
@@ -1003,8 +1003,8 @@ extern from "go:github.com/google/uuid" {
 
 Method receivers can be bound using the `TypeName.MethodName` syntax:
 
-```serv
-extern from "go:serv/runtime" {
+```pranor
+extern from "go:pranor/runtime" {
     fn mock_meth(obj, val) from "MockReceiver.MockMethod"
 }
 ```

@@ -1,10 +1,10 @@
 # Built-in Functions & Objects
 
-Serv provides built-in objects for common service operations. No imports needed.
+Pranor provides built-in objects for common service operations. No imports needed.
 
 ## log — Structured Logging
 
-```serv
+```pranor
 log.info("Server started")
 log.warn("Slow query detected")
 log.error("Connection failed: ", err)
@@ -27,7 +27,7 @@ let level = log.getLevel()
 
 ## db — Database Operations
 
-```serv
+```pranor
 database "sqlite://app.db"        // SQLite
 database "postgres://user:pass@host/db"  // PostgreSQL
 database "mongodb://localhost:27017/mydb"  // MongoDB
@@ -45,7 +45,7 @@ let res = db.upsert("users", filter, update)
 
 ## cache — Caching
 
-```serv
+```pranor
 cache "redis://localhost:6379"    // Redis
 cache "in-memory"                 // Local (dev/testing)
 
@@ -55,7 +55,7 @@ let val = cache.get("key")       // Get (nil if expired/missing)
 
 ## http — HTTP Client
 
-```serv
+```pranor
 let resp = http.get("https://api.example.com/data")
 // resp.status = 200, resp.body = "..."
 
@@ -64,14 +64,14 @@ let resp = http.post("https://api.example.com/users", body)
 
 ## json — JSON Operations
 
-```serv
+```pranor
 let obj = json.parse("{\"name\": \"Alice\"}")
 let str = json.stringify({ "name": "Alice" })
 ```
 
 ## time — Date, Time & Timezones
 
-```serv
+```pranor
 let now = time.now()                       // Current ISO 8601 timestamp string
 let ts = time.unix()                       // Current Unix epoch timestamp integer
 time.sleep(1000)                           // Sleep for 1000 milliseconds
@@ -101,14 +101,14 @@ let t3 = time.fromUnix(1753000000)         // Convert epoch seconds back to time
 
 ## env — Environment Variables & Secrets
 
-```serv
+```pranor
 let port = env("PORT")            // Read env var (empty string if not set)
 let password = env.secret("DB_PASSWORD") // Retrieve secret value dynamically from KMS/vault
 ```
 
 ## config — Configuration
 
-```serv
+```pranor
 let host = config("db.host")   // Read from config.yml or env
 ```
 
@@ -116,7 +116,7 @@ Reads from `config.yml` in the working directory, or maps dotted keys to env var
 
 ## metric — Metrics
 
-```serv
+```pranor
 metric.inc("requests_total")
 metric.gauge("active_connections", 42)
 ```
@@ -125,7 +125,7 @@ Exposed at `GET /metrics` endpoint.
 
 ## publish / subscribe — Messaging
 
-```serv
+```pranor
 publish "topic" "message"
 
 subscribe "topic" (msg) {
@@ -135,7 +135,7 @@ subscribe "topic" (msg) {
 
 ## atomic — Atomic Operations
 
-```serv
+```pranor
 atomic.new("counter", 0)
 atomic.inc("counter")
 atomic.dec("counter")
@@ -146,7 +146,7 @@ atomic.cas("counter", 100, 200)  // Compare-and-swap
 
 ## channel — Go Channels
 
-```serv
+```pranor
 let ch = channel.new("mychan", 10)  // Buffered channel
 channel.send("mychan", "data")
 let msg = channel.receive("mychan")
@@ -156,7 +156,7 @@ channel.close("mychan")
 
 ## registry — Named Function Registry
 
-```serv
+```pranor
 registry.set("handler", fn(x) { return x * 2 })
 let result = registry.call("handler", 5)  // 10
 registry.has("handler")  // true
@@ -165,7 +165,7 @@ registry.list()          // ["handler"]
 
 ## validate — Request Validation
 
-```serv
+```pranor
 let errors = validate(req.body, {
     "email": "required,email",
     "name": "required,string",
@@ -178,7 +178,7 @@ let errors = validate(req.body, {
 
 ## String Methods
 
-```serv
+```pranor
 "hello world".split(" ")      // ["hello", "world"]
 "  hi  ".trim()               // "hi"
 "hello".replace("l", "L")     // "heLLo"
@@ -195,7 +195,7 @@ let errors = validate(req.body, {
 
 ## Collection Methods
 
-```serv
+```pranor
 let items = [1, 2, 3, 4, 5]
 
 items.filter(x => x > 2)        // [3, 4, 5]
@@ -211,7 +211,7 @@ items.length()                   // 5
 
 First-class AI operations directly available in Pranor:
 
-```serv
+```pranor
 // Complete single prompt
 let res = ai.complete("Translate to French: Hello World")
 // res = "Bonjour le monde"
@@ -231,7 +231,7 @@ let vectors = ai.embed("text to convert to vectors")
 
 Inspect and parse request JWT contexts:
 
-```serv
+```pranor
 let claims = auth.claims(req)
 // claims = { "username": "alice", "roles": ["admin"] }
 
@@ -242,7 +242,7 @@ let valid = auth.verify(req)  // Returns true if authenticated
 
 Runs shell commands natively:
 
-```serv
+```pranor
 let result = exec.run("echo 'Hello'")
 // result = { stdout: "Hello\n", stderr: "", exitCode: 0 }
 ```
@@ -253,7 +253,7 @@ let result = exec.run("echo 'Hello'")
 
 Enables reading and writing files directly:
 
-```serv
+```pranor
 let ok = file.write("./log.txt", "data")
 let content = file.read("./log.txt")
 let exists = file.exists("./log.txt")

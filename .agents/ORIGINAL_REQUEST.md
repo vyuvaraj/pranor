@@ -4,10 +4,10 @@
 
 Implement 10 pending OSS roadmap items across 5 Pranor modules
 (Pranor Auth, Pranor Cache, Pranor Chrono, Pranor Pool, Pranor Pulse) in the Go monorepo
-at `/home/developer/workspace/serv`. Each item is a self-contained
+at `/home/developer/workspace/pranor`. Each item is a self-contained
 package-level feature with zero external dependency additions.
 
-Working directory: /home/developer/workspace/serv
+Working directory: /home/developer/workspace/pranor
 Integrity mode: development
 
 ---
@@ -163,7 +163,7 @@ and new ID generation uniqueness.
 - [ ] SP.G1: `ClassifyQuery("SELECT ...")` → Read, `ClassifyQuery("INSERT ...")` → Write
 - [ ] SQ.G5: `Extract(Inject(headers, tid, sid))` round-trips correctly
 
-When all items are complete and all acceptance criteria pass, commit everything to the `serv` repo with:
+When all items are complete and all acceptance criteria pass, commit everything to the `pranor` repo with:
 ```
 git add packages/Pranor Auth/pkg/sessions/ packages/Pranor Auth/pkg/security/ packages/Pranor Cache/pkg/bloom/ packages/Pranor Cache/pkg/tieredttl/ packages/Pranor Chrono/pkg/cron/ packages/Pranor Chrono/pkg/config/ packages/Pranor Pool/pkg/routing/ packages/Pranor Pool/pkg/pool/health_checker.go packages/Pranor Pulse/pkg/tracing/ packages/Pranor Pulse/pkg/core/
 git commit -m "feat: implement 10 OSS roadmap items (SA.G1, SA.G6, SC.G3, SC.G4, CR.G1, CR.G2, CR.G4, SP.G1, SP.G2, SQ.G5)"

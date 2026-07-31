@@ -5,7 +5,7 @@ Coordinate implementation and verification of 10 OSS roadmap items across 5 Pran
 
 ## 🔒 My Identity
 - Archetype: sentinel
-- Working directory: /home/developer/workspace/serv/.agents
+- Working directory: /home/developer/workspace/pranor/.agents
 - Orchestrator: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Victory Auditor: to be spawned on victory claim
 
@@ -28,4 +28,4 @@ Coordinate implementation and verification of 10 OSS roadmap items across 5 Pran
 - **Retry count**: 0
 
 ## Artifact Index
-- /home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md — Verbatim user request
+- /home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md — Verbatim user request

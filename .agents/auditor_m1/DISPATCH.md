@@ -1,10 +1,10 @@
 ## 2026-07-26T09:09:26Z
 You are Forensic Auditor M1 for Pranor Auth (SA.G1 & SA.G6).
-Working directory: /home/developer/workspace/serv/.agents/auditor_m1
+Working directory: /home/developer/workspace/pranor/.agents/auditor_m1
 
 Required Reading:
-- `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (R1, R2)
-- `/home/developer/workspace/serv/PROJECT.md`
+- `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (R1, R2)
+- `/home/developer/workspace/pranor/PROJECT.md`
 
 Tasks:
 1. Perform integrity verification on `packages/Pranor Auth/pkg/sessions/token_store.go` and `packages/Pranor Auth/pkg/security/velocity_limiter.go`.

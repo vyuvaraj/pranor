@@ -1,11 +1,11 @@
 ## 2026-07-26T09:09:26Z
 <USER_REQUEST>
 You are Challenger M2 for Pranor Cache (SC.G3 & SC.G4).
-Working directory: /home/developer/workspace/serv/.agents/challenger_m2_1
+Working directory: /home/developer/workspace/pranor/.agents/challenger_m2_1
 
 Required Reading:
-- `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (R3, R4)
-- `/home/developer/workspace/serv/PROJECT.md`
+- `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (R3, R4)
+- `/home/developer/workspace/pranor/PROJECT.md`
 
 Tasks:
 1. Empirically verify Bloom filter and Tiered TTL cache in `packages/Pranor Cache`.

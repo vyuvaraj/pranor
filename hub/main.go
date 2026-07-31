@@ -100,7 +100,7 @@ func startMockS3Server() string {
 					return nil
 				})
 
-				w.Write(fmt.Appendf(nil, `<?xml version="1.0" encoding="UTF-8"?><ListBucketResult><Name>pranor-packages</Name><IsTruncated>false</IsTruncated>%s</ListBucketResult>`, strings.Join(contentsXml, "")))
+				w.Write(fmt.Appendf(nil, `<?xml version="1.0" encoding="UTF-8"?><ListBucketResult><Name>pranorPackages</Name><IsTruncated>false</IsTruncated>%s</ListBucketResult>`, strings.Join(contentsXml, "")))
 				return
 			}
 

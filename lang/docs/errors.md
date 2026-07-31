@@ -1,6 +1,6 @@
-# Serv Compiler Error Code Registry
+# Pranor Compiler Error Code Registry
 
-This document lists all diagnostic and syntax error codes emitted by the Serv compiler, alongside examples, causes, and solutions.
+This document lists all diagnostic and syntax error codes emitted by the Pranor compiler, alongside examples, causes, and solutions.
 
 ---
 
@@ -8,7 +8,7 @@ This document lists all diagnostic and syntax error codes emitted by the Serv co
 * **Severity:** Error
 * **Cause:** The parser expected a specific symbol or keyword next but encountered something else.
 * **Example:**
-  ```serv
+  ```pranor
   let x 42  // Error: Expected '='
   ```
 * **Solution:** Fix the syntax to include the expected token. Variable declarations must use `let name = value;`.
@@ -17,7 +17,7 @@ This document lists all diagnostic and syntax error codes emitted by the Serv co
 * **Severity:** Error
 * **Cause:** The parser encountered a token at the start of an expression that it cannot parse (e.g., misspelled keyword or stray character).
 * **Example:**
-  ```serv
+  ```pranor
   sett x = 42  // Error: Unrecognized prefix token
   ```
 * **Solution:** Verify the keyword spelling against the list of reserved words (e.g., `let`, `fn`, `struct`).
@@ -26,7 +26,7 @@ This document lists all diagnostic and syntax error codes emitted by the Serv co
 * **Severity:** Error
 * **Cause:** A literal string, integer, or floating-point value is malformed.
 * **Example:**
-  ```serv
+  ```pranor
   let x = 99999999999999999999999999999999  // Error: Integer overflow
   ```
 * **Solution:** Ensure the format of the literal matches expected bounds and type specifications.
@@ -35,7 +35,7 @@ This document lists all diagnostic and syntax error codes emitted by the Serv co
 * **Severity:** Warning
 * **Cause:** A local variable was declared using `let` but never read or referenced afterward.
 * **Example:**
-  ```serv
+  ```pranor
   let temp = compute()  // Warning: Unused variable
   ```
 * **Solution:** Remove the variable declaration, or prefix it with `_` to suppress the warning if it is intended.
@@ -44,7 +44,7 @@ This document lists all diagnostic and syntax error codes emitted by the Serv co
 * **Severity:** Warning
 * **Cause:** Statements are defined after a terminal keyword (like `return` or `break`) in the same block.
 * **Example:**
-  ```serv
+  ```pranor
   return 42
   log.info("Finished")  // Warning: Unreachable code
   ```
@@ -54,7 +54,7 @@ This document lists all diagnostic and syntax error codes emitted by the Serv co
 * **Severity:** Error
 * **Cause:** An assignment or function call argument does not match the expected type.
 * **Example:**
-  ```serv
+  ```pranor
   let name: string = 123  // Error: expects type 'string', but got 'integer'
   ```
 * **Solution:** Ensure variable types, return types, and argument types align.
@@ -63,7 +63,7 @@ This document lists all diagnostic and syntax error codes emitted by the Serv co
 * **Severity:** Error
 * **Cause:** A variable, function, or struct is declared multiple times in the same scope.
 * **Example:**
-  ```serv
+  ```pranor
   let x = 10
   let x = 20  // Error: Duplicate declaration
   ```
@@ -73,7 +73,7 @@ This document lists all diagnostic and syntax error codes emitted by the Serv co
 * **Severity:** Error
 * **Cause:** A variable, function, or imported module is referenced but was never declared.
 * **Example:**
-  ```serv
+  ```pranor
   log.info(userProfile)  // Error: Undefined symbol
   ```
 * **Solution:** Ensure the identifier is spelled correctly, declared in scope, or imported.
@@ -82,7 +82,7 @@ This document lists all diagnostic and syntax error codes emitted by the Serv co
 * **Severity:** Error
 * **Cause:** Steps in a `workflow` block form a cyclic dependency graph (DAG contains cycles).
 * **Example:**
-  ```serv
+  ```pranor
   workflow Order(id) {
       let a = await step1(b)
       let b = await step2(a)  // Error: cyclic step dependency
@@ -94,7 +94,7 @@ This document lists all diagnostic and syntax error codes emitted by the Serv co
 * **Severity:** Error
 * **Cause:** The payload struct sent via `publish` does not match the declared schema under the `schemas/` directory.
 * **Example:**
-  ```serv
+  ```pranor
   publish "user-created" UserBad{name: "Alice"}  // Error: missing required property 'id'
   ```
 * **Solution:** Update the struct definition or publication arguments to match all fields in the JSON Schema.

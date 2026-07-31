@@ -25,15 +25,15 @@
    - Genuine connection validation, retry loop, and stats tracking.
 
 ### Build & Test Results
-- Command: `go build ./...` in `/home/developer/workspace/serv/packages/Pranor Pool`
+- Command: `go build ./...` in `/home/developer/workspace/pranor/packages/Pranor Pool`
   - Output: Exit code 0 (success).
-- Command: `go test -v -count=1 ./...` in `/home/developer/workspace/serv/packages/Pranor Pool`
+- Command: `go test -v -count=1 ./...` in `/home/developer/workspace/pranor/packages/Pranor Pool`
   - Output: Exit code 0, all tests passed.
   - Coverage: `pkg/routing` (6 test functions, including SQL verbs, casing, comments, empty/whitespace queries, round-robin, fallback, concurrent access), `pkg/pool` (7 test functions for HealthChecker covering healthy conn, discard/retry, all unhealthy error, delegated methods, shutdown, dynamic validation function, concurrent checkout).
   - No tests use `t.Skip()`.
 
 ### Dependency Check
-- Command: `git diff go.mod` in `/home/developer/workspace/serv/packages/Pranor Pool`
+- Command: `git diff go.mod` in `/home/developer/workspace/pranor/packages/Pranor Pool`
   - Output: Exit code 0, empty diff (zero dependency additions).
 
 ---
@@ -75,21 +75,21 @@ To independently verify the implementation and test results:
 
 1. **Run Build**:
    ```bash
-   cd /home/developer/workspace/serv/packages/Pranor Pool
+   cd /home/developer/workspace/pranor/packages/Pranor Pool
    go build ./...
    ```
    *Expected result*: Exit code 0.
 
 2. **Run Unit Tests**:
    ```bash
-   cd /home/developer/workspace/serv/packages/Pranor Pool
+   cd /home/developer/workspace/pranor/packages/Pranor Pool
    go test -v -count=1 ./...
    ```
    *Expected result*: Exit code 0, all tests pass.
 
 3. **Verify Dependencies**:
    ```bash
-   cd /home/developer/workspace/serv/packages/Pranor Pool
+   cd /home/developer/workspace/pranor/packages/Pranor Pool
    git diff go.mod
    ```
    *Expected result*: Exit code 0, empty diff.

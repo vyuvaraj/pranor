@@ -41,8 +41,8 @@ This roadmap outlines the planned development phases for the Pranor Chrono distr
 > **Note:** For long-running, stateful, multi-day workflows with human approval gates and saga compensation, see **Pranor Flow** — the proposed workflow orchestrator. Pranor Chrono Phase 4 focuses on short-lived DAG job pipelines (minutes), while Pranor Flow handles durable workflows (hours/days) with state checkpointing. They integrate via Pranor Pulse: Pranor Chrono can trigger Pranor Flow workflows on schedule, and Pranor Flow steps can schedule follow-up jobs in Pranor Chrono.
 
 ## Phase 5: Architectural Depth & DevOps (Pending)
-- [ ] **`serv cron list` CLI** — Terminal command showing next 5 scheduled runs per job, last outcome, and failure count — invaluable for on-call debugging (DevOps)
-- [ ] **Job Run Dry-Mode** — `serv cron run --dry-run <job>` executes a job with verbose logging but without side effects; uses request mocking for HTTP tasks (DX)
+- [ ] **`pranor cron list` CLI** — Terminal command showing next 5 scheduled runs per job, last outcome, and failure count — invaluable for on-call debugging (DevOps)
+- [ ] **Job Run Dry-Mode** — `pranor cron run --dry-run <job>` executes a job with verbose logging but without side effects; uses request mocking for HTTP tasks (DX)
 - [ ] **Structured Job Output Logs** — Persist structured JSON stdout/stderr per run to Pranor Vault with trace_id linkage; surface in Pranor Console and searchable via Pranor Trace (DX / Observability)
 
 > See [UNIFIED_ROADMAP.md](../UNIFIED_ROADMAP.md) for the full ecosystem priority matrix and architectural recommendations.

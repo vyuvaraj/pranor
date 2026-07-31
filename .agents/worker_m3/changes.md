@@ -31,7 +31,7 @@
 
 ```bash
 # 1. Compilation
-cd /home/developer/workspace/serv/packages/Pranor Chrono
+cd /home/developer/workspace/pranor/packages/Pranor Chrono
 go build ./...
 # Exit code: 0
 

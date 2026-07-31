@@ -253,7 +253,7 @@ func TestServerMuxMetrics(t *testing.T) {
 		t.Errorf("expected 200 OK, got %d", rr.Code)
 	}
 	if !strings.Contains(rr.Body.String(), "pranor-cache_hits_total") {
-		t.Errorf("expected metric 'pranor-cache_hits_total' in metrics page")
+		t.Errorf("expected metric 'pranorCache_hits_total' in metrics page")
 	}
 }
 

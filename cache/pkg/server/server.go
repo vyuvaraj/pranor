@@ -415,20 +415,20 @@ func (s *Server) handlePrometheusMetrics(w http.ResponseWriter, _ *http.Request)
 	}
 
 	w.Header().Set("Content-Type", "text/plain; version=0.0.4")
-	fmt.Fprintf(w, "# HELP pranor-cache_hits_total Total number of cache hits.\n")
-	fmt.Fprintf(w, "# TYPE pranor-cache_hits_total counter\n")
+	fmt.Fprintf(w, "# HELP pranorCache_hits_total Total number of cache hits.\n")
+	fmt.Fprintf(w, "# TYPE pranorCache_hits_total counter\n")
 	fmt.Fprintf(w, "pranor-cache_hits_total %d\n\n", h)
 
-	fmt.Fprintf(w, "# HELP pranor-cache_misses_total Total number of cache misses.\n")
-	fmt.Fprintf(w, "# TYPE pranor-cache_misses_total counter\n")
+	fmt.Fprintf(w, "# HELP pranorCache_misses_total Total number of cache misses.\n")
+	fmt.Fprintf(w, "# TYPE pranorCache_misses_total counter\n")
 	fmt.Fprintf(w, "pranor-cache_misses_total %d\n\n", m)
 
-	fmt.Fprintf(w, "# HELP pranor-cache_hit_ratio Current cache hit ratio (0.0 to 1.0).\n")
-	fmt.Fprintf(w, "# TYPE pranor-cache_hit_ratio gauge\n")
+	fmt.Fprintf(w, "# HELP pranorCache_hit_ratio Current cache hit ratio (0.0 to 1.0).\n")
+	fmt.Fprintf(w, "# TYPE pranorCache_hit_ratio gauge\n")
 	fmt.Fprintf(w, "pranor-cache_hit_ratio %f\n\n", ratio)
 
-	fmt.Fprintf(w, "# HELP pranor-cache_total_keys Current number of keys stored in cache.\n")
-	fmt.Fprintf(w, "# TYPE pranor-cache_total_keys gauge\n")
+	fmt.Fprintf(w, "# HELP pranorCache_total_keys Current number of keys stored in cache.\n")
+	fmt.Fprintf(w, "# TYPE pranorCache_total_keys gauge\n")
 	fmt.Fprintf(w, "pranor-cache_total_keys %d\n", totalKeys)
 }
 

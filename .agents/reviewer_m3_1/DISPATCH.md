@@ -1,11 +1,11 @@
 ## 2026-07-26T09:09:26Z
 You are Reviewer M3 for Pranor Chrono (CR.G1, CR.G2, CR.G4).
-Working directory: /home/developer/workspace/serv/.agents/reviewer_m3_1
+Working directory: /home/developer/workspace/pranor/.agents/reviewer_m3_1
 
 Required Reading:
-- `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (R5, R6, R7)
-- `/home/developer/workspace/serv/PROJECT.md`
-- `/home/developer/workspace/serv/.agents/worker_m3/handoff.md`
+- `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (R5, R6, R7)
+- `/home/developer/workspace/pranor/PROJECT.md`
+- `/home/developer/workspace/pranor/.agents/worker_m3/handoff.md`
 
 Tasks:
 1. Examine code in `packages/Pranor Chrono/pkg/cron/cron.go` and `packages/Pranor Chrono/pkg/config/jobs_loader.go`.

@@ -13,7 +13,7 @@ func main() {
 	configPath := flag.String("config", "config.json", "Path to Pranor Vault configuration file")
 	port := flag.String("port", ":9000", "S3 Storage listening port")
 	adminPort := flag.String("admin-port", ":9001", "Console UI listening port")
-	version := flag.Bool("version", false, "Show pranor-vaultd version")
+	version := flag.Bool("version", false, "Show pranorVaultd version")
 	flag.Parse()
 
 	if *version {
@@ -21,10 +21,10 @@ func main() {
 		os.Exit(0)
 	}
 
-	log.Printf("Starting Pranor Vault Standalone Daemon (pranor-vaultd v2.0.0)...")
+	log.Printf("Starting Pranor Vault Standalone Daemon (pranorVaultd v2.0.0)...")
 	d, err := daemon.NewPranorVaultDaemon(*configPath)
 	if err != nil {
-		log.Fatalf("Failed to initialize pranor-vaultd: %v", err)
+		log.Fatalf("Failed to initialize pranorVaultd: %v", err)
 	}
 
 	d.SetPorts(*port, *adminPort)

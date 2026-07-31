@@ -3,15 +3,15 @@
 **Author:** Explorer 1 (Survey Phase)  
 **Date:** 2026-07-26  
 **Target:** Pranor Auth & Pranor Cache modules  
-**Working Directory:** `/home/developer/workspace/serv/.agents/explorer_survey_1`
+**Working Directory:** `/home/developer/workspace/pranor/.agents/explorer_survey_1`
 
 ---
 
 ## 1. Observation
 
 1. **Repository Location & Environment:**
-   * Monorepo base path: `/home/developer/workspace/serv`
-   * Target package directories: `/home/developer/workspace/serv/packages/Pranor Auth` and `/home/developer/workspace/serv/packages/Pranor Cache`.
+   * Monorepo base path: `/home/developer/workspace/pranor`
+   * Target package directories: `/home/developer/workspace/pranor/packages/Pranor Auth` and `/home/developer/workspace/pranor/packages/Pranor Cache`.
    * Go environment: Go version 1.25.0 in Pranor Auth (`go.mod` line 3), Go version 1.23.0 in Pranor Cache (`go.mod` line 3).
 2. **`packages/Pranor Auth` Initial State:**
    * Command `go test ./...` in `packages/Pranor Auth` completed with exit code 0 (`ok github.com/vyuvaraj/pranor/packages/Pranor Auth 1.058s`).
@@ -26,7 +26,7 @@
    * Target implementation path SC.G3: `packages/Pranor Cache/pkg/bloom/bloom.go` (`pkg/bloom` directory currently does not exist).
    * Target implementation path SC.G4: `packages/Pranor Cache/pkg/tieredttl/policy.go` (`pkg/tieredttl` directory currently does not exist).
 4. **Requirements Reference:**
-   * Requirements R1, R2, R3, R4 in `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (lines 34–68).
+   * Requirements R1, R2, R3, R4 in `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (lines 34–68).
 
 ---
 
@@ -64,18 +64,18 @@ To verify the investigation and subsequent implementations:
 
 1. **Verify Baseline Build and Tests:**
    ```bash
-   cd /home/developer/workspace/serv/packages/Pranor Auth && go test ./...
-   cd /home/developer/workspace/serv/packages/Pranor Cache && go test ./...
+   cd /home/developer/workspace/pranor/packages/Pranor Auth && go test ./...
+   cd /home/developer/workspace/pranor/packages/Pranor Cache && go test ./...
    ```
 2. **Verify Created Target Package Files (post-implementation):**
    ```bash
-   ls -la /home/developer/workspace/serv/packages/Pranor Auth/pkg/sessions/token_store.go
-   ls -la /home/developer/workspace/serv/packages/Pranor Auth/pkg/security/velocity_limiter.go
-   ls -la /home/developer/workspace/serv/packages/Pranor Cache/pkg/bloom/bloom.go
-   ls -la /home/developer/workspace/serv/packages/Pranor Cache/pkg/tieredttl/policy.go
+   ls -la /home/developer/workspace/pranor/packages/Pranor Auth/pkg/sessions/token_store.go
+   ls -la /home/developer/workspace/pranor/packages/Pranor Auth/pkg/security/velocity_limiter.go
+   ls -la /home/developer/workspace/pranor/packages/Pranor Cache/pkg/bloom/bloom.go
+   ls -la /home/developer/workspace/pranor/packages/Pranor Cache/pkg/tieredttl/policy.go
    ```
 3. **Verify Zero Dependency Additions:**
    ```bash
-   cd /home/developer/workspace/serv && git diff packages/Pranor Auth/go.mod packages/Pranor Cache/go.mod
+   cd /home/developer/workspace/pranor && git diff packages/Pranor Auth/go.mod packages/Pranor Cache/go.mod
    ```
    (Must output empty diff).

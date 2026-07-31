@@ -37,7 +37,7 @@ This roadmap outlines the planned development phases for the Pranor Trace distri
 - [x] **Distributed Context Baggage**: Propagate custom key-value pairs across service boundaries via trace context. [July 9, 2026]
 
 ## Phase 5: Architectural Depth & DevOps (Pending)
-- [ ] **`serv trace search` CLI** — Search traces by service, operation, error, or duration threshold from the terminal; output as JSON or ASCII waterfall (DevOps)
+- [ ] **`pranor trace search` CLI** — Search traces by service, operation, error, or duration threshold from the terminal; output as JSON or ASCII waterfall (DevOps)
 - [x] **Continuous Profiling Integration** — Link pprof CPU/memory profiles to trace spans; surface hot-path profiles in the Pranor Console waterfall view alongside latency (Performance) [July 9, 2026]
 - [x] **Adaptive Sampling Rate** — Dynamically raise sampling rate when error rate spikes and lower it when traffic is healthy — reduces overhead in normal operation while capturing all errors (Performance / DevOps) [July 9, 2026]
 - [x] **Trace Comparison** — Compare two traces side-by-side to identify regression causes (DX) [July 9, 2026]

@@ -1,6 +1,6 @@
-# Getting Started with Serv
+# Getting Started with Pranor
 
-Serv is a programming language for building background services, APIs, schedulers, and event-driven applications. It compiles to native binaries via Go.
+Pranor is a programming language for building background services, APIs, schedulers, and event-driven applications. It compiles to native binaries via Go.
 
 ## Installation
 
@@ -17,18 +17,18 @@ Move `pranor.exe` to a directory in your PATH.
 ### Verify Installation
 
 ```bash
-serv --help
+pranor --help
 ```
 
 ## Hello World
 
 Create `hello.pnr`:
 
-```serv
+```pranor
 server "8080"
 
 route "GET" "/hello" (req) {
-    return { "message": "Hello from Serv!" }
+    return { "message": "Hello from Pranor!" }
 }
 ```
 
@@ -41,7 +41,7 @@ pranor build hello.pnr -o hello.exe
 
 Visit `http://localhost:8080/hello` — you'll see:
 ```json
-{"message": "Hello from Serv!"}
+{"message": "Hello from Pranor!"}
 ```
 
 ## Quick Run (no build step)
@@ -60,11 +60,11 @@ Changes to `.pnr` files trigger automatic rebuild and restart.
 
 ## Your First Real Service
 
-```serv
+```pranor
 server "3000"
 database "sqlite://app.db"
 
-// Declare schema — run `serv migrate` once to create the table
+// Declare schema — run `pranor migrate` once to create the table
 table tasks {
     id    int    @primary @autoincrement
     title string @required
@@ -97,7 +97,7 @@ every 1h {
 Apply the schema before first run:
 
 ```bash
-serv migrate app.pnr    # creates the tasks table
+pranor migrate app.pnr    # creates the tasks table
 pranor run app.pnr
 ```
 

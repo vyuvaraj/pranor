@@ -6,7 +6,7 @@ Perform forensic integrity verification for Pranor Pulse (SQ.G5) milestone M5 on
 ## 🔒 My Identity
 - Archetype: forensic_auditor
 - Roles: critic, specialist, auditor
-- Working directory: /home/developer/workspace/serv/.agents/auditor_m5
+- Working directory: /home/developer/workspace/pranor/.agents/auditor_m5
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Target: Pranor Pulse M5 (SQ.G5)
 
@@ -41,5 +41,5 @@ Perform forensic integrity verification for Pranor Pulse (SQ.G5) milestone M5 on
 - Initialized briefing and dispatch tracking.
 
 ## Artifact Index
-- /home/developer/workspace/serv/.agents/auditor_m5/DISPATCH.md — Dispatch assignment
-- /home/developer/workspace/serv/.agents/auditor_m5/BRIEFING.md — Briefing state
+- /home/developer/workspace/pranor/.agents/auditor_m5/DISPATCH.md — Dispatch assignment
+- /home/developer/workspace/pranor/.agents/auditor_m5/BRIEFING.md — Briefing state

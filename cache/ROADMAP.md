@@ -40,8 +40,8 @@ This roadmap outlines the planned development phases for the Pranor Cache distri
 
 ## Phase 5: Architectural Depth & Developer Experience (Pending)
 - [x] **Adaptive Pool Invalidation** — Automatically invalidate cache entries tied to ServDB writes using a change-data-capture hook (PS.1)
-- [ ] **`serv cache inspect` CLI** — CLI command to display per-namespace key counts, memory usage, hit/miss ratios, and top hot keys for developer debugging (DevOps)
-- [ ] **Cache Warming Fixtures** — Load a named fixtures file (`serv cache warm --fixture dev.yaml`) on service start for reproducible local development environments (DX)
+- [ ] **`pranor cache inspect` CLI** — CLI command to display per-namespace key counts, memory usage, hit/miss ratios, and top hot keys for developer debugging (DevOps)
+- [ ] **Cache Warming Fixtures** — Load a named fixtures file (`pranor cache warm --fixture dev.yaml`) on service start for reproducible local development environments (DX)
 - [ ] **Cache Stampede Protection** — Implement singleflight-style coalescing for concurrent cache misses on the same key; only one goroutine computes the value (Reliability)
 - [ ] **LRU/LFU Eviction Strategy Choice** — Allow configuring eviction policy per namespace (LRU, LFU, or random). Currently only TTL-based (Performance)
 

@@ -2,7 +2,7 @@
 // Provides real-time diagnostics, autocomplete, hover, go-to-definition,
 // signature help, and document symbols for .pnr files.
 //
-// Usage: pranor-lsp (communicates via stdin/stdout JSON-RPC)
+// Usage: pranorLsp (communicates via stdin/stdout JSON-RPC)
 package main
 
 import (

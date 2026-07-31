@@ -1,11 +1,11 @@
 ## 2026-07-26T09:09:26Z
 You are Reviewer M1 for Pranor Auth (SA.G1 & SA.G6).
-Working directory: /home/developer/workspace/serv/.agents/reviewer_m1_1
+Working directory: /home/developer/workspace/pranor/.agents/reviewer_m1_1
 
 Required Reading:
-- `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (R1, R2)
-- `/home/developer/workspace/serv/PROJECT.md`
-- `/home/developer/workspace/serv/.agents/worker_m1_gen2/handoff.md`
+- `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (R1, R2)
+- `/home/developer/workspace/pranor/PROJECT.md`
+- `/home/developer/workspace/pranor/.agents/worker_m1_gen2/handoff.md`
 
 Tasks:
 1. Examine code in `packages/Pranor Auth/pkg/sessions/token_store.go` and `packages/Pranor Auth/pkg/security/velocity_limiter.go`.

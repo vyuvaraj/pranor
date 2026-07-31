@@ -1,11 +1,11 @@
 ## 2026-07-26T09:09:26Z
 You are Reviewer M2 for Pranor Cache (SC.G3 & SC.G4).
-Working directory: /home/developer/workspace/serv/.agents/reviewer_m2_1
+Working directory: /home/developer/workspace/pranor/.agents/reviewer_m2_1
 
 Required Reading:
-- `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (R3, R4)
-- `/home/developer/workspace/serv/PROJECT.md`
-- `/home/developer/workspace/serv/.agents/worker_m2/handoff.md`
+- `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (R3, R4)
+- `/home/developer/workspace/pranor/PROJECT.md`
+- `/home/developer/workspace/pranor/.agents/worker_m2/handoff.md`
 
 Tasks:
 1. Examine code in `packages/Pranor Cache/pkg/bloom/bloom.go` and `packages/Pranor Cache/pkg/tieredttl/policy.go`.

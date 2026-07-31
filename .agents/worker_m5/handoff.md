@@ -1,7 +1,7 @@
 # Handoff Report — Worker 5 (M5: Pranor Pulse - SQ.G5)
 
 ## 1. Observation
-- Modified directory: `/home/developer/workspace/serv/packages/Pranor Pulse`
+- Modified directory: `/home/developer/workspace/pranor/packages/Pranor Pulse`
 - Original user request item SQ.G5: `packages/Pranor Pulse/pkg/tracing/traceparent.go` and `packages/Pranor Pulse/pkg/core/engine.go`.
 - Created files:
   - `packages/Pranor Pulse/pkg/tracing/traceparent.go`
@@ -37,7 +37,7 @@
 
 ## 5. Verification Method
 To independently verify the implementation:
-1. Navigate to `/home/developer/workspace/serv/packages/Pranor Pulse`.
+1. Navigate to `/home/developer/workspace/pranor/packages/Pranor Pulse`.
 2. Run build: `go build ./...` (must exit 0).
 3. Run unit test suite: `go test -v ./...` (must exit 0 with all tests passing).
 4. Run `git diff go.mod` in `packages/Pranor Pulse` (must produce zero changes).

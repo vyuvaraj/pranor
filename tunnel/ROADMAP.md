@@ -39,7 +39,7 @@
 - [x] Request replay endpoint (`POST /api/inspect/{id}/replay`)
 - [x] Request filtering in inspector (by method, status, path)
 - [x] Local web UI for request inspection (served by client)
-- [x] `serv tunnel` integration in the Serv compiler CLI
+- [x] `pranor tunnel` integration in the Pranor compiler CLI
 - [x] Automatic subdomain based on git branch name
 
 ---
@@ -73,8 +73,8 @@
 - [ ] **Webhook Relay Mode**: Receive webhooks on public URL, replay to multiple local services.
 
 ## Phase 5: Architectural Depth & Developer Experience (Pending)
-- [ ] **`serv tunnel inspect` CLI** — Real-time view of active tunnel connections, throughput, and recent request log from the terminal (DevOps)
+- [ ] **`pranor tunnel inspect` CLI** — Real-time view of active tunnel connections, throughput, and recent request log from the terminal (DevOps)
 - [x] **Request Diff Mode** — Show a coloured diff between the proxied request and original, highlighting header mutations, body modifications or injected WASM transforms (DX) [July 9, 2026]
-- [x] **Tunnel Config-as-Code** — Declare tunnel rules in `.serv/tunnel.yaml` (name, auth, subdomain, filters); committed to git for reproducible team setups (DevOps / DX) [July 9, 2026]
+- [x] **Tunnel Config-as-Code** — Declare tunnel rules in `.pnr/tunnel.yaml` (name, auth, subdomain, filters); committed to git for reproducible team setups (DevOps / DX) [July 9, 2026]
 
 > See [UNIFIED_ROADMAP.md](../UNIFIED_ROADMAP.md) for the full ecosystem priority matrix and architectural recommendations.

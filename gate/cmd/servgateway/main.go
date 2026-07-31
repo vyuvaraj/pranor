@@ -34,9 +34,9 @@ func main() {
 }
 
 func printUsage() {
-	fmt.Println("Usage: pranor-gate <command> [options]")
+	fmt.Println("Usage: pranorGate <command> [options]")
 	fmt.Println("\nCommands:")
-	fmt.Println("  status                Check status of running pranor-gated daemon")
+	fmt.Println("  status                Check status of running pranorGated daemon")
 	fmt.Println("  routes list           List active gateway proxy routes")
 	fmt.Println("  routes add <path> <target_url>  Add new proxy route to running daemon")
 	fmt.Println("  version               Show CLI version")
@@ -45,7 +45,7 @@ func printUsage() {
 func handleStatus() {
 	resp, err := http.Get(defaultAdminURL + "/api/v1/health")
 	if err != nil {
-		fmt.Printf("Error connecting to pranor-gated daemon at %s: %v\n", defaultAdminURL, err)
+		fmt.Printf("Error connecting to pranorGated daemon at %s: %v\n", defaultAdminURL, err)
 		os.Exit(1)
 	}
 	defer resp.Body.Close()
@@ -100,5 +100,5 @@ func handleRoutesCommand(args []string) {
 		return
 	}
 
-	fmt.Println("Invalid routes command. Use 'pranor-gate routes list' or 'pranor-gate routes add <path> <target_url>'")
+	fmt.Println("Invalid routes command. Use 'pranorGate routes list' or 'pranorGate routes add <path> <target_url>'")
 }

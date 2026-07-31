@@ -1,8 +1,8 @@
-# Serv Project Templates
+# Pranor Project Templates
 
-## Kiro + Serv (AI-Assisted Development)
+## Kiro + Pranor (AI-Assisted Development)
 
-To create a new Serv project with Kiro support:
+To create a new Pranor project with Kiro support:
 
 1. Copy the `kiro-project/` template to your new project directory:
    ```bash
@@ -10,8 +10,8 @@ To create a new Serv project with Kiro support:
    cd ~/my-new-service/
    ```
 
-2. Open in Kiro — the steering files tell Kiro how to write Serv code:
-   - `.kiro/steering/serv.md` — Language syntax & API reference
+2. Open in Kiro — the steering files tell Kiro how to write Pranor code:
+   - `.kiro/steering/pranor.md` — Language syntax & API reference
    - `.kiro/steering/project.md` — Project conventions & patterns
 
 3. Start building:
@@ -26,9 +26,9 @@ When Kiro sees these files, it automatically:
 - Uses the correct built-in objects (`log`, `db`, `cache`, `http`, etc.)
 - Follows the `?` operator pattern for error handling
 - Imports from `stdlib/` correctly
-- Runs `pranor build` / `serv test` / `serv lint` for verification
-- Uses 4-space indentation and `serv fmt` conventions
+- Runs `pranor build` / `pranor test` / `pranor lint` for verification
+- Uses 4-space indentation and `pranor fmt` conventions
 
 ## Without Kiro
 
-The template works as a regular Serv project too — just ignore the `.kiro/` directory.
+The template works as a regular Pranor project too — just ignore the `.kiro/` directory.

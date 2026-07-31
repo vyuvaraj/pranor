@@ -1,11 +1,11 @@
 ## 2026-07-26T09:09:27Z
 You are Reviewer M5 for Pranor Pulse (SQ.G5).
-Working directory: /home/developer/workspace/serv/.agents/reviewer_m5_1
+Working directory: /home/developer/workspace/pranor/.agents/reviewer_m5_1
 
 Required Reading:
-- `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (R10)
-- `/home/developer/workspace/serv/PROJECT.md`
-- `/home/developer/workspace/serv/.agents/worker_m5/handoff.md`
+- `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (R10)
+- `/home/developer/workspace/pranor/PROJECT.md`
+- `/home/developer/workspace/pranor/.agents/worker_m5/handoff.md`
 
 Tasks:
 1. Examine code in `packages/Pranor Pulse/pkg/tracing/traceparent.go` and `packages/Pranor Pulse/pkg/core/engine.go`.

@@ -18,7 +18,7 @@
 1. **Provide a Master Key**: Define the 32-byte master key as a hex-encoded string in the environment:
    ```bash
    # Example hex key (32 bytes)
-   export SERVSECRET_MASTER_KEY="000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+   export PRANOR_SECRET_MASTER_KEY="000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
    ```
    *Note: If no master key is supplied, a temporary random key will be generated at startup, and stored secrets will not persist across restarts.*
 

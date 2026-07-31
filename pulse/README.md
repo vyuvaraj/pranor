@@ -178,7 +178,7 @@ pranor-pulsed --port 9090 --storage ./data --tls
 # CLI
 pranor-pulse publish orders '{"id": 1}'
 pranor-pulse consume orders --group my-service
-serv queue publish orders '{"id": 1}'   # Pranor integration
+pranor pulse publish orders '{"id": 1}'   # Pranor integration
 
 # Kubernetes Operator
 kubectl apply -f pranor-pulsecluster.yaml

@@ -6,7 +6,7 @@ Implement M2 (Pranor Cache roadmap features): SC.G3 (Probabilistic Bloom Filter)
 ## 🔒 My Identity
 - Archetype: implementer
 - Roles: implementer, qa, specialist
-- Working directory: /home/developer/workspace/serv/.agents/worker_m2
+- Working directory: /home/developer/workspace/pranor/.agents/worker_m2
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: M2 (Pranor Cache)
 
@@ -35,12 +35,12 @@ Implement M2 (Pranor Cache roadmap features): SC.G3 (Probabilistic Bloom Filter)
 - Implemented `TieredCache` wrapping `cache.Cache` interface (such as `InMemoryCache`), maintaining a key-to-tier map to track which tier a key belonged to upon insertion, ensuring accurate per-tier hit/miss counter attribution.
 
 ## Artifact Index
-- `/home/developer/workspace/serv/packages/Pranor Cache/pkg/bloom/bloom.go` — Bloom filter implementation
-- `/home/developer/workspace/serv/packages/Pranor Cache/pkg/bloom/bloom_test.go` — Bloom filter unit tests
-- `/home/developer/workspace/serv/packages/Pranor Cache/pkg/tieredttl/policy.go` — Tiered TTL policy engine & cache wrapper
-- `/home/developer/workspace/serv/packages/Pranor Cache/pkg/tieredttl/policy_test.go` — Tiered TTL unit tests
-- `/home/developer/workspace/serv/.agents/worker_m2/changes.md` — Implementation changes report
-- `/home/developer/workspace/serv/.agents/worker_m2/handoff.md` — 5-component handoff report
+- `/home/developer/workspace/pranor/packages/Pranor Cache/pkg/bloom/bloom.go` — Bloom filter implementation
+- `/home/developer/workspace/pranor/packages/Pranor Cache/pkg/bloom/bloom_test.go` — Bloom filter unit tests
+- `/home/developer/workspace/pranor/packages/Pranor Cache/pkg/tieredttl/policy.go` — Tiered TTL policy engine & cache wrapper
+- `/home/developer/workspace/pranor/packages/Pranor Cache/pkg/tieredttl/policy_test.go` — Tiered TTL unit tests
+- `/home/developer/workspace/pranor/.agents/worker_m2/changes.md` — Implementation changes report
+- `/home/developer/workspace/pranor/.agents/worker_m2/handoff.md` — 5-component handoff report
 
 ## Change Tracker
 - **Files modified**:

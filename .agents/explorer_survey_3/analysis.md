@@ -1,7 +1,7 @@
 # Survey & Analysis: SP.G1, SP.G2, and SQ.G5
 
 ## Executive Summary
-This document provides a comprehensive survey and architectural analysis of three OSS roadmap features for the Pranor monorepo (`/home/developer/workspace/serv`):
+This document provides a comprehensive survey and architectural analysis of three OSS roadmap features for the Pranor monorepo (`/home/developer/workspace/pranor`):
 1. **SP.G1**: Read/Write split router in `packages/Pranor Pool/pkg/routing/rw_splitter.go` (Requirement R8).
 2. **SP.G2**: Pre-checkout connection health validator in `packages/Pranor Pool/pkg/pool/health_checker.go` (Requirement R9).
 3. **SQ.G5**: W3C trace context propagation in `packages/Pranor Pulse/pkg/tracing/traceparent.go` and engine integration in `packages/Pranor Pulse/pkg/core/engine.go` (Requirement R10).
@@ -396,8 +396,8 @@ func (e *Engine) Append(topic, payload string, metadata ...map[string]string) (L
 ## 4. Test Suite Setup & Verification Plan
 
 ### Test Command Targets
-- Pranor Pool: `cd /home/developer/workspace/serv/packages/Pranor Pool && go test ./...`
-- Pranor Pulse: `cd /home/developer/workspace/serv/packages/Pranor Pulse && go test ./...`
+- Pranor Pool: `cd /home/developer/workspace/pranor/packages/Pranor Pool && go test ./...`
+- Pranor Pulse: `cd /home/developer/workspace/pranor/packages/Pranor Pulse && go test ./...`
 - Build Check: `go build ./...` in both package directories.
 
 ### Verification Conditions

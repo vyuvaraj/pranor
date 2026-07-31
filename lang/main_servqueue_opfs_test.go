@@ -6,7 +6,7 @@ import (
 )
 
 func TestPranorPulseOPFSConnectionParsing(t *testing.T) {
-	tmpFile, err := os.CreateTemp("", "test_pranor-pulse_opfs_*.pnr")
+	tmpFile, err := os.CreateTemp("", "test_pranorPulse_opfs_*.pnr")
 	if err != nil {
 		t.Fatalf("failed to create temp file: %v", err)
 	}
@@ -25,7 +25,7 @@ route "POST" "/events" (req) {
 	}
 	tmpFile.Close()
 
-	outExe := "temp_pranor-pulse_opfs.exe"
+	outExe := "temp_pranorPulse_opfs.exe"
 	_, err = buildServNoExit(tmpFile.Name(), outExe, "", "", "", "")
 	if err != nil {
 		t.Fatalf("Build failed for Pranor Pulse://opfs broker target: %v", err)

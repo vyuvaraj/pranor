@@ -1,11 +1,11 @@
-# Serv Language Support for VS Code
+# Pranor Language Support for VS Code
 
-Full IDE support for the [Serv programming language](https://github.com/vyuvaraj/Pranor) — build background services, APIs, and schedulers with a clean, expressive syntax that compiles to native binaries.
+Full IDE support for the [Pranor programming language](https://github.com/vyuvaraj/Pranor) — build background services, APIs, and schedulers with a clean, expressive syntax that compiles to native binaries.
 
 ## Features
 
 ### Syntax Highlighting
-Rich syntax coloring for all Serv constructs: routes, structs, functions, f-strings, type annotations, duration literals, and more.
+Rich syntax coloring for all Pranor constructs: routes, structs, functions, f-strings, type annotations, duration literals, and more.
 
 ### IntelliSense & Autocomplete
 - **Smart completions** for keywords, built-in objects, and your own functions/structs
@@ -14,7 +14,7 @@ Rich syntax coloring for all Serv constructs: routes, structs, functions, f-stri
 - **Import auto-organization** — type `use ` and press Tab to pick from all 18 stdlib modules with full API docs; a quick-fix lightbulb appears when you use `db.`, `cache.`, `http.` etc. without the corresponding `use` statement
 
 ### Inlay Type Hints _(v3.0.5+)_
-Always-on inline hints show inferred return types on `fn` declarations (`→ string`) and inferred types on `let` bindings (`: int`, `: Result`, `: Response`). Toggle with the `serv.enableInlayHints` setting.
+Always-on inline hints show inferred return types on `fn` declarations (`→ string`) and inferred types on `let` bindings (`: int`, `: Result`, `: Response`). Toggle with the `pranor.enableInlayHints` setting.
 
 ### Real-Time Diagnostics
 Errors and warnings appear as you type:
@@ -31,13 +31,13 @@ Hover over any symbol to see its type signature — works on definitions, usages
 Jump to any function, struct, or variable definition. Works across files in your workspace.
 
 ### Format on Save
-Automatic code formatting with 4-space indentation and consistent style — same as `serv fmt`.
+Automatic code formatting with 4-space indentation and consistent style — same as `pranor fmt`.
 
 ---
 
-## ServVerse Activity Bar Panel _(v3.0.6+)_
+## Pranor Activity Bar Panel _(v3.0.6+)_
 
-A dedicated **ServVerse** icon in the Activity Bar opens a live sidebar showing all 17 services with health status, port numbers, and uptime — polled from Pranor Hub every 6 seconds. Falls back to mock data with an `offline` badge when the registry is unreachable. Use the ↺ refresh button in the panel title bar to force an update.
+A dedicated **Pranor** icon in the Activity Bar opens a live sidebar showing all 17 services with health status, port numbers, and uptime — polled from Pranor Hub every 6 seconds. Falls back to mock data with an `offline` badge when the registry is unreachable. Use the ↺ refresh button in the panel title bar to force an update.
 
 ---
 
@@ -47,53 +47,53 @@ Visual Webviews integrated directly into the workspace to observe and simulate l
 
 | Command | Dashboard | Description |
 |---------|-----------|-------------|
-| `serv.visualizeWorkflow` | **Workflow DAG** | Live Mermaid.js flowchart of step sequences and compensating tasks |
-| `serv.exploreQueue` | **Pranor Pulse Broker** | Active topics, partition counts, and consumer group registrations |
-| `serv.exploreStore` | **Pranor Vault Bucket** | Object storage folders and file listings |
-| `serv.exploreLocks` | **Pranor Lock Contention** | Distributed locks, active leases, and FIFO waiter queues |
-| `serv.simulateRoute` | **Pranor Gate Router Simulator** | Simulates Gateway path-routing matches locally against the active config |
-| `serv.exploreCron` | **Pranor Chrono Scheduler** | Scheduled cron jobs with overlap warnings |
-| `serv.inspectCache` | **Pranor Cache Inspector** | Real-time hit/miss metrics and active connection pool status |
-| `serv.inspectAuth` | **Pranor Auth Risk Scoring** | Progressive auth sessions, device fingerprints, geo context, and MFA risk scores |
-| `serv.openREPL` | **Interactive REPL** | Spawns a `serv repl` terminal for live expression evaluation |
-| `serv.viewMesh` | **Pranor Mesh Topology** | Live Mermaid.js graph of all mesh service connections |
-| `serv.traceRequests` | **Pranor Trace Span Tracer** | Distributed trace spans with trace ID, service, latency, and OK/ERROR status. Auto-refreshes every 5s |
-| `serv.viewRegistry` | **Pranor Hub Monitor** | All registered microservices with live health checks, ports, and uptime. Auto-refreshes every 4s |
-| `serv.runBench` | **Benchmark Panel** | Runs `serv bench` and shows p50/p99/throughput results per route |
-| `serv.viewDeployments` | **Cloud Deployments** | Branch preview deployments with URLs and build status |
-| `serv.inspectPool` | **Pranor Pool Inspector** | DB connection pool stats (active/idle/max) with wait-queue alerts |
-| `serv.inspectMail` | **Pranor Notify Queue** | Email queue with queued/sent/bounced counts and per-item status |
-| `serv.viewTunnels` | **Pranor Tunnel Sessions** | Active tunnel sessions with client IP, target, protocol, duration, bytes in/out |
-| `serv.deploy` | **One-Click Deploy** | Deploy the current service to Pranor Deploy with live build log (compile → test → package → provision → URL) |
-| `serv.servctl` | **servctl CLI** | Cluster administration tool (`get services`, `get nodes`, `restart service`, `apply config`) |
-| `serv.checkBreakingChanges` | **serv diff** | Breaking change detector against git base branch (`main`) |
-| `serv.generateRust` | **Rust Codegen** | Generate Rust client code (`serv generate --lang rust`) |
-| `serv.generatePython` | **Python Codegen** | Generate Python client code (`serv generate --lang python`) |
-| `serv.controlChaos` | **Platform Chaos Control** | Platform fault injection engine panel (network, CPU, memory, disk, clock skew) |
-| `serv.exportToPlayground` | **WASM Playground** | Export current `.pnr` file directly to `playground.pranor.dev` |
-| `serv.openServdConsole` | **servd Platform Console** | Single-binary embedded monolith console with component monitoring & health rollups |
+| `pranor.visualizeWorkflow` | **Workflow DAG** | Live Mermaid.js flowchart of step sequences and compensating tasks |
+| `pranor.exploreQueue` | **Pranor Pulse Broker** | Active topics, partition counts, and consumer group registrations |
+| `pranor.exploreStore` | **Pranor Vault Bucket** | Object storage folders and file listings |
+| `pranor.exploreLocks` | **Pranor Lock Contention** | Distributed locks, active leases, and FIFO waiter queues |
+| `pranor.simulateRoute` | **Pranor Gate Router Simulator** | Simulates Gateway path-routing matches locally against the active config |
+| `pranor.exploreCron` | **Pranor Chrono Scheduler** | Scheduled cron jobs with overlap warnings |
+| `pranor.inspectCache` | **Pranor Cache Inspector** | Real-time hit/miss metrics and active connection pool status |
+| `pranor.inspectAuth` | **Pranor Auth Risk Scoring** | Progressive auth sessions, device fingerprints, geo context, and MFA risk scores |
+| `pranor.openREPL` | **Interactive REPL** | Spawns a `pranor repl` terminal for live expression evaluation |
+| `pranor.viewMesh` | **Pranor Mesh Topology** | Live Mermaid.js graph of all mesh service connections |
+| `pranor.traceRequests` | **Pranor Trace Span Tracer** | Distributed trace spans with trace ID, service, latency, and OK/ERROR status. Auto-refreshes every 5s |
+| `pranor.viewRegistry` | **Pranor Hub Monitor** | All registered microservices with live health checks, ports, and uptime. Auto-refreshes every 4s |
+| `pranor.runBench` | **Benchmark Panel** | Runs `pranor bench` and shows p50/p99/throughput results per route |
+| `pranor.viewDeployments` | **Cloud Deployments** | Branch preview deployments with URLs and build status |
+| `pranor.inspectPool` | **Pranor Pool Inspector** | DB connection pool stats (active/idle/max) with wait-queue alerts |
+| `pranor.inspectMail` | **Pranor Notify Queue** | Email queue with queued/sent/bounced counts and per-item status |
+| `pranor.viewTunnels` | **Pranor Tunnel Sessions** | Active tunnel sessions with client IP, target, protocol, duration, bytes in/out |
+| `pranor.deploy` | **One-Click Deploy** | Deploy the current service to Pranor Deploy with live build log (compile → test → package → provision → URL) |
+| `pranor.pnrctl` | **pranorctl CLI** | Cluster administration tool (`get services`, `get nodes`, `restart service`, `apply config`) |
+| `pranor.checkBreakingChanges` | **pranor diff** | Breaking change detector against git base branch (`main`) |
+| `pranor.generateRust` | **Rust Codegen** | Generate Rust client code (`pranor generate --lang rust`) |
+| `pranor.generatePython` | **Python Codegen** | Generate Python client code (`pranor generate --lang python`) |
+| `pranor.controlChaos` | **Platform Chaos Control** | Platform fault injection engine panel (network, CPU, memory, disk, clock skew) |
+| `pranor.exportToPlayground` | **WASM Playground** | Export current `.pnr` file directly to `playground.pranor.dev` |
+| `pranor.openServdConsole` | **pranord Platform Console** | Single-binary embedded monolith console with component monitoring & health rollups |
 
 ---
 
 ## Test Integration
 
-### Serv Test Explorer _(v3.0.4+)_
+### Pranor Test Explorer _(v3.0.4+)_
 A sidebar tree under the Explorer panel lists every `test "..."` block from all `.pnr` files in the workspace, grouped by file. Refreshes automatically on save.
 
 ### Test Gutter Decorations _(v3.0.5+)_
-Run `Serv: Run Tests (with Gutter Decorations)` to paint:
+Run `Pranor: Run Tests (with Gutter Decorations)` to paint:
 - 🟡 **yellow** dots on all test blocks as they run
 - 🟢 **green** on passed tests
 - 🔴 **red** on failed tests
 
-Results persist when switching between tabs. The overview ruler is also colored per test. Use `Serv: Clear Test Gutter Markers` to reset.
+Results persist when switching between tabs. The overview ruler is also colored per test. Use `Pranor: Clear Test Gutter Markers` to reset.
 
 ### Coverage Line Highlights _(v3.0.7+)_
-Run `Serv: Run Tests with Coverage Highlights` to shade the active `.pnr` file:
+Run `Pranor: Run Tests with Coverage Highlights` to shade the active `.pnr` file:
 - 🟢 **Subtle green tint** on every covered line + green overview ruler bar
 - 🔴 **Red background + `✗ uncovered`** annotation on every uncovered line + red overview ruler bar
 
-A coverage percentage is shown in the Output channel and a toast notification. Use `Serv: Clear Coverage Highlights` to reset.
+A coverage percentage is shown in the Output channel and a toast notification. Use `Pranor: Clear Coverage Highlights` to reset.
 
 ---
 
@@ -101,26 +101,26 @@ A coverage percentage is shown in the Output channel and a toast notification. U
 
 | Command | Keybinding | Description |
 |---------|------------|-------------|
-| `Serv: Run Current File` | `Ctrl+Shift+R` | Compile and run |
-| `Serv: Build Current File` | `Ctrl+Shift+B` | Compile to binary |
-| `Serv: Test Current File` | `Ctrl+Shift+T` | Run all tests |
-| `Serv: Run in Watch Mode` | — | Hot-reload on changes |
-| `Serv: Run Tests (with Gutter Decorations)` | — | Run tests and show pass/fail in editor gutter |
-| `Serv: Clear Test Gutter Markers` | — | Clear all gutter decoration icons |
-| `Serv: Add Missing Imports` | — | Auto-add all missing `use` statements |
-| `Serv: Refresh Services Panel` | — | Force-refresh the Activity Bar services panel |
-| `Serv: New Project from Template` | — | Scaffold a new Serv project with template picker |
-| `Serv: Deploy to Pranor Deploy` | — | Deploy current service to Pranor Deploy (Production / Staging / Preview) |
-| `Serv: Run Tests with Coverage Highlights` | — | Run tests and shade covered/uncovered lines in the editor |
-| `Serv: Clear Coverage Highlights` | — | Remove all coverage highlight decorations |
+| `Pranor: Run Current File` | `Ctrl+Shift+R` | Compile and run |
+| `Pranor: Build Current File` | `Ctrl+Shift+B` | Compile to binary |
+| `Pranor: Test Current File` | `Ctrl+Shift+T` | Run all tests |
+| `Pranor: Run in Watch Mode` | — | Hot-reload on changes |
+| `Pranor: Run Tests (with Gutter Decorations)` | — | Run tests and show pass/fail in editor gutter |
+| `Pranor: Clear Test Gutter Markers` | — | Clear all gutter decoration icons |
+| `Pranor: Add Missing Imports` | — | Auto-add all missing `use` statements |
+| `Pranor: Refresh Services Panel` | — | Force-refresh the Activity Bar services panel |
+| `Pranor: New Project from Template` | — | Scaffold a new Pranor project with template picker |
+| `Pranor: Deploy to Pranor Deploy` | — | Deploy current service to Pranor Deploy (Production / Staging / Preview) |
+| `Pranor: Run Tests with Coverage Highlights` | — | Run tests and shade covered/uncovered lines in the editor |
+| `Pranor: Clear Coverage Highlights` | — | Remove all coverage highlight decorations |
 
 ---
 
 ## Quick Start
 
-1. Install the [Serv compiler](https://github.com/vyuvaraj/Pranor)
+1. Install the [Pranor compiler](https://github.com/vyuvaraj/Pranor)
 2. Install this extension
-3. **Scaffold a new project from inside VS Code** — open the Command Palette (`Ctrl+Shift+P`) and run `Serv: New Project from Template`. Choose a template, name your project, and pick a folder. The project opens automatically.
+3. **Scaffold a new project from inside VS Code** — open the Command Palette (`Ctrl+Shift+P`) and run `Pranor: New Project from Template`. Choose a template, name your project, and pick a folder. The project opens automatically.
 
    Or use the CLI:
    ```bash
@@ -167,7 +167,7 @@ A coverage percentage is shown in the Output channel and a toast notification. U
 
 ## Language Highlights
 
-```serv
+```pranor
 server "8080"
 
 use db
@@ -204,7 +204,7 @@ test "user greeting" {
 
 ## Requirements
 
-- [Serv compiler](https://github.com/vyuvaraj/Pranor) installed and in PATH
+- [Pranor compiler](https://github.com/vyuvaraj/Pranor) installed and in PATH
 - Go 1.18+ (used by the compiler for code generation)
 
 ---
@@ -213,9 +213,9 @@ test "user greeting" {
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `serv.lspPath` | `""` | Path to `pranor-lsp` binary (auto-detected from PATH) |
-| `serv.compilerPath` | `""` | Path to `serv` binary (auto-detected from PATH) |
-| `serv.enableInlayHints` | `true` | Show inferred return type and variable type hints inline in the editor |
+| `pranor.lspPath` | `""` | Path to `pranor-lsp` binary (auto-detected from PATH) |
+| `pranor.compilerPath` | `""` | Path to `pranor` binary (auto-detected from PATH) |
+| `pranor.enableInlayHints` | `true` | Show inferred return type and variable type hints inline in the editor |
 
 ---
 

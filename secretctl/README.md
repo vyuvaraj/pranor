@@ -16,8 +16,8 @@ You can configure the client using flags or environment variables:
 
 | Flag | Env Variable | Description | Default |
 |---|---|---|---|
-| `--url` | `SERVSECRET_URL` | Pranor Secret server URL | `http://localhost:8091` |
-| `--api-key` | `SERVSECRET_API_KEY` | API Key for authentication | (None) |
+| `--url` | `PRANOR_SECRET_URL` | Pranor Secret server URL | `http://localhost:8091` |
+| `--api-key` | `PRANOR_SECRET_API_KEY` | API Key for authentication | (None) |
 | `--tenant` | - | Tenant ID for request isolation | `default` |
 
 ## Usage Commands

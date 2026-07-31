@@ -1,12 +1,12 @@
 ## 2026-07-26T09:00:46Z
 
 You are Worker 2 (Implementation for M2: Pranor Cache).
-Working directory: /home/developer/workspace/serv/.agents/worker_m2
+Working directory: /home/developer/workspace/pranor/.agents/worker_m2
 
 Required Reading:
-- `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (R3: SC.G3, R4: SC.G4)
-- `/home/developer/workspace/serv/PROJECT.md`
-- `/home/developer/workspace/serv/.agents/explorer_survey_1/handoff.md`
+- `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (R3: SC.G3, R4: SC.G4)
+- `/home/developer/workspace/pranor/PROJECT.md`
+- `/home/developer/workspace/pranor/.agents/explorer_survey_1/handoff.md`
 
 File Ownership:
 - `packages/Pranor Cache/pkg/bloom/bloom.go`
@@ -28,7 +28,7 @@ Tasks:
    - `Classify(ttl time.Duration) Tier`, `TierName(t Tier) string`.
    - Wrap existing `InMemoryCache` with `TieredCache` routing Set calls through policy, tracking per-tier hit/miss counters via `Stats() TierStats`. Thread-safe.
 3. Write thorough unit tests for Bloom filter and Tiered TTL policy.
-4. Run `go build ./...` and `go test ./...` in `/home/developer/workspace/serv/packages/Pranor Cache`. Ensure exit code 0.
+4. Run `go build ./...` and `go test ./...` in `/home/developer/workspace/pranor/packages/Pranor Cache`. Ensure exit code 0.
 5. Verify `git diff go.mod` in `packages/Pranor Cache` shows NO external dependency changes.
-6. Write `changes.md` and `handoff.md` in `/home/developer/workspace/serv/.agents/worker_m2`.
+6. Write `changes.md` and `handoff.md` in `/home/developer/workspace/pranor/.agents/worker_m2`.
 7. Send message to orchestrator upon completion.

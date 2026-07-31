@@ -24,7 +24,7 @@ type OPFSDriver struct {
 
 func NewOPFSDriver(basePath string) (*OPFSDriver, error) {
 	if basePath == "" {
-		basePath = filepath.Join(os.TempDir(), "pranor-pulse_opfs")
+		basePath = filepath.Join(os.TempDir(), "pranorPulse_opfs")
 	}
 	if err := os.MkdirAll(basePath, 0755); err != nil {
 		return nil, fmt.Errorf("opfs: failed to create base path: %w", err)

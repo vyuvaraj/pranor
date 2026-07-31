@@ -6,7 +6,7 @@ Review Pranor Cache (SC.G3 & SC.G4) implementation created by worker_m2.
 ## 🔒 My Identity
 - Archetype: reviewer
 - Roles: reviewer, critic
-- Working directory: /home/developer/workspace/serv/.agents/reviewer_m2_1
+- Working directory: /home/developer/workspace/pranor/.agents/reviewer_m2_1
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: Pranor Cache (SC.G3 & SC.G4)
 - Instance: 1 of 1
@@ -22,8 +22,8 @@ Review Pranor Cache (SC.G3 & SC.G4) implementation created by worker_m2.
 
 ## Review Scope
 - **Files to review**: `packages/Pranor Cache/pkg/bloom/bloom.go`, `packages/Pranor Cache/pkg/tieredttl/policy.go`
-- **Interface contracts**: `/home/developer/workspace/serv/PROJECT.md`, `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (R3, R4)
-- **Worker handoff**: `/home/developer/workspace/serv/.agents/worker_m2/handoff.md`
+- **Interface contracts**: `/home/developer/workspace/pranor/PROJECT.md`, `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (R3, R4)
+- **Worker handoff**: `/home/developer/workspace/pranor/.agents/worker_m2/handoff.md`
 
 ## Key Decisions Made
 - Reviewed implementation in `bloom.go` and `policy.go`.
@@ -43,6 +43,6 @@ Review Pranor Cache (SC.G3 & SC.G4) implementation created by worker_m2.
 - **Untested angles**: None.
 
 ## Artifact Index
-- `/home/developer/workspace/serv/.agents/reviewer_m2_1/DISPATCH.md` — Dispatch log
-- `/home/developer/workspace/serv/.agents/reviewer_m2_1/BRIEFING.md` — Briefing file
-- `/home/developer/workspace/serv/.agents/reviewer_m2_1/handoff.md` — Final handoff report
+- `/home/developer/workspace/pranor/.agents/reviewer_m2_1/DISPATCH.md` — Dispatch log
+- `/home/developer/workspace/pranor/.agents/reviewer_m2_1/BRIEFING.md` — Briefing file
+- `/home/developer/workspace/pranor/.agents/reviewer_m2_1/handoff.md` — Final handoff report

@@ -13,7 +13,7 @@ The output is a single static binary — no runtime dependencies.
 Generate a Dockerfile:
 
 ```bash
-serv dockerize app.pnr
+pranor dockerize app.pnr
 ```
 
 Or manually:
@@ -22,7 +22,7 @@ Or manually:
 FROM golang:1.23-alpine AS builder
 WORKDIR /app
 COPY . .
-RUN go build -o serv main.go
+RUN go build -o pranor main.go
 RUN ./pranor build app.pnr -o service
 
 FROM alpine:latest
@@ -42,7 +42,7 @@ Priority (highest to lowest):
 
 ## TLS / HTTPS
 
-```serv
+```pranor
 server "443" tls "cert.pem" "key.pem"
 ```
 
@@ -74,7 +74,7 @@ Access in code: `config("db.host")` → `"localhost"`
 
 Fail fast on missing required config:
 
-```serv
+```pranor
 validate {
     required "db.host",
     required "db.port",
@@ -129,7 +129,7 @@ Output format (JSON mode):
 
 ## Graceful Shutdown
 
-Serv services handle `SIGINT` and `SIGTERM`:
+Pranor services handle `SIGINT` and `SIGTERM`:
 1. Stop accepting new connections
 2. Wait up to 15 seconds for active requests to complete
 3. Close database connections
@@ -140,8 +140,8 @@ Serv services handle `SIGINT` and `SIGTERM`:
 Build for different platforms:
 
 ```bash
-GOOS=linux GOARCH=amd64 go build -o serv-linux main.go
-./serv-linux build app.pnr -o service-linux
+GOOS=linux GOARCH=amd64 go build -o pranor-linux main.go
+./pranor-linux build app.pnr -o service-linux
 ```
 
 ## CI/CD
@@ -165,14 +165,14 @@ Cross-compile for macOS, Linux, and Windows:
 This produces archives in `release/`:
 ```
 release/
-├── serv-darwin-amd64.tar.gz
-├── serv-darwin-arm64.tar.gz
-├── serv-linux-amd64.tar.gz
-├── serv-linux-arm64.tar.gz
-└── serv-windows-amd64.zip
+├── pranor-darwin-amd64.tar.gz
+├── pranor-darwin-arm64.tar.gz
+├── pranor-linux-amd64.tar.gz
+├── pranor-linux-arm64.tar.gz
+└── pranor-windows-amd64.zip
 ```
 
-Each archive contains `serv` (or `pranor.exe`) and `pranor-lsp` (or `pranor-lsp.exe`).
+Each archive contains `pranor` (or `pranor.exe`) and `pranor-lsp` (or `pranor-lsp.exe`).
 
 ### GitHub Release
 
@@ -186,41 +186,41 @@ Each archive contains `serv` (or `pranor.exe`) and `pranor-lsp` (or `pranor-lsp.
 
 ### Homebrew (macOS/Linux)
 
-Formula: `release-scripts/homebrew/serv.rb`
+Formula: `release-scripts/homebrew/pranor.rb`
 
 **Setup (one-time):**
-1. Create a Homebrew tap repo: `github.com/user/homebrew-serv`
-2. Copy `serv.rb` into the tap repo
+1. Create a Homebrew tap repo: `github.com/user/homebrew-pranor`
+2. Copy `pranor.rb` into the tap repo
 3. Update SHA256 hashes and download URLs to point to your GitHub release
 
 **User install:**
 ```bash
-brew tap user/serv
-brew install serv
+brew tap user/pranor
+brew install pranor
 ```
 
 **Updating for new releases:**
-1. Update `version` in `serv.rb`
+1. Update `version` in `pranor.rb`
 2. Update SHA256 hashes
 3. Push to the tap repo
 
 ### Scoop (Windows)
 
-Manifest: `release-scripts/scoop/serv.json`
+Manifest: `release-scripts/scoop/pranor.json`
 
 **Setup (one-time):**
-1. Create a Scoop bucket repo: `github.com/user/scoop-serv`
-2. Copy `serv.json` into the bucket repo
+1. Create a Scoop bucket repo: `github.com/user/scoop-pranor`
+2. Copy `pranor.json` into the bucket repo
 3. Update the `hash` and `url` fields with actual release URLs
 
 **User install:**
 ```powershell
-scoop bucket add serv https://github.com/user/scoop-serv
-scoop install serv
+scoop bucket add pranor https://github.com/user/scoop-pranor
+scoop install pranor
 ```
 
 **Updating for new releases:**
-1. Update `version`, `url`, and `hash` in `serv.json`
+1. Update `version`, `url`, and `hash` in `pranor.json`
 2. Push to the bucket repo (Scoop's `autoupdate` handles future versions automatically)
 
 ### VS Code Extension
@@ -249,8 +249,8 @@ Or use the script:
 ```
 
 **User install (after publishing):**
-- VS Code: Search "Serv Language Support" in Extensions
-- CLI: `code --install-extension pranor.serv-vscode`
+- VS Code: Search "Pranor Language Support" in Extensions
+- CLI: `code --install-extension pranor.pnr-vscode`
 
 ### Docker Base Image
 
@@ -258,14 +258,14 @@ Dockerfile: `release-scripts/docker/Dockerfile.base`
 
 **Build and push:**
 ```bash
-docker build -t serv:latest -f release-scripts/docker/Dockerfile.base .
-docker tag serv:latest ghcr.io/user/serv:latest
-docker push ghcr.io/user/serv:latest
+docker build -t pranor:latest -f release-scripts/docker/Dockerfile.base .
+docker tag pranor:latest ghcr.io/user/pranor:latest
+docker push ghcr.io/user/pranor:latest
 ```
 
 **User usage:**
 ```dockerfile
-FROM ghcr.io/user/serv:latest
+FROM ghcr.io/user/pranor:latest
 WORKDIR /app
 COPY myservice.pnr .
 RUN pranor build myservice.pnr -o service
@@ -276,8 +276,8 @@ CMD ["./service"]
 
 1. [ ] Run regression tests: `powershell test_regression.ps1`
 2. [ ] Update version in:
-   - `release-scripts/homebrew/serv.rb`
-   - `release-scripts/scoop/serv.json`
+   - `release-scripts/homebrew/pranor.rb`
+   - `release-scripts/scoop/pranor.json`
    - `vscode-support/extension/package.json`
 3. [ ] Cross-compile: `./release-scripts/build-release.sh v1.x.x`
 4. [ ] Create GitHub Release, upload archives

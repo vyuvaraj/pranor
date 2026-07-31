@@ -6,7 +6,7 @@ Empirically verify Pranor Chrono (CR.G1, CR.G2, CR.G4): DAG pipeline, retry back
 ## 🔒 My Identity
 - Archetype: EMPIRICAL CHALLENGER
 - Roles: critic, specialist
-- Working directory: /home/developer/workspace/serv/.agents/challenger_m3_1
+- Working directory: /home/developer/workspace/pranor/.agents/challenger_m3_1
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: M3 (Pranor Chrono)
 - Instance: 1 of 1
@@ -21,7 +21,7 @@ Empirically verify Pranor Chrono (CR.G1, CR.G2, CR.G4): DAG pipeline, retry back
 
 ## Review Scope
 - **Files to review**: `packages/Pranor Chrono/...`
-- **Interface contracts**: `/home/developer/workspace/serv/PROJECT.md`
+- **Interface contracts**: `/home/developer/workspace/pranor/PROJECT.md`
 - **Review criteria**: DAG execution (A->B->C, failure branches, cycle loops depth <= 10 limit), retry backoff & jitter non-determinism, YAML loading/watching, concurrent execution, race safety (`go test -race`).
 
 ## Attack Surface
@@ -36,5 +36,5 @@ Empirically verify Pranor Chrono (CR.G1, CR.G2, CR.G4): DAG pipeline, retry back
 - Initialized BRIEFING and DISPATCH.
 
 ## Artifact Index
-- `/home/developer/workspace/serv/.agents/challenger_m3_1/DISPATCH.md` — Log of incoming dispatch messages
-- `/home/developer/workspace/serv/.agents/challenger_m3_1/BRIEFING.md` — Working memory index
+- `/home/developer/workspace/pranor/.agents/challenger_m3_1/DISPATCH.md` — Log of incoming dispatch messages
+- `/home/developer/workspace/pranor/.agents/challenger_m3_1/BRIEFING.md` — Working memory index

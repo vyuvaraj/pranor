@@ -6,7 +6,7 @@ Review Pranor Pulse M5 implementation (W3C traceparent propagation in tracing an
 ## 🔒 My Identity
 - Archetype: reviewer / critic
 - Roles: reviewer, critic
-- Working directory: /home/developer/workspace/serv/.agents/reviewer_m5_1
+- Working directory: /home/developer/workspace/pranor/.agents/reviewer_m5_1
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: SQ.G5
 - Instance: 1 of 1
@@ -21,7 +21,7 @@ Review Pranor Pulse M5 implementation (W3C traceparent propagation in tracing an
 
 ## Review Scope
 - **Files to review**: `packages/Pranor Pulse/pkg/tracing/traceparent.go`, `packages/Pranor Pulse/pkg/core/engine.go`, tests in `packages/Pranor Pulse`
-- **Interface contracts**: `/home/developer/workspace/serv/PROJECT.md`, `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md`
+- **Interface contracts**: `/home/developer/workspace/pranor/PROJECT.md`, `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md`
 - **Review criteria**: W3C Trace Context spec compliance (`Inject`, `Extract`, `NewTraceID`, `NewSpanID`), header case-insensitivity, LogEntry traceparent propagation, build/test pass, zero dependency changes in go.mod, no integrity violations
 
 ## Key Decisions Made
@@ -38,5 +38,5 @@ Review Pranor Pulse M5 implementation (W3C traceparent propagation in tracing an
 - **Untested angles**: Spec edge cases, header casing, log propagation, facade implementations
 
 ## Artifact Index
-- `/home/developer/workspace/serv/.agents/reviewer_m5_1/DISPATCH.md` — Dispatch record
-- `/home/developer/workspace/serv/.agents/reviewer_m5_1/BRIEFING.md` — Persistent working memory
+- `/home/developer/workspace/pranor/.agents/reviewer_m5_1/DISPATCH.md` — Dispatch record
+- `/home/developer/workspace/pranor/.agents/reviewer_m5_1/BRIEFING.md` — Persistent working memory

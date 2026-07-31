@@ -1,8 +1,8 @@
-# Serv Standard Library
+# Pranor Standard Library
 
 Reusable `.pnr` modules for common service patterns. Import what you need:
 
-```serv
+```pranor
 import { ok, notFound } from "stdlib/response.pnr"
 import { requireAuth, bearerToken } from "stdlib/auth.pnr"
 ```
@@ -66,7 +66,7 @@ import { requireAuth, bearerToken } from "stdlib/auth.pnr"
 ### Security
 - **auth.pnr** — Token extraction, bearer/basic auth, auth guards
 - **crypto.pnr** — Password hashing, HMAC signing, token generation
-- **jwt.pnr** — JWT encode/decode/expiry (lightweight; use `serv add github.com/golang-jwt/jwt/v5` for production)
+- **jwt.pnr** — JWT encode/decode/expiry (lightweight; use `pranor add github.com/golang-jwt/jwt/v5` for production)
 
 ### HTTP
 - **response.pnr** — Standard HTTP response builders (ok, notFound, etc.)
@@ -123,7 +123,7 @@ import { requireAuth, bearerToken } from "stdlib/auth.pnr"
 
 ## Usage Example
 
-```serv
+```pranor
 import { requireAuth, bearerToken } from "stdlib/auth.pnr"
 import { ok, badRequest } from "stdlib/response.pnr"
 import { required, isEmail } from "stdlib/validation.pnr"

@@ -38,9 +38,9 @@ docker run -p 8085:8085 ghcr.io/vyuvaraj/pranor-chrono:latest
 - **Dead-letter after exhaustion**: After all retries fail, job moves to a dead-letter audit record
 
 ### 📋 Cron-as-Code (Pranor)
-- **Define jobs in `.serv` files**: Declare scheduled jobs using Pranor `cron` and `every` syntax
+- **Define jobs in `.pnr` files**: Declare scheduled jobs using Pranor `cron` and `every` syntax
 - **Version control your schedules**: Job definitions live alongside application code
-- **Hot-reload**: Pranor Chrono watches `.serv` files for changes and automatically re-registers modified jobs
+- **Hot-reload**: Pranor Chrono watches `.pnr` files for changes and automatically re-registers modified jobs
 
 ### 💾 Persistence
 - **Persistent job registry to Pranor Vault S3**: Job definitions serialized to `jobs.json` in a Pranor Vault bucket — survive node restarts
@@ -144,10 +144,10 @@ This runs `extract` → `transform` → `load-a` and `load-b` in parallel → `n
 
 ## Cron-as-Code (Pranor)
 
-Define jobs in a `.serv` file alongside your application code:
+Define jobs in a `.pnr` file alongside your application code:
 
-```serv
-// jobs.serv
+```pranor
+// jobs.pnr
 cron "daily-report" at "0 9 * * 1-5" {
   call POST "http://myapp/reports/daily"
 }
@@ -158,7 +158,7 @@ every 30s "health-check" {
 }
 ```
 
-Pranor Chrono auto-reloads job definitions when `.serv` files change.
+Pranor Chrono auto-reloads job definitions when `.pnr` files change.
 
 ---
 
@@ -182,4 +182,4 @@ docker run -p 8085:8085 \
 | `PRANOR_CHRONO_PRANOR_VAULT_URL` | — | Pranor Vault URL for job persistence |
 | `PRANOR_CHRONO_PRANOR_VAULT_BUCKET` | `pranor-chrono-jobs` | S3 bucket name for job registry |
 | `PRANOR_CHRONO_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
-| `PRANOR_CHRONO_PRANOR_FILES_DIR` | — | Directory to watch for `.serv` job definitions |
+| `PRANOR_CHRONO_PRANOR_FILES_DIR` | — | Directory to watch for `.pnr` job definitions |

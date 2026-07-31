@@ -1,10 +1,10 @@
 ## 2026-07-26T09:09:26Z
 You are Forensic Auditor M2 for Pranor Cache (SC.G3 & SC.G4).
-Working directory: /home/developer/workspace/serv/.agents/auditor_m2
+Working directory: /home/developer/workspace/pranor/.agents/auditor_m2
 
 Required Reading:
-- `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (R3, R4)
-- `/home/developer/workspace/serv/PROJECT.md`
+- `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (R3, R4)
+- `/home/developer/workspace/pranor/PROJECT.md`
 
 Tasks:
 1. Perform integrity verification on `packages/Pranor Cache/pkg/bloom/bloom.go` and `packages/Pranor Cache/pkg/tieredttl/policy.go`.

@@ -6,7 +6,7 @@ Review Pranor Auth implementation (SA.G1 & SA.G6) by worker_m1_gen2, checking co
 ## 🔒 My Identity
 - Archetype: reviewer / critic
 - Roles: reviewer, critic
-- Working directory: /home/developer/workspace/serv/.agents/reviewer_m1_1
+- Working directory: /home/developer/workspace/pranor/.agents/reviewer_m1_1
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: M1 (Pranor Auth SA.G1 & SA.G6)
 - Instance: 1 of 1
@@ -25,8 +25,8 @@ Review Pranor Auth implementation (SA.G1 & SA.G6) by worker_m1_gen2, checking co
   - `packages/Pranor Auth/pkg/sessions/token_store.go`
   - `packages/Pranor Auth/pkg/security/velocity_limiter.go`
   - Associated tests and any other relevant files in `packages/Pranor Auth`
-- **Interface contracts**: `/home/developer/workspace/serv/PROJECT.md`, `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md`
-- **Worker Handoff**: `/home/developer/workspace/serv/.agents/worker_m1_gen2/handoff.md`
+- **Interface contracts**: `/home/developer/workspace/pranor/PROJECT.md`, `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md`
+- **Worker Handoff**: `/home/developer/workspace/pranor/.agents/worker_m1_gen2/handoff.md`
 
 ## Review Checklist
 - **Items reviewed**: [TBD]
@@ -42,5 +42,5 @@ Review Pranor Auth implementation (SA.G1 & SA.G6) by worker_m1_gen2, checking co
 - Initialized briefing and dispatch log for M1 review.
 
 ## Artifact Index
-- `/home/developer/workspace/serv/.agents/reviewer_m1_1/DISPATCH.md` — Dispatch log
-- `/home/developer/workspace/serv/.agents/reviewer_m1_1/BRIEFING.md` — Persistent working memory
+- `/home/developer/workspace/pranor/.agents/reviewer_m1_1/DISPATCH.md` — Dispatch log
+- `/home/developer/workspace/pranor/.agents/reviewer_m1_1/BRIEFING.md` — Persistent working memory

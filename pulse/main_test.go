@@ -163,8 +163,8 @@ func TestHTTPPublish(t *testing.T) {
 
 	bodyBytes, _ := io.ReadAll(promResp.Body)
 	bodyStr := string(bodyBytes)
-	if !strings.Contains(bodyStr, "pranor-pulse_messages_published_total") {
-		t.Errorf("Expected Prometheus metrics to contain pranor-pulse_messages_published_total, got %s", bodyStr)
+	if !strings.Contains(bodyStr, "pranorPulse_messages_published_total") {
+		t.Errorf("Expected Prometheus metrics to contain pranorPulse_messages_published_total, got %s", bodyStr)
 	}
 }
 

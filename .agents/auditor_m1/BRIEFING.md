@@ -6,7 +6,7 @@ Audit Pranor Auth (SA.G1 token store & SA.G6 velocity limiter) for forensic inte
 ## 🔒 My Identity
 - Archetype: forensic_auditor
 - Roles: critic, specialist, auditor
-- Working directory: /home/developer/workspace/serv/.agents/auditor_m1
+- Working directory: /home/developer/workspace/pranor/.agents/auditor_m1
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Target: Milestone M1 (Pranor Auth: SA.G1 & SA.G6)
 
@@ -35,5 +35,5 @@ Audit Pranor Auth (SA.G1 token store & SA.G6 velocity limiter) for forensic inte
 - Loaded dispatch prompt and original user request requirements.
 
 ## Artifact Index
-- `/home/developer/workspace/serv/.agents/auditor_m1/DISPATCH.md` — Dispatch prompt
-- `/home/developer/workspace/serv/.agents/auditor_m1/BRIEFING.md` — Persistent audit state
+- `/home/developer/workspace/pranor/.agents/auditor_m1/DISPATCH.md` — Dispatch prompt
+- `/home/developer/workspace/pranor/.agents/auditor_m1/BRIEFING.md` — Persistent audit state

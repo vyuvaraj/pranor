@@ -1,8 +1,8 @@
 # Standard Library
 
-Serv ships with 46 reusable modules in `stdlib/`. Import what you need:
+Pranor ships with 46 reusable modules in `stdlib/`. Import what you need:
 
-```serv
+```pranor
 import { ok, notFound } from "../stdlib/response.pnr"
 import { requireAuth } from "../stdlib/auth.pnr"
 ```
@@ -116,7 +116,7 @@ import { requireAuth } from "../stdlib/auth.pnr"
 
 ## Usage Example
 
-```serv
+```pranor
 import { requireAuth, bearerToken } from "../stdlib/auth.pnr"
 import { ok, badRequest } from "../stdlib/response.pnr"
 import { maskEmail } from "../stdlib/mask.pnr"
@@ -146,7 +146,7 @@ Full module documentation: see comments at the top of each file in `stdlib/`.
 
 Implement standard fault tolerance when requesting downstreams:
 
-```serv
+```pranor
 import { createBreaker, recordSuccess, recordFailure, isOpen } from "../stdlib/circuit_breaker.pnr"
 import { backoffDelay } from "../stdlib/retry.pnr"
 
@@ -172,7 +172,7 @@ fn requestExternalAPI(url) {
 
 Guard resources from over-concurrency:
 
-```serv
+```pranor
 import { createSemaphore, tryAcquire, release } from "../stdlib/semaphore.pnr"
 
 let sem = createSemaphore(5) // Max 5 parallel tasks
@@ -193,7 +193,7 @@ fn processTask(taskId) {
 
 Sanitize user profiles and write logs:
 
-```serv
+```pranor
 import { maskEmail, maskCard } from "../stdlib/mask.pnr"
 import { auditLog } from "../stdlib/audit.pnr"
 

@@ -1,6 +1,6 @@
-# Serv: A Programming Language for Background Services
+# Pranor: A Programming Language for Background Services
 
-Serv is a modern, high-level DSL (Domain-Specific Language) designed specifically for building background services, schedulers, event-driven applications, and API microservices. It compiles directly into native binaries via Go code generation, providing high performance, low resource consumption, and rapid development.
+Pranor is a modern, high-level DSL (Domain-Specific Language) designed specifically for building background services, schedulers, event-driven applications, and API microservices. It compiles directly into native binaries via Go code generation, providing high performance, low resource consumption, and rapid development.
 
 ---
 
@@ -28,22 +28,22 @@ Serv is a modern, high-level DSL (Domain-Specific Language) designed specificall
 - **Declarative Infrastructure**: Routes, schedulers, pub/sub, databases, caches, and WebSockets as language keywords — not library calls.
 - **Compiles to Native Binaries**: Go code generation → single binary deployment. No runtime dependencies.
 - **Optional Static Typing**: Gradual type system with `int`, `float`, `string`, `bool`, optional types (`T?`), union types (`T | error`), and generics with constraints.
-- **48 Standard Library Modules**: Auth, JWT, retry, circuit breaker, pagination, CORS, rate limiting, validation, and more — written in Serv itself.
+- **48 Standard Library Modules**: Auth, JWT, retry, circuit breaker, pagination, CORS, rate limiting, validation, and more — written in Pranor itself.
 - **Built-in Test Framework**: `test "name" { assert expr }` blocks with structured assertion messages.
 - **Multiple Database Backends**: SQLite, PostgreSQL, Oracle, MongoDB — same `db.query()` API.
 - **Multiple Broker Backends**: Kafka, NATS, RabbitMQ, MQTT — same `subscribe`/`publish` syntax.
 - **Concurrency Primitives**: `spawn`, `async`/`await`, channels, worker pools.
 - **Middleware & Auth**: Declarative middleware with `use [auth, logging]` on routes.
 - **Python Interop**: Call Python scripts via `extern fn` bindings.
-- **Go Package FFI**: Import any Go package with `serv add <package>` and auto-generated declarations.
+- **Go Package FFI**: Import any Go package with `pranor add <package>` and auto-generated declarations.
 - **VS Code Extension**: Full LSP with diagnostics, autocomplete, hover, go-to-definition, and 30+ snippets.
 - **OpenTelemetry & Prometheus**: Built-in tracing and metrics export.
-- **Docker Support**: `serv dockerize` generates production-ready Dockerfiles.
-- **Multi-File Import System**: Import types and schemas across `.serv` files with cross-file type resolution and circular import detection.
+- **Docker Support**: `pranor dockerize` generates production-ready Dockerfiles.
+- **Multi-File Import System**: Import types and schemas across `.pnr` files with cross-file type resolution and circular import detection.
 - **`async` Task & `concurrent {}` Primitives**: First-class language support for async task execution and parallel concurrent blocks.
-- **Multi-Target Code Generation**: Generate Rust (`serv generate --lang rust`) or Python (`serv generate --lang python`) client code from `.serv` service definitions.
-- **Breaking Change Detector**: `serv diff old.serv new.serv` detects field removals, type changes, and new required fields — safe to use in CI pipelines.
-- **Zero-Install WASM Playground**: Try Serv in the browser at [playground.pranor.dev](https://playground.pranor.dev) — runs the full compiler in WebAssembly, no install required.
+- **Multi-Target Code Generation**: Generate Rust (`pranor generate --lang rust`) or Python (`pranor generate --lang python`) client code from `.pnr` service definitions.
+- **Breaking Change Detector**: `pranor diff old.pnr new.pnr` detects field removals, type changes, and new required fields — safe to use in CI pipelines.
+- **Zero-Install WASM Playground**: Try Pranor in the browser at [playground.pranor.dev](https://playground.pranor.dev) — runs the full compiler in WebAssembly, no install required.
 
 ---
 
@@ -55,14 +55,14 @@ Serv is a modern, high-level DSL (Domain-Specific Language) designed specificall
 
 ### Install via Scoop (Windows)
 ```powershell
-scoop bucket add serv https://github.com/vyuvaraj/scoop-serv
-scoop install serv
+scoop bucket add pranor https://github.com/vyuvaraj/scoop-pranor
+scoop install pranor
 ```
 
 ### Install via Homebrew (macOS / Linux)
 ```bash
-brew tap vyuvaraj/serv
-brew install serv
+brew tap vyuvaraj/pranor
+brew install pranor
 ```
 
 ### Install via Script (Windows)
@@ -84,7 +84,7 @@ Add the binary to your system PATH for global access.
 ## Editor Support
 
 ### VS Code Extension
-Install **Serv Language Support** from the VS Code Marketplace (or from `.vsix` in the repo):
+Install **Pranor Language Support** from the VS Code Marketplace (or from `.vsix` in the repo):
 - Syntax highlighting for `.pnr` files
 - Real-time diagnostics (type errors, unused variables, missing returns)
 - Autocomplete and hover information
@@ -101,19 +101,19 @@ Install **Serv Language Support** from the VS Code Marketplace (or from `.vsix` 
 |---------|-------------|
 | `pranor build <file.pnr> [-o output]` | Compile to native binary |
 | `pranor run <file.pnr> [--watch]` | Compile and run (with optional hot-reload) |
-| `serv test <file.pnr> [--cover] [--filter name]` | Run test blocks |
-| `serv lint <file.pnr>` | Check syntax and static analysis |
-| `serv fmt <file.pnr> [--check]` | Format code (4-space indent) |
-| `serv repl` | Interactive shell |
-| `serv add <go-package>` | Generate `.pnr.d` declaration for a Go package |
-| `serv packages` | List installed package declarations |
-| `serv remove <package>` | Remove a package declaration |
-| `serv install <name>` | Install a community package |
-| `serv publish <dir>` | Publish a package to the registry |
-| `pranor init [name]` | Create a new Serv project |
-| `serv dockerize <file.pnr>` | Generate a production Dockerfile |
-| `serv debug <file.pnr>` | Debug with Delve |
-| `serv audit` | Audit Go dependencies for vulnerabilities |
+| `pranor test <file.pnr> [--cover] [--filter name]` | Run test blocks |
+| `pranor lint <file.pnr>` | Check syntax and static analysis |
+| `pranor fmt <file.pnr> [--check]` | Format code (4-space indent) |
+| `pranor repl` | Interactive shell |
+| `pranor add <go-package>` | Generate `.pnr.d` declaration for a Go package |
+| `pranor packages` | List installed package declarations |
+| `pranor remove <package>` | Remove a package declaration |
+| `pranor install <name>` | Install a community package |
+| `pranor publish <dir>` | Publish a package to the registry |
+| `pranor init [name]` | Create a new Pranor project |
+| `pranor dockerize <file.pnr>` | Generate a production Dockerfile |
+| `pranor debug <file.pnr>` | Debug with Delve |
+| `pranor audit` | Audit Go dependencies for vulnerabilities |
 
 ---
 
@@ -121,9 +121,9 @@ Install **Serv Language Support** from the VS Code Marketplace (or from `.vsix` 
 
 ### Core Architecture Statements
 
-Serv allows you to declare global settings and connections dynamically or using values loaded from environment variables:
+Pranor allows you to declare global settings and connections dynamically or using values loaded from environment variables:
 
-```serv
+```pranor
 // Declare port dynamically from environment variables
 server env("PORT")
 
@@ -142,13 +142,13 @@ cache "in-memory"
 
 ### Static Typing & Type Annotations
 
-Serv supports optional static typing on variables and function signatures. Providing types compiles them directly into native Go types, skipping the performance overhead of runtime `interface{}` conversions.
+Pranor supports optional static typing on variables and function signatures. Providing types compiles them directly into native Go types, skipping the performance overhead of runtime `interface{}` conversions.
 
 Supported types: `int`, `string`, `bool`.
 
 #### Variable Type Annotations
 Specify types using `: type` after the identifier:
-```serv
+```pranor
 let count: int = 100
 let label: string = "Items in queue"
 let isActive: bool = true
@@ -156,7 +156,7 @@ let isActive: bool = true
 
 #### Function Signature Type Annotations
 Specify parameter and return types to optimize function calls and compiler math:
-```serv
+```pranor
 fn calculateTotal(base: int, tax: int) -> int {
     let result: int = base + tax
     return result
@@ -171,7 +171,7 @@ Easily define background routines that run periodically or at scheduled times.
 
 #### Interval Scheduler
 Runs a block of code at a specific time duration (e.g., `s` for seconds, `m` for minutes, `h` for hours).
-```serv
+```pranor
 every 5s {
     log.info("System healthcheck running...")
 }
@@ -179,7 +179,7 @@ every 5s {
 
 #### Cron Scheduler
 Executes using standard cron patterns. Can load patterns from environment variables.
-```serv
+```pranor
 cron "0 */2 * * * *" {
     log.info("This runs every 2 minutes.")
 }
@@ -194,13 +194,13 @@ cron env("BACKUP_CRON") {
 
 ### Web Servers & HTTP APIs (`route`)
 
-Declare HTTP request endpoints with simple routes. Serv handles request body parsing natively.
+Declare HTTP request endpoints with simple routes. Pranor handles request body parsing natively.
 
-```serv
+```pranor
 route "GET" "/status" (req) {
     log.info("Status check requested")
     return { 
-        "status": "Serv is operating normally", 
+        "status": "Pranor is operating normally", 
         "timestamp": time.now() 
     }
 }
@@ -218,7 +218,7 @@ route "POST" "/webhook" (req) {
 
 Publish event messages and register subscriptions.
 
-```serv
+```pranor
 // Publish message onto a topic channel
 publish "events.incoming" { "user_id": 101, "action": "login" }
 
@@ -235,7 +235,7 @@ subscribe "events.incoming" (msg) {
 You can execute operations asynchronously without blocking the main workflow thread.
 
 #### Fire-and-Forget Goroutines
-```serv
+```pranor
 subscribe "incoming.tasks" (msg) {
     // Spawns a lightweight concurrent thread
     spawn processTask(msg)
@@ -244,7 +244,7 @@ subscribe "incoming.tasks" (msg) {
 
 #### Rate-Limited Worker Pools
 Specify a worker limit to control resource consumption:
-```serv
+```pranor
 // Spawns up to 5 concurrent workers maximum
 spawn(5) handleHeavyCalculation(data)
 ```
@@ -257,7 +257,7 @@ Execute queries directly on the configured databases.
 
 #### SQL Databases (SQLite, PostgreSQL, Oracle)
 Supports query parsing and placeholders (`?` translates automatically to appropriate placeholders like `$1` dynamically for PostgreSQL).
-```serv
+```pranor
 // Create schema table on startup
 db.query("CREATE TABLE IF NOT EXISTS metrics (id INTEGER PRIMARY KEY, ts TEXT)")
 
@@ -271,8 +271,8 @@ log.info("Metrics: ", results)
 
 #### MongoDB Operations
 Executes collection queries using standardized document queries:
-```serv
-let result = db.query("insert", "logs", "{\"service\": \"Serv\", \"action\": \"db_test\"}")
+```pranor
+let result = db.query("insert", "logs", "{\"service\": \"Pranor\", \"action\": \"db_test\"}")
 ```
 
 ---
@@ -281,7 +281,7 @@ let result = db.query("insert", "logs", "{\"service\": \"Serv\", \"action\": \"d
 
 Leverage native in-memory caching to save and read states quickly:
 
-```serv
+```pranor
 // Set key with cache TTL (Time to Live)
 cache.set("session_user_1", { "id": 1, "role": "admin" }, "10m")
 
@@ -296,7 +296,7 @@ log.info("Active Session: ", session)
 
 Interact with S3-compatible endpoints or a Pranor Vault gateway using the native `s3` runtime functions. You can also import the helper wrapper from the standard library:
 
-```serv
+```pranor
 import { newClient, put, get, deleteObject, list, at, search } from "stdlib/s3.pnr"
 
 // Initialize client
@@ -322,9 +322,9 @@ let searchResults = client.search("my-bucket", "find active config files", 5)
 
 ### Python Interoperability (`extern fn`)
 
-Map complex algorithms or specialized Python libraries directly to Serv functions:
+Map complex algorithms or specialized Python libraries directly to Pranor functions:
 
-```serv
+```pranor
 // Map external Python method
 extern fn analyzeText(text) from "python:./scripts/analyzer.py:analyze"
 
@@ -337,19 +337,19 @@ log.info("Python output: ", result)
 ### Built-in Functions & Utilities
 
 #### JSON Support
-```serv
+```pranor
 let obj = json.parse("{\"status\": true}")
 let rawString = json.stringify(obj)
 ```
 
 #### String Interpolation (f-strings)
-```serv
-let name = "Serv"
+```pranor
+let name = "Pranor"
 let statusMessage = f"System: {name} is running!"
 ```
 
 #### Pattern Matching (`match`)
-```serv
+```pranor
 match eventType {
     "PAYMENT_COMPLETED" => {
         log.info("Processing checkout success...")
@@ -364,7 +364,7 @@ match eventType {
 ```
 
 #### Exception Handling (`try-catch`)
-```serv
+```pranor
 try {
     let res = http.get("http://invalid-url.com")
 } catch (err) {
@@ -376,7 +376,7 @@ try {
 
 ## Web Playground
 
-Serv includes an interactive Web Playground for trying the language in-browser.
+Pranor includes an interactive Web Playground for trying the language in-browser.
 
 - **WASM Compiler**: Syntax analysis and formatting run client-side
 - **Sandbox Runner**: Compiles and executes code server-side with auto-termination
@@ -391,7 +391,7 @@ go build -o web_playground/server/server.exe web_playground/server/main.go
 
 ## Standard Library
 
-Serv ships with 48 importable modules written in Serv itself:
+Pranor ships with 48 importable modules written in Pranor itself:
 
 | Category | Modules |
 |----------|---------|
@@ -405,7 +405,7 @@ Serv ships with 48 importable modules written in Serv itself:
 | **Infra** | s3, cache_patterns, tenant, scheduler, job, graceful |
 
 Import with:
-```serv
+```pranor
 import { hashPassword, verifyPassword } from "stdlib/crypto"
 import { ok, notFound, created } from "stdlib/response"
 import { retry } from "stdlib/retry"
@@ -417,16 +417,16 @@ import { retry } from "stdlib/retry"
 
 ### Publishing
 ```bash
-serv publish <package-dir>
+pranor publish <package-dir>
 ```
 
 ### Installing
 ```bash
-serv install <package-name>
+pranor install <package-name>
 ```
 
 ### Using
-```serv
+```pranor
 import { Helper, helperFunc } from "mypkg"
 ```
 Resolves to `packages/mypkg/index.pnr` or `packages/mypkg/main.pnr`. Only `export`-marked declarations are accessible.
@@ -435,11 +435,11 @@ Resolves to `packages/mypkg/index.pnr` or `packages/mypkg/main.pnr`. Only `expor
 
 ## Testing Support
 
-Serv includes a native test harness built into the language itself. This makes it trivial to write unit tests alongside your code and verify logic without external framework setups.
+Pranor includes a native test harness built into the language itself. This makes it trivial to write unit tests alongside your code and verify logic without external framework setups.
 
 ### Defining Tests
 Add `test` blocks and use the `assert` statement to check variables:
-```serv
+```pranor
 fn doubleValue(val) {
     return val * 2
 }
@@ -450,7 +450,7 @@ test "doubling math verification" {
 }
 
 test "check string comparison" {
-    let val = "Serv" + "Lang"
+    let val = "Pranor" + "Lang"
     assert val == "ServLang"
 }
 ```
@@ -458,7 +458,7 @@ test "check string comparison" {
 ### Running Tests
 Execute:
 ```bash
-serv test test_sample.pnr
+pranor test test_sample.pnr
 ```
 
 *Output:*
@@ -469,14 +469,14 @@ Running tests from test_sample.pnr...
 === RUN   Test_CheckStringComparison
 --- PASS: Test_CheckStringComparison (0.00s)
 PASS
-ok  	serv/.build	1.518s
+ok  	pranor/.build	1.518s
 ```
 
 ---
 
 ## Compilation & Deployment
 
-When `pranor build` or `serv test` is executed, the compiler compiles the input `.pnr` code into a temporary directory called `.build`.
+When `pranor build` or `pranor test` is executed, the compiler compiles the input `.pnr` code into a temporary directory called `.build`.
 
 Inside `.build`:
 1. `service.go`: Synthesizes code for all declarations, routes, and background routines.
@@ -501,10 +501,10 @@ The output binary compiles out all debug logs and features a fast, low-overhead 
 
 ## Multi-File Import System
 
-Serv supports splitting service definitions across multiple `.serv` files. Types and schemas defined in one file can be imported and used in another:
+Pranor supports splitting service definitions across multiple `.pnr` files. Types and schemas defined in one file can be imported and used in another:
 
-```serv
-// types/user.serv
+```pranor
+// types/user.pnr
 type User {
     id:    string
     name:  string
@@ -512,9 +512,9 @@ type User {
 }
 ```
 
-```serv
-// services/auth.serv
-import "./types/user.serv"
+```pranor
+// services/auth.pnr
+import "./types/user.pnr"
 
 route POST "/api/users" {
     body: User
@@ -532,9 +532,9 @@ route POST "/api/users" {
 
 ## Async & Concurrent Primitives
 
-Serv provides first-class `async` and `concurrent` language constructs:
+Pranor provides first-class `async` and `concurrent` language constructs:
 
-```serv
+```pranor
 // Async task — fire and forget
 async fn sendNotification(userID: string) {
     call POST "http://notifications/send" { userID }
@@ -552,7 +552,7 @@ route POST "/api/orders" {
 }
 ```
 
-```serv
+```pranor
 // Concurrent block — run steps in parallel, collect results
 route GET "/api/dashboard" {
     handler: fn(req) {
@@ -571,23 +571,23 @@ route GET "/api/dashboard" {
 
 ## Multi-Target Code Generation
 
-Generate type-safe client code for other languages from your Serv service definitions:
+Generate type-safe client code for other languages from your Pranor service definitions:
 
 ```bash
-# Generate Go client (default — used within Serv compilation)
-serv generate --lang go services/orders.serv
+# Generate Go client (default — used within Pranor compilation)
+pranor generate --lang go services/orders.pnr
 
 # Generate Rust client
-serv generate --lang rust services/orders.serv -o ./clients/rust/
+pranor generate --lang rust services/orders.pnr -o ./clients/rust/
 
 # Generate Python client
-serv generate --lang python services/orders.serv -o ./clients/python/
+pranor generate --lang python services/orders.pnr -o ./clients/python/
 ```
 
 **Generated Rust client:**
 
 ```rust
-// Auto-generated by `serv generate --lang rust`
+// Auto-generated by `pranor generate --lang rust`
 pub struct OrdersClient { base_url: String }
 impl OrdersClient {
     pub async fn create_order(&self, body: CreateOrderRequest) -> Result<Order, Error> { ... }
@@ -598,7 +598,7 @@ impl OrdersClient {
 **Generated Python client:**
 
 ```python
-# Auto-generated by `serv generate --lang python`
+# Auto-generated by `pranor generate --lang python`
 class OrdersClient:
     def create_order(self, body: CreateOrderRequest) -> Order: ...
     def get_order(self, id: str) -> Order: ...
@@ -608,10 +608,10 @@ class OrdersClient:
 
 ## Breaking Change Detector
 
-`serv diff` compares two `.serv` files (or two git revisions) and detects breaking API changes — safe to run in CI before merging:
+`pranor diff` compares two `.pnr` files (or two git revisions) and detects breaking API changes — safe to run in CI before merging:
 
 ```bash
-serv diff api/v1/orders.serv api/v2/orders.serv
+pranor diff api/v1/orders.pnr api/v2/orders.pnr
 ```
 
 **Example output:**
@@ -638,7 +638,7 @@ serv diff api/v1/orders.serv api/v2/orders.serv
 Use in CI:
 ```yaml
 # GitHub Actions
-- run: serv diff main:api/orders.serv HEAD:api/orders.serv
+- run: pranor diff main:api/orders.pnr HEAD:api/orders.pnr
   # Exits with code 1 if breaking changes detected
 ```
 
@@ -654,5 +654,5 @@ Apache 2.0 — see [LICENSE](LICENSE)
 
 - **GitHub**: [github.com/vyuvaraj/Pranor](https://github.com/vyuvaraj/Pranor)
 - **Playground**: [playground.pranor.dev](https://playground.pranor.dev) — zero-install WASM browser playground
-- **VS Code Extension**: Search "Serv Language Support" in Extensions
+- **VS Code Extension**: Search "Pranor Language Support" in Extensions
 - **Issues**: [github.com/vyuvaraj/Pranor/issues](https://github.com/vyuvaraj/Pranor/issues)

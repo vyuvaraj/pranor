@@ -6,7 +6,7 @@ Perform forensic integrity verification on Pranor Chrono (CR.G1, CR.G2, CR.G4) i
 ## 🔒 My Identity
 - Archetype: forensic_auditor
 - Roles: critic, specialist, auditor
-- Working directory: /home/developer/workspace/serv/.agents/auditor_m3
+- Working directory: /home/developer/workspace/pranor/.agents/auditor_m3
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Target: Pranor Chrono (CR.G1, CR.G2, CR.G4)
 
@@ -42,6 +42,6 @@ Perform forensic integrity verification on Pranor Chrono (CR.G1, CR.G2, CR.G4) i
 - Initialized audit workspace and briefing
 
 ## Artifact Index
-- /home/developer/workspace/serv/.agents/auditor_m3/DISPATCH.md — Dispatch instructions
-- /home/developer/workspace/serv/.agents/auditor_m3/BRIEFING.md — Working memory briefing
-- /home/developer/workspace/serv/.agents/auditor_m3/progress.md — Liveness heartbeat
+- /home/developer/workspace/pranor/.agents/auditor_m3/DISPATCH.md — Dispatch instructions
+- /home/developer/workspace/pranor/.agents/auditor_m3/BRIEFING.md — Working memory briefing
+- /home/developer/workspace/pranor/.agents/auditor_m3/progress.md — Liveness heartbeat

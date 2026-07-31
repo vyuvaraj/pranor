@@ -6,7 +6,7 @@ Empirically verify RWSplitter and HealthChecker in Pranor Pool (SP.G1 & SP.G2), 
 ## 🔒 My Identity
 - Archetype: EMPIRICAL CHALLENGER
 - Roles: critic, specialist
-- Working directory: /home/developer/workspace/serv/.agents/challenger_m4_1
+- Working directory: /home/developer/workspace/pranor/.agents/challenger_m4_1
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: M4 (SP.G1 & SP.G2)
 - Instance: 1 of 1
@@ -39,5 +39,5 @@ None
 - Initialized briefing and dispatch tracking.
 
 ## Artifact Index
-- `/home/developer/workspace/serv/.agents/challenger_m4_1/DISPATCH.md` — Dispatch log
-- `/home/developer/workspace/serv/.agents/challenger_m4_1/BRIEFING.md` — Active briefing index
+- `/home/developer/workspace/pranor/.agents/challenger_m4_1/DISPATCH.md` — Dispatch log
+- `/home/developer/workspace/pranor/.agents/challenger_m4_1/BRIEFING.md` — Active briefing index

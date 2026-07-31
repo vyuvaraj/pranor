@@ -3,10 +3,10 @@
 ## 1. Observation
 
 ### Codebase Scope & Directory Locations
-- Root repository path: `/home/developer/workspace/serv`
-- Pranor Pool package: `/home/developer/workspace/serv/packages/Pranor Pool`
-- Pranor Pulse package: `/home/developer/workspace/serv/packages/Pranor Pulse`
-- Original Requirements specification: `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (Lines 109-143, Requirements R8, R9, R10).
+- Root repository path: `/home/developer/workspace/pranor`
+- Pranor Pool package: `/home/developer/workspace/pranor/packages/Pranor Pool`
+- Pranor Pulse package: `/home/developer/workspace/pranor/packages/Pranor Pulse`
+- Original Requirements specification: `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (Lines 109-143, Requirements R8, R9, R10).
 
 ### Key Observations in Pranor Pool
 1. **Module & Package Setup (`packages/Pranor Pool/go.mod`)**:
@@ -117,12 +117,12 @@ The technical design for SP.G1, SP.G2, and SQ.G5 is fully specified and aligned 
 ### Step-by-Step Build & Test Verification
 ```bash
 # 1. Verify Pranor Pool
-cd /home/developer/workspace/serv/packages/Pranor Pool
+cd /home/developer/workspace/pranor/packages/Pranor Pool
 go build ./...
 go test ./... -v
 
 # 2. Verify Pranor Pulse
-cd /home/developer/workspace/serv/packages/Pranor Pulse
+cd /home/developer/workspace/pranor/packages/Pranor Pulse
 go build ./...
 go test ./... -v
 ```

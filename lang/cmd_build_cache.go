@@ -24,7 +24,7 @@ type CacheEntry struct {
 }
 
 const buildCacheVersion = "1"
-const buildCacheFile = ".pranor-build-cache.json"
+const buildCacheFile = ".pranorBuild-cache.json"
 
 // loadBuildCache reads the cache from the build directory.
 func loadBuildCache(buildDir string) *BuildCache {

@@ -6,7 +6,7 @@ This roadmap outlines the planned development phases for the Pranor Hub package 
 
 ## Differentiating Factors (Why Pranor Hub?)
 
-* **Integrated with Pranor**: Native compiler-level integration using `serv.toml` to install and resolve modules (`serv install`) without third-party tools.
+* **Integrated with Pranor**: Native compiler-level integration using `pranor.toml` to install and resolve modules (`pranor install`) without third-party tools.
 * **Shared Storage Backend**: Avoids managing separate storage platforms by directly mounting package layers to `Pranor Vault` S3 buckets.
 * **On-the-Fly Dependency Resolution**: Native dependency resolution endpoint using BFS to automatically retrieve, traverse, and output complete dependency trees.
 * **OTel Integration**: Standardised OTel traces track publishing latency, size metrics, and cache-hit ratios directly to `Pranor Trace` and `Pranor Console`.
@@ -15,7 +15,7 @@ This roadmap outlines the planned development phases for the Pranor Hub package 
 
 ## Phase 1: Core Registry & Auth (Completed)
 - [x] **Package Upload & Retrieval**: HTTP APIs for publishing and fetching tarball payloads.
-- [x] **Manifest Parsing**: Automated `serv.toml` parsing within archives to capture names, versions, and dependencies.
+- [x] **Manifest Parsing**: Automated `pranor.toml` parsing within archives to capture names, versions, and dependencies.
 - [x] **Embedded Dashboard**: Premium, glassmorphic client interface to view and search package indexes.
 - [x] **JWT Security**: Verification of signature tokens to protect publishing scopes.
 
@@ -28,10 +28,10 @@ This roadmap outlines the planned development phases for the Pranor Hub package 
 - [x] **Public Key Verification**: Cryptographically verify author signatures at the command-line before installation.
 
 ## Phase 4: Architectural Depth & DevOps (Pending)
-- [ ] **`serv registry audit`** — CLI command that scans installed packages for known vulnerable versions, outdated dependencies, and deprecated packages, with fix suggestions (Security / DX)
+- [ ] **`pranor registry audit`** — CLI command that scans installed packages for known vulnerable versions, outdated dependencies, and deprecated packages, with fix suggestions (Security / DX)
 - [ ] **Private Namespace Support** — Scoped package namespaces (`@org/package`) with access control lists; teams can publish internal packages without exposing to the public index (DevOps)
 - [ ] **Mirror & Offline Cache** — Local proxy mode that caches the public registry to a Pranor Vault bucket; enables air-gapped builds and faster CI pipelines with zero external fetches (DevOps)
-- [ ] **Provenance Attestation** — Record build provenance (commit SHA, CI run ID, builder identity) alongside the package; verify with `serv verify --attestation` for supply-chain security (Security)
+- [ ] **Provenance Attestation** — Record build provenance (commit SHA, CI run ID, builder identity) alongside the package; verify with `pranor verify --attestation` for supply-chain security (Security)
 
 ## Phase 5: Package Extraction & Scale (Pending — July 2026)
 
@@ -42,9 +42,9 @@ This roadmap outlines the planned development phases for the Pranor Hub package 
 | 5.1 | **Extract `pkg/registry/`** | Medium | Move package storage, versioning, and metadata management into dedicated package | [ ] |
 | 5.2 | **Extract `pkg/resolution/`** | Medium | Move dependency resolution, semver matching, and BFS tree traversal into dedicated package | [ ] |
 | 5.3 | **Extract `pkg/web/`** | Small | Move embedded dashboard handlers and asset serving into dedicated package | [ ] |
-| 5.4 | **Package download stats** | Small | Track download counts per package/version. Surface in dashboard and `serv packages --stats` | [ ] |
+| 5.4 | **Package download stats** | Small | Track download counts per package/version. Surface in dashboard and `pranor packages --stats` | [ ] |
 | 5.5 | **Webhook notifications** | Small | Notify on new package publish via configurable webhooks. Useful for CI triggers | [ ] |
-| 5.6 | **Package license scanning** | Medium | Detect and surface package license metadata. Warn on incompatible licenses during `serv install` | [ ] |
+| 5.6 | **Package license scanning** | Medium | Detect and surface package license metadata. Warn on incompatible licenses during `pranor install` | [ ] |
 
 > See [UNIFIED_ROADMAP.md](../pranor-repo/UNIFIED_ROADMAP.md) for the full ecosystem priority matrix.
 

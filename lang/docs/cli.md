@@ -25,25 +25,25 @@ pranor run <file.pnr> [--watch]
 **Options:**
 - `--watch` — Watch for file changes and hot-reload
 
-## serv test
+## pranor test
 
 Run tests defined in a `.pnr` file.
 
 ```bash
-serv test <file.pnr>            # Run tests
-serv test --cover <file.pnr>    # Run tests with coverage report
+pranor test <file.pnr>            # Run tests
+pranor test --cover <file.pnr>    # Run tests with coverage report
 ```
 
 Runs all `test "name" { ... }` blocks and reports results.
 
 **With `--cover`:** Shows statement coverage percentage and saves a coverage profile to `.build/<hash>/coverage.out`.
 
-## serv lint
+## pranor lint
 
 Check syntax and perform static analysis without building.
 
 ```bash
-serv lint <file.pnr>
+pranor lint <file.pnr>
 ```
 
 **Analysis includes:**
@@ -69,21 +69,21 @@ serv lint <file.pnr>
 2 error(s), 1 warning(s)
 ```
 
-## serv fmt
+## pranor fmt
 
 Format a `.pnr` file (4-space indent, consistent style).
 
 ```bash
-serv fmt <file.pnr>            # Format in place
-serv fmt --check <file.pnr>    # Check only (exit 1 if unformatted)
+pranor fmt <file.pnr>            # Format in place
+pranor fmt --check <file.pnr>    # Check only (exit 1 if unformatted)
 ```
 
-## serv repl
+## pranor repl
 
-Interactive Serv shell.
+Interactive Pranor shell.
 
 ```bash
-serv repl
+pranor repl
 ```
 
 **Commands inside REPL:**
@@ -93,55 +93,55 @@ serv repl
 - `clear` — reset state
 - `exit` — quit
 
-## serv add
+## pranor add
 
 Generate a `.pnr.d` declaration file for a Go package.
 
 ```bash
-serv add <go-package-path>
+pranor add <go-package-path>
 ```
 
 **Examples:**
 ```bash
-serv add github.com/google/uuid
-serv add encoding/json
-serv add net/url
+pranor add github.com/google/uuid
+pranor add encoding/json
+pranor add net/url
 ```
 
 Downloads the package (if needed) and generates type declarations in `declarations/`.
 
-## serv packages
+## pranor packages
 
 List installed package declarations.
 
 ```bash
-serv packages
+pranor packages
 ```
 
-## serv remove
+## pranor remove
 
 Remove a package declaration.
 
 ```bash
-serv remove <package-name>
+pranor remove <package-name>
 ```
 
-## serv install
+## pranor install
 
 Install a community package from Pranor Hub and resolve its transitive dependencies.
 
 ```bash
-serv install <package-name>
+pranor install <package-name>
 ```
 
 **Examples:**
 ```bash
-serv install jwt
-serv install retry
-serv install pagination@1.2.0
+pranor install jwt
+pranor install retry
+pranor install pagination@1.2.0
 ```
 
-Downloads the package tarball from the configured registry, extracts it to `packages/<name>/`, then reads its `serv.toml` `[dependencies]` section and recursively installs any missing transitive dependencies.
+Downloads the package tarball from the configured registry, extracts it to `packages/<name>/`, then reads its `pranor.toml` `[dependencies]` section and recursively installs any missing transitive dependencies.
 
 **Environment variables:**
 - `PRANOR_REGISTRY` — Override the registry URL (default: `https://registry.pranor.org`)
@@ -157,34 +157,34 @@ Downloading package from https://registry.pranor.org/packages/jwt.tar.gz...
   • base64 (already installed)
 ```
 
-## serv publish
+## pranor publish
 
 Publish a package directory to Pranor Hub.
 
 ```bash
-serv publish <directory>
+pranor publish <directory>
 ```
 
-Creates a `.tar.gz` archive of the directory (which should contain a `serv.toml`) and uploads it to the configured registry. Requires `PRANOR_JWT_SECRET` environment variable for authentication.
+Creates a `.tar.gz` archive of the directory (which should contain a `pranor.toml`) and uploads it to the configured registry. Requires `PRANOR_JWT_SECRET` environment variable for authentication.
 
-## serv dockerize
+## pranor dockerize
 
 Generate a Dockerfile for deployment.
 
 ```bash
-serv dockerize <file.pnr>
+pranor dockerize <file.pnr>
 ```
 
-## serv migrate
+## pranor migrate
 
 Apply declarative `table` schema migrations to the database.
 
 ```bash
-serv migrate [file-or-dir] [--db <connection-string>]
+pranor migrate [file-or-dir] [--db <connection-string>]
 ```
 
 **Options:**
-- `--db` — Database connection string. Falls back to `$DATABASE_URL` then `sqlite://serv.db`
+- `--db` — Database connection string. Falls back to `$DATABASE_URL` then `sqlite://pranor.db`
 
 **Supported connection strings:**
 
@@ -216,95 +216,95 @@ Found 3 table declaration(s):
 Migration complete: 2 table(s) created/updated.
 ```
 
-## serv create
+## pranor create
 
 AI-scaffold a new `.pnr` file from a natural language description.
 
 ```bash
-serv create "<prompt describing your service>"
+pranor create "<prompt describing your service>"
 ```
 
 **Examples:**
 ```bash
-serv create "a REST API for managing blog posts with SQLite"
-serv create "a webhook receiver that processes Stripe payment events"
+pranor create "a REST API for managing blog posts with SQLite"
+pranor create "a webhook receiver that processes Stripe payment events"
 ```
 
 Requires `PRANOR_AI_KEY` environment variable (OpenAI or Gemini API key).
 
-## serv dev
+## pranor dev
 
 Start the full development environment with hot-reload and infrastructure services.
 
 ```bash
-serv dev [file.pnr] [--services all]
+pranor dev [file.pnr] [--services all]
 ```
 
 Starts ServDB, Pranor Cache, Pranor Pulse, and Pranor Mesh locally, then watches `.pnr`
 files for changes and reloads the compiled service automatically.
 
-## serv deploy
+## pranor deploy
 
 Deploy a `.pnr` service to a target environment (e.g. Pranor Cloud).
 
 ```bash
-serv deploy <file.pnr> [--env <production|staging>] [--token <jwt>]
+pranor deploy <file.pnr> [--env <production|staging>] [--token <jwt>]
 ```
 
 **Options:**
 - `--env` — Target hosting environment (defaults to `staging`)
 - `--token` — Deployment authentication token (falls back to `$PRANOR_DEPLOY_TOKEN`)
 
-## serv doctor
+## pranor doctor
 
 Execute diagnostic and compatibility checks across all running local services.
 
 ```bash
-serv doctor [--integration]
+pranor doctor [--integration]
 ```
 
 **Options:**
 - `--integration` — Boot and test the full 15-service pipeline via docker-compose
 
-## serv audit
+## pranor audit
 
 Audit third-party package dependency paths for compatibility and vulnerability risks.
 
 ```bash
-serv audit [--fix]
+pranor audit [--fix]
 ```
 
 **Options:**
 - `--fix` — Attempt to resolve minor version conflicts automatically
 
-## serv status
+## pranor status
 
 Query and format the health status of active local network registry nodes.
 
 ```bash
-serv status [--json]
+pranor status [--json]
 ```
 
-## serv repl
+## pranor repl
 
-Start an interactive read-eval-print shell to execute and inspect Serv statements.
+Start an interactive read-eval-print shell to execute and inspect Pranor statements.
 
 ```bash
-serv repl
+pranor repl
 ```
 
-## serv packages
+## pranor packages
 
 Inspect or list downloaded dependency structures and standard library overrides.
 
 ```bash
-serv packages [--update]
+pranor packages [--update]
 ```
 
 ## Runtime Flags
 
 
-Compiled Serv binaries accept these flags:
+Compiled Pranor binaries accept these flags:
 
 ```bash
 ./myservice.exe --port 9090     # Override server port

@@ -2,7 +2,7 @@ package web
 
 // SQ.D1: Standalone Embedded Web Management UI
 //
-// Lightweight browser UI served at /ui/ directly from pranor-pulsed.
+// Lightweight browser UI served at /ui/ directly from pranorPulsed.
 // Shows: active topics, consumer lag per group, DLQ browser with one-click
 // replay, schema registry, and live stats — all in a self-contained HTML page
 // with no external dependencies (vanilla JS + inline CSS).

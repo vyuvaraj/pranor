@@ -3,13 +3,13 @@
 ## Language & Build System
 
 - **Compiler written in**: Go (1.26.3+)
-- **Module**: `serv` (see `go.mod`)
+- **Module**: `pranor` (see `go.mod`)
 - **Target output**: Native binaries via Go code generation
 - **Source extension**: `.pnr`
 
 ## Architecture
 
-Serv is a transpiler: `.pnr` → Go source → native binary. The pipeline is:
+Pranor is a transpiler: `.pnr` → Go source → native binary. The pipeline is:
 1. Lexer tokenizes `.pnr` source
 2. Parser builds an AST (Pratt parser with precedence climbing)
 3. Codegen emits Go source code
@@ -35,7 +35,7 @@ Serv is a transpiler: `.pnr` → Go source → native binary. The pipeline is:
 ## Common Commands
 
 ```bash
-# Build the Serv compiler
+# Build the Pranor compiler
 go build -o pranor.exe main.go
 
 # Compile a .pnr file to a native binary
@@ -48,13 +48,13 @@ pranor run <file.pnr>
 pranor run <file.pnr> --watch
 
 # Run tests defined in a .pnr file
-serv test <file.pnr>
+pranor test <file.pnr>
 
 # Lint/validate syntax
-serv lint <file.pnr>
+pranor lint <file.pnr>
 
 # Generate a Dockerfile
-serv dockerize <file.pnr>
+pranor dockerize <file.pnr>
 
 # Cross-compile release packages (Windows + Linux)
 powershell ./release-scripts/build_release.ps1

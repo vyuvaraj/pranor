@@ -2,10 +2,10 @@
 inclusion: always
 ---
 
-# Serv Language Guide
+# Pranor Language Guide
 
-## What is Serv?
-Serv is a compiled language for building services, APIs, schedulers, and event-driven apps. It compiles to native binaries via Go code generation.
+## What is Pranor?
+Pranor is a compiled language for building services, APIs, schedulers, and event-driven apps. It compiles to native binaries via Go code generation.
 
 ## File Extension
 - Source files: `.pnr`
@@ -15,16 +15,16 @@ Serv is a compiled language for building services, APIs, schedulers, and event-d
 pranor build app.pnr -o app.exe    # Compile to binary
 pranor run app.pnr                 # Compile & run
 pranor run app.pnr --watch         # Hot-reload on changes
-serv test app.pnr                # Run tests
-serv test --cover app.pnr        # Run tests with coverage
-serv lint app.pnr                # Check for errors/warnings
-serv fmt app.pnr                 # Format code (4-space indent)
+pranor test app.pnr                # Run tests
+pranor test --cover app.pnr        # Run tests with coverage
+pranor lint app.pnr                # Check for errors/warnings
+pranor fmt app.pnr                 # Format code (4-space indent)
 ```
 
 ## Syntax Quick Reference
 
 ### Infrastructure
-```serv
+```pranor
 server "8080"
 database "sqlite://app.db"
 cache "redis://localhost:6379"
@@ -32,7 +32,7 @@ broker "nats://localhost:4222"
 ```
 
 ### Variables & Types
-```serv
+```pranor
 let name = "Alice"               // inferred string
 let age: int = 30                // explicit type
 let email: string? = nil         // optional (nullable)
@@ -41,7 +41,7 @@ let val, err = riskyCall()       // multi-return
 ```
 
 ### Functions
-```serv
+```pranor
 fn add(a: int, b: int) -> int {
     return a + b
 }
@@ -56,7 +56,7 @@ let double = x => x * 2
 ```
 
 ### Routes
-```serv
+```pranor
 route "GET" "/users" (req) {
     return { "users": [] }
 }
@@ -73,19 +73,19 @@ route "GET" "/api/data" (req) limit 100/minute use [auth] {
 ```
 
 ### Scheduled Tasks
-```serv
+```pranor
 every 5s { log.info("tick") }
 cron "0 0 * * *" { log.info("midnight") }
 ```
 
 ### Pub/Sub
-```serv
+```pranor
 subscribe "orders.new" (msg) { log.info("Order: ", msg) }
 publish "notifications" "Order confirmed"
 ```
 
 ### Error Handling
-```serv
+```pranor
 // ? operator (recommended)
 let data = fetchData()?
 
@@ -102,7 +102,7 @@ try {
 ```
 
 ### Structs & Methods
-```serv
+```pranor
 struct User {
     name: string,
     email: string?,
@@ -115,7 +115,7 @@ fn User.greet() -> string {
 ```
 
 ### Control Flow
-```serv
+```pranor
 if x > 0 { ... } else { ... }
 
 for item in items { ... }
@@ -130,7 +130,7 @@ match status {
 ```
 
 ### Testing
-```serv
+```pranor
 beforeEach { reset() }
 
 test "math works" {
@@ -156,7 +156,7 @@ test "with timeout" timeout 5s {
 - `metric.inc/gauge` — metrics (exposed at /metrics)
 
 ## Imports
-```serv
+```pranor
 import { ok, notFound } from "stdlib/response"
 import { requireAuth } from "stdlib/auth"
 import uuid from "github.com/google/uuid"
@@ -165,7 +165,7 @@ import uuid from "github.com/google/uuid"
 ## Formatting Rules
 - 4-space indentation
 - Blank line between top-level declarations
-- Always run `serv fmt` before committing
+- Always run `pranor fmt` before committing
 
 ## Type System
 - Gradual typing: annotations are optional but recommended

@@ -39,7 +39,7 @@ This document outlines the planned evolutionary stages of **Pranor Pulse** to ev
 
 ## Phase 5: Deep Ecosystem Integration
 - [x] **Pranor Dedicated Protocol Driver**: Expand `runtime/broker.go` with a dedicated `pranor-pulse://` driver that supports natively uploading WASM binaries, custom authentication schemas, and advanced queue options directly from `.pnr` code.
-- [x] **Pranor Console Integration**: Feed broker throughput, active subscriptions, and WASM performance stats directly to the central Serv dashboard.
+- [x] **Pranor Console Integration**: Feed broker throughput, active subscriptions, and WASM performance stats directly to the central Pranor dashboard.
 - [x] **Auto trace propagation**: Automatically pass trace context seamlessly into the WASM transform runtime environments.
 
 ---
@@ -51,7 +51,7 @@ This document outlines the planned evolutionary stages of **Pranor Pulse** to ev
 
 ---
 
-## Phase 7: Serv-verse Infrastructure Integrations
+## Phase 7: Pranor Infrastructure Integrations
 - [x] **Pranor Gate API Gateway Webhook Triggers**: Support registering webhooks in `Pranor Gate` that publish directly to `Pranor Pulse` topics on incoming HTTP events.
 - [ ] **Pranor Console Unified Control Plane**: Expose complete topic administration, WAL inspection, and WASM performance debug panels directly in the central dashboard.
 - [x] **Dynamic WASM hot-swap without dropping connections**: Support uploading new WASM transform modules via the console without dropping active subscriber TCP STOMP connections.
@@ -76,7 +76,7 @@ This document outlines the planned evolutionary stages of **Pranor Pulse** to ev
 
 ## Phase 9: Next-Level Message Broker (Proposed — Q4 2026+)
 
-These items take Pranor Pulse from a lightweight broker to a **category-defining event streaming platform** — competing with Kafka, Pulsar, and AWS Kinesis while maintaining Serv's simplicity.
+These items take Pranor Pulse from a lightweight broker to a **category-defining event streaming platform** — competing with Kafka, Pulsar, and AWS Kinesis while maintaining Pranor's simplicity.
 
 | # | Item | Effort | Description | Status |
 |---|------|--------|-------------|--------|
@@ -132,7 +132,7 @@ Pranor Pulse acts as the event backbone for proposed new components.
 - [x] **WASM Module Pre-compilation Cache** — Pre-compile and persist Wazero module artifacts to disk; eliminates cold-start JIT cost on broker restart (PS.2)
 - [x] **`pranor-pulse tail` CLI** — Stream live messages from any topic to terminal with JSON pretty-print and optional regex filter — essential for developer debugging (DevOps)
 - [x] **Dead Letter Queue Inspector** — `pranor-pulse dlq inspect <topic>` lists DLQ messages with payload preview, retry count, and error cause; supports `--replay` flag (DX / DevOps)
-- [ ] **Topic Schema Linting** — `serv lint` validates topic publish/subscribe schemas against the schema registry before deploy, catching mismatches at build time (DX)
+- [ ] **Topic Schema Linting** — `pranor lint` validates topic publish/subscribe schemas against the schema registry before deploy, catching mismatches at build time (DX)
 
 
 

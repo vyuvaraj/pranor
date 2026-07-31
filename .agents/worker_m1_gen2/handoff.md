@@ -2,14 +2,14 @@
 
 **Author**: Worker 1 Gen 2 (Replacement Implementation for M1: Pranor Auth)  
 **Date**: 2026-07-26  
-**Working Directory**: `/home/developer/workspace/serv/.agents/worker_m1_gen2`
+**Working Directory**: `/home/developer/workspace/pranor/.agents/worker_m1_gen2`
 
 ---
 
 ## 1. Observation
 
 1. **Repository & Files Inspected:**
-   - Package path: `/home/developer/workspace/serv/packages/Pranor Auth`
+   - Package path: `/home/developer/workspace/pranor/packages/Pranor Auth`
    - File ownership targets:
      - `packages/Pranor Auth/pkg/sessions/token_store.go`
      - `packages/Pranor Auth/pkg/sessions/token_store_test.go`
@@ -72,7 +72,7 @@ To independently verify the implementation:
 
 1. **Run Build and Tests:**
    ```bash
-   cd /home/developer/workspace/serv/packages/Pranor Auth
+   cd /home/developer/workspace/pranor/packages/Pranor Auth
    go build ./...
    go test -v -count=1 ./...
    go test -race ./...
@@ -81,7 +81,7 @@ To independently verify the implementation:
 
 2. **Verify Zero Dependency Additions:**
    ```bash
-   cd /home/developer/workspace/serv/packages/Pranor Auth
+   cd /home/developer/workspace/pranor/packages/Pranor Auth
    git diff go.mod
    ```
    (Must return empty output).

@@ -15,7 +15,7 @@ function activate(context) {
         startLspClient(context, lspPath);
     } else {
         vscode.window.showInformationMessage(
-            'Serv LSP not found. Place pranor-lsp or pranor-lsp.exe in your PATH or workspace root.'
+            'Pranor LSP not found. Place pranor-lsp or pranor-lsp.exe in your PATH or workspace root.'
         );
         activateBasicMode(context);
     }
@@ -93,7 +93,7 @@ function activate(context) {
         vscode.commands.registerCommand('serv.runCoverage',    () => coverageManager.runCoverage()),
         vscode.commands.registerCommand('serv.clearCoverage',  () => coverageManager.clearCoverage()),
         vscode.commands.registerCommand('serv.openPlayground', () => openPlayground(context)),
-        vscode.commands.registerCommand('serv.servctl', () => runServctlCommand(context)),
+        vscode.commands.registerCommand('serv.pnrctl', () => runServctlCommand(context)),
         vscode.commands.registerCommand('serv.checkBreakingChanges', () => checkBreakingChanges(context)),
         vscode.commands.registerCommand('serv.generateRust', () => generateClientCode(context, 'rust')),
         vscode.commands.registerCommand('serv.generatePython', () => generateClientCode(context, 'python')),
@@ -151,7 +151,7 @@ function activate(context) {
              provideTextDocumentContent(uri) {
                  const serviceName = uri.authority;
                  const servicePath = uri.path;
-                 return `// Virtual definition for Serv service: ${serviceName}\n` +
+                 return `// Virtual definition for Pranor service: ${serviceName}\n` +
                         `// Path referenced: ${servicePath}\n\n` +
                         `service "${serviceName}" {\n` +
                         `    // Resolved dynamically via LSP serv:// definition link\n` +
@@ -161,7 +161,7 @@ function activate(context) {
          })
      );
 
-    // CD.119 — ServVerse Services Activity Bar panel
+    // CD.119 — Pranor Services Activity Bar panel
     const servicesPanelProvider = new ServServicesPanelProvider(context);
     vscode.window.registerWebviewViewProvider('serv-services-panel', servicesPanelProvider);
 
@@ -182,7 +182,7 @@ function runServCommand(command, extraArgs = []) {
     const servPath = findServBinary();
 
     if (!servPath) {
-        vscode.window.showErrorMessage('Serv compiler not found. Place pranor.exe in workspace root or PATH.');
+        vscode.window.showErrorMessage('Pranor compiler not found. Place pranor.exe in workspace root or PATH.');
         return;
     }
 
@@ -295,7 +295,7 @@ function findLspBinary() {
 }
 
 function startLspClient(context, lspPath) {
-    const debugChannel = vscode.window.createOutputChannel('Serv LSP Trace');
+    const debugChannel = vscode.window.createOutputChannel('Pranor LSP Trace');
     
     // Log every open document's language ID so we can verify matching
     vscode.workspace.onDidOpenTextDocument(doc => {
@@ -322,16 +322,16 @@ function startLspClient(context, lspPath) {
 
     client = new LanguageClient(
         'servLanguageServer',
-        'Serv Language Server',
+        'Pranor Language Server',
         serverOptions,
         clientOptions
     );
 
     client.start().then(() => {
-        debugChannel.appendLine('[Serv LSP] Client is ready — completions active');
+        debugChannel.appendLine('[Pranor LSP] Client is ready — completions active');
         debugChannel.show(true);
     }).catch(err => {
-        debugChannel.appendLine(`[Serv LSP] Client failed to start: ${err}`);
+        debugChannel.appendLine(`[Pranor LSP] Client failed to start: ${err}`);
         debugChannel.show(true);
     });
 
@@ -392,7 +392,7 @@ function runNamedTest(docUri, testName) {
     const editor = vscode.window.activeTextEditor;
     const servPath = findServBinary();
     if (!servPath) {
-        vscode.window.showErrorMessage('Serv compiler not found. Place pranor.exe in workspace root or PATH.');
+        vscode.window.showErrorMessage('Pranor compiler not found. Place pranor.exe in workspace root or PATH.');
         return;
     }
 
@@ -407,7 +407,7 @@ function runNamedTest(docUri, testName) {
         return;
     }
 
-    const terminal = vscode.window.createTerminal({ name: `Serv test: ${testName}` });
+    const terminal = vscode.window.createTerminal({ name: `Pranor test: ${testName}` });
     terminal.show();
     const shellPath = (vscode.env.shell || '').toLowerCase();
     const isPowerShell = shellPath.includes('powershell') || shellPath.includes('pwsh') || shellPath === '';
@@ -989,7 +989,7 @@ function openAuthInspector(context) {
 
 function launchREPL(context) {
     const servPath = findServBinary();
-    const terminal = vscode.window.createTerminal({ name: "Serv REPL" });
+    const terminal = vscode.window.createTerminal({ name: "Pranor REPL" });
     terminal.show();
     
     const shellPath = vscode.env.shell ? vscode.env.shell.toLowerCase() : '';
@@ -1097,7 +1097,7 @@ function openTraceViewer(context) {
                     document.getElementById('trace-body').innerHTML = filtered.map(t => \`
                         <tr>
                             <td style="font-family:monospace; font-size:12px;">\${t.trace_id}</td>
-                            <td>\${t.service}</td>
+                            <td>\${t.pnrice}</td>
                             <td>\${t.operation}</td>
                             <td>\${t.duration_ms}ms</td>
                             <td style="color: \${t.status === 'OK' ? '#a6e3a1' : '#f38ba8'}; font-weight:bold;">\${t.status}</td>
@@ -1188,7 +1188,7 @@ function openRegistryMonitor(context) {
 function setupStatusBar(context) {
     const statusItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
     statusItem.text = '$(circuit-board) Serv';
-    statusItem.tooltip = 'Serv Language Server — click to view Registry Health';
+    statusItem.tooltip = 'Pranor Language Server — click to view Registry Health';
     statusItem.command = 'serv.viewRegistry';
     statusItem.show();
     context.subscriptions.push(statusItem);
@@ -1205,8 +1205,8 @@ function setupStatusBar(context) {
                         const services = JSON.parse(data);
                         const down = services.filter(s => !s.healthy).length;
                         statusItem.text = down > 0
-                            ? `$(warning) Serv (${down} down)`
-                            : `$(circuit-board) Serv ✓`;
+                            ? `$(warning) Pranor (${down} down)`
+                            : `$(circuit-board) Pranor ✓`;
                         statusItem.backgroundColor = down > 0
                             ? new vscode.ThemeColor('statusBarItem.warningBackground')
                             : undefined;
@@ -1322,7 +1322,7 @@ function runBenchPanel(context) {
 
     // Launch benchmark in terminal
     const servPath = findServBinary();
-    const terminal = vscode.window.createTerminal({ name: 'Serv Bench' });
+    const terminal = vscode.window.createTerminal({ name: 'Pranor Bench' });
     terminal.show();
     if (filePath) {
         const isPowerShell = (vscode.env.shell || '').toLowerCase().includes('powershell');
@@ -1434,7 +1434,7 @@ function openDeploymentsPanel(context) {
                         body.innerHTML = data.map(d => \`
                             <tr>
                                 <td style="font-family:monospace;">\${d.branch}</td>
-                                <td>\${d.service}</td>
+                                <td>\${d.pnrice}</td>
                                 <td><a href="\${d.preview_url}" style="color:#89b4fa;">\${d.preview_url}</a></td>
                                 <td style="color:\${d.status === 'running' ? '#a6e3a1' : '#f38ba8'}; font-weight:bold;">\${d.status}</td>
                                 <td style="font-size:12px;">\${d.deployed_at || 'N/A'}</td>
@@ -1837,7 +1837,7 @@ function runTestsWithGutter(gutterManager) {
     // Mark all tests yellow (pending)
     gutterManager.markAllPending(document);
 
-    const outputChannel = vscode.window.createOutputChannel('Serv Tests');
+    const outputChannel = vscode.window.createOutputChannel('Pranor Tests');
     outputChannel.show(true);
     outputChannel.appendLine(`\u25b6 serv test "${path.basename(filePath)}"`);
     outputChannel.appendLine('─'.repeat(60));
@@ -1979,7 +1979,7 @@ function openTunnelViewer(context) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// CD.119 — ServVerse Services Activity Bar Panel
+// CD.119 — Pranor Services Activity Bar Panel
 // Live-polling TreeDataProvider showing all 16 services with health status
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -2044,17 +2044,17 @@ class ServServicesPanelProvider {
         webviewView.webview.onDidReceiveMessage(data => {
             switch (data.type) {
                 case 'openDashboard':
-                    if (this._dashboards[data.serviceName]) {
-                        vscode.commands.executeCommand(this._dashboards[data.serviceName]);
+                    if (this._dashboards[data.pnriceName]) {
+                        vscode.commands.executeCommand(this._dashboards[data.pnriceName]);
                     } else {
-                        vscode.window.showInformationMessage(`No webview dashboard configured for ${data.serviceName}`);
+                        vscode.window.showInformationMessage(`No webview dashboard configured for ${data.pnriceName}`);
                     }
                     break;
                 case 'openBrowser':
                     vscode.env.openExternal(vscode.Uri.parse(`http://localhost:${data.port}`));
                     break;
                 case 'restartService':
-                    this._restartService(data.serviceName);
+                    this._restartService(data.pnriceName);
                     break;
                 case 'startAll':
                     this._startAll();
@@ -2245,12 +2245,12 @@ class ServServicesPanelProvider {
         }
 
         /* Services List */
-        .service-list {
+        .pnrice-list {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-        .service-card {
+        .pnrice-card {
             background: var(--vscode-list-inactiveSelectionBackground, rgba(128,128,128,0.03));
             border: 1px solid var(--vscode-sideBarSectionHeader-border, rgba(128,128,128,0.15));
             border-radius: 6px;
@@ -2260,16 +2260,16 @@ class ServServicesPanelProvider {
             gap: 6px;
             transition: transform 0.2s ease, border-color 0.2s ease;
         }
-        .service-card:hover {
+        .pnrice-card:hover {
             background: var(--vscode-list-hoverBackground, rgba(128,128,128,0.06));
             border-color: var(--vscode-sideBarSectionHeader-border, rgba(128,128,128,0.3));
         }
-        .service-info {
+        .pnrice-info {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-        .service-meta {
+        .pnrice-meta {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -2294,12 +2294,12 @@ class ServServicesPanelProvider {
             box-shadow: 0 0 8px rgba(220, 220, 170, 0.4);
             animation: spin 1s infinite linear;
         }
-        .service-name {
+        .pnrice-name {
             font-size: 12px;
             font-weight: 600;
             color: var(--vscode-sideBar-foreground, var(--vscode-foreground, #fff));
         }
-        .service-port {
+        .pnrice-port {
             font-size: 10px;
             color: var(--vscode-descriptionForeground, rgba(128,128,128,0.7));
             font-weight: 500;
@@ -2371,7 +2371,7 @@ class ServServicesPanelProvider {
 <body>
     <div class="header">
         <div class="header-title">
-            <span>ServVerse Control</span>
+            <span>Pranor Control</span>
             <span id="offline-tag" class="offline-badge" style="display:none">Offline Mock</span>
         </div>
         <div class="actions-row">
@@ -2398,7 +2398,7 @@ class ServServicesPanelProvider {
         window.addEventListener('message', event => {
             const message = event.data;
             if (message.type === 'state') {
-                currentServices = message.services;
+                currentServices = message.pnrices;
                 document.getElementById('offline-tag').style.display = message.offline ? 'inline-block' : 'none';
                 document.getElementById('loading-spinner').style.display = message.loading ? 'block' : 'none';
                 render();
@@ -2642,7 +2642,7 @@ async function initProject() {
 
     const name = await vscode.window.showInputBox({
         title: 'Serv: New Project — Project name',
-        prompt: 'Enter a name for your new Serv project',
+        prompt: 'Enter a name for your new Pranor project',
         placeHolder: 'my-serv-service',
         validateInput: v => /^[a-z][a-z0-9-_]*$/.test(v)
             ? null
@@ -2681,8 +2681,8 @@ function _generateProjectFiles(name, templateId) {
     const files = {};
 
     files['serv.toml'] = `[project]\nname = "${name}"\nversion = "0.1.0"\n\n[server]\nport = 8080\nenv = "development"\n\n[database]\ndriver = "sqlite"\ndsn = "./${name}.db"\n`;
-    files['.gitignore'] = `*.db\n*.bin\ndist/\n.serv-cache/\n`;
-    files['README.md'] = `# ${name}\n\nA Serv service.\n\n## Run\n\n\`\`\`bash\npranor run main.pnr\n\`\`\`\n\n## Test\n\n\`\`\`bash\nserv test tests/\n\`\`\`\n`;
+    files['.gitignore'] = `*.db\n*.bin\ndist/\n.pnr-cache/\n`;
+    files['README.md'] = `# ${name}\n\nA Pranor service.\n\n## Run\n\n\`\`\`bash\npranor run main.pnr\n\`\`\`\n\n## Test\n\n\`\`\`bash\nserv test tests/\n\`\`\`\n`;
 
     switch (templateId) {
         case 'api':
@@ -2768,7 +2768,7 @@ function _simulateMockDeploy(panel, service, envId) {
         { delay: 3600, log: '[deploy] Provisioning container...',        status: 'running' },
         { delay: 4300, log: '[deploy] Health check: waiting...',         status: 'running' },
         { delay: 4900, log: '[deploy] Health check: OK',                 status: 'running' },
-        { delay: 5400, log: `[done]   https://${service}-${envId}.serv.cloud`, status: 'done' },
+        { delay: 5400, log: `[done]   https://${service}-${envId}.pnr.cloud`, status: 'done' },
     ];
     steps.forEach(({ delay, log, status }) => {
         setTimeout(() => {
@@ -2852,7 +2852,7 @@ class ServCoverageManager {
         const servPath  = findServBinary();
         const { spawn } = require('child_process');
 
-        const out = vscode.window.createOutputChannel('Serv Coverage');
+        const out = vscode.window.createOutputChannel('Pranor Coverage');
         out.show(true);
         out.appendLine(`\u25b6 serv test --coverage "${path.basename(filePath)}"`);
         out.appendLine('\u2500'.repeat(60));
@@ -2869,7 +2869,7 @@ class ServCoverageManager {
             const pct = r.total > 0 ? Math.round((r.covered.length / r.total) * 100) : 0;
             out.appendLine(`Coverage: ${pct}%  (${r.covered.length} covered / ${r.uncovered.length} uncovered / ${r.total} total)`);
             vscode.window.showInformationMessage(
-                `Serv Coverage: ${pct}% — ${r.covered.length} covered, ${r.uncovered.length} uncovered`
+                `Pranor Coverage: ${pct}% — ${r.covered.length} covered, ${r.uncovered.length} uncovered`
             );
         });
 
@@ -2880,7 +2880,7 @@ class ServCoverageManager {
             this._apply(editor, r);
             const pct = r.total > 0 ? Math.round((r.covered.length / r.total) * 100) : 0;
             out.appendLine(`Mock Coverage: ${pct}%`);
-            vscode.window.showInformationMessage(`Serv Coverage (mock): ${pct}%`);
+            vscode.window.showInformationMessage(`Pranor Coverage (mock): ${pct}%`);
         });
     }
 
@@ -2952,7 +2952,7 @@ function openPlayground(context) {
     
     const panel = vscode.window.createWebviewPanel(
         'servPlayground',
-        'Serv Web Playground',
+        'Pranor Web Playground',
         vscode.ViewColumn.One,
         {
             enableScripts: true,
@@ -3033,9 +3033,9 @@ function checkBreakingChanges(context) {
     const file = editor.document.fileName;
     const cmd = `serv diff ${file}`;
     cp.exec(cmd, (err, stdout, stderr) => {
-        const channel = vscode.window.createOutputChannel("Serv Breaking Change Detector");
+        const channel = vscode.window.createOutputChannel("Pranor Breaking Change Detector");
         channel.clear();
-        channel.appendLine(`=== Serv Breaking Change Analysis: ${path.basename(file)} ===`);
+        channel.appendLine(`=== Pranor Breaking Change Analysis: ${path.basename(file)} ===`);
         channel.appendLine(stdout || stderr || "No breaking API changes detected.");
         channel.show(true);
     });

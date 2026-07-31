@@ -1,6 +1,6 @@
 # Pranor Platform
 
-`Pranor Platform` is the unified platform layer for the **Pranor** ecosystem — providing a single-binary embedded monolith runtime (`servd`), platform-wide chaos injection, a cluster administration CLI (`servctl`), unified health/readiness APIs, and production deployment manifest generation (Docker Compose & Helm).
+`Pranor Platform` is the unified platform layer for the **Pranor** ecosystem — providing a single-binary embedded monolith runtime (`pranord`), platform-wide chaos injection, a cluster administration CLI (`pranorctl`), unified health/readiness APIs, and production deployment manifest generation (Docker Compose & Helm).
 
 ---
 
@@ -8,9 +8,9 @@
 - [Key Features](#key-features)
 - [Architecture](#architecture)
 - [Components](#components)
-  - [servd — Single-Binary Unified Runtime](#servd--single-binary-unified-runtime)
+  - [pranord — Single-Binary Unified Runtime](#pranord--single-binary-unified-runtime)
   - [Unified Chaos Injection Engine](#unified-chaos-injection-engine)
-  - [servctl — Cluster Administration CLI](#servctl--cluster-administration-cli)
+  - [pranorctl — Cluster Administration CLI](#pranorctl--cluster-administration-cli)
   - [Unified Health & Readiness API](#unified-health--readiness-api)
   - [Distribution Manifest Generator](#distribution-manifest-generator)
 - [Getting Started](#getting-started)
@@ -19,9 +19,9 @@
 
 ## Key Features
 
-- **Single-binary `servd` runtime**: Embed all Pranor components into one unified process for local development and small deployments
+- **Single-binary `pranord` runtime**: Embed all Pranor components into one unified process for local development and small deployments
 - **Unified chaos engine**: Inject faults (network, CPU, memory, disk, clock skew) platform-wide from a single API
-- **`servctl` CLI**: Cluster-wide administration — list services/nodes, restart services, apply config
+- **`pranorctl` CLI**: Cluster-wide administration — list services/nodes, restart services, apply config
 - **Unified health API**: `/health`, `/ready`, and `/api/v1/platform/health/rollup` endpoints aggregating all component health
 - **Deployment manifest generator**: Programmatically generate `docker-compose.yml` and Helm `values.yaml` for production deployments
 
@@ -31,9 +31,9 @@
 
 ```
 Pranor Platform
-├── pkg/platform/     → servd unified runtime (component registry, start/stop/shutdown)
+├── pkg/platform/     → pranord unified runtime (component registry, start/stop/shutdown)
 ├── pkg/chaos/        → Unified chaos injection engine (network/CPU/memory/disk/clock)
-├── pkg/cli/          → servctl cluster administration CLI
+├── pkg/cli/          → pranorctl cluster administration CLI
 ├── pkg/health/       → Unified health, readiness & rollup metrics API
 └── pkg/distribution/ → Docker Compose & Helm chart manifest generator
 ```
@@ -42,11 +42,11 @@ Pranor Platform
 
 ## Components
 
-### servd — Single-Binary Unified Runtime
+### pranord — Single-Binary Unified Runtime
 
-`servd` allows running the entire Pranor stack as a single embedded binary — ideal for local development, CI/CD pipelines, and small self-hosted deployments.
+`pranord` allows running the entire Pranor stack as a single embedded binary — ideal for local development, CI/CD pipelines, and small self-hosted deployments.
 
-**API: `GET /api/v1/servd/components`**
+**API: `GET /api/v1/pranord/components`**
 
 ```json
 {
@@ -111,38 +111,38 @@ curl http://servplatform:8096/api/v1/platform/chaos/faults
 
 ---
 
-### servctl — Cluster Administration CLI
+### pranorctl — Cluster Administration CLI
 
-`servctl` is the Pranor cluster-wide administration CLI. It communicates with Pranor Platform to manage the entire stack.
+`pranorctl` is the Pranor cluster-wide administration CLI. It communicates with Pranor Platform to manage the entire stack.
 
 ```bash
 # List all services
-servctl get services
+pranorctl get services
 # → ["pranor-gate", "pranor-pulse", "pranor-vault", "pranor-mesh", "pranor-trace"]
 
 # List cluster nodes
-servctl get nodes
+pranorctl get nodes
 # → ["node-1", "node-2", "node-3"]
 
 # Restart a service
-servctl restart service payment-api
+pranorctl restart service payment-api
 # → service 'payment-api' restarted successfully
 
 # Apply cluster-wide configuration
-servctl apply config --file cluster-config.json
+pranorctl apply config --file cluster-config.json
 
 # JSON output mode (for scripting)
-servctl --json get services
+pranorctl --json get services
 ```
 
 **Available commands:**
 
 | Command | Description |
 |---------|-------------|
-| `servctl get services` | List all registered services |
-| `servctl get nodes` | List all cluster nodes |
-| `servctl restart service <name>` | Restart a named service |
-| `servctl apply config` | Apply cluster-wide configuration |
+| `pranorctl get services` | List all registered services |
+| `pranorctl get nodes` | List all cluster nodes |
+| `pranorctl restart service <name>` | Restart a named service |
+| `pranorctl apply config` | Apply cluster-wide configuration |
 
 ---
 
@@ -250,10 +250,10 @@ import (
 )
 ```
 
-For `servctl`, run:
+For `pranorctl`, run:
 
 ```bash
-go run ./cmd/servctl/main.go get services
+go run ./cmd/pranorctl/main.go get services
 ```
 
 ### Package Structure

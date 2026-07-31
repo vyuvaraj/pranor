@@ -6,7 +6,7 @@ This document outlines the planned evolutionary stages of **Pranor Gate** to evo
 
 ## Core Design Philosophy: Standalone-First (Zero Lock-in)
 - **Zero-Dependency Core**: `Pranor Gate` is compiled as a single native binary. It can be run and configured locally using standard JSON files without requiring external databases, brokers, or storage engines.
-- **Optional Serv-verse Synergy**: Seamlessly integrates with the wider ecosystem (`Pranor Pulse`, `Pranor Vault`, `Pranor Hub`, and `Pranor Console`) to offer advanced tracing, marketplaces, and centralized configuration, but keeps all integrations entirely optional.
+- **Optional Pranor Synergy**: Seamlessly integrates with the wider ecosystem (`Pranor Pulse`, `Pranor Vault`, `Pranor Hub`, and `Pranor Console`) to offer advanced tracing, marketplaces, and centralized configuration, but keeps all integrations entirely optional.
 
 ---
 
@@ -42,7 +42,7 @@ This document outlines the planned evolutionary stages of **Pranor Gate** to evo
 
 ## Phase 5: Ecosystem & Console Integration
 - [x] **Pranor Console Administration**: Optional dashboard sync to manage routes, view active connections, and swap WASM middleware modules dynamically.
-- [x] **Distributed config backend**: Store routes in a Pranor Vault bucket (`serv-config`) instead of local `config.json` for multi-replica deployments with eventual consistency.
+- [x] **Distributed config backend**: Store routes in a Pranor Vault bucket (`pranor-config`) instead of local `config.json` for multi-replica deployments with eventual consistency.
 - [x] **Pranor Console OIDC-aware config sync**: Sign config write operations with shared JWT before persisting to distributed backend.
 - [x] **Distributed Span Mapping**: Trace request lifecycles starting at the gateway, through queues (`Pranor Pulse`), and into storage (`Pranor Vault`) in a unified trace view using a shared OTLP collector.
 
@@ -51,7 +51,7 @@ This document outlines the planned evolutionary stages of **Pranor Gate** to evo
 ## Phase 6: Traffic Replay & Developer Tooling (Completed)
 - [x] **Traffic Replay & Validation**: Implement a dry-run utility (`pranor-gate replay`) to replay production traffic logs against new middleware versions before deployment.
 - [x] **One-Command Middleware Marketplace**: Install public or private WASM modules via `pranor-gate install <name>` (resolving from `Pranor Hub`).
-- [x] **Native Serv Language Compilation**: Direct compiler toolchain support in `Pranor` to build middleware (`pranor build --target wasm`).
+- [x] **Native Pranor Language Compilation**: Direct compiler toolchain support in `Pranor` to build middleware (`pranor build --target wasm`).
 
 ---
 
@@ -90,7 +90,7 @@ These items take Pranor Gate from a capable reverse proxy to a **category-defini
 | 9.5 | **Canary/blue-green traffic splitting** | Medium | Route a percentage of traffic to a canary backend: `"targets_weighted": [{"url": "v2", "weight": 10}, {"url": "v1", "weight": 90}]`. Gradual rollouts without a service mesh. | [x] |
 | 9.6 | **Request validation (JSON Schema)** | Medium | Attach JSON Schema to routes — reject malformed requests at the gateway before they hit backends. Return structured validation errors. | [x] |
 | 9.7 | **Response caching (HTTP cache layer)** | Medium | Configurable HTTP response cache with TTL, cache-key rules, and invalidation API. Reduces backend load for idempotent GET routes. | [x] |
-| 9.8 | **GraphQL federation proxy** | Large | Route GraphQL queries to multiple Serv backends, merge schemas, and execute federated resolvers. Position Pranor Gate as a GraphQL supergraph router. | [x] |
+| 9.8 | **GraphQL federation proxy** | Large | Route GraphQL queries to multiple Pranor backends, merge schemas, and execute federated resolvers. Position Pranor Gate as a GraphQL supergraph router. | [x] |
 | 9.9 | **Request logging & audit trail** | Medium | Structured JSONL log of every request/response (method, path, latency, status, trace_id) with configurable per-route toggle. | [x] |
 | 9.10 | **Plugin SDK (Go interface)** | Medium | Define a Go interface for plugins: `type Middleware interface { OnRequest(ctx) Response }`. Allows community to build compiled middleware without WASM overhead. | [x] |
 | 9.11 | **IP allowlisting/blocklisting** | Small | Per-route or global IP-based access control. CIDR range support. Auto-block on repeated 4xx/5xx from same source. | [x] |
@@ -125,7 +125,7 @@ These create a **moat** around Pranor Gate — capabilities that Kong, Envoy, AW
 ## Phase 12: Production Readiness (External Audit - Completed)
 - [x] **Request Body Size Limits** � http.MaxBytesReader with configurable per-route limits; currently any-size request body is accepted (API.2)
 - [x] **Shared Input Validation Middleware** � Route-level JSON Schema validation via Pranor Core.ValidateJSON(); reject malformed payloads before handler executes (API.1)
-- [x] **Ecosystem Version Manifest** � GET /api/version endpoint returning service name, version, and minimum compatible API version for serv doctor compatibility checks (API.4)
+- [x] **Ecosystem Version Manifest** � GET /api/version endpoint returning service name, version, and minimum compatible API version for pranor doctor compatibility checks (API.4)
 - [x] **Deprecation Header Standard** � Deprecated routes respond with Deprecation: true and Sunset: <date> headers giving consumers migration windows (API.5)
 
 - [x] **Ecosystem Performance Suite** � Multi-tiered Go micro-benchmarks, k6 component load tests, and distributed end-to-end telemetry workloads (OPS.7)

@@ -1,6 +1,6 @@
-# Serv Improvements — From Real-World Validation
+# Pranor Improvements — From Real-World Validation
 
-Issues and gaps discovered while porting the regulatory-cron-service (Java/Spring Boot) to Serv.
+Issues and gaps discovered while porting the regulatory-cron-service (Java/Spring Boot) to Pranor.
 
 ## Bugs to Fix
 

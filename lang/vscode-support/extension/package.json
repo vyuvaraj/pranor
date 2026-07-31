@@ -1,7 +1,7 @@
 {
   "name": "serv-vscode",
-  "displayName": "Serv Programming Language Support",
-  "description": "Full language support for the Serv programming language (.pnr files) — syntax highlighting, diagnostics, autocomplete, hover, go-to-definition, and LSP.",
+  "displayName": "Pranor Programming Language Support",
+  "description": "Full language support for the Pranor programming language (.pnr files) — syntax highlighting, diagnostics, autocomplete, hover, go-to-definition, and LSP.",
   "version": "3.4.0",
   "publisher": "vyuvaraj",
   "engines": {
@@ -29,7 +29,7 @@
   },
   "author": "Yuvaraj",
   "keywords": [
-    "serv",
+    "pranor",
     "srv",
     "background services",
     "microservices",
@@ -44,10 +44,10 @@
   "contributes": {
     "languages": [
       {
-        "id": "serv",
+        "id": "pranor",
         "aliases": [
           "Serv",
-          "serv"
+          "pranor"
         ],
         "extensions": [
           ".pnr"
@@ -57,14 +57,14 @@
     ],
     "grammars": [
       {
-        "language": "serv",
+        "language": "pranor",
         "scopeName": "source.pnr",
         "path": "./syntaxes/serv.tmLanguage.json"
       }
     ],
     "snippets": [
       {
-        "language": "serv",
+        "language": "pranor",
         "path": "./snippets/serv.code-snippets"
       }
     ],
@@ -89,7 +89,7 @@
         "serv.registryUrl": {
           "type": "string",
           "default": "http://localhost:8090/api/registry/services",
-          "description": "The URL of the Pranor Hub microservice to fetch health statuses for the ServVerse services sidebar panel."
+          "description": "The URL of the Pranor Hub microservice to fetch health statuses for the Pranor services sidebar panel."
         }
       }
     },
@@ -97,7 +97,7 @@
       "activitybar": [
         {
           "id": "serv-services",
-          "title": "ServVerse",
+          "title": "Pranor",
           "icon": "images/serv-panel.svg"
         }
       ]
@@ -113,7 +113,7 @@
       "explorer": [
         {
           "id": "serv-test-explorer",
-          "name": "Serv Tests",
+          "name": "Pranor Tests",
           "when": "workspaceContains:**/*.pnr"
         }
       ]
@@ -260,7 +260,7 @@
         "title": "Serv: Open Web Playground"
       },
       {
-        "command": "serv.servctl",
+        "command": "serv.pnrctl",
         "title": "Serv: servctl Cluster Administration"
       },
       {

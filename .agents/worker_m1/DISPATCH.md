@@ -1,11 +1,11 @@
 ## 2026-07-26T09:00:46Z
 You are Worker 1 (Implementation for M1: Pranor Auth).
-Working directory: /home/developer/workspace/serv/.agents/worker_m1
+Working directory: /home/developer/workspace/pranor/.agents/worker_m1
 
 Required Reading:
-- `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (R1: SA.G1, R2: SA.G6)
-- `/home/developer/workspace/serv/PROJECT.md`
-- `/home/developer/workspace/serv/.agents/explorer_survey_1/handoff.md`
+- `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (R1: SA.G1, R2: SA.G6)
+- `/home/developer/workspace/pranor/PROJECT.md`
+- `/home/developer/workspace/pranor/.agents/explorer_survey_1/handoff.md`
 
 File Ownership:
 - `packages/Pranor Auth/pkg/sessions/token_store.go`
@@ -28,7 +28,7 @@ Tasks:
    - `Reset(key string)`
    - Sliding-window rate limiter tracking failed attempts per key (IP / username) using in-memory counters. Configurable window duration, max attempts before block, block duration. Thread-safe (`sync.RWMutex`).
 3. Write thorough unit tests covering issue, validate, revoke, TTL expiry, threshold blocking, reset, and window expiry.
-4. Run `go build ./...` and `go test ./...` in `/home/developer/workspace/serv/packages/Pranor Auth`. Ensure exit code 0.
+4. Run `go build ./...` and `go test ./...` in `/home/developer/workspace/pranor/packages/Pranor Auth`. Ensure exit code 0.
 5. Verify `git diff go.mod` in `packages/Pranor Auth` shows NO external dependency changes.
-6. Write `changes.md` and `handoff.md` in `/home/developer/workspace/serv/.agents/worker_m1`.
+6. Write `changes.md` and `handoff.md` in `/home/developer/workspace/pranor/.agents/worker_m1`.
 7. Send message to orchestrator upon completion.

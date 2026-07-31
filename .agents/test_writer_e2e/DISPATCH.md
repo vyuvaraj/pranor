@@ -1,11 +1,11 @@
 ## 2026-07-26T09:00:46Z
 
 You are the E2E Test Writer.
-Working directory: /home/developer/workspace/serv/.agents/test_writer_e2e
+Working directory: /home/developer/workspace/pranor/.agents/test_writer_e2e
 
 Required Reading:
-- `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md`
-- `/home/developer/workspace/serv/PROJECT.md`
+- `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md`
+- `/home/developer/workspace/pranor/PROJECT.md`
 
 Scope:
 Design and write comprehensive, requirement-driven, opaque-box end-to-end (E2E) unit/integration tests for all 10 roadmap features across the 5 Pranor modules:
@@ -21,6 +21,6 @@ Test Case Methodology (4 Tiers):
 - Tier 3: Cross-Feature Combinations (pairwise interactions)
 - Tier 4: Real-World Application Scenarios
 
-Write `TEST_INFRA.md` at project root (`/home/developer/workspace/serv/TEST_INFRA.md`).
-When complete and tests pass, write `TEST_READY.md` at project root (`/home/developer/workspace/serv/TEST_READY.md`).
+Write `TEST_INFRA.md` at project root (`/home/developer/workspace/pranor/TEST_INFRA.md`).
+When complete and tests pass, write `TEST_READY.md` at project root (`/home/developer/workspace/pranor/TEST_READY.md`).
 Send message to orchestrator upon completion.

@@ -1,11 +1,11 @@
 ## 2026-07-26T09:00:46Z
 You are Worker 3 (Implementation for M3: Pranor Chrono).
-Working directory: /home/developer/workspace/serv/.agents/worker_m3
+Working directory: /home/developer/workspace/pranor/.agents/worker_m3
 
 Required Reading:
-- `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (R5: CR.G1, R6: CR.G2, R7: CR.G4)
-- `/home/developer/workspace/serv/PROJECT.md`
-- `/home/developer/workspace/serv/.agents/explorer_survey_2/handoff.md`
+- `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (R5: CR.G1, R6: CR.G2, R7: CR.G4)
+- `/home/developer/workspace/pranor/PROJECT.md`
+- `/home/developer/workspace/pranor/.agents/explorer_survey_2/handoff.md`
 
 File Ownership:
 - `packages/Pranor Chrono/pkg/cron/cron.go`
@@ -25,7 +25,7 @@ Tasks:
    - `WatchJobsFile(path string, onChange func([]cron.Job)) error` (using 5s `os.Stat` polling).
    - Custom minimal YAML subset parser (since `gopkg.in/yaml.v3` is NOT in `go.mod`).
 3. Write thorough unit tests covering DAG chain (A->B->C, failure branch, cycle guard), retries (successful retry on 2nd attempt, exhausted retries, jitter), and YAML loading/watching.
-4. Run `go build ./...` and `go test ./...` in `/home/developer/workspace/serv/packages/Pranor Chrono`. Ensure exit code 0.
+4. Run `go build ./...` and `go test ./...` in `/home/developer/workspace/pranor/packages/Pranor Chrono`. Ensure exit code 0.
 5. Verify `git diff go.mod` in `packages/Pranor Chrono` shows NO external dependency changes.
-6. Write `changes.md` and `handoff.md` in `/home/developer/workspace/serv/.agents/worker_m3`.
+6. Write `changes.md` and `handoff.md` in `/home/developer/workspace/pranor/.agents/worker_m3`.
 7. Send message to orchestrator upon completion.

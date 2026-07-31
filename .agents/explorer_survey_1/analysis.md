@@ -2,7 +2,7 @@
 
 **Author:** Explorer 1 (Survey Phase)  
 **Date:** 2026-07-26  
-**Target Repository:** `/home/developer/workspace/serv`  
+**Target Repository:** `/home/developer/workspace/pranor`  
 **Scope:** `packages/Pranor Auth` and `packages/Pranor Cache` (Requirements R1, R2, R3, R4)
 
 ---

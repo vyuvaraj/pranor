@@ -57,7 +57,7 @@ pranor build examples/<name>.pnr -o demo.exe
 |------|-------------|
 | `04_python_binding.pnr` | Python extern bindings |
 | `31_go_packages.pnr` | Importing Go packages |
-| `44_package_usage.pnr` | Using `serv add` packages (uuid) |
+| `44_package_usage.pnr` | Using `pranor add` packages (uuid) |
 | `15_mcp_support.pnr` | MCP tool definitions |
 
 ### Configuration & Deployment
@@ -70,7 +70,7 @@ pranor build examples/<name>.pnr -o demo.exe
 
 ## Walkthrough: Building a REST API
 
-```serv
+```pranor
 // 1. Declare infrastructure
 server "8080"
 database "sqlite://todos.db"

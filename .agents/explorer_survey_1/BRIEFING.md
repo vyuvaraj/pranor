@@ -6,13 +6,13 @@ Survey codebase for Pranor Auth and Pranor Cache, examine ORIGINAL_REQUEST.md re
 ## 🔒 My Identity
 - Archetype: Teamwork explorer
 - Roles: Codebase investigator / analyst
-- Working directory: /home/developer/workspace/serv/.agents/explorer_survey_1
+- Working directory: /home/developer/workspace/pranor/.agents/explorer_survey_1
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: Explorer Survey Phase
 
 ## 🔒 Key Constraints
 - Read-only investigation — do NOT implement source code in packages
-- Only write files in /home/developer/workspace/serv/.agents/explorer_survey_1
+- Only write files in /home/developer/workspace/pranor/.agents/explorer_survey_1
 
 ## Current Parent
 - Conversation ID: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
@@ -28,7 +28,7 @@ Survey codebase for Pranor Auth and Pranor Cache, examine ORIGINAL_REQUEST.md re
 - Created `analysis.md` and `handoff.md` in working directory.
 
 ## Artifact Index
-- /home/developer/workspace/serv/.agents/explorer_survey_1/DISPATCH.md — Dispatch log
-- /home/developer/workspace/serv/.agents/explorer_survey_1/BRIEFING.md — Persistent briefing index
-- /home/developer/workspace/serv/.agents/explorer_survey_1/analysis.md — Technical survey & design analysis
-- /home/developer/workspace/serv/.agents/explorer_survey_1/handoff.md — 5-component handoff report
+- /home/developer/workspace/pranor/.agents/explorer_survey_1/DISPATCH.md — Dispatch log
+- /home/developer/workspace/pranor/.agents/explorer_survey_1/BRIEFING.md — Persistent briefing index
+- /home/developer/workspace/pranor/.agents/explorer_survey_1/analysis.md — Technical survey & design analysis
+- /home/developer/workspace/pranor/.agents/explorer_survey_1/handoff.md — 5-component handoff report

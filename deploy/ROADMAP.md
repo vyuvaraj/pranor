@@ -36,17 +36,17 @@ This roadmap outlines the planned development phases for the Pranor Deploy manag
 - [ ] **Resource Quotas & Limits**: Per-deployment CPU/memory caps with OOM protection.
 - [ ] **Secret Injection from Pranor Vault**: Resolve `${{secrets.KEY}}` references from encrypted Pranor Vault bucket at deploy time. Rotate secrets without redeployment.
 - [ ] **Pranor Auth Integration**: Auto-provision Pranor Auth OIDC configuration for deployed services. Services get identity management out of the box.
-- [ ] **Build Packs**: Auto-detect project type (Go, Node, Python, Serv) and build without user-provided Dockerfile.
+- [ ] **Build Packs**: Auto-detect project type (Go, Node, Python, Pranor) and build without user-provided Dockerfile.
 - [ ] **Deployment Previews**: Branch-based preview deployments with unique URLs (like Vercel previews).
 - [ ] **Horizontal Auto-scaling**: Scale instances up/down based on request rate from Pranor Gate metrics.
-- [ ] **Integrated CI Pipeline**: Run `serv test` before deploy. Reject deploys that fail tests.
+- [ ] **Integrated CI Pipeline**: Run `pranor test` before deploy. Reject deploys that fail tests.
 - [ ] **Multi-region Deployment**: Deploy to multiple regions with Pranor Mesh-based global load balancing.
 
 ## Phase 6: Architectural Depth & DevOps (Pending)
 - [ ] **GitOps Deployment Sync** — Trigger deploys automatically on git push via webhook; store deployment manifest in repository for auditability (OPS.5)
-- [ ] **`serv cloud diff`** — Preview infrastructure changes (environment vars, resources, routes) before applying a deploy — like `terraform plan` for Pranor Deploy (DevOps)
+- [ ] **`pranor cloud diff`** — Preview infrastructure changes (environment vars, resources, routes) before applying a deploy — like `terraform plan` for Pranor Deploy (DevOps)
 - [ ] **Deploy Annotations** — Annotate each deploy with commit SHA, author, and changelog; surface in Pranor Console timeline and in Pranor Trace spans for change correlation (DX)
-- [ ] **Local `serv cloud emulate`** — Emulate the full production deploy pipeline locally: health checks, rolling update, rollback — catching breakage before pushing (DX)
+- [ ] **Local `pranor cloud emulate`** — Emulate the full production deploy pipeline locally: health checks, rolling update, rollback — catching breakage before pushing (DX)
 
 > See [UNIFIED_ROADMAP.md](../pranor-repo/UNIFIED_ROADMAP.md) for the full ecosystem priority matrix.
 

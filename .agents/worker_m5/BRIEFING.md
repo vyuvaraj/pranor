@@ -6,7 +6,7 @@ Implement M5: Pranor Pulse traceparent parsing & propagation (R10: SQ.G5).
 ## 🔒 My Identity
 - Archetype: implementer
 - Roles: implementer, qa, specialist
-- Working directory: /home/developer/workspace/serv/.agents/worker_m5
+- Working directory: /home/developer/workspace/pranor/.agents/worker_m5
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: M5: Pranor Pulse (SQ.G5)
 
@@ -18,7 +18,7 @@ Implement M5: Pranor Pulse traceparent parsing & propagation (R10: SQ.G5).
   - `packages/Pranor Pulse/pkg/core/engine_test.go`
 - No external dependency changes (git diff go.mod must show no changes).
 - Genuine implementation with no hardcoding or dummy responses.
-- Build and tests in `/home/developer/workspace/serv/packages/Pranor Pulse` must pass (exit code 0).
+- Build and tests in `/home/developer/workspace/pranor/packages/Pranor Pulse` must pass (exit code 0).
 
 ## Current Parent
 - Conversation ID: 3c3be357-fb61-4d2b-9ed3-40099ef64f03

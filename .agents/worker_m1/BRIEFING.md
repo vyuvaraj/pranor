@@ -6,7 +6,7 @@ Implement M1 (Pranor Auth): TokenStore (SA.G1) and VelocityLimiter (SA.G6) with 
 ## 🔒 My Identity
 - Archetype: implementer
 - Roles: implementer, qa, specialist
-- Working directory: /home/developer/workspace/serv/.agents/worker_m1
+- Working directory: /home/developer/workspace/pranor/.agents/worker_m1
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: M1 (Pranor Auth)
 
@@ -15,7 +15,7 @@ Implement M1 (Pranor Auth): TokenStore (SA.G1) and VelocityLimiter (SA.G6) with 
 - No hardcoded test results or dummy/facade implementations
 - Genuine implementation with thread-safety (`sync.RWMutex`)
 - Run `go build ./...` and `go test ./...` in `packages/Pranor Auth` with exit code 0
-- Write changes.md and handoff.md in `/home/developer/workspace/serv/.agents/worker_m1`
+- Write changes.md and handoff.md in `/home/developer/workspace/pranor/.agents/worker_m1`
 - Send message to parent (orchestrator) when complete
 
 ## Current Parent

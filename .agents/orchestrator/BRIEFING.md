@@ -1,18 +1,18 @@
 # BRIEFING — 2026-07-26T09:09:27Z
 
 ## Mission
-Orchestrate the implementation of 10 pending OSS roadmap items across 5 Pranor modules (Pranor Auth, Pranor Cache, Pranor Chrono, Pranor Pool, Pranor Pulse) in `/home/developer/workspace/serv`.
+Orchestrate the implementation of 10 pending OSS roadmap items across 5 Pranor modules (Pranor Auth, Pranor Cache, Pranor Chrono, Pranor Pool, Pranor Pulse) in `/home/developer/workspace/pranor`.
 
 ## 🔒 My Identity
 - Archetype: teamwork_preview_orchestrator (top-level Project Orchestrator)
 - Roles: orchestrator, user_liaison, human_reporter, successor
-- Working directory: /home/developer/workspace/serv/.agents/orchestrator
+- Working directory: /home/developer/workspace/pranor/.agents/orchestrator
 - Original parent: parent
 - Original parent conversation ID: b8b445e3-943f-4765-a961-ac3bc5eaca5a
 
 ## 🔒 My Workflow
 - **Pattern**: Project Pattern
-- **Scope document**: /home/developer/workspace/serv/PROJECT.md
+- **Scope document**: /home/developer/workspace/pranor/PROJECT.md
 1. **Decompose**: Survey codebase via 3 parallel Explorers -> decompose into milestones -> dispatch sub-orchestrators or iteration loops
 2. **Dispatch & Execute**: Top-level Project Orchestrator spawns parallel E2E Testing Orchestrator track & Implementation track
 3. **On failure**: Retry -> Replace -> Skip -> Redistribute -> Redesign
@@ -77,8 +77,8 @@ Orchestrate the implementation of 10 pending OSS roadmap items across 5 Pranor m
 - Safety timer: none
 
 ## Artifact Index
-- /home/developer/workspace/serv/.agents/orchestrator/plan.md — Project plan
-- /home/developer/workspace/serv/.agents/orchestrator/progress.md — Progress log
-- /home/developer/workspace/serv/.agents/orchestrator/context.md — Context state
-- /home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md — Original User Request
-- /home/developer/workspace/serv/PROJECT.md — Global Project Index & Contracts
+- /home/developer/workspace/pranor/.agents/orchestrator/plan.md — Project plan
+- /home/developer/workspace/pranor/.agents/orchestrator/progress.md — Progress log
+- /home/developer/workspace/pranor/.agents/orchestrator/context.md — Context state
+- /home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md — Original User Request
+- /home/developer/workspace/pranor/PROJECT.md — Global Project Index & Contracts

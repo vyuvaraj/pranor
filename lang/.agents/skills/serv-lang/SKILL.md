@@ -1,9 +1,9 @@
 ---
 name: pranor
-description: Developer guidelines and specifications for the Serv programming language compiler and runtime.
+description: Developer guidelines and specifications for the Pranor programming language compiler and runtime.
 ---
 
-# Serv Development Skill
+# Pranor Development Skill
 
 This skill steers development on the **Pranor** repository, which includes the compiler, the runtime, example code, and developer scripts.
 
@@ -11,7 +11,7 @@ This skill steers development on the **Pranor** repository, which includes the c
 
 ## 1. Product Overview
 
-Serv is a domain-specific programming language (DSL) for building background services, schedulers, event-driven applications, and API microservices. Source files use the `.pnr` extension.
+Pranor is a domain-specific programming language (DSL) for building background services, schedulers, event-driven applications, and API microservices. Source files use the `.pnr` extension.
 
 - **Compilation Model**: Transpiles `.pnr` source files into native Go code, then compiles them into standalone binaries.
 - **Key Features**:

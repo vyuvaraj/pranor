@@ -22,7 +22,7 @@ Pranor Hub is the lightweight, S3-backed community package hub and registry serv
 ### 2. Publish Package
 - `POST /publish` or `POST /api/v1/publish`
   - Uploads a package tarball (`.tar.gz`).
-  - Expects a `serv.toml` manifest file in the root of the archive to parse the package name, version, and dependencies.
+  - Expects a `pranor.toml` manifest file in the root of the archive to parse the package name, version, and dependencies.
   - If `PRANOR_JWT_SECRET` is enabled, requires a valid token via the `Authorization: Bearer <token>` header.
 
 ### 3. Fetch Package Tarball

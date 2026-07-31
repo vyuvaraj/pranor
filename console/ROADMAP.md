@@ -37,8 +37,8 @@ This document outlines the design phases, completed modules, and upcoming featur
 * [x] **Service Discovery Config**: Replace hardcoded localhost ports with a `services.json` or `SERVVERSE_DISCOVERY` env-var discovery map — prerequisite for Docker Compose and Kubernetes deployments.
 * [x] **Shared OTel Collector Config**: Surface a single `PRANOR_OTLP_ENDPOINT` setting propagated to all connected services; enables unified cross-service trace correlation in one UI.
 * [x] **Pranor Pulse Topic Admin**: Full WAL inspection, delayed message queue view, and WASM transform debug panels in the dashboard.
-* [x] **Pranor Gate Multi-Replica Config Sync**: Write route configurations to a Pranor Vault-backed distributed bucket (`serv-config`) instead of local JSON file.
-* [x] **Cross-Service Dependency Graph**: Visual interactive map showing which Serv services depend on which infrastructure components (queues, buckets, routes).
+* [x] **Pranor Gate Multi-Replica Config Sync**: Write route configurations to a Pranor Vault-backed distributed bucket (`pranor-config`) instead of local JSON file.
+* [x] **Cross-Service Dependency Graph**: Visual interactive map showing which Pranor services depend on which infrastructure components (queues, buckets, routes).
 
 ---
 
@@ -179,7 +179,7 @@ UI panels for managing the proposed Pranor components (Pranor Auth, ServDB, Pran
 | 13.14 | **Capacity planning view** | Medium | Aggregate CPU/memory/disk/network across all services. Project growth trends. Alert when approaching infrastructure limits. | [x] |
 | 13.15 | **Change correlation engine** | Large | Overlay deployments (Pranor Deploy), config changes (audit log), and incidents (alerts) on a unified timeline. Correlate "what changed" with "what broke." | [x] |
 | 13.16 | **Service comparison mode** | Medium | Compare two services side-by-side: latency, throughput, error rate, resource usage. Useful for canary validation. | [x] |
-| 13.17 | **Ecosystem startup orchestrator** | Medium | `serv console --start-all` boots all ecosystem services in dependency order, waits for health, then opens the dashboard. One-command full-stack local dev. | [x] |
+| 13.17 | **Ecosystem startup orchestrator** | Medium | `pranor console --start-all` boots all ecosystem services in dependency order, waits for health, then opens the dashboard. One-command full-stack local dev. | [x] |
 | 13.18 | **Unified API documentation portal** | Medium | Auto-aggregate all service OpenAPI specs into a single interactive documentation portal served from the console. | [x] |
 
 ### AI-Powered Operations

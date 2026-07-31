@@ -1,10 +1,10 @@
 ## 2026-07-26T09:09:27Z
 You are Challenger M4 for Pranor Pool (SP.G1 & SP.G2).
-Working directory: /home/developer/workspace/serv/.agents/challenger_m4_1
+Working directory: /home/developer/workspace/pranor/.agents/challenger_m4_1
 
 Required Reading:
-- `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (R8, R9)
-- `/home/developer/workspace/serv/PROJECT.md`
+- `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (R8, R9)
+- `/home/developer/workspace/pranor/PROJECT.md`
 
 Tasks:
 1. Empirically verify RWSplitter and HealthChecker in `packages/Pranor Pool`.

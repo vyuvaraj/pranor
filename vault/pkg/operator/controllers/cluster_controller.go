@@ -24,8 +24,8 @@ type PranorVaultClusterReconciler struct {
 	Log logr.Logger
 }
 
-// +kubebuilder:rbac:groups=storage.Pranor Vault.io,resources=pranor-vaultclusters,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=storage.Pranor Vault.io,resources=pranor-vaultclusters/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=storage.Pranor Vault.io,resources=pranorVaultclusters,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=storage.Pranor Vault.io,resources=pranorVaultclusters/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=apps,resources=statefulsets,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups="",resources=services;configmaps;persistentvolumeclaims,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=policy,resources=poddisruptionbudgets,verbs=get;list;watch;create;update;patch;delete

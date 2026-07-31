@@ -682,7 +682,7 @@ func ensureBuildGoMod(buildDir string) (bool, error) {
 	}
 
 	// Generate go.mod for the build directory
-	goMod := fmt.Sprintf(`module pranor-build
+	goMod := fmt.Sprintf(`module pranorBuild
 
 go %s
 

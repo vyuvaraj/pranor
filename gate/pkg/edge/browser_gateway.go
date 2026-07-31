@@ -45,7 +45,7 @@ func (b *BrowserGatewaySDK) InterceptFetch(ctx context.Context, path string) ([]
 	}
 
 	respMap := map[string]interface{}{
-		"pranor-gate_edge": "browser-wasm",
+		"pranorGate_edge": "browser-wasm",
 		"intercepted_path": route.Path,
 		"fallback_target":  route.Fallback,
 		"offline_capable":  route.Offline,

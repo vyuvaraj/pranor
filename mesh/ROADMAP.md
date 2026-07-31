@@ -6,7 +6,7 @@ This roadmap outlines the planned development phases for the Pranor Mesh library
 
 ## Differentiating Factors (Why Pranor Mesh vs. Istio/Linkerd?)
 * **Library-Level (No Sidecars)**: Runs directly within the client binary via custom transport, bypassing the CPU/Memory overhead and network latency of sidecar proxies (like Envoy).
-* **Native Language Integration**: Directly resolves `serv://` schemas in code, bringing service discovery semantics directly into the application layer.
+* **Native Language Integration**: Directly resolves `pranor://` schemas in code, bringing service discovery semantics directly into the application layer.
 * **Out-of-the-Box Resilience**: Seamlessly bundles retries, round-robin load-balancing, OTel trace context, and circuit breakers with zero external yaml configuration.
 
 ---
@@ -14,7 +14,7 @@ This roadmap outlines the planned development phases for the Pranor Mesh library
 ## Phase 1: Service Registry & Resolver (Completed)
 - [x] **Service Registry**: Centralized control plane daemon for registering active service instances.
 - [x] **Registry API**: JSON endpoints for registration, heartbeat updates, and name resolution.
-- [x] **Client-Side HTTP Resolver**: Custom HTTP `RoundTripper` that intercepts `serv://` targets.
+- [x] **Client-Side HTTP Resolver**: Custom HTTP `RoundTripper` that intercepts `pranor://` targets.
 - [x] **TTL heartbeats**: Automatic pruning of stale/inactive endpoints.
 
 ## Phase 2: Load Balancing & Resilience (Completed)
@@ -46,7 +46,7 @@ This roadmap outlines the planned development phases for the Pranor Mesh library
 ## Phase 6: Architectural Depth & DevOps (Pending)
 - [x] **Ecosystem Performance Suite** — Multi-tiered Go micro-benchmarks, k6 component load tests, and distributed end-to-end telemetry workloads (OPS.7)
 - [x] **Automated mTLS Rotation** — Certificate lifecycle management with automatic renewal and zero-downtime rotation (SEC.7)
-- [x] **Local Dev Service Mesh** — One-command `serv mesh up` that starts a local registry + resolver with zero config for fast developer iteration (DX.8)
+- [x] **Local Dev Service Mesh** — One-command `pranor mesh up` that starts a local registry + resolver with zero config for fast developer iteration (DX.8)
 - [x] **Mesh Topology CLI** — `go run ./cmd/inspect/` command showing live service topology table with circuit-breaker state, latency, and error-rate distribution. Supports `--watch` and `--service` flags. [July 9, 2026]
 
 > See [UNIFIED_ROADMAP.md](../UNIFIED_ROADMAP.md) for the full ecosystem priority matrix and architectural recommendations.

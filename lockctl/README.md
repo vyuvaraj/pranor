@@ -16,8 +16,8 @@ You can configure the client using flags or environment variables:
 
 | Flag | Env Variable | Description | Default |
 |---|---|---|---|
-| `--url` | `SERVLOCK_URL` | Pranor Lock server URL | `http://localhost:8089` |
-| `--api-key` | `SERVLOCK_API_KEY` | API Key for authorization | (None) |
+| `--url` | `PRANOR_LOCK_URL` | Pranor Lock server URL | `http://localhost:8089` |
+| `--api-key` | `PRANOR_LOCK_API_KEY` | API Key for authorization | (None) |
 | `--tenant` | - | Tenant ID for request isolation | `default` |
 
 ## Usage Commands

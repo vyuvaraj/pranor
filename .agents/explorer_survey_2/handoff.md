@@ -1,10 +1,10 @@
 # Handoff Report — Explorer Survey 2
 
 ## 1. Observation
-- **Original Request Requirements**: Read `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` lines 70–107 covering requirements R5 (CR.G1), R6 (CR.G2), and R7 (CR.G4).
-- **Codebase Path**: `/home/developer/workspace/serv/packages/Pranor Chrono`.
-- **Existing `go.mod`**: Checked `/home/developer/workspace/serv/packages/Pranor Chrono/go.mod` (lines 1-53). `gopkg.in/yaml.v3` is **not** present in `go.mod`.
-- **Existing `cron.go`**: Checked `/home/developer/workspace/serv/packages/Pranor Chrono/pkg/cron/cron.go` (lines 40-52). `Job` struct currently defines:
+- **Original Request Requirements**: Read `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` lines 70–107 covering requirements R5 (CR.G1), R6 (CR.G2), and R7 (CR.G4).
+- **Codebase Path**: `/home/developer/workspace/pranor/packages/Pranor Chrono`.
+- **Existing `go.mod`**: Checked `/home/developer/workspace/pranor/packages/Pranor Chrono/go.mod` (lines 1-53). `gopkg.in/yaml.v3` is **not** present in `go.mod`.
+- **Existing `cron.go`**: Checked `/home/developer/workspace/pranor/packages/Pranor Chrono/pkg/cron/cron.go` (lines 40-52). `Job` struct currently defines:
   ```go
   type Job struct {
       ID           string    `json:"id"`
@@ -20,7 +20,7 @@
       FailureCount int       `json:"failure_count"`
   }
   ```
-- **Existing Build/Test Status**: Executed `go test ./...` in `/home/developer/workspace/serv/packages/Pranor Chrono`. Command returned exit code 0 (`ok github.com/vyuvaraj/pranor/packages/Pranor Chrono`, `ok github.com/vyuvaraj/pranor/packages/Pranor Chrono/pkg/cron`).
+- **Existing Build/Test Status**: Executed `go test ./...` in `/home/developer/workspace/pranor/packages/Pranor Chrono`. Command returned exit code 0 (`ok github.com/vyuvaraj/pranor/packages/Pranor Chrono`, `ok github.com/vyuvaraj/pranor/packages/Pranor Chrono/pkg/cron`).
 - **Existing Packages**: `pkg/cron`, `pkg/otel`, `pkg/server`. Package `pkg/config` does **not** yet exist.
 
 ---
@@ -51,10 +51,10 @@ The requirements R5 (CR.G1), R6 (CR.G2), and R7 (CR.G4) for `packages/Pranor Chr
 
 ## 5. Verification Method
 1. **Compilation**:
-   Run `go build ./...` in `/home/developer/workspace/serv/packages/Pranor Chrono`. Must exit with code 0.
+   Run `go build ./...` in `/home/developer/workspace/pranor/packages/Pranor Chrono`. Must exit with code 0.
 2. **Dependency Check**:
-   Run `git diff go.mod` in `/home/developer/workspace/serv/packages/Pranor Chrono`. Must show zero modifications to dependencies.
+   Run `git diff go.mod` in `/home/developer/workspace/pranor/packages/Pranor Chrono`. Must show zero modifications to dependencies.
 3. **Unit & Integration Tests**:
-   Run `go test ./...` in `/home/developer/workspace/serv/packages/Pranor Chrono`. Must pass with code 0.
+   Run `go test ./...` in `/home/developer/workspace/pranor/packages/Pranor Chrono`. Must pass with code 0.
 4. **File Structure Inspection**:
-   Verify creation of `/home/developer/workspace/serv/packages/Pranor Chrono/pkg/config/jobs_loader.go`.
+   Verify creation of `/home/developer/workspace/pranor/packages/Pranor Chrono/pkg/config/jobs_loader.go`.

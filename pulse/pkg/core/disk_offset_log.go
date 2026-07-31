@@ -29,7 +29,7 @@ type DiskOffsetLog struct {
 // NewDiskOffsetLog creates or opens an append-only consumer offset log on disk.
 func NewDiskOffsetLog(dir string) (*DiskOffsetLog, error) {
 	if dir == "" {
-		dir = ".pranor-pulse_offsets"
+		dir = ".pranorPulse_offsets"
 	}
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		return nil, fmt.Errorf("disk_offset_log: failed to create dir: %w", err)

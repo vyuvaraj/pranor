@@ -6,7 +6,7 @@ Forensic integrity audit of Pranor Cache SC.G3 (Bloom filter) and SC.G4 (Tiered 
 ## 🔒 My Identity
 - Archetype: forensic_auditor
 - Roles: critic, specialist, auditor
-- Working directory: /home/developer/workspace/serv/.agents/auditor_m2
+- Working directory: /home/developer/workspace/pranor/.agents/auditor_m2
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Target: Pranor Cache milestone SC.G3 & SC.G4
 

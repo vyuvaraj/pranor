@@ -13,7 +13,7 @@ func main() {
 	configPath := flag.String("config", "config.json", "Path to PranorGateway configuration file")
 	port := flag.String("port", ":8080", "Gateway listening port")
 	adminPort := flag.String("admin-port", ":8081", "Admin UI listening port")
-	version := flag.Bool("version", false, "Show pranor-gated version")
+	version := flag.Bool("version", false, "Show pranorGated version")
 	flag.Parse()
 
 	if *version {
@@ -21,10 +21,10 @@ func main() {
 		os.Exit(0)
 	}
 
-	log.Printf("Starting PranorGateway Standalone Daemon (pranor-gated v2.0.0)...")
+	log.Printf("Starting PranorGateway Standalone Daemon (pranorGated v2.0.0)...")
 	d, err := daemon.NewPranorGatewayDaemon(*configPath)
 	if err != nil {
-		log.Fatalf("Failed to initialize pranor-gated: %v", err)
+		log.Fatalf("Failed to initialize pranorGated: %v", err)
 	}
 
 	_ = port

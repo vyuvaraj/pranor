@@ -1,6 +1,6 @@
-# Serv Language Roadmap: TypeScript-for-Go
+# Pranor Language Roadmap: TypeScript-for-Go
 
-Serv aims to be to Go what TypeScript is to JavaScript — same runtime, better developer experience, stronger compile-time guarantees.
+Pranor aims to be to Go what TypeScript is to JavaScript — same runtime, better developer experience, stronger compile-time guarantees.
 
 ## Design Principles
 

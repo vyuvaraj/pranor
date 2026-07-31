@@ -240,10 +240,10 @@ func runEnvInjector(command, serverURL, tenant, apiKey string, client *http.Clie
 }
 
 func printUsage() {
-	fmt.Println(`pranor-secretctl is a command-line client for Pranor Secret.
+	fmt.Println(`pranorSecretctl is a command-line client for Pranor Secret.
 
 Usage:
-  pranor-secretctl [command] [flags]
+  pranorSecretctl [command] [flags]
 
 Commands:
   set           Create or update a secret

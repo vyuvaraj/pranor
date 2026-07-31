@@ -93,7 +93,7 @@ type PranorVaultClusterStatus struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 
-// PranorVaultCluster is the Schema for the pranor-vaultclusters API.
+// PranorVaultCluster is the Schema for the pranorVaultclusters API.
 type PranorVaultCluster struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -171,7 +171,7 @@ type PranorVaultBucketStatus struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 
-// PranorVaultBucket is the Schema for the pranor-vaultbuckets API.
+// PranorVaultBucket is the Schema for the pranorVaultbuckets API.
 type PranorVaultBucket struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -229,7 +229,7 @@ type PranorVaultCredentialStatus struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 
-// PranorVaultCredential is the Schema for the pranor-vaultcredentials API.
+// PranorVaultCredential is the Schema for the pranorVaultcredentials API.
 type PranorVaultCredential struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

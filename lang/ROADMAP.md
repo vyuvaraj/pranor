@@ -1,10 +1,10 @@
-# Serv Language — Critical Analysis & Roadmap
+# Pranor Language — Critical Analysis & Roadmap
 
 ## Executive Summary
 
-Serv has achieved impressive feature breadth for a service-oriented language project. The core compilation pipeline works, the runtime is functional, and the language covers its target domain (services, schedulers, pub/sub, APIs) well. 
+Pranor has achieved impressive feature breadth for a service-oriented language project. The core compilation pipeline works, the runtime is functional, and the language covers its target domain (services, schedulers, pub/sub, APIs) well. 
 
-With the recent completion of **Zero-Downtime Hot-Reload** (14.2) via `pranor run --hot`, Serv now offers a category-defining local development experience — TCP proxy-based binary swapping with zero dropped connections. Combined with earlier completions like **Find References & Rename refactoring** (6.4), **Module-Level Visibility Enforcement** (8.3), and the **Escape-Analysis Map Optimization** (3.6), the language is entering a highly professional and robust stage. Almost the entire core roadmap has been successfully implemented.
+With the recent completion of **Zero-Downtime Hot-Reload** (14.2) via `pranor run --hot`, Pranor now offers a category-defining local development experience — TCP proxy-based binary swapping with zero dropped connections. Combined with earlier completions like **Find References & Rename refactoring** (6.4), **Module-Level Visibility Enforcement** (8.3), and the **Escape-Analysis Map Optimization** (3.6), the language is entering a highly professional and robust stage. Almost the entire core roadmap has been successfully implemented.
 
 The roadmap below captures the current status of all features and details the remaining next steps across Phases 13–15.
 
@@ -76,14 +76,14 @@ The roadmap below captures the current status of all features and details the re
 | 6.3 | Signature help | ✅ Done | Active parameter help |
 | 6.4 | Find references / rename | ✅ Done | Workspace-wide refactoring |
 | 6.5 | Semantic diagnostics | ✅ Done | Compiler warnings shown in editor |
-| 6.6 | `serv fmt` integration | ✅ Done | Document formatting via LSP |
+| 6.6 | `pranor fmt` integration | ✅ Done | Document formatting via LSP |
 
 ### Phase 7: Testing Framework
 | # | Item | Status | Notes |
 |---|------|--------|-------|
 | 7.1 | Structured assertions | ✅ Done | Informative failure messages |
 | 7.2 | Test isolation | ✅ Done | Dedicated test func scopes |
-| 7.3 | Test coverage | ✅ Done | `serv test --cover` statement metrics |
+| 7.3 | Test coverage | ✅ Done | `pranor test --cover` statement metrics |
 | 7.4 | Setup/teardown | ✅ Done | `beforeEach` / `afterEach` hooks |
 | 7.5 | Test timeout | ✅ Done | Per-test timeout enforcement |
 
@@ -111,9 +111,9 @@ All planned ecosystem features from Phase 9 are now fully complete!
 
 ---
 
-## Phase 10: Taking Serv to the Next Level (Future Priorities)
+## Phase 10: Taking Pranor to the Next Level (Future Priorities)
 
-To move Serv beyond a simple microservice tool into a premium, world-class programming language for high-performance distributed systems, we propose the following items for the next phase of evolution:
+To move Pranor beyond a simple microservice tool into a premium, world-class programming language for high-performance distributed systems, we propose the following items for the next phase of evolution:
 
 | # | Item | Effort | Description |
 |---|------|--------|-------------|
@@ -124,8 +124,8 @@ To move Serv beyond a simple microservice tool into a premium, world-class progr
 | 10.5 | **AOT Optimization Pass** | Medium | ✅ Done — Build AST optimizations (constant folding, dead branch, unreachable code elimination). |
 | 10.6 | **WASM Target Compilation** | Large | ✅ Done — `pranor build <file.pnr> --target wasm` compiles `.pnr` files to WASI-compliant WebAssembly. Supported full log formatting via stderr and stubs/abstractions for all non-wasm runtime components. Verified under Pranor Vault transform pipelines. |
 | 10.7 | **Stateful Workflows** | Large | ✅ Done — Introduce native Temporal-like `workflow` blocks with automatic state-checkpointing and resilient task retries. |
-| 10.8 | **LSP Debugger (DAP) Support** | Medium | ✅ Done — `serv debug <file.pnr>` launches a DAP proxy (stdio) backed by Delve. Translates `.pnr` breakpoints ↔ generated Go lines using `// .pnr line N` source map comments. Full VS Code support: breakpoints, step, stack frames mapped back to `.pnr` source. |
-| 10.9 | **Serv-verse Core Integrations** | Large | Develop unified connectors and drivers targeting Pranor Pulse (distributed event bus) and Pranor Gate (API Gateway). |
+| 10.8 | **LSP Debugger (DAP) Support** | Medium | ✅ Done — `pranor debug <file.pnr>` launches a DAP proxy (stdio) backed by Delve. Translates `.pnr` breakpoints ↔ generated Go lines using `// .pnr line N` source map comments. Full VS Code support: breakpoints, step, stack frames mapped back to `.pnr` source. |
+| 10.9 | **Pranor Core Integrations** | Large | Develop unified connectors and drivers targeting Pranor Pulse (distributed event bus) and Pranor Gate (API Gateway). |
 
 ### Detail on Next-Level Items
 
@@ -143,14 +143,14 @@ To move Serv beyond a simple microservice tool into a premium, world-class progr
 
 #### 4. WASM Target Compilation (Phase 10.6)
 - **Goal**: Add a compilation target to build WASI-compliant WebAssembly binaries (`pranor build --target wasm`).
-- **Why**: Allows developers to write their server-side compute-near-data transformations directly in the Serv language instead of external languages (like Rust or Go).
+- **Why**: Allows developers to write their server-side compute-near-data transformations directly in the Pranor language instead of external languages (like Rust or Go).
 
 #### 5. Stateful Workflows (Phase 10.7)
 - **Goal**: Add declarative workflows that checkpoint execution state, allowing long-running orchestrations to survive service restarts or hardware failures transparently.
 - **Why**: Critical for business logic orchestration (onboarding, order processing) that span multiple days or services.
 
 #### 6. LSP Debugger Support (Phase 10.8)
-- **Goal**: Implement the Debug Adapter Protocol (DAP) to provide breakpoints, step-in/out, and stack traces back inside Serv source files.
+- **Goal**: Implement the Debug Adapter Protocol (DAP) to provide breakpoints, step-in/out, and stack traces back inside Pranor source files.
 - **Why**: Elevates the language developer experience to match enterprise languages.
 
 ---
@@ -161,7 +161,7 @@ To prepare Pranor for production usage and support larger codebases, the followi
 
 | # | Item | Effort | Description | Status |
 |---|------|--------|-------------|--------|
-| 11.1 | **Project Manifest (`serv.toml`)** | Medium | A configuration file defining project metadata, entry points, environment profiles, and dependency locks. | ✅ Done |
+| 11.1 | **Project Manifest (`pranor.toml`)** | Medium | A configuration file defining project metadata, entry points, environment profiles, and dependency locks. | ✅ Done |
 | 11.2 | **Multi-File Compilation** | Medium | Enable compiling whole directories (`pranor build ./`) rather than single-file structures. | ✅ Done |
 | 11.3 | **Panic Stack Trace Mapping** | Medium | Map Go runtime panic traces back to original `.pnr` line numbers using emitted source map comments. | ✅ Done |
 | 11.4 | **Structured Mocking in Tests** | Medium | Add support to stub out network calls (`mock http.get`) and database operations (`mock db.query`) inside test blocks. | ✅ Done |
@@ -171,7 +171,7 @@ To prepare Pranor for production usage and support larger codebases, the followi
 ### Detail on Phase 11 Items
 
 #### 1. Project Manifest & Multi-File Projects (Phase 11.1 & 11.2)
-- **Goal**: Support standard repository structures where a single service consists of multiple files and modular folders, managed by a root `serv.toml` file.
+- **Goal**: Support standard repository structures where a single service consists of multiple files and modular folders, managed by a root `pranor.toml` file.
 - **Why**: Larger services are impossible to maintain in single-file scripts or flat imports. A project manifest organizes modules and ensures clean build artifacts.
 
 #### 2. Panic Stack Trace Mapping (Phase 11.3)
@@ -192,11 +192,11 @@ These items complete the compiler→ecosystem loop defined in Phase 10.9 and ext
 |---|------|--------|-------------|
 | 12.1 | **`pranor-pulse://` compiler connector** | Large | ✅ Done — Native URI driver for Pranor Pulse STOMP. Enables `broker "pranor-pulse://host"` from `.pnr` code without HTTP boilerplate. Extends `runtime/broker.go`. |
 | 12.2 | **`pranor-gate://` route registration** | Medium | ✅ Done — Self-announce service routes to Pranor Gate at startup via compiler-emitted registration call. Enables zero-config routing in a Pranor deployment. |
-| 12.3 | **`serv deploy --target k8s`** | Medium | ✅ Done — Generate Kubernetes Deployment + Service YAML from `serv.toml` project manifest. |
-| 12.4 | **`serv deploy --target fly`** | Small | ✅ Done — Generate `fly.toml` and trigger Fly.io deployment. |
-| 12.5 | **`serv new <template>`** | Small | ✅ Done — Starter project scaffolding — `api`, `worker`, `event-processor`, `full-stack`, `microservice`. |
-| 12.6 | **`serv-ai` adapter** | Large | ✅ Done — `ai "openai://gpt-4"`, `ai "anthropic://claude-3"`, `ai "ollama://localhost"` connection strings. Exposes `ai.complete()` and `ai.embed()` APIs. Pairs with Pranor Vault semantic search. |
-| 12.7 | **`serv monitor`** | Medium | ✅ Done — Terminal htop-style runtime inspector. Shows live request rate, latency percentiles, goroutine count, and route-level breakdown. Fills gap before ServMetrics exists. |
+| 12.3 | **`pranor deploy --target k8s`** | Medium | ✅ Done — Generate Kubernetes Deployment + Service YAML from `pranor.toml` project manifest. |
+| 12.4 | **`pranor deploy --target fly`** | Small | ✅ Done — Generate `fly.toml` and trigger Fly.io deployment. |
+| 12.5 | **`pranor new <template>`** | Small | ✅ Done — Starter project scaffolding — `api`, `worker`, `event-processor`, `full-stack`, `microservice`. |
+| 12.6 | **`pranor-ai` adapter** | Large | ✅ Done — `ai "openai://gpt-4"`, `ai "anthropic://claude-3"`, `ai "ollama://localhost"` connection strings. Exposes `ai.complete()` and `ai.embed()` APIs. Pairs with Pranor Vault semantic search. |
+| 12.7 | **`pranor monitor`** | Medium | ✅ Done — Terminal htop-style runtime inspector. Shows live request rate, latency percentiles, goroutine count, and route-level breakdown. Fills gap before ServMetrics exists. |
 
 ---
 
@@ -206,7 +206,7 @@ To align with the "Adapters First, Platform Second" strategy and widen the addre
 
 | # | Item | Effort | Description | Status |
 |---|------|--------|-------------|--------|
-| 13.0 | **`serv dev` — One-Command Local Stack** | Medium | ✅ Done — `serv dev main.pnr` starts Pranor Vault, Pranor Pulse, Pranor Cache, Pranor Gate in background + hot-reload user code. Ctrl+C stops all. | [x] |
+| 13.0 | **`pranor dev` — One-Command Local Stack** | Medium | ✅ Done — `pranor dev main.pnr` starts Pranor Vault, Pranor Pulse, Pranor Cache, Pranor Gate in background + hot-reload user code. Ctrl+C stops all. | [x] |
 | 13.1 | **`auth` keyword & adapter** | Medium | `auth "keycloak://host/realm"`, `auth "auth0://domain"`, `auth "oidc://issuer"` connection strings. Middleware auto-validates tokens via configured provider. | [x] |
 | 13.2 | **`search` keyword & adapter** | Medium | `search "meilisearch://host:7700/index"`, `search "elastic://host:9200/index"` with `search.query()` and `search.index()` APIs. | [x] |
 | 13.3 | **`mail` keyword & adapter** | Small | `mail "smtp://host:587"`, `mail "ses://us-east-1"`, `mail "sendgrid://key"` with `mail.send()` API. | [x] |
@@ -214,7 +214,7 @@ To align with the "Adapters First, Platform Second" strategy and widen the addre
 | 13.5 | **Turso/libSQL database adapter** | Small | `database "turso://db.turso.io"` — emerging edge database, high adoption signal. | [x] |
 | 13.6 | **Redis Streams broker adapter** | Small | `broker "redis-stream://host:6379"` — common lightweight event streaming alternative. | [x] |
 | 13.7 | **`store` keyword (multi-backend)** | Medium | `store "s3://bucket"`, `store "gcs://bucket"`, `store "r2://bucket"`, `store "local://./uploads"` with unified `store.put()` / `store.get()` API. | [x] |
-| 13.8 | **Canonical `serv.toml` example** | Small | Add a well-documented example `serv.toml` to the repo root showing multi-file projects, env profiles, and dependency locks. | [x] |
+| 13.8 | **Canonical `pranor.toml` example** | Small | Add a well-documented example `pranor.toml` to the repo root showing multi-file projects, env profiles, and dependency locks. | [x] |
 | 13.9 | **VS Code Extension marketplace publish** | Small | Register publisher, package, and publish to Visual Studio Marketplace. Highest ROI discoverability item. | [x] |
 | 13.10 | **Graceful shutdown in runtime** | Small | `signal.NotifyContext` pattern in generated `main.go` — drain connections, flush spans, close DB pools on SIGTERM. | [x] |
 | 13.11 | **Standardized error response contract** | Small | All generated HTTP handlers return `{"error": "msg", "code": "ERR_CODE", "trace_id": "..."}` on failure. | [x] |
@@ -226,20 +226,20 @@ To align with the "Adapters First, Platform Second" strategy and widen the addre
 
 ## Phase 14: Next-Level Language Evolution (Proposed — Q4 2026+)
 
-These items take Serv from a capable service language to a **category-defining** platform language. Each unlocks a new class of use case or developer segment.
+These items take Pranor from a capable service language to a **category-defining** platform language. Each unlocks a new class of use case or developer segment.
 
 | # | Item | Effort | Description | Status |
 |---|------|--------|-------------|--------|
-| 14.1 | **Compile-time dependency injection** | Large | Declare service dependencies as interfaces, auto-wire implementations via `serv.toml` bindings. Enables testable architectures without runtime reflection. | [x] |
+| 14.1 | **Compile-time dependency injection** | Large | Declare service dependencies as interfaces, auto-wire implementations via `pranor.toml` bindings. Enables testable architectures without runtime reflection. | [x] |
 | 14.2 | **Hot-reload without restart (`pranor run --hot`)** | Large | ✅ Done — On `.pnr` file save, recompile and swap the running binary via TCP proxy + process replacement. Zero-downtime local development with no dropped connections. | [x] |
-| 14.3 | **OpenAPI spec auto-generation** | Medium | `serv docs generate` emits a complete OpenAPI 3.1 spec from route declarations, request/response types, and middleware annotations. | [x] |
-| 14.4 | **Client SDK code generation** | Large | `serv generate client --lang typescript` / `--lang python` / `--lang go` emits typed API client libraries from route declarations. No OpenAPI intermediary needed. | [x] |
+| 14.3 | **OpenAPI spec auto-generation** | Medium | `pranor docs generate` emits a complete OpenAPI 3.1 spec from route declarations, request/response types, and middleware annotations. | [x] |
+| 14.4 | **Client SDK code generation** | Large | `pranor generate client --lang typescript` / `--lang python` / `--lang go` emits typed API client libraries from route declarations. No OpenAPI intermediary needed. | [x] |
 | 14.5 | **Incremental compilation** | Large | Cache AST and codegen artifacts per-file. Only recompile changed files and their dependents. Critical for large multi-file projects (>50 files). | [x] |
 | 14.6 | **Effect system (side-effect tracking)** | Large | Annotate functions as `pure`, `io`, or `async`. Compiler enforces that `pure` functions cannot call `io` functions. Enables safe parallelization and easier testing. | [x] |
 | 14.7 | **`pipe` operator** | Small | ✅ Done — `data |> transform() |> validate() |> save()` — sugar for function chaining. High readability for data transformation pipelines. | [x] |
 | 14.8 | **Pattern matching on types** | Medium | `match value { case s: string => ..., case n: int => ..., case User { name } => ... }` - destructuring match with type narrowing. | [x] |
 | 14.9 | **Compile-time macros** | Large | `@derive(Serialize, Validate)` annotations that generate boilerplate at compile time - similar to Rust derive or Java annotation processors. | [x] |
-| 14.10 | **REPL with hot service context** | Medium | `serv repl --attach localhost:8080` connects to a running service and evaluates expressions against live state - inspect DB, cache, and variables interactively. | [x] |
+| 14.10 | **REPL with hot service context** | Medium | `pranor repl --attach localhost:8080` connects to a running service and evaluates expressions against live state - inspect DB, cache, and variables interactively. | [x] |
 | 14.11 | **Language-level circuit breaker** | Small | `resilient fn callPayment() retries 3 timeout 5s circuit_breaker { ... }` — declarative resiliency annotations on function signatures, compiled to runtime wrappers. | [x] |
 | 14.12 | **Streaming response support** | Medium | `route "GET" "/events" (req) stream { yield { data: "ping" }; every 1s { yield heartbeat() } }` — SSE/chunked streaming as a first-class route type. | [x] |
 | 14.13 | **GraphQL endpoint declaration** | Large | `graphql "/api" { type Query { users: [User] } resolver users() { ... } }` - native GraphQL schema + resolver syntax compiled to a performant Go handler. | [x] |
@@ -250,22 +250,22 @@ These items take Serv from a capable service language to a **category-defining**
 
 ## Phase 15: Differentiating Factors — What No Other Language Offers (Strategic)
 
-These are features that create a **moat** around Serv — capabilities that competing languages and frameworks fundamentally cannot replicate without rebuilding from scratch. Each exploits Serv's unique position as a compiled DSL with full control over code generation.
+These are features that create a **moat** around Pranor — capabilities that competing languages and frameworks fundamentally cannot replicate without rebuilding from scratch. Each exploits Pranor's unique position as a compiled DSL with full control over code generation.
 
 | # | Item | Effort | Description | Why Nobody Else Can Do This |
 |---|------|--------|-------------|----------------------------|
-| 15.1 | **AI-assisted code generation at compile time** | Large | The compiler calls an LLM during compilation to auto-generate boilerplate: `route "GET" "/users" (req) @ai.implement { // describe intent }`. Generates handler body from natural language docstring at build time (not runtime). | Serv controls the codegen pipeline — general-purpose compilers can't insert AI steps. |
+| 15.1 | **AI-assisted code generation at compile time** | Large | The compiler calls an LLM during compilation to auto-generate boilerplate: `route "GET" "/users" (req) @ai.implement { // describe intent }`. Generates handler body from natural language docstring at build time (not runtime). | Pranor controls the codegen pipeline — general-purpose compilers can't insert AI steps. |
 | 15.2 | **Compile-time contract verification** | Large | The compiler statically verifies that every route handler matches its declared request/response schema. A type mismatch between the route annotation and the return value is a compile error — like TypeScript for APIs but enforced at binary generation. | Only possible in a DSL with route + type info available during compilation. |
-| 15.3 | **Automatic chaos testing injection** | Medium | `serv test --chaos` adds random latency, failures, and network errors into `db.query()`, `http.get()`, and `broker.publish()` calls during test execution — without modifying source code. Compiler knows all infra call sites. | Compiler has full knowledge of every infra callsite. General-purpose languages need external proxies. |
+| 15.3 | **Automatic chaos testing injection** | Medium | `pranor test --chaos` adds random latency, failures, and network errors into `db.query()`, `http.get()`, and `broker.publish()` calls during test execution — without modifying source code. Compiler knows all infra call sites. | Compiler has full knowledge of every infra callsite. General-purpose languages need external proxies. |
 | 15.4 | **Zero-config distributed tracing (no SDK)** | Small | Every `route`, `subscribe`, `spawn`, and `every` block automatically gets OTel spans with correct parent-child relationships. No import, no SDK initialization, no manual context passing — the compiler inserts it. | Only achievable when the compiler owns the concurrency and I/O primitives. Go/Java/Python need manual instrumentation. |
 | 15.5 | **Infra-aware dead code elimination** | Medium | If no `database` declaration exists, all `db.*` runtime code is excluded from the binary. If no `broker` is declared, pub/sub code is gone. Binary size matches actual usage — not maximum feature set. | Compiler knows the full dependency graph of language primitives → runtime modules. |
-| 15.6 | **Deployment manifest inference** | Medium | `serv deploy --target k8s` reads the `.pnr` source: sees `database`, emits a PersistentVolumeClaim; sees `cache`, emits a Redis sidecar; sees `every`, emits a CronJob. Infrastructure requirements inferred from source code — no manual YAML. | Source code IS the infra specification. No other language can infer infra from syntax. |
+| 15.6 | **Deployment manifest inference** | Medium | `pranor deploy --target k8s` reads the `.pnr` source: sees `database`, emits a PersistentVolumeClaim; sees `cache`, emits a Redis sidecar; sees `every`, emits a CronJob. Infrastructure requirements inferred from source code — no manual YAML. | Source code IS the infra specification. No other language can infer infra from syntax. |
 | 15.7 | **Live type narrowing from database schema** | Large | `database "postgres://..."` at compile time connects to the live database, reads the schema, and provides typed completion for `db.query()` results. `let user = db.query("SELECT * FROM users WHERE id = ?", id)` — `user.email` is auto-typed as `string?` from the schema. | The compiler is the database client. General-purpose languages need separate ORM codegen steps. |
-| 15.8 | **Cross-service type safety** | Large | When Service A defines `route "POST" "/orders" (req: OrderRequest)` and Service B calls `http.post("serv://service-a/orders", payload)`, the compiler verifies `payload` matches `OrderRequest` at compile time — across repositories using published `.pnr.d` declarations. | Cross-service contracts checked at compile time. Impossible in HTTP-based systems without shared type registries. |
-| 15.9 | **Automatic API versioning from git history** | Medium | `serv docs diff v1.2.0..v1.3.0` compares route declarations between git tags and generates a changelog of API breaking changes, new endpoints, and deprecated routes. Compile-time breaking change detection. | Compiler understands route semantics — diff tools only see text. |
+| 15.8 | **Cross-service type safety** | Large | When Service A defines `route "POST" "/orders" (req: OrderRequest)` and Service B calls `http.post("pranor://service-a/orders", payload)`, the compiler verifies `payload` matches `OrderRequest` at compile time — across repositories using published `.pnr.d` declarations. | Cross-service contracts checked at compile time. Impossible in HTTP-based systems without shared type registries. |
+| 15.9 | **Automatic API versioning from git history** | Medium | `pranor docs diff v1.2.0..v1.3.0` compares route declarations between git tags and generates a changelog of API breaking changes, new endpoints, and deprecated routes. Compile-time breaking change detection. | Compiler understands route semantics — diff tools only see text. |
 | 15.10 | **MCP-native services (AI agent endpoints)** | Medium | The `tool` keyword compiles to both an HTTP endpoint AND an MCP stdio server. A single `.pnr` file produces services consumable by both humans (REST) and AI agents (MCP protocol) — dual-interface from one declaration. | MCP is built into the language. Other frameworks bolt it on as middleware. |
 | 15.11 | **Compile-time resource estimation** | Medium | After compilation, emit a resource profile: "This service requires ~50MB RAM at idle, handles ~10K req/s on 2 cores, needs 1 DB connection pool (max 20)". Derived from static analysis of routes, spawn counts, and infra declarations. Useful for k8s resource requests. | The compiler has complete visibility into what the service does. Runtime profiling is the only alternative elsewhere. |
-| 15.12 | **Language-level feature flags** | Small | `@feature("new-checkout") route "POST" "/checkout/v2" (req) { ... }` — the compiler emits both the new and old handler, with a runtime feature-flag check. `serv deploy --enable new-checkout` activates it. No external feature flag service needed. | Feature boundaries visible at compile time. Other systems need runtime-only flag evaluation. |
+| 15.12 | **Language-level feature flags** | Small | `@feature("new-checkout") route "POST" "/checkout/v2" (req) { ... }` — the compiler emits both the new and old handler, with a runtime feature-flag check. `pranor deploy --enable new-checkout` activates it. No external feature flag service needed. | Feature boundaries visible at compile time. Other systems need runtime-only flag evaluation. |
 
 ---
 
@@ -276,10 +276,10 @@ Native language-level integration with the proposed Pranor components (Pranor Au
 | # | Item | Effort | Description | Status |
 |---|------|--------|-------------|--------|
 | 16.1 | **`auth` keyword (Pranor Auth backend)** | Medium | `auth "pranor-auth://localhost:8095"` connects to the Pranor Auth identity provider. `auth.register()`, `auth.login()`, `auth.currentUser()`, `auth.requireRole("admin")` ? first-class identity management without external IdP SDK. | [x] |
-| 16.2 | **`database` via ServDB proxy** | Small | `database "servdb://pool/mydb"` routes through the ServDB connection pooler. Transparent ? same `db.query()` API, but benefits from pooling, read/write splitting, and query analytics. | [x] |
+| 16.2 | **`database` via ServDB proxy** | Small | `database "pranordb://pool/mydb"` routes through the ServDB connection pooler. Transparent ? same `db.query()` API, but benefits from pooling, read/write splitting, and query analytics. | [x] |
 | 16.3 | **`notify` keyword** | Small | `notify "pranor-notify://localhost:8096"` with `notify.send(channel, template, data)`. Unified notification dispatch to email, Slack, SMS via Pranor Notify hub. | [x] |
 | 16.4 | **`workflow` blocks (Pranor Flow backend)** | Large | `workflow "order-process" { step "validate" { ... } -> step "charge" { ... } -> step "fulfill" { ... } }` ? compiles to Pranor Flow API calls with automatic state checkpointing. Differs from existing `workflow` (10.7) by delegating state to the external Pranor Flow orchestrator for cross-service, long-running processes. | [x] |
-| 16.5 | **`serv dev` with new components** | Small | `serv dev main.pnr` auto-starts Pranor Auth, ServDB, Pranor Notify, Pranor Flow alongside existing services when the `.pnr` file references them. | [x] |
+| 16.5 | **`pranor dev` with new components** | Small | `pranor dev main.pnr` auto-starts Pranor Auth, ServDB, Pranor Notify, Pranor Flow alongside existing services when the `.pnr` file references them. | [x] |
 
 > See [UNIFIED_ROADMAP.md](../UNIFIED_ROADMAP.md) for the full ecosystem priority matrix and architectural recommendations.
 
@@ -289,11 +289,11 @@ These items elevate Pranor from a capable DSL to a world-class developer-friendl
 
 | # | Item | Effort | Description | Status |
 |---|------|--------|-------------|--------|
-| 17.1 | **`serv doctor` enhancements** | Small | Extend existing `serv doctor` to check all Pranor Auth/DB/Mail/Flow connectivity, WASM runtime, and compiler plugin versions. | [x] |
-| 17.2 | **`serv fmt` IDE integration** | Small | Ensure format-on-save works reliably in VS Code extension; add `--check` for CI with diff output. | [x] |
-| 17.3 | **`serv lint` static analysis** | Medium | Catch bugs before runtime: unused variables, unreachable code, missing error handling, type-unsafe casts, and schema-registry mismatches - all at build time. | [x] |
+| 17.1 | **`pranor doctor` enhancements** | Small | Extend existing `pranor doctor` to check all Pranor Auth/DB/Mail/Flow connectivity, WASM runtime, and compiler plugin versions. | [x] |
+| 17.2 | **`pranor fmt` IDE integration** | Small | Ensure format-on-save works reliably in VS Code extension; add `--check` for CI with diff output. | [x] |
+| 17.3 | **`pranor lint` static analysis** | Medium | Catch bugs before runtime: unused variables, unreachable code, missing error handling, type-unsafe casts, and schema-registry mismatches - all at build time. | [x] |
 | 17.4 | **Incremental Compilation Cache** | Medium | Cache compiled AST and IR per file; only recompile changed files and their dependents. Dramatic speedup for large multi-file `.pnr` projects with many imports. | [x] |
-| 17.5 | **`serv test --watch` Mode** | Small | Re-run affected tests automatically on every file save ?" like `jest --watch` for Serv. Tight red/green feedback loop without manual re-runs. | [x] |
+| 17.5 | **`pranor test --watch` Mode** | Small | Re-run affected tests automatically on every file save ?" like `jest --watch` for Pranor. Tight red/green feedback loop without manual re-runs. | [x] |
 | 17.6 | **Compiler Error Code Registry** | Small | Every compiler error has a unique code (e.g. `SRV-E042`) linked to a documentation page with cause, example, and fix. Eliminates cryptic error messages that junior developers can't interpret. | [x] |
 | 17.7 | **Language server code actions** | Medium | Quick-fix suggestions in the LSP: "Extract to function", "Add error handling", "Generate test stub", "Wrap in try/catch". Active refactoring assistance. | [x] |
 | 17.8 | **Pattern matching on types** | Medium | `match value { case s: string => ..., case n: int => ... }` - destructuring match with type narrowing. | [x] |
@@ -330,6 +330,6 @@ These items elevate Pranor from a capable DSL to a world-class developer-friendl
 
 
 ## Phase 18: Production Readiness CLI (External Audit - Completed)
-- [x] **serv status Command** � Single command querying all services, showing health, version, uptime, error rate, and p99 latency in a terminal dashboard (OPS.9)
-- [x] **serv changelog Command** � Display the ecosystem CHANGELOG.md with version filter and service filter support (DOC.5)
+- [x] **pranor status Command** � Single command querying all services, showing health, version, uptime, error rate, and p99 latency in a terminal dashboard (OPS.9)
+- [x] **pranor changelog Command** � Display the ecosystem CHANGELOG.md with version filter and service filter support (DOC.5)
 - [x] **Version Compatibility Check** � On pranor run, compare local compiler version against each dependency's minCompatible field from /api/version; warn on mismatch (API.4)

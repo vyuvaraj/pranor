@@ -1,6 +1,6 @@
 # Order Processing System
 
-An event-driven order processing pipeline built with Serv — demonstrates modular architecture, pub/sub messaging, background workers, and async notifications.
+An event-driven order processing pipeline built with Pranor — demonstrates modular architecture, pub/sub messaging, background workers, and async notifications.
 
 ## Architecture
 
@@ -79,7 +79,7 @@ order-system/
 
 The system uses `broker "in-memory"` by default (zero dependencies). To use a real message broker, change one line in `main.pnr`:
 
-```serv
+```pranor
 // Pick one:
 broker "nats://localhost:4222"
 broker "kafka://localhost:9092"
@@ -104,6 +104,6 @@ No other code changes needed — `publish` and `subscribe` work identically acro
 
 ## What This Shows
 
-This is the kind of system Serv was designed for: **event-driven microservice architecture** expressed in ~150 lines of declarative code. The infrastructure concerns (server, database, broker, cache) are declared once at the top, and the business logic flows naturally through publish/subscribe.
+This is the kind of system Pranor was designed for: **event-driven microservice architecture** expressed in ~150 lines of declarative code. The infrastructure concerns (server, database, broker, cache) are declared once at the top, and the business logic flows naturally through publish/subscribe.
 
-The equivalent in Go/Java would require: a web framework, a message broker client library, connection pool management, graceful shutdown handling, structured logging setup, and 500+ lines of boilerplate — all of which Serv handles automatically.
+The equivalent in Go/Java would require: a web framework, a message broker client library, connection pool management, graceful shutdown handling, structured logging setup, and 500+ lines of boilerplate — all of which Pranor handles automatically.

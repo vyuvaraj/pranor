@@ -1,6 +1,6 @@
-# Product: Serv
+# Product: Pranor
 
-Serv is a domain-specific programming language (DSL) for building background services, schedulers, event-driven applications, and API microservices. Source files use the `.pnr` extension.
+Pranor is a domain-specific programming language (DSL) for building background services, schedulers, event-driven applications, and API microservices. Source files use the `.pnr` extension.
 
 ## What It Does
 

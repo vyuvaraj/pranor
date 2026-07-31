@@ -6,7 +6,7 @@ Review Pranor Chrono (CR.G1, CR.G2, CR.G4) implementation, verify DAG chain exec
 ## 🔒 My Identity
 - Archetype: reviewer / critic
 - Roles: reviewer, critic
-- Working directory: /home/developer/workspace/serv/.agents/reviewer_m3_1
+- Working directory: /home/developer/workspace/pranor/.agents/reviewer_m3_1
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: Pranor Chrono M3
 - Instance: 1 of 1
@@ -22,16 +22,16 @@ Review Pranor Chrono (CR.G1, CR.G2, CR.G4) implementation, verify DAG chain exec
 
 ## Review Scope
 - **Files to review**: `packages/Pranor Chrono/pkg/cron/cron.go`, `packages/Pranor Chrono/pkg/config/jobs_loader.go`, tests in `packages/Pranor Chrono/pkg/...`
-- **Interface contracts**: `/home/developer/workspace/serv/PROJECT.md`, `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (R5, R6, R7)
-- **Worker Handoff**: `/home/developer/workspace/serv/.agents/worker_m3/handoff.md`
+- **Interface contracts**: `/home/developer/workspace/pranor/PROJECT.md`, `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (R5, R6, R7)
+- **Worker Handoff**: `/home/developer/workspace/pranor/.agents/worker_m3/handoff.md`
 - **Review criteria**: DAG chain execution, cycle guard (depth <= 10), exponential backoff retries with +-10% jitter, minimal YAML parser, 5s file watcher polling, correctness, code quality, adversarial edge cases, zero external dependencies added to go.mod.
 
 ## Key Decisions Made
 - Initializing briefing and beginning file reading.
 
 ## Artifact Index
-- `/home/developer/workspace/serv/.agents/reviewer_m3_1/DISPATCH.md` — Received task dispatch
-- `/home/developer/workspace/serv/.agents/reviewer_m3_1/BRIEFING.md` — Agent working memory
+- `/home/developer/workspace/pranor/.agents/reviewer_m3_1/DISPATCH.md` — Received task dispatch
+- `/home/developer/workspace/pranor/.agents/reviewer_m3_1/BRIEFING.md` — Agent working memory
 
 ## Review Checklist
 - **Items reviewed**: Pending

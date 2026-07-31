@@ -207,7 +207,7 @@ func (s *SQLiteStore) Close() error {
 // IsSQLiteAvailable returns true if the pure-Go SQLite driver binary is
 // loadable — used to guard backend selection at startup.
 func IsSQLiteAvailable() bool {
-	tmpPath := os.TempDir() + "/pranor-pulse_probe.db"
+	tmpPath := os.TempDir() + "/pranorPulse_probe.db"
 	db, err := sql.Open("sqlite", tmpPath)
 	if err != nil {
 		return false

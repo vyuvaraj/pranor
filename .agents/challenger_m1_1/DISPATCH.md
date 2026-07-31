@@ -1,10 +1,10 @@
 ## 2026-07-26T09:09:26Z
 You are Challenger M1 for Pranor Auth (SA.G1 & SA.G6).
-Working directory: /home/developer/workspace/serv/.agents/challenger_m1_1
+Working directory: /home/developer/workspace/pranor/.agents/challenger_m1_1
 
 Required Reading:
-- `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (R1, R2)
-- `/home/developer/workspace/serv/PROJECT.md`
+- `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (R1, R2)
+- `/home/developer/workspace/pranor/PROJECT.md`
 
 Tasks:
 1. Empirically verify `TokenStore` and `VelocityLimiter` in `packages/Pranor Auth`.

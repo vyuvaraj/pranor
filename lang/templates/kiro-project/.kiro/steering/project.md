@@ -12,15 +12,15 @@ pranor run main.pnr --watch
 
 ## Testing
 ```bash
-serv test main.pnr
-serv test --cover main.pnr
+pranor test main.pnr
+pranor test --cover main.pnr
 ```
 
 ## Linting & Formatting
 ```bash
-serv lint main.pnr     # errors + warnings
-serv fmt main.pnr      # auto-format
-serv fmt --check .     # CI check
+pranor lint main.pnr     # errors + warnings
+pranor fmt main.pnr      # auto-format
+pranor fmt --check .     # CI check
 ```
 
 ## Project Structure
@@ -56,7 +56,7 @@ app:
 
 ## Error Handling Pattern
 Prefer the `?` operator for clean error propagation:
-```serv
+```pranor
 fn loadUser(id: int) -> User? {
     let row = db.query("SELECT * FROM users WHERE id = ?", id)?
     return User { name: row.name, email: row.email }

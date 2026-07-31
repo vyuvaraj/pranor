@@ -6,7 +6,7 @@ Implement M4: Pranor Pool features - Read/Write splitting (`rw_splitter.go`) and
 ## 🔒 My Identity
 - Archetype: implementer / qa / specialist
 - Roles: implementer, qa, specialist
-- Working directory: /home/developer/workspace/serv/.agents/worker_m4
+- Working directory: /home/developer/workspace/pranor/.agents/worker_m4
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: M4 (Pranor Pool)
 
@@ -50,5 +50,5 @@ Implement M4: Pranor Pool features - Read/Write splitting (`rw_splitter.go`) and
 - [Initial state]
 
 ## Artifact Index
-- `/home/developer/workspace/serv/.agents/worker_m4/DISPATCH.md` — Dispatch prompt record
-- `/home/developer/workspace/serv/.agents/worker_m4/BRIEFING.md` — Current state & briefing
+- `/home/developer/workspace/pranor/.agents/worker_m4/DISPATCH.md` — Dispatch prompt record
+- `/home/developer/workspace/pranor/.agents/worker_m4/BRIEFING.md` — Current state & briefing

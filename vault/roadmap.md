@@ -94,14 +94,14 @@ Ensure production readiness through rigorous validation, resiliency checks, and 
 
 ---
 
-## Phase 7: Serv-verse & Next-Gen Storage Enhancements (Proposed)
-Transition Pranor Vault into a high-capacity, metadata-optimized cluster integrated with the broader Serv ecosystem.
+## Phase 7: Pranor & Next-Gen Storage Enhancements (Proposed)
+Transition Pranor Vault into a high-capacity, metadata-optimized cluster integrated with the broader Pranor ecosystem.
 - **Next-Gen Storage Core**:
   - [x] **LSM-Tree Metadata Engine**: Replace basic Raft state machine file logging with a structured LSM-tree key-value store (e.g. Pebble) for sub-millisecond metadata operations at scale.
   - [x] **HNSW Vector Indexing**: Upgrade TF-IDF to a true HNSW vector index using local ONNX embeddings for advanced semantic search queries. *(Production-grade AI-native storage — priority item.)*
 - **Compute Transform Enhancements**:
   - [x] **Transform Pipeline DAG Engine**: Multi-stage WASM pipeline execution via `POST /<bucket>?pipeline=true`. Stages are chained in order — stdout of each feeds stdin of the next. Pre-flight object validation, per-stage trace, optional result storage via `output_key`, and fail-fast partial trace on stage error. Powered by `pkg/pipeline`.
-- **Ecosystem Integration (Serv-verse)**:
+- **Ecosystem Integration (Pranor)**:
   - [x] **`/console/schema` API endpoint**: Expose table/index and bucket metadata for the Pranor Console DB Inspector and Schema ORM Viewer to query.
   - [x] **Unified Management Console (Pranor Console)**: Establish a single glassmorphic dashboard visualizing cluster metrics, OTel traces, rate limits, and replication state. *(Pranor Console Phase 2/3 in progress.)*
   - [x] **pranor Native Tooling**: Optimize client libraries and add compiler-level support for native S3 pipeline configuration.

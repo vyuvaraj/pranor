@@ -6,7 +6,7 @@ Implementation of Milestone M3: Pranor Chrono (CR.G1, CR.G2, CR.G4)
 ## 🔒 My Identity
 - Archetype: implementer
 - Roles: implementer, qa, specialist
-- Working directory: /home/developer/workspace/serv/.agents/worker_m3
+- Working directory: /home/developer/workspace/pranor/.agents/worker_m3
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: M3 (Pranor Chrono)
 
@@ -45,5 +45,5 @@ Implementation of Milestone M3: Pranor Chrono (CR.G1, CR.G2, CR.G4)
 - **Tests added**: `cron_test.go` (6 test cases), `jobs_loader_test.go` (2 test cases)
 
 ## Artifact Index
-- `/home/developer/workspace/serv/.agents/worker_m3/changes.md` — Detailed list of modifications and test results
-- `/home/developer/workspace/serv/.agents/worker_m3/handoff.md` — 5-component handoff report
+- `/home/developer/workspace/pranor/.agents/worker_m3/changes.md` — Detailed list of modifications and test results
+- `/home/developer/workspace/pranor/.agents/worker_m3/handoff.md` — 5-component handoff report

@@ -1,6 +1,6 @@
 # Task Manager API
 
-A complete REST API built with Serv — demonstrates the language's key features in a real-world project.
+A complete REST API built with Pranor — demonstrates the language's key features in a real-world project.
 
 ## Features Demonstrated
 
@@ -73,6 +73,6 @@ task-api/
 
 ## What This Shows
 
-Serv is designed for exactly this kind of project: a focused service with clear infrastructure concerns declared at the top (`server`, `database`, `cache`) and business logic in routes and functions. No framework, no boilerplate, no dependency injection — just declare what you need and write the logic.
+Pranor is designed for exactly this kind of project: a focused service with clear infrastructure concerns declared at the top (`server`, `database`, `cache`) and business logic in routes and functions. No framework, no boilerplate, no dependency injection — just declare what you need and write the logic.
 
-The entire API is ~100 lines of code. The equivalent in Go would be 300-400 lines with router setup, middleware chains, database initialization, and graceful shutdown — all of which Serv handles automatically.
+The entire API is ~100 lines of code. The equivalent in Go would be 300-400 lines with router setup, middleware chains, database initialization, and graceful shutdown — all of which Pranor handles automatically.

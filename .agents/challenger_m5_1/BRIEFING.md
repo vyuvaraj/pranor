@@ -6,7 +6,7 @@ Empirically verify traceparent injection, extraction, ID uniqueness (1000 iterat
 ## 🔒 My Identity
 - Archetype: EMPIRICAL CHALLENGER
 - Roles: critic, specialist
-- Working directory: /home/developer/workspace/serv/.agents/challenger_m5_1
+- Working directory: /home/developer/workspace/pranor/.agents/challenger_m5_1
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: M5 (Pranor Pulse / SQ.G5)
 - Instance: 1 of 1

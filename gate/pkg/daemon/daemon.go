@@ -88,15 +88,15 @@ func (d *PranorGatewayDaemon) Start() error {
 		}
 
 		go func() {
-			log.Printf("[pranor-gated] Web Admin UI listening on http://localhost%s/ui/", d.config.AdminAddr)
+			log.Printf("[pranorGated] Web Admin UI listening on http://localhost%s/ui/", d.config.AdminAddr)
 			if err := d.adminServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-				log.Printf("[pranor-gated] Admin server error: %v", err)
+				log.Printf("[pranorGated] Admin server error: %v", err)
 			}
 		}()
 	}
 	d.mu.Unlock()
 
-	log.Printf("[pranor-gated] Standalone PranorGateway Daemon listening on %s", d.config.Addr)
+	log.Printf("[pranorGated] Standalone PranorGateway Daemon listening on %s", d.config.Addr)
 	return d.server.ListenAndServe()
 }
 
@@ -192,7 +192,7 @@ func (d *PranorGatewayDaemon) handleWebAdminUI(w http.ResponseWriter, r *http.Re
 <body>
     <div class="card">
         <h1>⚡ PranorGateway Admin Console</h1>
-        <p>Standalone API Gateway Daemon (<span class="badge">pranor-gated v2.0.0</span>)</p>
+        <p>Standalone API Gateway Daemon (<span class="badge">pranorGated v2.0.0</span>)</p>
     </div>
     <div class="card">
         <h2>Registered Routes</h2>

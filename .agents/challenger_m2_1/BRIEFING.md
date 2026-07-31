@@ -6,7 +6,7 @@ Empirically verify Pranor Cache Bloom filter (SC.G3) and Tiered TTL cache (SC.G4
 ## 🔒 My Identity
 - Archetype: Empirical Challenger
 - Roles: critic, specialist
-- Working directory: /home/developer/workspace/serv/.agents/challenger_m2_1
+- Working directory: /home/developer/workspace/pranor/.agents/challenger_m2_1
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: M2
 - Instance: 1 of 1
@@ -22,13 +22,13 @@ Empirically verify Pranor Cache Bloom filter (SC.G3) and Tiered TTL cache (SC.G4
 
 ## Review Scope
 - **Files to review**: `packages/Pranor Cache/...`
-- **Interface contracts**: `/home/developer/workspace/serv/PROJECT.md` & `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (R3, R4)
+- **Interface contracts**: `/home/developer/workspace/pranor/PROJECT.md` & `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md` (R3, R4)
 - **Review criteria**: 0 false negatives for Bloom filter, false positive rate <= configured target, concurrent safety, TTL accuracy, stats accuracy under race detector (`go test -race ./...`)
 
 ## Key Decisions Made
 - Starting empirical investigation of Pranor Cache codebase and existing unit tests.
 
 ## Artifact Index
-- `/home/developer/workspace/serv/.agents/challenger_m2_1/DISPATCH.md` — Dispatch log
-- `/home/developer/workspace/serv/.agents/challenger_m2_1/progress.md` — Progress log
-- `/home/developer/workspace/serv/.agents/challenger_m2_1/handoff.md` — Final Handoff report
+- `/home/developer/workspace/pranor/.agents/challenger_m2_1/DISPATCH.md` — Dispatch log
+- `/home/developer/workspace/pranor/.agents/challenger_m2_1/progress.md` — Progress log
+- `/home/developer/workspace/pranor/.agents/challenger_m2_1/handoff.md` — Final Handoff report

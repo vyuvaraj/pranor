@@ -6,7 +6,7 @@ Implement read-write query routing (rw_splitter) and health checking wrapper (he
 ## 🔒 My Identity
 - Archetype: worker_m4_gen2
 - Roles: implementer, qa, specialist
-- Working directory: /home/developer/workspace/serv/.agents/worker_m4_gen2
+- Working directory: /home/developer/workspace/pranor/.agents/worker_m4_gen2
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: M4: Pranor Pool Gen 2
 
@@ -52,7 +52,7 @@ Implement read-write query routing (rw_splitter) and health checking wrapper (he
 - Implemented HealthChecker wrapping pool.Manager with atomic counter tracking for HealthyAcquires and StaleDiscarded, retry up to 3 times, and full Manager interface delegation.
 
 ## Artifact Index
-- /home/developer/workspace/serv/.agents/worker_m4_gen2/DISPATCH.md — Initial dispatch prompt
-- /home/developer/workspace/serv/.agents/worker_m4_gen2/BRIEFING.md — Briefing file
-- /home/developer/workspace/serv/.agents/worker_m4_gen2/changes.md — Change summary
-- /home/developer/workspace/serv/.agents/worker_m4_gen2/handoff.md — Handoff report
+- /home/developer/workspace/pranor/.agents/worker_m4_gen2/DISPATCH.md — Initial dispatch prompt
+- /home/developer/workspace/pranor/.agents/worker_m4_gen2/BRIEFING.md — Briefing file
+- /home/developer/workspace/pranor/.agents/worker_m4_gen2/changes.md — Change summary
+- /home/developer/workspace/pranor/.agents/worker_m4_gen2/handoff.md — Handoff report

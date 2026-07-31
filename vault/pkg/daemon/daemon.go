@@ -145,15 +145,15 @@ func (d *PranorVaultDaemon) Start() error {
 		}
 
 		go func() {
-			log.Printf("[pranor-vaultd] Storage Web Console UI listening on http://localhost%s/ui/", d.config.AdminAddr)
+			log.Printf("[pranorVaultd] Storage Web Console UI listening on http://localhost%s/ui/", d.config.AdminAddr)
 			if err := d.adminServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-				log.Printf("[pranor-vaultd] Console admin server error: %v", err)
+				log.Printf("[pranorVaultd] Console admin server error: %v", err)
 			}
 		}()
 	}
 	d.mu.Unlock()
 
-	log.Printf("[pranor-vaultd] Standalone S3 Object Store Daemon listening on %s", d.config.Addr)
+	log.Printf("[pranorVaultd] Standalone S3 Object Store Daemon listening on %s", d.config.Addr)
 	return d.server.ListenAndServe()
 }
 
@@ -278,7 +278,7 @@ func (d *PranorVaultDaemon) handleWebAdminUI(w http.ResponseWriter, r *http.Requ
 <body>
     <div class="card">
         <h1>📦 Pranor Vault Storage Console</h1>
-        <p>Standalone S3-Compatible Object Store Daemon (<span class="badge" id="version-badge">pranor-vaultd v2.0.0</span>)</p>
+        <p>Standalone S3-Compatible Object Store Daemon (<span class="badge" id="version-badge">pranorVaultd v2.0.0</span>)</p>
         <p>Uptime: <span id="uptime">0s</span> | Total Buckets: <span id="bucket-count">0</span></p>
     </div>
     <div class="card">

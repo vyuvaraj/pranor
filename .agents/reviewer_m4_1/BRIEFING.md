@@ -6,7 +6,7 @@ Review Pranor Pool (SP.G1 & SP.G2) implementation by worker_m4_gen2.
 ## 🔒 My Identity
 - Archetype: Reviewer & Adversarial Critic
 - Roles: reviewer, critic
-- Working directory: /home/developer/workspace/serv/.agents/reviewer_m4_1
+- Working directory: /home/developer/workspace/pranor/.agents/reviewer_m4_1
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: M4
 - Instance: 1 of 1
@@ -20,7 +20,7 @@ Review Pranor Pool (SP.G1 & SP.G2) implementation by worker_m4_gen2.
 
 ## Review Scope
 - **Files to review**: `packages/Pranor Pool/pkg/routing/rw_splitter.go`, `packages/Pranor Pool/pkg/pool/health_checker.go`
-- **Interface contracts**: `/home/developer/workspace/serv/PROJECT.md`, `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md`
+- **Interface contracts**: `/home/developer/workspace/pranor/PROJECT.md`, `/home/developer/workspace/pranor/.agents/ORIGINAL_REQUEST.md`
 - **Review criteria**: SQL verb classification (case-insensitivity, comments/whitespace stripping), round-robin replica load balancing, health validation retry (up to 3 times), stats tracking, tests pass, zero dependency changes in go.mod.
 
 ## Review Checklist
@@ -38,6 +38,6 @@ Review Pranor Pool (SP.G1 & SP.G2) implementation by worker_m4_gen2.
 - Approved implementation.
 
 ## Artifact Index
-- `/home/developer/workspace/serv/.agents/reviewer_m4_1/BRIEFING.md` — Working memory
-- `/home/developer/workspace/serv/.agents/reviewer_m4_1/DISPATCH.md` — Received dispatch instructions
-- `/home/developer/workspace/serv/.agents/reviewer_m4_1/handoff.md` — Final handoff report
+- `/home/developer/workspace/pranor/.agents/reviewer_m4_1/BRIEFING.md` — Working memory
+- `/home/developer/workspace/pranor/.agents/reviewer_m4_1/DISPATCH.md` — Received dispatch instructions
+- `/home/developer/workspace/pranor/.agents/reviewer_m4_1/handoff.md` — Final handoff report

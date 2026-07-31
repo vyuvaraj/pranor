@@ -19,7 +19,7 @@
   - Unit tests covering `TestHealthChecker_HealthyConnPasses`, `TestHealthChecker_DiscardAndRetry`, `TestHealthChecker_AllUnhealthyReturnsError`, `TestHealthChecker_DelegatedMethods`, `TestHealthChecker_InnerAcquireError`, `TestHealthChecker_DynamicValidateFn`, and `TestHealthChecker_ConcurrentAcquire`.
 
 ### Build & Test Results
-- Command: `go build ./... && go test ./... -v` in `/home/developer/workspace/serv/packages/Pranor Pool`
+- Command: `go build ./... && go test ./... -v` in `/home/developer/workspace/pranor/packages/Pranor Pool`
 - Result: Exit code 0
 ```
 PASS
@@ -73,7 +73,7 @@ To independently verify the implementation:
 
 1. **Run Build & Tests**:
    ```bash
-   cd /home/developer/workspace/serv/packages/Pranor Pool
+   cd /home/developer/workspace/pranor/packages/Pranor Pool
    go build ./...
    go test ./... -v
    ```
@@ -81,7 +81,7 @@ To independently verify the implementation:
 
 2. **Verify Dependencies**:
    ```bash
-   cd /home/developer/workspace/serv/packages/Pranor Pool
+   cd /home/developer/workspace/pranor/packages/Pranor Pool
    git diff go.mod
    ```
    *Expected Output*: Exit code 0, empty diff.

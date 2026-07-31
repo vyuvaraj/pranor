@@ -659,26 +659,26 @@ func (s *Server) handlePrometheusMetrics(w http.ResponseWriter, r *http.Request)
 		depth = len(walEntries)
 	}
 
-	fmt.Fprintf(w, "# HELP pranor-pulse_messages_published_total Total messages published to the queue.\n")
-	fmt.Fprintf(w, "# TYPE pranor-pulse_messages_published_total counter\n")
-	fmt.Fprintf(w, "pranor-pulse_messages_published_total %d\n\n", s.engine.Metrics.MessagesPublished)
+	fmt.Fprintf(w, "# HELP pranorPulse_messages_published_total Total messages published to the queue.\n")
+	fmt.Fprintf(w, "# TYPE pranorPulse_messages_published_total counter\n")
+	fmt.Fprintf(w, "pranorPulse_messages_published_total %d\n\n", s.engine.Metrics.MessagesPublished)
 
-	fmt.Fprintf(w, "# HELP pranor-pulse_wasm_executions_total Total WASM pipeline executions.\n")
-	fmt.Fprintf(w, "# TYPE pranor-pulse_wasm_executions_total counter\n")
-	fmt.Fprintf(w, "pranor-pulse_wasm_executions_total %d\n\n", s.engine.Metrics.WasmExecutions)
+	fmt.Fprintf(w, "# HELP pranorPulse_wasm_executions_total Total WASM pipeline executions.\n")
+	fmt.Fprintf(w, "# TYPE pranorPulse_wasm_executions_total counter\n")
+	fmt.Fprintf(w, "pranorPulse_wasm_executions_total %d\n\n", s.engine.Metrics.WasmExecutions)
 
-	fmt.Fprintf(w, "# HELP pranor-pulse_wasm_execution_errors_total Total WASM execution failures.\n")
-	fmt.Fprintf(w, "# TYPE pranor-pulse_wasm_execution_errors_total counter\n")
-	fmt.Fprintf(w, "pranor-pulse_wasm_execution_errors_total %d\n\n", s.engine.Metrics.WasmExecutionErrors)
+	fmt.Fprintf(w, "# HELP pranorPulse_wasm_execution_errors_total Total WASM execution failures.\n")
+	fmt.Fprintf(w, "# TYPE pranorPulse_wasm_execution_errors_total counter\n")
+	fmt.Fprintf(w, "pranorPulse_wasm_execution_errors_total %d\n\n", s.engine.Metrics.WasmExecutionErrors)
 
-	fmt.Fprintf(w, "# HELP pranor-pulse_queue_depth Current size/depth of the WAL queue.\n")
-	fmt.Fprintf(w, "# TYPE pranor-pulse_queue_depth gauge\n")
-	fmt.Fprintf(w, "pranor-pulse_queue_depth %d\n\n", depth)
+	fmt.Fprintf(w, "# HELP pranorPulse_queue_depth Current size/depth of the WAL queue.\n")
+	fmt.Fprintf(w, "# TYPE pranorPulse_queue_depth gauge\n")
+	fmt.Fprintf(w, "pranorPulse_queue_depth %d\n\n", depth)
 
-	fmt.Fprintf(w, "# HELP pranor-pulse_consumer_lag Current simulated consumer lag offset.\n")
-	fmt.Fprintf(w, "# TYPE pranor-pulse_consumer_lag gauge\n")
+	fmt.Fprintf(w, "# HELP pranorPulse_consumer_lag Current simulated consumer lag offset.\n")
+	fmt.Fprintf(w, "# TYPE pranorPulse_consumer_lag gauge\n")
 	lag := depth / 2
-	fmt.Fprintf(w, "pranor-pulse_consumer_lag %d\n", lag)
+	fmt.Fprintf(w, "pranorPulse_consumer_lag %d\n", lag)
 }
 
 func (s *Server) handleReplay(w http.ResponseWriter, r *http.Request) {

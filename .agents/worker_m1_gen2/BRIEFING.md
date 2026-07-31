@@ -6,7 +6,7 @@ Implement Pranor Auth features: SA.G1 TokenStore and SA.G6 VelocityLimiter in pa
 ## 🔒 My Identity
 - Archetype: implementer/qa
 - Roles: implementer, qa, specialist
-- Working directory: /home/developer/workspace/serv/.agents/worker_m1_gen2
+- Working directory: /home/developer/workspace/pranor/.agents/worker_m1_gen2
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
 - Milestone: M1
 
@@ -14,7 +14,7 @@ Implement Pranor Auth features: SA.G1 TokenStore and SA.G6 VelocityLimiter in pa
 - File Ownership: `packages/Pranor Auth/pkg/sessions/token_store.go`, `token_store_test.go`, `packages/Pranor Auth/pkg/security/velocity_limiter.go`, `velocity_limiter_test.go`.
 - Zero external dependency changes in go.mod.
 - Genuine implementations, no hardcoded results, no facade code.
-- Write changes.md and handoff.md in /home/developer/workspace/serv/.agents/worker_m1_gen2.
+- Write changes.md and handoff.md in /home/developer/workspace/pranor/.agents/worker_m1_gen2.
 
 ## Current Parent
 - Conversation ID: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
@@ -31,10 +31,10 @@ Implement Pranor Auth features: SA.G1 TokenStore and SA.G6 VelocityLimiter in pa
 - Verified all unit tests and race detector tests in `packages/Pranor Auth`.
 
 ## Artifact Index
-- /home/developer/workspace/serv/.agents/worker_m1_gen2/DISPATCH.md — Task assignment
-- /home/developer/workspace/serv/.agents/worker_m1_gen2/BRIEFING.md — Working state briefing
-- /home/developer/workspace/serv/.agents/worker_m1_gen2/changes.md — Change log
-- /home/developer/workspace/serv/.agents/worker_m1_gen2/handoff.md — Handoff report
+- /home/developer/workspace/pranor/.agents/worker_m1_gen2/DISPATCH.md — Task assignment
+- /home/developer/workspace/pranor/.agents/worker_m1_gen2/BRIEFING.md — Working state briefing
+- /home/developer/workspace/pranor/.agents/worker_m1_gen2/changes.md — Change log
+- /home/developer/workspace/pranor/.agents/worker_m1_gen2/handoff.md — Handoff report
 
 ## Change Tracker
 - **Files modified**: `packages/Pranor Auth/pkg/sessions/token_store.go` (refined read lock scope)

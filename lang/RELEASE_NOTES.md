@@ -1,6 +1,6 @@
-# Serv v1.0.0
+# Pranor v1.0.0
 
-The first stable release of Serv — a programming language for building background services, APIs, schedulers, and event-driven applications. Compiles to native binaries via Go.
+The first stable release of Pranor — a programming language for building background services, APIs, schedulers, and event-driven applications. Compiles to native binaries via Go.
 
 ## Install
 
@@ -17,7 +17,7 @@ irm https://raw.githubusercontent.com/vyuvaraj/Pranor/main/release-scripts/insta
 ## Quick Start
 
 ```bash
-serv init myapp
+pranor init myapp
 cd myapp
 pranor run main.pnr --watch
 # Visit http://localhost:8080/health
@@ -58,13 +58,13 @@ Auth, JWT, crypto, HTTP client, pagination, retry, circuit breaker, rate limitin
 ### Toolchain
 - `pranor build` — compile to native binary
 - `pranor run --watch` — hot-reload development
-- `serv test --cover` — testing with coverage
-- `serv lint` — static analysis (type errors, unused vars, unreachable code)
-- `serv fmt` — code formatter
-- `serv repl` — interactive shell
-- `serv init` — project scaffolding
-- `serv add` — Go package FFI declarations
-- `serv dockerize` — Dockerfile generation
+- `pranor test --cover` — testing with coverage
+- `pranor lint` — static analysis (type errors, unused vars, unreachable code)
+- `pranor fmt` — code formatter
+- `pranor repl` — interactive shell
+- `pranor init` — project scaffolding
+- `pranor add` — Go package FFI declarations
+- `pranor dockerize` — Dockerfile generation
 
 ### IDE Support (VS Code)
 - Syntax highlighting for all constructs
@@ -103,10 +103,10 @@ Auth, JWT, crypto, HTTP client, pagination, retry, circuit breaker, rate limitin
 
 | Platform | Archive |
 |----------|---------|
-| macOS (Apple Silicon) | `serv-darwin-arm64.tar.gz` |
-| macOS (Intel) | `serv-darwin-amd64.tar.gz` |
-| Linux (x64) | `serv-linux-amd64.tar.gz` |
-| Linux (ARM) | `serv-linux-arm64.tar.gz` |
-| Windows (x64) | `serv-windows-amd64.zip` |
+| macOS (Apple Silicon) | `pranor-darwin-arm64.tar.gz` |
+| macOS (Intel) | `pranor-darwin-amd64.tar.gz` |
+| Linux (x64) | `pranor-linux-amd64.tar.gz` |
+| Linux (ARM) | `pranor-linux-arm64.tar.gz` |
+| Windows (x64) | `pranor-windows-amd64.zip` |
 
 Each archive contains the compiler, LSP, runtime source, standard library, and module files — everything needed to compile `.pnr` files.

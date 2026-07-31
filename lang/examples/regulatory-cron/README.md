@@ -1,13 +1,13 @@
-# Regulatory Cron Service — Serv Port
+# Regulatory Cron Service — Pranor Port
 
-A port of the Java regulatory-cron-service (Spring Boot 3.4 / Java 21) to Serv, demonstrating how a complex production microservice maps to Serv's declarative syntax.
+A port of the Java regulatory-cron-service (Spring Boot 3.4 / Java 21) to Pranor, demonstrating how a complex production microservice maps to Pranor's declarative syntax.
 
 ## Quick Start
 
 ### Prerequisites
-- Go 1.18+ (for building the Serv compiler)
+- Go 1.18+ (for building the Pranor compiler)
 - MongoDB running on `localhost:27017`
-- Serv compiler built (`go build -o pranor.exe main.go` from Pranor root)
+- Pranor compiler built (`go build -o pranor.exe main.go` from Pranor root)
 
 ### Build & Run
 
@@ -110,7 +110,7 @@ regulatory-cron/
 
 ## Architecture Comparison
 
-| Component | Java (Spring Boot) | Serv |
+| Component | Java (Spring Boot) | Pranor |
 |-----------|-------------------|------|
 | Scheduler | PriorityBlockingQueue + virtual thread | `every 5s` + `channel` + worker pool |
 | Job execution | Spring bean resolution + Future.get | `spawn` + channel workers |
@@ -130,7 +130,7 @@ regulatory-cron/
 
 ## Line Count
 
-| | Java | Serv | Reduction |
+| | Java | Pranor | Reduction |
 |---|------|------|-----------|
 | Total source | ~1350 lines | ~430 lines | **68%** |
 | Config/boilerplate | ~300 lines | 3 lines | **99%** |

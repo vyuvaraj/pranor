@@ -1,6 +1,6 @@
-# Serv Next Roadmap
+# Pranor Next Roadmap
 
-Tracking remaining work to make Serv production-ready and competitive.
+Tracking remaining work to make Pranor production-ready and competitive.
 
 ## Status Legend
 - ⬜ Not started
@@ -13,9 +13,9 @@ Tracking remaining work to make Serv production-ready and competitive.
 
 | Status | Item | Description | Priority |
 |--------|------|-------------|----------|
-| ✅ | Package manager | `serv add <pkg>` — auto-generates `.pnr.d` declarations from Go packages | High |
-| ✅ | REPL | `serv repl` — interactive shell for quick experiments | Medium |
-| ✅ | Formatter | `serv fmt` — opinionated auto-formatter | Medium |
+| ✅ | Package manager | `pranor add <pkg>` — auto-generates `.pnr.d` declarations from Go packages | High |
+| ✅ | REPL | `pranor repl` — interactive shell for quick experiments | Medium |
+| ✅ | Formatter | `pranor fmt` — opinionated auto-formatter | Medium |
 | ⬜ | Playground | Web-based editor (like Go Playground) | Low |
 | ✅ | Better errors | Diagnostics with suggestions ("did you mean X?") | Medium |
 
@@ -78,11 +78,11 @@ Tracking remaining work to make Serv production-ready and competitive.
 |--------|------|-------------|----------|
 | ✅ | Documentation site | Auto-generated docs from `.pnr` source | Medium |
 | ✅ | CI/CD templates | GitHub Actions, GitLab CI configs | Low |
-| ⬜ | Docker base image | `FROM serv:latest` for easy containerization | Low |
-| ✅ | Homebrew/Scoop | `brew install serv` / `scoop install serv` | Medium |
+| ⬜ | Docker base image | `FROM pranor:latest` for easy containerization | Low |
+| ✅ | Homebrew/Scoop | `brew install pranor` / `scoop install pranor` | Medium |
 | ✅ | Standard library | Importable `.pnr` modules (auth, validation, pagination) | Medium |
 | ⬜ | VS Code Marketplace | Publish extension publicly (prepped, pending account) | Medium |
-| ✅ | Deploy targets | `serv deploy --target fly/railway/render/docker` | Medium |
+| ✅ | Deploy targets | `pranor deploy --target fly/railway/render/docker` | Medium |
 | ✅ | AI integration | `ai "openai://..."` keyword with complete/chat/embed | High |
 | ✅ | GitHub Release v0.1.0 | Cross-platform binaries for Windows/Linux/macOS | High |
 
@@ -96,7 +96,7 @@ Tracking remaining work to make Serv production-ready and competitive.
 3. Health endpoints (auto `/health` and `/ready`)
 
 ### Sprint 2: Ecosystem Access
-4. Package manager (`serv add`)
+4. Package manager (`pranor add`)
 5. WebSocket support (`ws` keyword)
 6. Structured logging (JSON mode)
 
@@ -104,7 +104,7 @@ Tracking remaining work to make Serv production-ready and competitive.
 7. TLS support
 8. Optional chaining (`?.`)
 9. Destructuring
-10. Formatter (`serv fmt`)
+10. Formatter (`pranor fmt`)
 
 ### Sprint 4: Distribution
 11. Homebrew/Scoop packages
@@ -116,7 +116,7 @@ Tracking remaining work to make Serv production-ready and competitive.
 
 ## Performance Optimization Opportunities
 
-Analysis of the generated Go code reveals several patterns that impact runtime performance. These are ordered by impact — addressing the top 3 would bring Serv-generated code closer to hand-written Go performance.
+Analysis of the generated Go code reveals several patterns that impact runtime performance. These are ordered by impact — addressing the top 3 would bring Pranor-generated code closer to hand-written Go performance.
 
 ### Critical (High Impact)
 

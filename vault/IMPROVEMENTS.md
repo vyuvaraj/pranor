@@ -24,7 +24,7 @@ Types exist in syntax (`let x: int = 5`) and codegen tracks them in `map[string]
 
 Everything becomes `interface{}` in Go — runtime panics where a type system should catch errors at compile time.
 
-**Recommendation:** Either commit to gradual typing (proper symbol table + type unification) or explicitly market Serv as dynamically typed and invest in better runtime error messages. The current half-measure gives false safety.
+**Recommendation:** Either commit to gradual typing (proper symbol table + type unification) or explicitly market Pranor as dynamically typed and invest in better runtime error messages. The current half-measure gives false safety.
 
 ---
 
@@ -38,7 +38,7 @@ Go is currently at 1.23.x. This works today because Go is lenient about forward 
 
 ### 3. Error Propagation (`?` operator) is Incomplete
 
-The codegen for `let x = expr?` generates `return nil` on failure. It doesn't propagate the actual error value. The caller gets `nil` with no diagnostic information. Compare to Rust's `?` which propagates the `Err` variant — Serv's version loses the error entirely.
+The codegen for `let x = expr?` generates `return nil` on failure. It doesn't propagate the actual error value. The caller gets `nil` with no diagnostic information. Compare to Rust's `?` which propagates the `Err` variant — Pranor's version loses the error entirely.
 
 **Fix:** Generate code that captures and returns the error, or at minimum logs it.
 
@@ -72,7 +72,7 @@ Only 3 test files run in CI. With 42+ examples and 49 stdlib modules, there's no
 
 ### 8. Package Registry Assumes Non-Existent Infrastructure
 
-`serv install` and `serv publish` hit `https://registry.pranor.org` which almost certainly 404s. Without a fallback to Git-based dependencies, this feature is a dead end.
+`pranor install` and `pranor publish` hit `https://registry.pranor.org` which almost certainly 404s. Without a fallback to Git-based dependencies, this feature is a dead end.
 
 ---
 
@@ -127,7 +127,7 @@ Generated Go has `// .pnr line N` comments but no DWARF mapping or source maps. 
 ## Missing Features Worth Adding
 
 1. **`async/await` with proper goroutine management** — currently `spawn` is fire-and-forget with no structured concurrency
-2. **Dependency lockfile** — `serv.lock` for reproducible builds
+2. **Dependency lockfile** — `pranor.lock` for reproducible builds
 3. **Multi-file projects** — currently everything is a single `.pnr` file or flat imports
 4. **Compiler error recovery** — parser stops at first error; could continue and report multiple
 5. **Dead code elimination** — generated Go includes unreachable paths from unused branches

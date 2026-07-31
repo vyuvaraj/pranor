@@ -21,7 +21,7 @@ func main() {
 	dataDir := flag.String("data-dir", "./data", "Directory for local WAL storage log segments")
 	flag.Parse()
 
-	log.Printf("Starting Pranor Pulse Standalone Daemon (pranor-pulsed) on port %d...", *port)
+	log.Printf("Starting Pranor Pulse Standalone Daemon (pranorPulsed) on port %d...", *port)
 	log.Printf("Local WAL Data Directory: %s", *dataDir)
 
 	driver := core.NewMemoryDriver()
@@ -37,20 +37,20 @@ func main() {
 	// Prometheus Metrics Endpoint (SQ.M7)
 	http.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; version=0.0.4")
-		fmt.Fprintf(w, "# HELP pranor-pulsed_up Pranor Pulse daemon availability status (1 = UP).\n")
-		fmt.Fprintf(w, "# TYPE pranor-pulsed_up gauge\n")
+		fmt.Fprintf(w, "# HELP pranorPulsed_up Pranor Pulse daemon availability status (1 = UP).\n")
+		fmt.Fprintf(w, "# TYPE pranorPulsed_up gauge\n")
 		fmt.Fprintf(w, "pranor-pulsed_up 1\n\n")
 
-		fmt.Fprintf(w, "# HELP pranor-pulsed_messages_published_total Total published messages in daemon.\n")
-		fmt.Fprintf(w, "# TYPE pranor-pulsed_messages_published_total counter\n")
+		fmt.Fprintf(w, "# HELP pranorPulsed_messages_published_total Total published messages in daemon.\n")
+		fmt.Fprintf(w, "# TYPE pranorPulsed_messages_published_total counter\n")
 		fmt.Fprintf(w, "pranor-pulsed_messages_published_total 0\n\n")
 
-		fmt.Fprintf(w, "# HELP pranor-pulsed_active_topics Active topics registered.\n")
-		fmt.Fprintf(w, "# TYPE pranor-pulsed_active_topics gauge\n")
+		fmt.Fprintf(w, "# HELP pranorPulsed_active_topics Active topics registered.\n")
+		fmt.Fprintf(w, "# TYPE pranorPulsed_active_topics gauge\n")
 		fmt.Fprintf(w, "pranor-pulsed_active_topics 1\n\n")
 
-		fmt.Fprintf(w, "# HELP pranor-pulsed_consumer_lag_records Calculated total consumer lag.\n")
-		fmt.Fprintf(w, "# TYPE pranor-pulsed_consumer_lag_records gauge\n")
+		fmt.Fprintf(w, "# HELP pranorPulsed_consumer_lag_records Calculated total consumer lag.\n")
+		fmt.Fprintf(w, "# TYPE pranorPulsed_consumer_lag_records gauge\n")
 		fmt.Fprintf(w, "pranor-pulsed_consumer_lag_records 0\n")
 	})
 
@@ -75,6 +75,6 @@ func main() {
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 	<-stop
 
-	log.Println("Shutting down pranor-pulsed gracefully...")
+	log.Println("Shutting down pranorPulsed gracefully...")
 	_ = server.Close()
 }

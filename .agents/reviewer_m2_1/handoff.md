@@ -3,7 +3,7 @@
 **Author:** Reviewer M2  
 **Date:** 2026-07-26  
 **Target Module:** `packages/Pranor Cache` (SC.G3 & SC.G4)  
-**Working Directory:** `/home/developer/workspace/serv/.agents/reviewer_m2_1`  
+**Working Directory:** `/home/developer/workspace/pranor/.agents/reviewer_m2_1`  
 **Verdict:** **APPROVE**
 
 ---
@@ -17,11 +17,11 @@
    - `packages/Pranor Cache/pkg/tieredttl/policy_test.go` (222 lines): Unit tests verifying classification, naming, hit/miss tracking across tiers, TTL expiration miss tracking, `Delete`, `Clear`, `DeletePattern`, and concurrent access.
 
 2. **Build Execution:**
-   - Command: `go build ./...` in `/home/developer/workspace/serv/packages/Pranor Cache`
+   - Command: `go build ./...` in `/home/developer/workspace/pranor/packages/Pranor Cache`
    - Result: Exited with code 0 (success, zero compile errors).
 
 3. **Test Execution:**
-   - Command: `go test -v -count=1 ./...` in `/home/developer/workspace/serv/packages/Pranor Cache`
+   - Command: `go test -v -count=1 ./...` in `/home/developer/workspace/pranor/packages/Pranor Cache`
    - Result: All test suites passed cleanly with exit code 0. Output summary:
      - `pkg/bloom`: PASS (4 test functions, 0.007s)
      - `pkg/tieredttl`: PASS (6 test functions, 0.057s)
@@ -30,7 +30,7 @@
      - root `packages/Pranor Cache`: PASS (32 E2E tests, 1.000s)
 
 4. **Dependency Check:**
-   - Command: `git diff go.mod` in `/home/developer/workspace/serv/packages/Pranor Cache`
+   - Command: `git diff go.mod` in `/home/developer/workspace/pranor/packages/Pranor Cache`
    - Result: Exited with code 0 (completely empty output — zero external dependencies added).
 
 ---
@@ -79,15 +79,15 @@ To independently re-verify:
 
 1. **Run Build & Test Commands:**
    ```bash
-   cd /home/developer/workspace/serv/packages/Pranor Cache
+   cd /home/developer/workspace/pranor/packages/Pranor Cache
    go build ./...
    go test -v -count=1 ./...
    ```
 2. **Verify Dependencies:**
    ```bash
-   cd /home/developer/workspace/serv/packages/Pranor Cache
+   cd /home/developer/workspace/pranor/packages/Pranor Cache
    git diff go.mod
    ```
 3. **Inspect Source Files:**
-   - `/home/developer/workspace/serv/packages/Pranor Cache/pkg/bloom/bloom.go`
-   - `/home/developer/workspace/serv/packages/Pranor Cache/pkg/tieredttl/policy.go`
+   - `/home/developer/workspace/pranor/packages/Pranor Cache/pkg/bloom/bloom.go`
+   - `/home/developer/workspace/pranor/packages/Pranor Cache/pkg/tieredttl/policy.go`

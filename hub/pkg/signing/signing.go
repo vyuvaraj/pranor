@@ -1,4 +1,6 @@
-package import (
+package signing
+
+import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"

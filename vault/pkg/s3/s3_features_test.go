@@ -1,4 +1,6 @@
-package import (
+package s3
+
+import (
 	"bytes"
 	"context"
 	"encoding/xml"
@@ -76,7 +78,7 @@ func TestS3Features(t *testing.T) {
 	}
 
 	// 2. Test Object Tagging
-	taggingXML := `<Tagging><TagSet><Tag><Key>env</Key><Value>prod</Value></Tag><Tag><Key>project</Key><Value>serv</Value></Tag></TagSet></Tagging>`
+	taggingXML := `<Tagging><TagSet><Tag><Key>env</Key><Value>prod</Value></Tag><Tag><Key>project</Key><Value>pranor</Value></Tag></TagSet></Tagging>`
 	req = httptest.NewRequest("PUT", "/b1/file1.txt?tagging", strings.NewReader(taggingXML))
 	w = httptest.NewRecorder()
 	gateway.ServeHTTP(w, req)

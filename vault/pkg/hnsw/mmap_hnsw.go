@@ -1,4 +1,6 @@
-package import (
+package hnsw
+
+import (
 	"encoding/json"
 	"fmt"
 	"os"

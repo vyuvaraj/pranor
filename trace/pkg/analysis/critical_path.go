@@ -1,4 +1,6 @@
-package import (
+package analysis
+
+import (
 	"fmt"
 	"sort"
 	"time"

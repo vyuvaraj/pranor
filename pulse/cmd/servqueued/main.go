@@ -1,4 +1,6 @@
-package import (
+package servqueued
+
+import (
 	"embed"
 	"flag"
 	"fmt"

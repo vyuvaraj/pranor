@@ -1,4 +1,6 @@
-package import (
+package auth
+
+import (
 	"fmt"
 	"strings"
 	"sync"

@@ -1,4 +1,6 @@
-package import (
+package core
+
+import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"

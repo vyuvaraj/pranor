@@ -1,4 +1,6 @@
-package import (
+package chaos
+
+import (
 	"encoding/json"
 	"fmt"
 	"net/http"

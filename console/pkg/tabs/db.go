@@ -1,4 +1,6 @@
-package import (
+package tabs
+
+import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"database/sql"

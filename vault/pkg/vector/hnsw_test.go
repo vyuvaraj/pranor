@@ -1,4 +1,6 @@
-package import (
+package vector
+
+import (
 	"bytes"
 	"encoding/json"
 	"math/rand"

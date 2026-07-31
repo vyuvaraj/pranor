@@ -1,6 +1,8 @@
 // Package mfa provides multi-factor authentication implementations for Pranor Auth,
 // including FIDO2 WebAuthn / Passkey registration and assertion flows.
-package import (
+package mfa
+
+import (
 	"crypto/ecdsa"
 	"crypto/rand"
 	"crypto/sha256"

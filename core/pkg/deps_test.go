@@ -8,8 +8,8 @@ import (
 )
 
 func TestWorkspaceDependenciesAndModules(t *testing.T) {
-	// Root directory is 2 levels up from core/pkg
-	rootDir, err := filepath.Abs(filepath.Join("..", "..", ".."))
+	// Root directory is 2 levels up from core/pkg (i.e. pranor/)
+	rootDir, err := filepath.Abs(filepath.Join("..", ".."))
 	if err != nil {
 		t.Fatalf("failed to locate root dir: %v", err)
 	}
@@ -22,25 +22,25 @@ func TestWorkspaceDependenciesAndModules(t *testing.T) {
 
 	content := string(data)
 	expectedPackages := []string{
-		"packages/Pranor",
-		"packages/Pranor Gate",
-		"packages/Pranor Pulse",
-		"packages/Pranor Vault",
-		"packages/Pranor Cache",
-		"packages/Pranor Auth",
-		"packages/Pranor Console",
-		"packages/Pranor Mesh",
-		"packages/Pranor Chrono",
-		"packages/Pranor Deploy",
-		"packages/Pranor Trace",
-		"packages/Pranor Tunnel",
-		"packages/Pranor Pool",
-		"packages/Pranor Notify",
-		"packages/Pranor Flow",
-		"packages/Pranor Hub",
-		"core",
-		"packages/pranor-lockctl",
-		"packages/pranor-secretctl",
+		"./lang",
+		"./gate",
+		"./pulse",
+		"./vault",
+		"./cache",
+		"./auth",
+		"./console",
+		"./mesh",
+		"./chrono",
+		"./deploy",
+		"./trace",
+		"./tunnel",
+		"./pool",
+		"./notify",
+		"./flow",
+		"./hub",
+		"./core",
+		"./lockctl",
+		"./secretctl",
 	}
 
 	for _, pkg := range expectedPackages {

@@ -1,4 +1,6 @@
-package import (
+package runtime
+
+import (
 	"fmt"
 	"reflect"
 	"strings"

@@ -1,4 +1,6 @@
-package import (
+package s3
+
+import (
 	"bytes"
 	"context"
 	"crypto/md5"
@@ -110,7 +112,7 @@ func (g *Gateway) WithCRR(crrMgr *cluster.CRRManager) *Gateway {
 
 // WithRateLimiter attaches a per-tenant token-bucket rate limiter to the gateway.
 // Requests that exceed the limit receive 429 Too Many Requests with a Retry-After header.
-// Tenant is identified by the X-Pranor Vault-Namespace request header (falls back to "default").
+// Tenant is identified by the X-Pranor-Vault-Namespace request header (falls back to "default").
 func (g *Gateway) WithRateLimiter(l *ratelimit.Limiter) *Gateway {
 	g.rateLimiter = l
 	return g
@@ -388,7 +390,7 @@ func (g *Gateway) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// Rate limiting — checked after auth so unauthenticated requests fail fast
 	if g.rateLimiter != nil {
-		tenant := r.Header.Get("X-Pranor Vault-Namespace")
+		tenant := r.Header.Get("X-Pranor-Vault-Namespace")
 		if tenant == "" {
 			tenant = "default"
 		}
@@ -416,12 +418,12 @@ func (g *Gateway) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if r.Header.Get("X-Pranor Vault-Shard-Index") != "" {
-		shardIdx := r.Header.Get("X-Pranor Vault-Shard-Index")
+	if r.Header.Get("X-Pranor-Vault-Shard-Index") != "" {
+		shardIdx := r.Header.Get("X-Pranor-Vault-Shard-Index")
 		key = key + ".shard." + shardIdx
 	}
 
-	if bucket != "" && key != "" && r.Header.Get("X-Pranor Vault-Replicated") != "true" {
+	if bucket != "" && key != "" && r.Header.Get("X-Pranor-Vault-Replicated") != "true" {
 		if g.erasureEnabled && g.cluster != nil {
 			if r.Method == http.MethodPut {
 				g.handlePutObjectErasure(w, r, bucket, key)
@@ -1356,14 +1358,14 @@ func (g *Gateway) handlePutObject(w http.ResponseWriter, r *http.Request, bucket
 	}
 
 	ctx := r.Context()
-	if headerVer := r.Header.Get("X-Pranor Vault-Version-Id"); headerVer != "" {
+	if headerVer := r.Header.Get("X-Pranor-Vault-Version-Id"); headerVer != "" {
 		ctx = context.WithValue(ctx, storage.VersionIDContextKey, headerVer)
 	}
 
-	if r.Header.Get("X-Pranor Vault-Replicated") == "true" {
+	if r.Header.Get("X-Pranor-Vault-Replicated") == "true" {
 		localMeta, err := g.store.HeadObject(ctx, bucket, key, "")
 		if err == nil {
-			if repTimeStr := r.Header.Get("X-Pranor Vault-Timestamp"); repTimeStr != "" {
+			if repTimeStr := r.Header.Get("X-Pranor-Vault-Timestamp"); repTimeStr != "" {
 				if repTime, err := time.Parse(time.RFC3339, repTimeStr); err == nil {
 					if localMeta.LastModified.After(repTime) {
 						slog.Info("Conflict: local object is newer than incoming replication request", "bucket", bucket, "key", key)
@@ -1376,7 +1378,7 @@ func (g *Gateway) handlePutObject(w http.ResponseWriter, r *http.Request, bucket
 	}
 
 	// AI.22: check for semantic similarity deduplication before saving
-	if r.Header.Get("X-Pranor Vault-Deduplicate") == "true" {
+	if r.Header.Get("X-Pranor-Vault-Deduplicate") == "true" {
 		// List objects and check if a semantically duplicate file already exists
 		existing, _, _ := g.store.ListObjects(ctx, bucket, "", "", "", 10)
 		for _, ex := range existing {
@@ -1409,7 +1411,7 @@ func (g *Gateway) handlePutObject(w http.ResponseWriter, r *http.Request, bucket
 	obj.Tags["summary"] = fmt.Sprintf("Auto-generated summary for object %q: This is a system log/document uploaded to bucket %s.", key, bucket)
 
 	// Replicate to backup nodes if this is a primary request and clustering is active
-	if g.cluster != nil && r.Header.Get("X-Pranor Vault-Replicated") != "true" {
+	if g.cluster != nil && r.Header.Get("X-Pranor-Vault-Replicated") != "true" {
 		ring := g.cluster.Ring()
 		if ring != nil {
 			owners, err := ring.GetNodes(bucket+"/"+key, g.replicationFactor)
@@ -1440,7 +1442,7 @@ func (g *Gateway) handlePutObject(w http.ResponseWriter, r *http.Request, bucket
 	}
 
 	// Trigger CRR asynchronously if this write didn't originate from a remote region replication
-	if g.crrMgr != nil && r.Header.Get("X-Pranor Vault-Region-Source") == "" {
+	if g.crrMgr != nil && r.Header.Get("X-Pranor-Vault-Region-Source") == "" {
 		g.crrMgr.Enqueue(cluster.CRRJob{
 			Bucket:    bucket,
 			Key:       key,
@@ -1475,8 +1477,8 @@ func (g *Gateway) replicateObjectToNode(ctx context.Context, bucket, key string,
 	}
 	req.ContentLength = obj.Size
 	req.Header.Set("Content-Type", obj.ContentType)
-	req.Header.Set("X-Pranor Vault-Replicated", "true")
-	req.Header.Set("X-Pranor Vault-Version-Id", obj.VersionID)
+	req.Header.Set("X-Pranor-Vault-Replicated", "true")
+	req.Header.Set("X-Pranor-Vault-Version-Id", obj.VersionID)
 
 	// Set credentials
 	accessKey, secretKey := g.auth.GetAdminCredentials()
@@ -1522,7 +1524,7 @@ func (g *Gateway) handleGetObject(w http.ResponseWriter, r *http.Request, bucket
 
 	if err != nil {
 		isIntegrityErr := strings.Contains(err.Error(), "integrity corruption detected")
-		shouldFailover := (errors.Is(err, storage.ErrObjectNotFound) || errors.Is(err, storage.ErrBucketNotFound)) && r.Header.Get("X-Pranor Vault-Replicated") != "true"
+		shouldFailover := (errors.Is(err, storage.ErrObjectNotFound) || errors.Is(err, storage.ErrBucketNotFound)) && r.Header.Get("X-Pranor-Vault-Replicated") != "true"
 		if isIntegrityErr {
 			shouldFailover = true // always failover if local file is corrupted, even if replicated GET was sent (to ensure data recovery)
 		}
@@ -1600,7 +1602,7 @@ func (g *Gateway) handleHeadObject(w http.ResponseWriter, r *http.Request, bucke
 
 	obj, err := g.store.HeadObject(ctx, bucket, key, versionID)
 	if err != nil {
-		if (errors.Is(err, storage.ErrObjectNotFound) || errors.Is(err, storage.ErrBucketNotFound)) && g.cluster != nil && r.Header.Get("X-Pranor Vault-Replicated") != "true" {
+		if (errors.Is(err, storage.ErrObjectNotFound) || errors.Is(err, storage.ErrBucketNotFound)) && g.cluster != nil && r.Header.Get("X-Pranor-Vault-Replicated") != "true" {
 			ring := g.cluster.Ring()
 			if ring != nil {
 				owners, ringErr := ring.GetNodes(bucket+"/"+key, g.replicationFactor)
@@ -1675,7 +1677,7 @@ func (g *Gateway) handleDeleteObject(w http.ResponseWriter, r *http.Request, buc
 	}
 
 	// Replicate DELETE to backup nodes
-	if g.cluster != nil && r.Header.Get("X-Pranor Vault-Replicated") != "true" {
+	if g.cluster != nil && r.Header.Get("X-Pranor-Vault-Replicated") != "true" {
 		ring := g.cluster.Ring()
 		if ring != nil {
 			owners, err := ring.GetNodes(bucket+"/"+key, g.replicationFactor)
@@ -1704,7 +1706,7 @@ func (g *Gateway) handleDeleteObject(w http.ResponseWriter, r *http.Request, buc
 	}
 
 	// Trigger CRR asynchronously for deletion
-	if g.crrMgr != nil && r.Header.Get("X-Pranor Vault-Region-Source") == "" {
+	if g.crrMgr != nil && r.Header.Get("X-Pranor-Vault-Region-Source") == "" {
 		g.crrMgr.Enqueue(cluster.CRRJob{
 			Bucket:    bucket,
 			Key:       key,
@@ -1736,7 +1738,7 @@ func (g *Gateway) replicateDeleteToNode(ctx context.Context, bucket, key, versio
 	if err != nil {
 		return err
 	}
-	req.Header.Set("X-Pranor Vault-Replicated", "true")
+	req.Header.Set("X-Pranor-Vault-Replicated", "true")
 
 	// Set credentials
 	accessKey, secretKey := g.auth.GetAdminCredentials()
@@ -2171,7 +2173,7 @@ func (g *Gateway) handlePutObjectErasure(w http.ResponseWriter, r *http.Request,
 	}
 
 	versionID := g.cluster.LocalNodeID() + "-" + strconv.FormatInt(time.Now().UnixNano(), 10)
-	if headerVer := r.Header.Get("X-Pranor Vault-Version-Id"); headerVer != "" {
+	if headerVer := r.Header.Get("X-Pranor-Vault-Version-Id"); headerVer != "" {
 		versionID = headerVer
 	}
 
@@ -2250,9 +2252,9 @@ func (g *Gateway) writeShardToNode(ctx context.Context, bucket, key, versionID s
 	}
 	req.ContentLength = int64(len(shardData))
 	req.Header.Set("Content-Type", fmt.Sprintf("application/octet-stream; original-size=%d", originalSize))
-	req.Header.Set("X-Pranor Vault-Replicated", "true")
-	req.Header.Set("X-Pranor Vault-Shard-Index", strconv.Itoa(shardIndex))
-	req.Header.Set("X-Pranor Vault-Version-Id", versionID)
+	req.Header.Set("X-Pranor-Vault-Replicated", "true")
+	req.Header.Set("X-Pranor-Vault-Shard-Index", strconv.Itoa(shardIndex))
+	req.Header.Set("X-Pranor-Vault-Version-Id", versionID)
 
 	accessKey, secretKey := g.auth.GetAdminCredentials()
 	req.SetBasicAuth(accessKey, secretKey)
@@ -2421,8 +2423,8 @@ func (g *Gateway) readShardFromNode(ctx context.Context, bucket, key, versionID 
 	if err != nil {
 		return nil, 0, "", "", "", err
 	}
-	req.Header.Set("X-Pranor Vault-Replicated", "true")
-	req.Header.Set("X-Pranor Vault-Shard-Index", strconv.Itoa(shardIndex))
+	req.Header.Set("X-Pranor-Vault-Replicated", "true")
+	req.Header.Set("X-Pranor-Vault-Shard-Index", strconv.Itoa(shardIndex))
 
 	accessKey, secretKey := g.auth.GetAdminCredentials()
 	req.SetBasicAuth(accessKey, secretKey)
@@ -2518,8 +2520,8 @@ func (g *Gateway) deleteShardFromNode(ctx context.Context, bucket, key, versionI
 	if err != nil {
 		return err
 	}
-	req.Header.Set("X-Pranor Vault-Replicated", "true")
-	req.Header.Set("X-Pranor Vault-Shard-Index", strconv.Itoa(shardIndex))
+	req.Header.Set("X-Pranor-Vault-Replicated", "true")
+	req.Header.Set("X-Pranor-Vault-Shard-Index", strconv.Itoa(shardIndex))
 
 	accessKey, secretKey := g.auth.GetAdminCredentials()
 	req.SetBasicAuth(accessKey, secretKey)
@@ -2572,7 +2574,7 @@ func (g *Gateway) handleWASMTransform(w http.ResponseWriter, r *http.Request, bu
 		contentType = "application/octet-stream"
 	}
 	w.Header().Set("Content-Type", contentType)
-	w.Header().Set("X-Pranor Vault-Transform", "wasm")
+	w.Header().Set("X-Pranor-Vault-Transform", "wasm")
 	w.Header().Set("Content-Length", strconv.Itoa(len(output)))
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write(output)
@@ -2671,7 +2673,7 @@ func (g *Gateway) handleRunColdSweep(w http.ResponseWriter, r *http.Request, buc
 // the bucket and the response is the PipelineResult JSON. When output_key is
 // omitted, the raw transform output bytes are streamed directly in the response
 // body with Content-Type application/octet-stream, and the PipelineResult is
-// included in the X-Pranor Vault-Pipeline-Trace response header (JSON-encoded) if
+// included in the X-Pranor-Vault-Pipeline-Trace response header (JSON-encoded) if
 // save_trace is true.
 func (g *Gateway) handleWASMPipeline(w http.ResponseWriter, r *http.Request, bucket string) {
 	// Verify bucket exists.
@@ -2709,7 +2711,7 @@ func (g *Gateway) handleWASMPipeline(w http.ResponseWriter, r *http.Request, buc
 
 	// Success — return PipelineResult as JSON.
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("X-Pranor Vault-Transform", "wasm-pipeline")
+	w.Header().Set("X-Pranor-Vault-Transform", "wasm-pipeline")
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(result)
 }
@@ -2924,7 +2926,7 @@ func (g *Gateway) handleCopyObject(w http.ResponseWriter, r *http.Request, destB
 		return
 	}
 
-	if g.cluster != nil && r.Header.Get("X-Pranor Vault-Replicated") != "true" {
+	if g.cluster != nil && r.Header.Get("X-Pranor-Vault-Replicated") != "true" {
 		ring := g.cluster.Ring()
 		if ring != nil {
 			owners, err := ring.GetNodes(destBucket+"/"+destKey, g.replicationFactor)
@@ -2995,7 +2997,7 @@ func (g *Gateway) handleBatchDelete(w http.ResponseWriter, r *http.Request, buck
 			continue
 		}
 
-		if g.cluster != nil && r.Header.Get("X-Pranor Vault-Replicated") != "true" {
+		if g.cluster != nil && r.Header.Get("X-Pranor-Vault-Replicated") != "true" {
 			ring := g.cluster.Ring()
 			if ring != nil {
 				owners, err := ring.GetNodes(bucket+"/"+obj.Key, g.replicationFactor)

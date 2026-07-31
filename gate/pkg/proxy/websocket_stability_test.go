@@ -1,4 +1,6 @@
-package import (
+package proxy
+
+import (
 	"bufio"
 	"crypto/sha1"
 	"encoding/base64"

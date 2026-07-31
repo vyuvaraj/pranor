@@ -1,4 +1,6 @@
-package import (
+package client
+
+import (
 	"context"
 	"net/http"
 	"net/http/httptest"

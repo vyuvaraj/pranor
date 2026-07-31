@@ -1,4 +1,6 @@
-package import (
+package s3
+
+import (
 	"context"
 	"encoding/xml"
 	"io"
@@ -107,8 +109,8 @@ func TestS3ActiveActiveConflictResolution(t *testing.T) {
 
 	// 2. Make replication request with older timestamp header
 	req := httptest.NewRequest("PUT", "/my-bucket/key.txt", strings.NewReader("remote older data"))
-	req.Header.Set("X-Pranor Vault-Replicated", "true")
-	req.Header.Set("X-Pranor Vault-Timestamp", obj.LastModified.Add(-10 * time.Second).Format(time.RFC3339))
+	req.Header.Set("X-Pranor-Vault-Replicated", "true")
+	req.Header.Set("X-Pranor-Vault-Timestamp", obj.LastModified.Add(-10 * time.Second).Format(time.RFC3339))
 	w := httptest.NewRecorder()
 	gateway.ServeHTTP(w, req)
 

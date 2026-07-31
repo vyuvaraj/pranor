@@ -1,4 +1,6 @@
-package import (
+package embedding
+
+import (
 	"crypto/sha256"
 	"math"
 	"strings"

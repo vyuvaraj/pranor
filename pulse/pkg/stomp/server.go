@@ -1,4 +1,6 @@
-package import (
+package stomp
+
+import (
 	"bufio"
 	"bytes"
 	"context"

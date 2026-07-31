@@ -1,4 +1,6 @@
-package import (
+package tieredttl
+
+import (
 	"path"
 	"strings"
 	"sync"

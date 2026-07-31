@@ -2,7 +2,9 @@
 // MCP is a JSON-RPC 2.0 protocol that allows AI agents (Claude, GPT-4o, Ollama, etc.)
 // to discover and call strongly-typed tools. This server auto-exposes Pranor services
 // (Pranor Vault buckets, Pranor Pulse topics) as MCP tools consumable by any MCP-compatible agent.
-package import (
+package mcp
+
+import (
 	"context"
 	"encoding/json"
 	"fmt"

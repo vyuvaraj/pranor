@@ -12,7 +12,9 @@
 //	POST /api/lock/extend   {"key":"...", "owner":"...", "ttl_ms":5000}
 //	GET  /api/lock/status?key=...
 //	GET  /api/lock/list
-package import (
+package lock
+
+import (
 	"sync"
 	"time"
 )

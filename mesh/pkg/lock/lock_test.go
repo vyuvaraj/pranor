@@ -1,4 +1,6 @@
-package import (
+package lock
+
+import (
 	"testing"
 	"time"
 

@@ -1,4 +1,6 @@
-package import (
+package otel
+
+import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
@@ -50,10 +52,10 @@ type Span struct {
 }
 
 func InitOtel(serviceName string) {
-	Pranor Core.InitTrace(serviceName)
+	core.InitTrace(serviceName)
 	otelEnabled = os.Getenv("OTEL_ENDPOINT") != "" || os.Getenv("PRANOR_OTLP_ENDPOINT") != "" || os.Getenv("PRANOR_DISCOVERY") != ""
 	otelService = serviceName
-	log.Printf("[OTEL] OpenTelemetry Tracing initialized (via Pranor Core) for service=%s", otelService)
+	log.Printf("[OTEL] OpenTelemetry Tracing initialized (via core) for service=%s", otelService)
 }
 
 func OtelEnabled() bool {
@@ -171,8 +173,8 @@ func (s *Span) End(status int) {
 	}
 	recentSpansMu.Unlock()
 
-	// Delegate export to Pranor Core
-	sharedSpan := &Pranor Core.Span{
+	// Delegate export to core
+	sharedSpan := &core.Span{
 		TraceID:   s.TraceID,
 		SpanID:    s.SpanID,
 		ParentID:  s.ParentID,
@@ -184,7 +186,7 @@ func (s *Span) End(status int) {
 	if status == 2 {
 		err = fmt.Errorf("span status error")
 	}
-	Pranor Core.EndSpan(sharedSpan, err, attrs)
+	core.EndSpan(sharedSpan, err, attrs)
 }
 
 func GetRecentSpans() []otelSpan {

@@ -1,4 +1,6 @@
-package import (
+package storage
+
+import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"

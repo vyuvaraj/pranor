@@ -1,6 +1,8 @@
 // Package inspector provides an in-memory ring buffer that captures HTTP
 // requests and responses flowing through the tunnel for debugging and replay.
-package import (
+package inspector
+
+import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"

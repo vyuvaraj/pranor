@@ -1,4 +1,6 @@
-package import (
+package tabs
+
+import (
 	"net/http"
 	"net/http/httptest"
 	"testing"

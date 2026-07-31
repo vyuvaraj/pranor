@@ -1,4 +1,6 @@
-package import (
+package cluster
+
+import (
 	"bytes"
 	"context"
 	"io"
@@ -45,7 +47,7 @@ func (m *mockCRRNode) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		size := r.ContentLength
 		contentType := r.Header.Get("Content-Type")
 		ctx := r.Context()
-		if headerVer := r.Header.Get("X-Pranor Vault-Version-Id"); headerVer != "" {
+		if headerVer := r.Header.Get("X-Pranor-Vault-Version-Id"); headerVer != "" {
 			ctx = context.WithValue(ctx, storage.VersionIDContextKey, headerVer)
 		}
 		_, err := m.store.PutObject(ctx, bucket, key, r.Body, size, contentType)

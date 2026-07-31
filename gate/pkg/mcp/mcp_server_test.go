@@ -1,4 +1,6 @@
-package import (
+package mcp
+
+import (
 	"bytes"
 	"context"
 	"encoding/json"

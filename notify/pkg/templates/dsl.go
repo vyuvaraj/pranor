@@ -1,4 +1,6 @@
-package import (
+package templates
+
+import (
 	"bytes"
 	"fmt"
 	"html/template"

@@ -1,4 +1,6 @@
-package import (
+package engine
+
+import (
 	"testing"
 	"time"
 

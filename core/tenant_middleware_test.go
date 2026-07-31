@@ -1,12 +1,10 @@
-package core_test
+package core
 
 import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
-
-	"github.com/vyuvaraj/pranor/core"
 )
 
 const testSecret = "test-secret-key-for-tenant-middleware"
@@ -21,7 +19,7 @@ func newTenantRequest(t *testing.T, tokenTenantID, headerTenantID string) *httpt
 	t.Setenv("PRANOR_JWT_SECRET", testSecret)
 
 	// Generate token with embedded tenantID
-	token, err := pranorcore.GenerateUserToken(testSecret, "alice", []string{"user"}, tokenTenantID, time.Hour)
+	token, err := GenerateUserToken(testSecret, "alice", []string{"user"}, tokenTenantID, time.Hour)
 	if err != nil {
 		t.Fatalf("failed to generate token: %v", err)
 	}
@@ -33,10 +31,10 @@ func newTenantRequest(t *testing.T, tokenTenantID, headerTenantID string) *httpt
 	}
 
 	// Chain: AuthMiddleware → TenantMiddleware → echo handler
-	handler := pranorcore.AuthMiddleware(
-		pranorcore.TenantMiddleware(
+	handler := AuthMiddleware(
+		TenantMiddleware(
 			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				tid := pranorcore.GetTenantID(r)
+				tid := GetTenantID(r)
 				w.WriteHeader(http.StatusOK)
 				w.Write([]byte(tid))
 			}),
@@ -97,19 +95,19 @@ func TestTenantMiddleware_NoTenantInToken(t *testing.T) {
 // when TenantMiddleware has not run (no value in context).
 func TestGetTenantID_Default(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
-	if tid := pranorcore.GetTenantID(req); tid != "" {
+	if tid := GetTenantID(req); tid != "" {
 		t.Errorf("expected empty tenant ID without middleware, got '%s'", tid)
 	}
 }
 
 func BenchmarkTokenGenerationAndVerification(b *testing.B) {
 	secret := "my-perf-test-secret-key-32-chars-long"
-	token, err := pranorcore.GenerateUserToken(secret, "alice", []string{"user"}, "tenant-a", time.Hour)
+	token, err := GenerateUserToken(secret, "alice", []string{"user"}, "tenant-a", time.Hour)
 	if err != nil {
 		b.Fatalf("failed to generate token: %v", err)
 	}
 
-	validator := pranorcore.NewAuthValidator(secret, "", "")
+	validator := NewAuthValidator(secret, "", "")
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

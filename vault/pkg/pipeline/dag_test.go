@@ -1,4 +1,6 @@
-package import (
+package pipeline
+
+import (
 	"bytes"
 	"context"
 	"os"
@@ -7,7 +9,7 @@ package import (
 	"strings"
 	"testing"
 
-	"github.com/vyuvaraj/pranor/vault/pkg/pipeline"
+	
 	"github.com/vyuvaraj/pranor/vault/pkg/storage"
 )
 
@@ -93,17 +95,17 @@ func putObject(t *testing.T, store storage.StorageEngine, bucket, key string, da
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
-// TestPipeline_SingleStage verifies a one-stage uppercase pipeline.
+// TestPipeline_SingleStage verifies a one-stage uppercase 
 func TestPipeline_SingleStage(t *testing.T) {
 	upperWasm := buildWASM(t, srcUppercase)
 	store, bucket := newTestStore(t)
 	putObject(t, store, bucket, "upper.wasm", upperWasm)
 	putObject(t, store, bucket, "input.txt", []byte("hello pipeline"))
 
-	exec := pipeline.NewExecutor(store)
-	result, err := exec.Run(context.Background(), bucket, pipeline.PipelineRequest{
+	exec := NewExecutor(store)
+	result, err := exec.Run(context.Background(), bucket, PipelineRequest{
 		Input:     "input.txt",
-		Stages:    []pipeline.StageSpec{{Wasm: "upper.wasm"}},
+		Stages:    []StageSpec{{Wasm: "upper.wasm"}},
 		SaveTrace: true,
 	})
 	if err != nil {
@@ -138,10 +140,10 @@ func TestPipeline_MultiStage(t *testing.T) {
 	putObject(t, store, bucket, "tag.wasm", tagWasm)
 	putObject(t, store, bucket, "input.txt", []byte("hello"))
 
-	exec := pipeline.NewExecutor(store)
-	result, err := exec.Run(context.Background(), bucket, pipeline.PipelineRequest{
+	exec := NewExecutor(store)
+	result, err := exec.Run(context.Background(), bucket, PipelineRequest{
 		Input: "input.txt",
-		Stages: []pipeline.StageSpec{
+		Stages: []StageSpec{
 			{Wasm: "upper.wasm"},
 			{Wasm: "pass.wasm"},
 			{Wasm: "tag.wasm"},
@@ -180,10 +182,10 @@ func TestPipeline_MissingInput(t *testing.T) {
 	putObject(t, store, bucket, "upper.wasm", upperWasm)
 	// No input.txt uploaded.
 
-	exec := pipeline.NewExecutor(store)
-	result, err := exec.Run(context.Background(), bucket, pipeline.PipelineRequest{
+	exec := NewExecutor(store)
+	result, err := exec.Run(context.Background(), bucket, PipelineRequest{
 		Input:  "input.txt",
-		Stages: []pipeline.StageSpec{{Wasm: "upper.wasm"}},
+		Stages: []StageSpec{{Wasm: "upper.wasm"}},
 	})
 	if err == nil {
 		t.Fatal("expected error for missing input, got nil")
@@ -199,10 +201,10 @@ func TestPipeline_MissingWASMKey(t *testing.T) {
 	putObject(t, store, bucket, "input.txt", []byte("data"))
 	// No WASM uploaded.
 
-	exec := pipeline.NewExecutor(store)
-	result, err := exec.Run(context.Background(), bucket, pipeline.PipelineRequest{
+	exec := NewExecutor(store)
+	result, err := exec.Run(context.Background(), bucket, PipelineRequest{
 		Input:  "input.txt",
-		Stages: []pipeline.StageSpec{{Wasm: "nonexistent.wasm"}},
+		Stages: []StageSpec{{Wasm: "nonexistent.wasm"}},
 	})
 	if err == nil {
 		t.Fatal("expected error for missing WASM key, got nil")
@@ -225,10 +227,10 @@ func TestPipeline_StageFailure(t *testing.T) {
 	putObject(t, store, bucket, "tag.wasm", tagWasm)
 	putObject(t, store, bucket, "input.txt", []byte("data"))
 
-	exec := pipeline.NewExecutor(store)
-	result, err := exec.Run(context.Background(), bucket, pipeline.PipelineRequest{
+	exec := NewExecutor(store)
+	result, err := exec.Run(context.Background(), bucket, PipelineRequest{
 		Input: "input.txt",
-		Stages: []pipeline.StageSpec{
+		Stages: []StageSpec{
 			{Wasm: "pass.wasm"},
 			{Wasm: "fail.wasm"}, // fails here
 			{Wasm: "tag.wasm"},  // must NOT run
@@ -260,13 +262,13 @@ func TestPipeline_MaxStagesExceeded(t *testing.T) {
 	store, bucket := newTestStore(t)
 	putObject(t, store, bucket, "input.txt", []byte("data"))
 
-	stages := make([]pipeline.StageSpec, pipeline.MaxStages+1)
+	stages := make([]StageSpec, MaxStages+1)
 	for i := range stages {
-		stages[i] = pipeline.StageSpec{Wasm: "any.wasm"}
+		stages[i] = StageSpec{Wasm: "any.wasm"}
 	}
 
-	exec := pipeline.NewExecutor(store)
-	result, err := exec.Run(context.Background(), bucket, pipeline.PipelineRequest{
+	exec := NewExecutor(store)
+	result, err := exec.Run(context.Background(), bucket, PipelineRequest{
 		Input:  "input.txt",
 		Stages: stages,
 	})
@@ -283,10 +285,10 @@ func TestPipeline_EmptyStages(t *testing.T) {
 	store, bucket := newTestStore(t)
 	putObject(t, store, bucket, "input.txt", []byte("data"))
 
-	exec := pipeline.NewExecutor(store)
-	result, err := exec.Run(context.Background(), bucket, pipeline.PipelineRequest{
+	exec := NewExecutor(store)
+	result, err := exec.Run(context.Background(), bucket, PipelineRequest{
 		Input:  "input.txt",
-		Stages: []pipeline.StageSpec{},
+		Stages: []StageSpec{},
 	})
 	if err == nil {
 		t.Fatal("expected error for empty stages, got nil")
@@ -305,10 +307,10 @@ func TestPipeline_OutputKeyStoredToBucket(t *testing.T) {
 	input := []byte("persist me")
 	putObject(t, store, bucket, "input.txt", input)
 
-	exec := pipeline.NewExecutor(store)
-	result, err := exec.Run(context.Background(), bucket, pipeline.PipelineRequest{
+	exec := NewExecutor(store)
+	result, err := exec.Run(context.Background(), bucket, PipelineRequest{
 		Input:     "input.txt",
-		Stages:    []pipeline.StageSpec{{Wasm: "pass.wasm"}},
+		Stages:    []StageSpec{{Wasm: "pass.wasm"}},
 		OutputKey: "out/persisted.bin",
 	})
 	if err != nil {

@@ -1,6 +1,8 @@
 //go:build js && wasm
 
-package import (
+package wasm
+
+import (
 	"encoding/json"
 	"syscall/js"
 

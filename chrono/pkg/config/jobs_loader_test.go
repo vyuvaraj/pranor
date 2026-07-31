@@ -1,4 +1,6 @@
-package import (
+package config
+
+import (
 	"os"
 	"path/filepath"
 	"sync"

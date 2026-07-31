@@ -1,4 +1,6 @@
-package import (
+package storage
+
+import (
 	"math"
 	"math/rand"
 	"sort"

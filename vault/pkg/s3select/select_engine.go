@@ -1,4 +1,6 @@
-package import (
+package s3select
+
+import (
 	"context"
 	"encoding/json"
 	"fmt"

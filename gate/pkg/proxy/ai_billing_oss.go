@@ -1,6 +1,8 @@
 //go:build !enterprise
 
-package import (
+package proxy
+
+import (
 	"bytes"
 	"io"
 	"net/http"

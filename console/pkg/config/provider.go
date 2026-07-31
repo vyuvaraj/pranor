@@ -1,4 +1,6 @@
-package import (
+package config
+
+import (
 	"bytes"
 	"crypto/hmac"
 	"crypto/sha256"

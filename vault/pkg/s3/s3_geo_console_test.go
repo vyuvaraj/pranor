@@ -1,4 +1,6 @@
-package import (
+package s3
+
+import (
 	"bytes"
 	"context"
 	"encoding/json"

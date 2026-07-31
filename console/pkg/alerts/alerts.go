@@ -1,4 +1,6 @@
-package import (
+package alerts
+
+import (
 	"context"
 	"encoding/json"
 	"fmt"

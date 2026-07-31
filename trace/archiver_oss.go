@@ -1,6 +1,8 @@
 //go:build !enterprise
 
-package import (
+package trace
+
+import (
 	"log"
 	"github.com/vyuvaraj/pranor/trace/pkg/store"
 )

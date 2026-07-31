@@ -1,4 +1,6 @@
-package import (
+package wasm
+
+import (
 	"bytes"
 	"context"
 	"errors"

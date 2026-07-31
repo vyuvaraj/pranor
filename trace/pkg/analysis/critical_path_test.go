@@ -1,4 +1,6 @@
-package import (
+package analysis
+
+import (
 	"testing"
 	"time"
 )

@@ -1,6 +1,8 @@
 //go:build enterprise
 
-package import (
+package s3
+
+import (
 	"bytes"
 	"context"
 	"fmt"

@@ -1,6 +1,8 @@
 //go:build enterprise
 
-package import "strings"
+package broker
+
+import "strings"
 
 // filterSemanticRoute is the enterprise implementation.
 func (e *BrokerEngine) filterSemanticRoute(topic string, payload string) bool {

@@ -1,4 +1,6 @@
-package import (
+package query
+
+import (
 	"bytes"
 	"encoding/json"
 	"net/http"

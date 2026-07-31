@@ -1,4 +1,6 @@
-package import "bytes"
+package compiler
+
+import "bytes"
 
 // HasTests reports whether any test blocks were found during code generation.
 func (c *Codegen) HasTests() bool {

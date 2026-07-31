@@ -1,4 +1,6 @@
-package import (
+package schema
+
+import (
 	"bytes"
 	"encoding/json"
 	"net/http"

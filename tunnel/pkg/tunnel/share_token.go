@@ -1,4 +1,6 @@
-package import (
+package tunnel
+
+import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"

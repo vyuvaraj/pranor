@@ -1,4 +1,6 @@
-package import (
+package go
+
+import (
 	"bytes"
 	"encoding/json"
 	"fmt"

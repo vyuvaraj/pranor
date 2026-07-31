@@ -1,4 +1,6 @@
-package import (
+package proxy
+
+import (
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/json"

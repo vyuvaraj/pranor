@@ -1,4 +1,6 @@
-package import (
+package circuitbreaker
+
+import (
 	"errors"
 	"fmt"
 	"net/http"

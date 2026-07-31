@@ -1,4 +1,6 @@
-package import (
+package cache
+
+import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"

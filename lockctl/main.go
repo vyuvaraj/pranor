@@ -1,4 +1,6 @@
-package import (
+package lockctl
+
+import (
 	"bytes"
 	"encoding/json"
 	"flag"

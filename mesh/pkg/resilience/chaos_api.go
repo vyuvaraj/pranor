@@ -1,4 +1,6 @@
-package import (
+package resilience
+
+import (
 	"encoding/json"
 	"fmt"
 	"math/rand"

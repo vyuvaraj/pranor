@@ -1,4 +1,6 @@
-package import (
+package gate
+
+import (
 	"bytes"
 	"crypto/rand"
 	"crypto/rsa"

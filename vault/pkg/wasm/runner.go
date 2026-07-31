@@ -8,7 +8,9 @@
 //   - Hard limits — memory pages and wall-clock timeout are enforced per call.
 //   - No host-filesystem access — WASI is configured with an empty preopened
 //     directory list, so modules cannot traverse the server's filesystem.
-package import (
+package wasm
+
+import (
 	"bytes"
 	"context"
 	"errors"

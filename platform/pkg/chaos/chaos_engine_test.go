@@ -1,4 +1,6 @@
-package import (
+package chaos
+
+import (
 	"bytes"
 	"encoding/json"
 	"net/http"

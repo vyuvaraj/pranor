@@ -5,13 +5,14 @@ language = "en"
 src = "."
 
 [build]
-build-dir = "../_site"
+build-dir = "_site"
 
 [output.html]
 default-theme = "navy"
 preferred-dark-theme = "coal"
 git-repository-url = "https://github.com/vyuvaraj/pranor"
 edit-url-template = "https://github.com/vyuvaraj/pranor/edit/main/docs/{path}"
+site-url = "/pranor/"
 
 [output.html.search]
 enable = true

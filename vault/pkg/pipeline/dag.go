@@ -20,7 +20,9 @@
 //	  "output_key": "results/output.json",
 //	  "save_trace": true
 //	}
-package import (
+package pipeline
+
+import (
 	"bytes"
 	"context"
 	"fmt"

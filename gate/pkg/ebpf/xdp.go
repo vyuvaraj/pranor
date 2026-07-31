@@ -1,6 +1,8 @@
 //go:build !enterprise
 
-package import (
+package ebpf
+
+import (
 	"context"
 	"net"
 )

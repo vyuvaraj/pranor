@@ -1,4 +1,6 @@
-package import (
+package cluster
+
+import (
 	"context"
 	"errors"
 	"fmt"
@@ -228,8 +230,8 @@ func (hm *HealingManager) replicateObjectVersionToRemoteNode(ctx context.Context
 	}
 	req.ContentLength = ver.Size
 	req.Header.Set("Content-Type", ver.ContentType)
-	req.Header.Set("X-Pranor Vault-Replicated", "true")
-	req.Header.Set("X-Pranor Vault-Version-Id", ver.VersionID)
+	req.Header.Set("X-Pranor-Vault-Replicated", "true")
+	req.Header.Set("X-Pranor-Vault-Version-Id", ver.VersionID)
 
 	req.SetBasicAuth(hm.accessKey, hm.secretKey)
 
@@ -259,7 +261,7 @@ func (hm *HealingManager) replicateDeleteMarkerToRemoteNode(ctx context.Context,
 	if err != nil {
 		return err
 	}
-	req.Header.Set("X-Pranor Vault-Replicated", "true")
+	req.Header.Set("X-Pranor-Vault-Replicated", "true")
 
 	req.SetBasicAuth(hm.accessKey, hm.secretKey)
 
@@ -286,7 +288,7 @@ func (hm *HealingManager) checkRemoteKeyExists(ctx context.Context, bucket, key,
 	if err != nil {
 		return false, err
 	}
-	req.Header.Set("X-Pranor Vault-Replicated", "true")
+	req.Header.Set("X-Pranor-Vault-Replicated", "true")
 
 	req.SetBasicAuth(hm.accessKey, hm.secretKey)
 

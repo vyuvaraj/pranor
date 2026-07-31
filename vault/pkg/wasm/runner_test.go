@@ -1,4 +1,6 @@
-package import (
+package wasm
+
+import (
 	"bytes"
 	"context"
 	"os"
@@ -7,7 +9,7 @@ package import (
 	"strings"
 	"testing"
 
-	"github.com/vyuvaraj/pranor/vault/pkg/wasm"
+	
 )
 
 // buildWASM compiles a Go source file to a WASI binary using the host Go toolchain.
@@ -61,7 +63,7 @@ func main() {
 
 	ctx := context.Background()
 	input := []byte("hello Pranor Vault wasm")
-	output, err := wasm.Execute(ctx, wasmBytes, input, 64, 30)
+	output, err := Execute(ctx, wasmBytes, input, 64, 30)
 	if err != nil {
 		t.Fatalf("Execute failed: %v", err)
 	}
@@ -89,7 +91,7 @@ func main() {
 
 	ctx := context.Background()
 	input := []byte("Pranor Vault passthrough test 🚀")
-	output, err := wasm.Execute(ctx, wasmBytes, input, 64, 30)
+	output, err := Execute(ctx, wasmBytes, input, 64, 30)
 	if err != nil {
 		t.Fatalf("Execute failed: %v", err)
 	}
@@ -102,7 +104,7 @@ func main() {
 func TestExecute_InvalidWASM(t *testing.T) {
 	ctx := context.Background()
 	garbage := []byte("not-a-valid-wasm-binary")
-	_, err := wasm.Execute(ctx, garbage, nil, 64, 30)
+	_, err := Execute(ctx, garbage, nil, 64, 30)
 	if err == nil {
 		t.Error("expected error for invalid WASM bytes, got nil")
 	}
@@ -123,22 +125,22 @@ func main() {
 	wasmBytes := buildWASM(t, src)
 
 	ctx := context.Background()
-	_, err := wasm.Execute(ctx, wasmBytes, nil, 1 /* 1 MB limit */, 10)
+	_, err := Execute(ctx, wasmBytes, nil, 1 /* 1 MB limit */, 10)
 	if err == nil {
 		t.Error("expected memory-limit error, got nil")
 	}
 }
 
 func TestExecute_ServLangWASM(t *testing.T) {
-	wasmPath := "../../../Pranor/test_wasm.wasm"
+	wasmPath := "../../../Pranor/test_wasm"
 	wasmBytes, err := os.ReadFile(wasmPath)
 	if err != nil {
-		t.Skip("test_wasm.wasm not compiled, compile first using pranor build")
+		t.Skip("test_wasm not compiled, compile first using pranor build")
 	}
 
 	ctx := context.Background()
 	input := []byte("hello Pranor wasm transform")
-	output, err := wasm.Execute(ctx, wasmBytes, input, 64, 30)
+	output, err := Execute(ctx, wasmBytes, input, 64, 30)
 	if err != nil {
 		t.Fatalf("Execute failed: %v", err)
 	}
@@ -158,7 +160,7 @@ func TestExecute_ServLangComplexWASM(t *testing.T) {
 
 	ctx := context.Background()
 	input := []byte("complex hello")
-	output, err := wasm.Execute(ctx, wasmBytes, input, 64, 30)
+	output, err := Execute(ctx, wasmBytes, input, 64, 30)
 	if err != nil {
 		t.Fatalf("Execute failed: %v", err)
 	}

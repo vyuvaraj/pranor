@@ -1,4 +1,6 @@
-package import (
+package main
+
+import (
 	"flag"
 	"fmt"
 	"log"

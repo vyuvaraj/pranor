@@ -1,6 +1,8 @@
 //go:build !enterprise
 
-package import "net/http"
+package proxy
+
+import "net/http"
 
 // RunAIWAF is the OSS stub for the Self-Defending AI WAF (AI.10).
 // In OSS builds this is a no-op; the Enterprise Edition overlay provides

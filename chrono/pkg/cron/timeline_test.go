@@ -1,4 +1,6 @@
-package import (
+package cron
+
+import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"

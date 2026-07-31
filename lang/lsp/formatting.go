@@ -1,4 +1,6 @@
-package import (
+package lsp
+
+import (
 	"encoding/json"
 	"strings"
 )

@@ -1,4 +1,6 @@
-package import (
+package cluster
+
+import (
 	"context"
 	"encoding/json"
 	"os"

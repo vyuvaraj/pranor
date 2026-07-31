@@ -1,4 +1,6 @@
-package import (
+package servqueue
+
+import (
 	"bytes"
 	"encoding/json"
 	"flag"

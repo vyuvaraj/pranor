@@ -1,4 +1,6 @@
-package import (
+package ws
+
+import (
 	"fmt"
 	"net/http"
 	"sync"

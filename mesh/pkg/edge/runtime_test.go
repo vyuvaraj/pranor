@@ -1,4 +1,6 @@
-package import (
+package edge
+
+import (
 	"bytes"
 	"strings"
 	"testing"

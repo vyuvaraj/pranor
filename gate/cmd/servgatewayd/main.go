@@ -1,4 +1,6 @@
-package import (
+package servgatewayd
+
+import (
 	"flag"
 	"fmt"
 	"log"

@@ -1,4 +1,6 @@
-package import (
+package relay
+
+import (
 	"context"
 	"net/http"
 	"net/http/httptest"

@@ -1,4 +1,6 @@
-package import (
+package web
+
+import (
 	"crypto/rand"
 	"embed"
 	"encoding/hex"
@@ -56,15 +58,15 @@ func (wc *WebConsole) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if path == "/healthz" {
-		Pranor Core.HealthzHandler(w, r)
+		core.HealthzHandler(w, r)
 		return
 	}
 	if path == "/api/version" {
-		Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/vault", "1.0.0")(w, r)
+		core.VersionHandler("github.com/vyuvaraj/pranor/vault", "1.0.0")(w, r)
 		return
 	}
 	if path == "/readyz" {
-		Pranor Core.ReadyzHandler(w, r)
+		core.ReadyzHandler(w, r)
 		return
 	}
 

@@ -1,4 +1,6 @@
-package import (
+package runtime
+
+import (
 	"encoding/json"
 	"fmt"
 	"reflect"

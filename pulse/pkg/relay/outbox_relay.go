@@ -1,4 +1,6 @@
-package import (
+package relay
+
+import (
 	"bytes"
 	"encoding/json"
 	"fmt"

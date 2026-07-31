@@ -1,4 +1,6 @@
-package import (
+package hub
+
+import (
 	"context"
 	"encoding/json"
 	"io"

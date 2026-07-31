@@ -1,4 +1,6 @@
-package import (
+package main
+
+import (
 	"context"
 	"flag"
 	"log"

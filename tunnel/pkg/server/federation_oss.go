@@ -1,6 +1,8 @@
 //go:build !enterprise
 
-package import "net/http"
+package server
+
+import "net/http"
 
 // IsFederationSupported flags if federation is supported in this build.
 const IsFederationSupported = false

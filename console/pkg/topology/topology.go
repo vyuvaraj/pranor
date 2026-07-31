@@ -1,4 +1,6 @@
-package import (
+package topology
+
+import (
 	"encoding/json"
 	"fmt"
 	"io"

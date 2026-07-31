@@ -1,4 +1,6 @@
-package import (
+package storage
+
+import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"

@@ -1,4 +1,6 @@
-package import (
+package preview
+
+import (
 	"strings"
 	"testing"
 	"time"

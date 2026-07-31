@@ -1,4 +1,6 @@
-package import (
+package testing
+
+import (
 	"context"
 	"fmt"
 	"math/rand"

@@ -1,4 +1,6 @@
-package import (
+package ai
+
+import (
 	"strings"
 	"testing"
 )

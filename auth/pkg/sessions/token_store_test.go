@@ -1,4 +1,6 @@
-package import (
+package sessions
+
+import (
 	"encoding/hex"
 	"errors"
 	"sync"

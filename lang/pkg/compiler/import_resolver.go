@@ -1,4 +1,6 @@
-package import (
+package compiler
+
+import (
 	"path/filepath"
 	"strings"
 	"sync"

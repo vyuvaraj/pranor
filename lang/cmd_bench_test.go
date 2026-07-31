@@ -1,4 +1,6 @@
-package import (
+package lang
+
+import (
 	"net/http"
 	"net/http/httptest"
 	"os"

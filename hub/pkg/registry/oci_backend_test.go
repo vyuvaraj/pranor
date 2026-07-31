@@ -1,4 +1,6 @@
-package import (
+package registry
+
+import (
 	"context"
 	"crypto/sha256"
 	"fmt"

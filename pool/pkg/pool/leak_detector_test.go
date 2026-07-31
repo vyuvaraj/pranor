@@ -1,4 +1,6 @@
-package import (
+package pool
+
+import (
 	"sync"
 	"testing"
 	"time"

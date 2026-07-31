@@ -1,6 +1,8 @@
 //go:build !enterprise
 
-package import (
+package relay
+
+import (
 	"bytes"
 	"context"
 	"encoding/json"

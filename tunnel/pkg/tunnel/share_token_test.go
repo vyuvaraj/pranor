@@ -1,4 +1,6 @@
-package import (
+package tunnel
+
+import (
 	"net/http"
 	"net/http/httptest"
 	"testing"

@@ -1,6 +1,8 @@
 //go:build !enterprise
 
-package import (
+package k8s
+
+import (
 	"context"
 	"fmt"
 	"sync"

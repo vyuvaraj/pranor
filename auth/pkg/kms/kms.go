@@ -1,4 +1,6 @@
-package import (
+package kms
+
+import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"

@@ -1,4 +1,6 @@
-package import (
+package vhost
+
+import (
 	"fmt"
 	"sync"
 	"time"

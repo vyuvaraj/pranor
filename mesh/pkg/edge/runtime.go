@@ -1,4 +1,6 @@
-package import (
+package edge
+
+import (
 	"errors"
 	"fmt"
 	"strings"

@@ -1,4 +1,6 @@
-package import (
+package storage
+
+import (
 	"net/http"
 	"net/http/httptest"
 	"os"

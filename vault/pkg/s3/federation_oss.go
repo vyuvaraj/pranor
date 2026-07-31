@@ -1,6 +1,8 @@
 //go:build !enterprise
 
-package import "net/http"
+package s3
+
+import "net/http"
 
 // resolveFederatedBucket in OSS: federation disabled, always returns false.
 func (g *Gateway) resolveFederatedBucket(_ string) (string, bool) {

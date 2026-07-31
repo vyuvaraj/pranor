@@ -1,4 +1,6 @@
-package import (
+package engine
+
+import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"

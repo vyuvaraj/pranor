@@ -1,4 +1,6 @@
-package import (
+package mqtt
+
+import (
 	"context"
 	"fmt"
 	"io"

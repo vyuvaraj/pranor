@@ -1,4 +1,6 @@
-package import (
+package pb
+
+import (
 	"context"
 	"encoding/json"
 	"google.golang.org/grpc"

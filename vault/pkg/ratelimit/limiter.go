@@ -7,7 +7,9 @@
 //   - Tokens refill continuously at the configured rate (RPS).
 //   - Burst absorbs short spikes up to BurstSize requests.
 //   - Allow is O(1) amortised and goroutine-safe.
-package import (
+package ratelimit
+
+import (
 	"sync"
 	"time"
 )

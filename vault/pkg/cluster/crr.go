@@ -1,4 +1,6 @@
-package import (
+package cluster
+
+import (
 	"context"
 	"fmt"
 	"io"
@@ -139,10 +141,10 @@ func (c *CRRManager) replicateVersionToNode(ctx context.Context, bucket, key, ve
 	}
 	req.ContentLength = obj.Size
 	req.Header.Set("Content-Type", obj.ContentType)
-	req.Header.Set("X-Pranor Vault-Replicated", "true")
-	req.Header.Set("X-Pranor Vault-Region-Source", c.clusterMgr.localNode.Region)
-	req.Header.Set("X-Pranor Vault-Version-Id", versionID)
-	req.Header.Set("X-Pranor Vault-Timestamp", obj.LastModified.Format(time.RFC3339))
+	req.Header.Set("X-Pranor-Vault-Replicated", "true")
+	req.Header.Set("X-Pranor-Vault-Region-Source", c.clusterMgr.localNode.Region)
+	req.Header.Set("X-Pranor-Vault-Version-Id", versionID)
+	req.Header.Set("X-Pranor-Vault-Timestamp", obj.LastModified.Format(time.RFC3339))
 
 	req.SetBasicAuth(c.accessKey, c.secretKey)
 
@@ -172,8 +174,8 @@ func (c *CRRManager) replicateDeleteToNode(ctx context.Context, bucket, key, ver
 	if err != nil {
 		return err
 	}
-	req.Header.Set("X-Pranor Vault-Replicated", "true")
-	req.Header.Set("X-Pranor Vault-Region-Source", c.clusterMgr.localNode.Region)
+	req.Header.Set("X-Pranor-Vault-Replicated", "true")
+	req.Header.Set("X-Pranor-Vault-Region-Source", c.clusterMgr.localNode.Region)
 
 	req.SetBasicAuth(c.accessKey, c.secretKey)
 

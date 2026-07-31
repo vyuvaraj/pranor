@@ -1,4 +1,6 @@
-package import (
+package s3
+
+import (
 	"bytes"
 	"context"
 	"io"
@@ -44,8 +46,8 @@ func (m *partitionableNode) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	bucket, key := parts[0], parts[1]
 
-	if r.Header.Get("X-Pranor Vault-Shard-Index") != "" {
-		key = key + ".shard." + r.Header.Get("X-Pranor Vault-Shard-Index")
+	if r.Header.Get("X-Pranor-Vault-Shard-Index") != "" {
+		key = key + ".shard." + r.Header.Get("X-Pranor-Vault-Shard-Index")
 	}
 
 	if r.Method == "GET" {

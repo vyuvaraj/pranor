@@ -1,4 +1,6 @@
-package import (
+package distribution
+
+import (
 	"strings"
 	"testing"
 )

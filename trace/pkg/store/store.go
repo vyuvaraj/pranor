@@ -1,4 +1,6 @@
-package import (
+package store
+
+import (
 	"fmt"
 	"os"
 	"sort"

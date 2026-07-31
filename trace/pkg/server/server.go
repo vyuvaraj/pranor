@@ -1,4 +1,6 @@
-package import (
+package server
+
+import (
 	"encoding/json"
 	"fmt"
 	"net/http"

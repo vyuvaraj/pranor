@@ -4,7 +4,9 @@
 // subdomain, and then proxies incoming tunnel requests to a local HTTP
 // service. It provides colorful terminal output showing each proxied
 // request in real-time.
-package import (
+package client
+
+import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
@@ -711,7 +713,7 @@ func (c *Client) handleLocalReplay(w http.ResponseWriter, r *http.Request, id st
 	for k, v := range entry.RequestHeaders {
 		httpReq.Header.Set(k, v)
 	}
-	httpReq.Header.Set("X-Pranor Tunnel-Replayed", "true")
+	httpReq.Header.Set("X-Pranor-Tunnel-Replayed", "true")
 
 	resp, err := c.httpClient.Do(httpReq)
 	if err != nil {

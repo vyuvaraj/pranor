@@ -1,4 +1,6 @@
-package import "time"
+package analytics
+
+import "time"
 
 // QueryMetric tracks call count and cumulative latency for a single query pattern.
 type QueryMetric struct {

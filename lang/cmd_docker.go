@@ -1,4 +1,6 @@
-package import (
+package lang
+
+import (
 	"fmt"
 	"os"
 	"path/filepath"

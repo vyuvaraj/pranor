@@ -1,4 +1,6 @@
-package import (
+package mirror
+
+import (
 	"context"
 	"testing"
 	"time"

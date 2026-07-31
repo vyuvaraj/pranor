@@ -1,4 +1,6 @@
-package import (
+package auth
+
+import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"

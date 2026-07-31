@@ -1,4 +1,6 @@
-package import (
+package queue
+
+import (
 	"encoding/json"
 	"net/http"
 	"sync"

@@ -1,4 +1,6 @@
-package import (
+package main
+
+import (
 	"fmt"
 	"strings"
 	"sync"

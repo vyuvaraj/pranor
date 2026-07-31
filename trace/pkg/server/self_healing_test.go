@@ -1,4 +1,6 @@
-package import (
+package server
+
+import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"

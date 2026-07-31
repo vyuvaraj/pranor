@@ -1,4 +1,6 @@
-package import (
+package pulse
+
+import (
 	"context"
 	"fmt"
 	"os"

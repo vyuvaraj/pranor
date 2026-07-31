@@ -1,4 +1,6 @@
-package import (
+package daemon
+
+import (
 	"context"
 	"net/http"
 	"net/http/httptest"

@@ -1,4 +1,6 @@
-package import (
+package tracing
+
+import (
 	"encoding/hex"
 	"fmt"
 	"testing"

@@ -1,6 +1,8 @@
 //go:build !enterprise
 
-package import "net/http"
+package console
+
+import "net/http"
 
 // registerEnterpriseHandlers registers EE-gated endpoint stubs in the OSS build.
 // These return 403 Forbidden directing users to the Enterprise Edition.

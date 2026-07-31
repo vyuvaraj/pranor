@@ -1,4 +1,6 @@
-package import (
+package resolution
+
+import (
 	"archive/tar"
 	"bytes"
 	"compress/gzip"

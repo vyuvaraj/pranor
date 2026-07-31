@@ -1,4 +1,6 @@
-package import (
+package deploy
+
+import (
 	"context"
 	"fmt"
 	"sync"

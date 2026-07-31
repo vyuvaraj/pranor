@@ -1,4 +1,6 @@
-package import (
+package hnsw
+
+import (
 	"os"
 	"path/filepath"
 	"testing"

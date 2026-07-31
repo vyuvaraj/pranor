@@ -1,4 +1,6 @@
-package import (
+package s3wire
+
+import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"

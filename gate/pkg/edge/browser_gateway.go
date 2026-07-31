@@ -1,4 +1,6 @@
-package import (
+package edge
+
+import (
 	"context"
 	"encoding/json"
 	"fmt"

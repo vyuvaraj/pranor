@@ -1,4 +1,6 @@
-package import (
+package network
+
+import (
 	"testing"
 )
 

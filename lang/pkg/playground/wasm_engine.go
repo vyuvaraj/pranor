@@ -1,4 +1,6 @@
-package import (
+package playground
+
+import (
 	"context"
 	"encoding/json"
 	"fmt"

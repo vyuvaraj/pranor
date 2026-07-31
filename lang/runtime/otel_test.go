@@ -1,4 +1,6 @@
-package import (
+package runtime
+
+import (
 	"bytes"
 	"log"
 	"net/http"

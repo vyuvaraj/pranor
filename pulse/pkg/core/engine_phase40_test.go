@@ -1,4 +1,6 @@
-package import (
+package core
+
+import (
 	"bytes"
 	"strings"
 	"testing"

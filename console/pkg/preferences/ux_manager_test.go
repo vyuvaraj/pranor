@@ -1,4 +1,6 @@
-package import (
+package preferences
+
+import (
 	"bytes"
 	"encoding/json"
 	"net/http"

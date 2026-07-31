@@ -1,4 +1,6 @@
-package import (
+package profiler
+
+import (
 	"testing"
 	"time"
 )

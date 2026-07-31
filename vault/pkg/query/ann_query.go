@@ -1,4 +1,6 @@
-package import (
+package query
+
+import (
 	"encoding/json"
 	"fmt"
 	"math"

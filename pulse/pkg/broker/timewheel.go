@@ -1,4 +1,6 @@
-package import (
+package broker
+
+import (
 	"container/list"
 	"sync"
 	"time"

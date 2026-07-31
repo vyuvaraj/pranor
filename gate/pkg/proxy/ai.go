@@ -1,4 +1,6 @@
-package import (
+package proxy
+
+import (
 	"encoding/json"
 	"math"
 	"regexp"

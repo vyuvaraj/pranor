@@ -1,4 +1,6 @@
-package import (
+package sessions
+
+import (
 	"crypto/rand"
 	"encoding/hex"
 	"errors"

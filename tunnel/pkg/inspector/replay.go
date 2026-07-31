@@ -1,4 +1,6 @@
-package import (
+package inspector
+
+import (
 	"bytes"
 	"context"
 	"encoding/json"

@@ -1,4 +1,6 @@
-package import (
+package ratelimit
+
+import (
 	"testing"
 	"time"
 )

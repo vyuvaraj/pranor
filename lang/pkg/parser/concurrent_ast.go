@@ -1,4 +1,6 @@
-package import (
+package parser
+
+import (
 	"fmt"
 	"strings"
 )

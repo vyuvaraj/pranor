@@ -1,4 +1,6 @@
-package import (
+package telemetry
+
+import (
 	"bytes"
 	"encoding/json"
 	"net/http"

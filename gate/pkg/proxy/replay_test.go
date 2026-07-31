@@ -1,4 +1,6 @@
-package import (
+package proxy
+
+import (
 	"context"
 	"encoding/base64"
 	"encoding/json"

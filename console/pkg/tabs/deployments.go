@@ -1,4 +1,6 @@
-package import (
+package tabs
+
+import (
 	"encoding/json"
 	"fmt"
 	"log"

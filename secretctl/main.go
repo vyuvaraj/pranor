@@ -1,4 +1,6 @@
-package import (
+package secretctl
+
+import (
 	"bytes"
 	"encoding/json"
 	"flag"

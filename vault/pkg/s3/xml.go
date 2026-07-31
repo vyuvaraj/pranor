@@ -1,4 +1,6 @@
-package import "encoding/xml"
+package s3
+
+import "encoding/xml"
 
 const xmlNamespace = "http://s3.amazonaws.com/doc/2006-03-01/"
 

@@ -1,4 +1,6 @@
-package import (
+package platform
+
+import (
 	"context"
 	"encoding/json"
 	"fmt"

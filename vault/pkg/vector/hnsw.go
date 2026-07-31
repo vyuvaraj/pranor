@@ -4,7 +4,9 @@
 //
 // Algorithm reference: Malkov & Yashunin (2018), "Efficient and robust approximate
 // nearest neighbor search using Hierarchical Navigable Small World graphs."
-package import (
+package vector
+
+import (
 	"container/heap"
 	"errors"
 	"math"

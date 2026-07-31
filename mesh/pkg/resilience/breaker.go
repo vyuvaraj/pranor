@@ -1,4 +1,6 @@
-package import (
+package resilience
+
+import (
 	"errors"
 	"sync"
 	"time"

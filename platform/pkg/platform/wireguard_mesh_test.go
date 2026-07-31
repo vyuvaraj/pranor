@@ -1,4 +1,6 @@
-package import (
+package platform
+
+import (
 	"encoding/json"
 	"net/http/httptest"
 	"net"

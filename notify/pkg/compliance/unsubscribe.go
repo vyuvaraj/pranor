@@ -1,4 +1,6 @@
-package import (
+package compliance
+
+import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"

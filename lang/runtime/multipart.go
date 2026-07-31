@@ -1,6 +1,8 @@
 //go:build !wasm
 
-package import (
+package runtime
+
+import (
 	"io"
 	"mime"
 	"mime/multipart"

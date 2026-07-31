@@ -1,4 +1,6 @@
-package import (
+package daemon
+
+import (
 	"context"
 	"encoding/json"
 	"fmt"

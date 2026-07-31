@@ -1,4 +1,6 @@
-package import (
+package proxy
+
+import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"

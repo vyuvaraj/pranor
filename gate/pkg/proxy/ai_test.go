@@ -1,4 +1,6 @@
-package import (
+package proxy
+
+import (
 	"bytes"
 	"context"
 	"io"

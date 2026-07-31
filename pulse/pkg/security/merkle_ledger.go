@@ -1,6 +1,8 @@
 //go:build !enterprise
 
-package import (
+package security
+
+import (
 	"crypto/sha256"
 	"fmt"
 	"sync"

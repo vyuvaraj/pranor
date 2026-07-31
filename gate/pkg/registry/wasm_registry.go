@@ -1,4 +1,6 @@
-package import (
+package registry
+
+import (
 	"fmt"
 	"sync"
 	"time"

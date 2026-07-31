@@ -1,4 +1,6 @@
-package import (
+package proxy
+
+import (
 	"crypto/sha256"
 	"fmt"
 	"net/http"

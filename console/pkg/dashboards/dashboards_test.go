@@ -1,4 +1,6 @@
-package import (
+package dashboards
+
+import (
 	"bytes"
 	"encoding/json"
 	"net/http"

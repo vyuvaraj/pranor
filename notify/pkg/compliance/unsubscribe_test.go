@@ -1,4 +1,6 @@
-package import (
+package compliance
+
+import (
 	"net/http"
 	"net/http/httptest"
 	"strings"

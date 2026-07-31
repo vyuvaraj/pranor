@@ -1,4 +1,6 @@
-package import (
+package autotls
+
+import (
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/tls"

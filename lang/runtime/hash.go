@@ -1,6 +1,8 @@
 //go:build !wasm
 
-package import (
+package runtime
+
+import (
 	"crypto/hmac"
 	"crypto/md5"
 	"crypto/sha256"

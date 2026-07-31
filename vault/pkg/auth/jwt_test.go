@@ -1,4 +1,6 @@
-package import (
+package auth
+
+import (
 	"crypto/rand"
 	"testing"
 	"time"

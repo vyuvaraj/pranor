@@ -1,4 +1,6 @@
-package import (
+package wasm
+
+import (
 	"context"
 	"fmt"
 	"net/http"

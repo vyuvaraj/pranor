@@ -1,4 +1,6 @@
-package import (
+package webhook
+
+import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"

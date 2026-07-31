@@ -1,4 +1,6 @@
-package import (
+package metrics
+
+import (
 	"fmt"
 	"net/http"
 	"sync"

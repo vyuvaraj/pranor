@@ -1,4 +1,6 @@
-package import (
+package main
+
+import (
 	"crypto/rand"
 	"os"
 	"path/filepath"

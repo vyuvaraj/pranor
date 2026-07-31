@@ -1,4 +1,6 @@
-package import (
+package main
+
+import (
 	"errors"
 	"sync"
 	"testing"

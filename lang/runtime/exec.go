@@ -1,6 +1,8 @@
 //go:build !wasm
 
-package import (
+package runtime
+
+import (
 	"bytes"
 	"os/exec"
 	"runtime"

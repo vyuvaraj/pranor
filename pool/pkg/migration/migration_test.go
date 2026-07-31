@@ -1,4 +1,6 @@
-package import (
+package migration
+
+import (
 	"testing"
 )
 

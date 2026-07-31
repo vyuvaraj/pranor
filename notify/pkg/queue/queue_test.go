@@ -1,4 +1,6 @@
-package import (
+package queue
+
+import (
 	"os"
 	"testing"
 	"time"

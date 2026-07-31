@@ -1,4 +1,6 @@
-package import (
+package cli
+
+import (
 	"encoding/json"
 	"fmt"
 	"strings"

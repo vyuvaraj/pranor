@@ -1,4 +1,6 @@
-package import (
+package cache
+
+import (
 	"fmt"
 	"strings"
 	"sync"

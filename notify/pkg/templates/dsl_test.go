@@ -1,4 +1,6 @@
-package import (
+package templates
+
+import (
 	"strings"
 	"testing"
 )

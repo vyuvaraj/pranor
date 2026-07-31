@@ -1,4 +1,6 @@
-package import (
+package slo
+
+import (
 	"sync"
 	"time"
 )

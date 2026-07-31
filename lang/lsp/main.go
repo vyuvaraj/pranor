@@ -3,7 +3,9 @@
 // signature help, and document symbols for .pnr files.
 //
 // Usage: pranorLsp (communicates via stdin/stdout JSON-RPC)
-package import (
+package lsp
+
+import (
 	"bufio"
 	"encoding/json"
 	"fmt"

@@ -1,4 +1,6 @@
-package import (
+package inspector
+
+import (
 	"context"
 	"io"
 	"net/http"

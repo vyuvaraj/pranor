@@ -1,4 +1,6 @@
-package import (
+package tieredttl
+
+import (
 	"fmt"
 	"sync"
 	"testing"

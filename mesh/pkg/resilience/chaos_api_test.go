@@ -1,4 +1,6 @@
-package import (
+package resilience
+
+import (
 	"bytes"
 	"encoding/json"
 	"net/http"

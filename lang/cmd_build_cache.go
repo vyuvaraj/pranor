@@ -1,4 +1,6 @@
-package import (
+package lang
+
+import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"

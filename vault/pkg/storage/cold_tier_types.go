@@ -1,4 +1,6 @@
-package import "time"
+package storage
+
+import "time"
 
 // ColdTierConfig defines the options for the background cold-storage sweep.
 type ColdTierConfig struct {

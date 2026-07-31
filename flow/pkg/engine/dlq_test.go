@@ -1,4 +1,6 @@
-package import (
+package engine
+
+import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"

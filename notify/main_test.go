@@ -1,4 +1,6 @@
-package import (
+package main
+
+import (
 	"bufio"
 	"bytes"
 	"encoding/json"

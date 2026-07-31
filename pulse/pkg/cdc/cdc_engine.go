@@ -1,4 +1,6 @@
-package import (
+package cdc
+
+import (
 	"encoding/json"
 	"fmt"
 	"sync"

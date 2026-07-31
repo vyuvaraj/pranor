@@ -1,6 +1,8 @@
 //go:build !wasm
 
-package import (
+package runtime
+
+import (
 	"bufio"
 	"encoding/json"
 	"fmt"

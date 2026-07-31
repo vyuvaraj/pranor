@@ -1,4 +1,6 @@
-package import (
+package compiler
+
+import (
 	"fmt"
 	"os"
 	"path/filepath"

@@ -1,6 +1,8 @@
 //go:build !wasm
 
-package import (
+package runtime
+
+import (
 	"bytes"
 	"context"
 	"encoding/json"

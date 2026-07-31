@@ -1,4 +1,6 @@
-package import (
+package s3
+
+import (
 	"bytes"
 	"context"
 	"io"
@@ -80,7 +82,7 @@ func TestGatewayFailoverOnIntegrityCorruption(t *testing.T) {
 	
 	// Force replica get (normally the ring determines target hosts, but let's make sure
 	// it bypasses ring redirect if it's already on node-1, or we set a replication header)
-	getReq.Header.Set("X-Pranor Vault-Replicated", "true")
+	getReq.Header.Set("X-Pranor-Vault-Replicated", "true")
 
 	getResp, err := client.Do(getReq)
 	if err != nil {

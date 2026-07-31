@@ -1,4 +1,6 @@
-package import (
+package s3
+
+import (
 	"bytes"
 	"net/http"
 	"net/http/httptest"
@@ -13,7 +15,7 @@ func FuzzS3GatewayRequests(f *testing.F) {
 	// Setup seeds representing S3 APIs (HTTP verb, path, query, header key, header val, body payload)
 	f.Add("GET", "/testbucket", "location", "Authorization", "AWS4-HMAC-SHA256...", []byte{})
 	f.Add("PUT", "/testbucket", "versioning", "Content-Type", "application/xml", []byte(`<VersioningConfiguration><Status>Enabled</Status></VersioningConfiguration>`))
-	f.Add("POST", "/testbucket/myobject", "uploads", "X-Pranor Vault-Namespace", "tenant-1", []byte{})
+	f.Add("POST", "/testbucket/myobject", "uploads", "X-Pranor-Vault-Namespace", "tenant-1", []byte{})
 	f.Add("POST", "/testbucket/myobject", "transform=true&target-key=other&mem-limit=64&timeout=10", "Content-Type", "application/octet-stream", []byte{1, 2, 3})
 	f.Add("DELETE", "/testbucket/myobject", "versionId=123", "Authorization", "bad", []byte{})
 

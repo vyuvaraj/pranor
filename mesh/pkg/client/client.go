@@ -1,4 +1,6 @@
-package import (
+package client
+
+import (
 	"bytes"
 	"context"
 	"crypto/ecdsa"

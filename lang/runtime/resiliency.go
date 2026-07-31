@@ -1,4 +1,6 @@
-package import (
+package runtime
+
+import (
 	"errors"
 	"fmt"
 	"sync"

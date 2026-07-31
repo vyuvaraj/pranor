@@ -1,4 +1,6 @@
-package import (
+package tabs
+
+import (
 	"database/sql"
 	"encoding/json"
 	"fmt"

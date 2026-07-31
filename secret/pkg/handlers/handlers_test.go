@@ -1,4 +1,6 @@
-package import (
+package handlers
+
+import (
 	"bytes"
 	"encoding/json"
 	"net/http"

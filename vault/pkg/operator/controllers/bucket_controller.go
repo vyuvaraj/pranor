@@ -1,4 +1,6 @@
-package import (
+package controllers
+
+import (
 	"context"
 	"fmt"
 	"net/http"
@@ -91,7 +93,7 @@ func (r *PranorVaultBucketReconciler) ensureBucket(ctx context.Context, endpoint
 	}
 
 	if b.Spec.ContentAddressable {
-		req.Header.Set("X-Pranor Vault-Content-Addressable", "true")
+		req.Header.Set("X-Pranor-Vault-Content-Addressable", "true")
 	}
 
 	resp, err := client.Do(req)

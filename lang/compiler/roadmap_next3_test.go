@@ -1,4 +1,6 @@
-package import (
+package compiler
+
+import (
 	"strings"
 	"testing"
 	"github.com/vyuvaraj/pranor/lang/runtime"

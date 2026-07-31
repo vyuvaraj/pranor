@@ -13,7 +13,7 @@ func TestPranorPulseOPFSConnectionParsing(t *testing.T) {
 	defer os.Remove(tmpFile.Name())
 
 	srvContent := `
-broker "Pranor Pulse://opfs"
+broker "pranor://opfs"
 
 route "POST" "/events" (req) {
 	publish "user_events" req.body
@@ -28,7 +28,7 @@ route "POST" "/events" (req) {
 	outExe := "temp_pranorPulse_opfs.exe"
 	_, err = buildServNoExit(tmpFile.Name(), outExe, "", "", "", "")
 	if err != nil {
-		t.Fatalf("Build failed for Pranor Pulse://opfs broker target: %v", err)
+		t.Fatalf("Build failed for pranor://opfs broker target: %v", err)
 	}
 	_ = os.Remove(outExe)
 }

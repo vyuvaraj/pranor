@@ -45,8 +45,8 @@ changelog:
 
 dockers:
   - image_templates:
-      - "ghcr.io/vyuvaraj/servdb:{{.Tag}}"
-      - "ghcr.io/vyuvaraj/servdb:latest"
+      - "ghcr.io/vyuvaraj/pranor-db:{{.Tag}}"
+      - "ghcr.io/vyuvaraj/pranor-db:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
       - "--label=org.opencontainers.image.title=ServDB"

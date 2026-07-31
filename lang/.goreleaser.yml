@@ -22,7 +22,7 @@ builds:
 archives:
   - id: serv
     builds: [serv]
-    name_template: "serv_{{.Version}}_{{.Os}}_{{.Arch}}"
+    name_template: "pranor_{{.Version}}_{{.Os}}_{{.Arch}}"
     format_overrides:
       - goos: windows
         formats: [zip]

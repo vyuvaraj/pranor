@@ -568,11 +568,11 @@ func TestPranorGateWebhookBridge(t *testing.T) {
 	os.Setenv("PRANOR_DISCOVERY", fmt.Sprintf(`{"queue":"%s"}`, mockQueue.URL))
 	defer os.Unsetenv("PRANOR_DISCOVERY")
 
-	// 2. Setup gateway handler with Pranor Pulse:// target
+	// 2. Setup gateway handler with pranor:// target
 	routes := []proxy.Route{
 		{
 			Prefix: "/webhook/orders",
-			Target: "Pranor Pulse://orders",
+			Target: "pranor://orders",
 		},
 	}
 

@@ -127,7 +127,7 @@ func InitBroker(url string) {
 				LogInfo("Connected to AMQP/RabbitMQ broker successfully")
 			}
 		}
-	} else if strings.HasPrefix(url, "Pranor Pulse://opfs") || strings.HasPrefix(url, "Pranor Pulse://embedded") {
+	} else if strings.HasPrefix(url, "pranor://opfs") || strings.HasPrefix(url, "pranor://embedded") {
 		LogInfo("Initializing Pranor Pulse OPFS Embedded Event Broker (browser/edge WASM mode)")
 		return
 	} else if strings.HasPrefix(url, "kafka://") {

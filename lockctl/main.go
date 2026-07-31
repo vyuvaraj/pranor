@@ -49,7 +49,7 @@ func main() {
 
 	// Default Server URL from env if not set
 	if *serverURL == "" {
-		*serverURL = os.Getenv("SERVLOCK_URL")
+		*serverURL = os.Getenv("PRANOR_LOCK_URL")
 		if *serverURL == "" {
 			*serverURL = "http://localhost:8089"
 		}
@@ -57,7 +57,7 @@ func main() {
 
 	// Default API Key from env if not set
 	if *apiKey == "" {
-		*apiKey = os.Getenv("SERVLOCK_API_KEY")
+		*apiKey = os.Getenv("PRANOR_LOCK_API_KEY")
 	}
 
 	args := flag.Args()
@@ -194,8 +194,8 @@ Commands:
   health        Verify Pranor Lock service health
 
 Flags:
-  --url            Pranor Lock server URL (default: http://localhost:8089 or SERVLOCK_URL env)
-  --api-key        API key for authentication (or SERVLOCK_API_KEY env)
+  --url            Pranor Lock server URL (default: http://localhost:8089 or PRANOR_LOCK_URL env)
+  --api-key        API key for authentication (or PRANOR_LOCK_API_KEY env)
   --tenant         Tenant ID for isolation (default: default)
   --key            Lock key name (required for acquire/release/renew)
   --owner          Lock owner name (default: cli-user)

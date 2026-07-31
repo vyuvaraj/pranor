@@ -19,7 +19,7 @@ func TestServLangStdlibBindings(t *testing.T) {
 	// env: PRANOR_JWT_SECRET=test-key-123
 	database "servdb://pool-primary/testdb"
 	cache "Pranor Cache://localhost:6379"
-	broker "Pranor Pulse://localhost:8082"
+	broker "pranor://localhost:8082"
 
 	import { register, login } from "stdlib/auth.pnr"
 	import { query } from "stdlib/db.pnr"

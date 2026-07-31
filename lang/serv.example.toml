@@ -144,7 +144,7 @@ vm_cpus = 1
 # ---------------------------------------------------------------------------
 # When deploying as part of a Pranor stack, these settings wire the
 # service into the ecosystem automatically. Alternatively, set the
-# SERVVERSE_DISCOVERY env var to a JSON manifest at runtime.
+# PRANOR_DISCOVERY env var to a JSON manifest at runtime.
 
 [pranor]
 gate = "http://localhost:8080"

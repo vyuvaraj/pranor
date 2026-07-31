@@ -481,7 +481,7 @@ When `pranor build` or `pranor test` is executed, the compiler compiles the inpu
 Inside `.build`:
 1. `service.go`: Synthesizes code for all declarations, routes, and background routines.
 2. `main.go`: Provides the service runtime engine and entry points.
-3. `serv_test.go`: Aggregates the `test` blocks translated to Go's native testing framework.
+3. `pranor_test.go`: Aggregates the `test` blocks translated to Go's native testing framework.
 
 The output binary compiles out all debug logs and features a fast, low-overhead native runtime engine.
 

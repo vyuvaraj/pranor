@@ -76,7 +76,7 @@ route "GET" "/api/status" (req) {
 		mainSrv = `server "8080"
 
 // Connect to Pranor Pulse STOMP broker
-broker "Pranor Pulse://localhost:61613"
+broker "pranor://localhost:61613"
 
 // Subscribe to orders topic
 subscribe "orders" (msg) {

@@ -50,7 +50,7 @@ func main() {
 			Port:     *portFlag,
 			Backend:  "memory",
 			FilePath: "leases.json",
-			APIKey:   os.Getenv("SERVLOCK_API_KEY"),
+			APIKey:   os.Getenv("PRANOR_LOCK_API_KEY"),
 		}
 	}
 

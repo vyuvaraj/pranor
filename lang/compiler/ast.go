@@ -1419,7 +1419,7 @@ func (j *JobStmt) String() string {
 	return "job " + j.Name + " " + j.Spec + " " + j.Body.String() + "\n"
 }
 
-// RagStmt represents native RAG pipeline declaration: rag "Pranor Vault://docs" { ... }
+// RagStmt represents native RAG pipeline declaration: rag "pranor://docs" { ... }
 type RagStmt struct {
 	Token Token
 	Source string

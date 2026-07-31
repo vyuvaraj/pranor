@@ -72,11 +72,11 @@ func main() {
 		cfg = Config{
 			Port:            *portFlag,
 			FilePath:        *filePathFlag,
-			MasterKey:       os.Getenv("SERVSECRET_MASTER_KEY"),
+			MasterKey:       os.Getenv("PRANOR_SECRET_MASTER_KEY"),
 			APIKeys:         []string{},
 			CacheTTLMinutes: 5,
 		}
-		if envKeys := os.Getenv("SERVSECRET_API_KEYS"); envKeys != "" {
+		if envKeys := os.Getenv("PRANOR_SECRET_API_KEYS"); envKeys != "" {
 			cfg.APIKeys = strings.Split(envKeys, ",")
 		}
 	}

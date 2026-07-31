@@ -1086,7 +1086,7 @@ func (p *Parser) parseJobStatement() Statement {
 	return stmt
 }
 
-// parseRagStatement parses: rag "Pranor Vault://docs" { ... }
+// parseRagStatement parses: rag "pranor://docs" { ... }
 func (p *Parser) parseRagStatement() Statement {
 	stmt := &RagStmt{Token: p.curToken}
 	if !p.expectPeek(TOKEN_STRING) {

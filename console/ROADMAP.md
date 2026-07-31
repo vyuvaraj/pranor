@@ -34,7 +34,7 @@ This document outlines the design phases, completed modules, and upcoming featur
 * [x] **Audit Logs Dashboard**: Track administrative operations (e.g. WASM hot-swaps, route creations) in a secure immutable log table.
 
 ### Phase 5: Ecosystem Integration Depth (Q2 2027)
-* [x] **Service Discovery Config**: Replace hardcoded localhost ports with a `services.json` or `SERVVERSE_DISCOVERY` env-var discovery map — prerequisite for Docker Compose and Kubernetes deployments.
+* [x] **Service Discovery Config**: Replace hardcoded localhost ports with a `services.json` or `PRANOR_DISCOVERY` env-var discovery map — prerequisite for Docker Compose and Kubernetes deployments.
 * [x] **Shared OTel Collector Config**: Surface a single `PRANOR_OTLP_ENDPOINT` setting propagated to all connected services; enables unified cross-service trace correlation in one UI.
 * [x] **Pranor Pulse Topic Admin**: Full WAL inspection, delayed message queue view, and WASM transform debug panels in the dashboard.
 * [x] **Pranor Gate Multi-Replica Config Sync**: Write route configurations to a Pranor Vault-backed distributed bucket (`pranor-config`) instead of local JSON file.
@@ -153,7 +153,7 @@ UI panels for managing the proposed Pranor components (Pranor Auth, ServDB, Pran
 
 | # | Item | Effort | Description | Status |
 |---|------|--------|-------------|--------|
-| 13.1 | **Full service discovery** | Medium | Add `meshUrl`, `cronUrl`, `cloudUrl`, `cacheUrl`, `registryUrl`, `docsUrl` CLI flags + `ServDiscovery` struct fields. All 15 services discoverable via SERVVERSE_DISCOVERY. | [x] |
+| 13.1 | **Full service discovery** | Medium | Add `meshUrl`, `cronUrl`, `cloudUrl`, `cacheUrl`, `registryUrl`, `docsUrl` CLI flags + `ServDiscovery` struct fields. All 15 services discoverable via PRANOR_DISCOVERY. | [x] |
 | 13.2 | **Unified health aggregation** | Small | `/api/status` and alert monitoring loop must check ALL connected services, not just 4. Extend `handleStatus` and `startAlertMonitoring`. | [x] |
 | 13.3 | **Pranor Mesh panel** | Medium | Proxy `/api/proxy/mesh/`. Show live service registry, circuit breaker states, mTLS cert expiry, routing rules, canary split weights. | [x] |
 | 13.4 | **Pranor Chrono panel** | Medium | Proxy `/api/proxy/cron/`. Show scheduled jobs, next 5 run times, execution history, failure counts. Visual cron expression editor with next-runs preview. | [x] |

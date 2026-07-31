@@ -52,7 +52,7 @@ func main() {
 
 	// Default Server URL
 	if *serverURL == "" {
-		*serverURL = os.Getenv("SERVSECRET_URL")
+		*serverURL = os.Getenv("PRANOR_SECRET_URL")
 		if *serverURL == "" {
 			*serverURL = "http://localhost:8091"
 		}
@@ -60,7 +60,7 @@ func main() {
 
 	// Default API Key
 	if *apiKey == "" {
-		*apiKey = os.Getenv("SERVSECRET_API_KEY")
+		*apiKey = os.Getenv("PRANOR_SECRET_API_KEY")
 	}
 
 	args := flag.Args()
@@ -256,8 +256,8 @@ Commands:
   health        Verify Pranor Secret service health
 
 Flags:
-  --url            Pranor Secret server URL (default: http://localhost:8091 or SERVSECRET_URL env)
-  --api-key        API key for authentication (or SERVSECRET_API_KEY env)
+  --url            Pranor Secret server URL (default: http://localhost:8091 or PRANOR_SECRET_URL env)
+  --api-key        API key for authentication (or PRANOR_SECRET_API_KEY env)
   --tenant         Tenant ID for request isolation (default: default)
   --key            Secret key name (required for set/get/delete/rollback)
   --value          Secret value (required for set)

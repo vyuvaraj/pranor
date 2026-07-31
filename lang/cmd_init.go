@@ -109,7 +109,7 @@ services:
     volumes: ["store_data:/data"]
 
   servdb:
-    image: ghcr.io/vyuvaraj/servdb:latest
+    image: ghcr.io/vyuvaraj/pranor-db:latest
     ports: ["5432:5432"]
     environment:
       - POSTGRES_PASSWORD=Pranor

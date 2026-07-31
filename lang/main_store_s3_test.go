@@ -16,7 +16,7 @@ func TestStoreS3PipelineCompilation(t *testing.T) {
 import { put, get, transform } from "stdlib/store.pnr"
 
 test "store s3 pipeline transform call compilation" {
-	store "Pranor Vault://admin:adminsecret@localhost:8081/my-bucket"
+	store "pranor://admin:adminsecret@localhost:8081/my-bucket"
 
 	assert put("doc.txt", "hello") == true
 	assert get("doc.txt") == "hello"

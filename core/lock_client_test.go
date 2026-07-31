@@ -7,12 +7,12 @@ import (
 	"testing"
 	"time"
 
-	Pranor Core "github.com/vyuvaraj/pranor/core"
+	pranorcore "github.com/vyuvaraj/pranor/core"
 )
 
 // mockLockServer sets up an httptest.Server that implements the Pranor Mesh
 // /api/lock/* endpoints in memory using a trivial map — independent of the
-// real lock.Store so this test file lives entirely within Pranor Core.
+// real lock.Store so this test file lives entirely within pranorcore.
 func mockLockServer(t *testing.T) *httptest.Server {
 	t.Helper()
 
@@ -122,7 +122,7 @@ func TestHTTPLockClient_AcquireRelease(t *testing.T) {
 	srv := mockLockServer(t)
 	defer srv.Close()
 
-	c := Pranor Core.NewHTTPLockClient(srv.URL)
+	c := pranorcore.NewHTTPLockClient(srv.URL)
 
 	res, err := c.Acquire("invoice:42", "billing-svc", 5*time.Second)
 	if err != nil {
@@ -142,7 +142,7 @@ func TestHTTPLockClient_ConflictReturnsHeldBy(t *testing.T) {
 	srv := mockLockServer(t)
 	defer srv.Close()
 
-	c := Pranor Core.NewHTTPLockClient(srv.URL)
+	c := pranorcore.NewHTTPLockClient(srv.URL)
 	c.Acquire("shared-resource", "svc-a", 10*time.Second)
 
 	res, err := c.Acquire("shared-resource", "svc-b", 5*time.Second)
@@ -159,7 +159,7 @@ func TestHTTPLockClient_Extend(t *testing.T) {
 	srv := mockLockServer(t)
 	defer srv.Close()
 
-	c := Pranor Core.NewHTTPLockClient(srv.URL)
+	c := pranorcore.NewHTTPLockClient(srv.URL)
 	c.Acquire("job:99", "worker-1", 2*time.Second)
 
 	entry, err := c.Extend("job:99", "worker-1", 30*time.Second)
@@ -175,7 +175,7 @@ func TestHTTPLockClient_Status(t *testing.T) {
 	srv := mockLockServer(t)
 	defer srv.Close()
 
-	c := Pranor Core.NewHTTPLockClient(srv.URL)
+	c := pranorcore.NewHTTPLockClient(srv.URL)
 	c.Acquire("status-key", "svc-x", 5*time.Second)
 
 	entry, err := c.Status("status-key")
@@ -191,7 +191,7 @@ func TestHTTPLockClient_StatusNotHeld(t *testing.T) {
 	srv := mockLockServer(t)
 	defer srv.Close()
 
-	c := Pranor Core.NewHTTPLockClient(srv.URL)
+	c := pranorcore.NewHTTPLockClient(srv.URL)
 	entry, err := c.Status("no-such-key")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -203,7 +203,7 @@ func TestHTTPLockClient_StatusNotHeld(t *testing.T) {
 
 func TestWithLock_RunsFn(t *testing.T) {
 	ran := false
-	err := Pranor Core.WithLock(Pranor Core.NoOpLocker{}, "k", "owner", time.Second, func() error {
+	err := pranorcore.WithLock(pranorcore.NoOpLocker{}, "k", "owner", time.Second, func() error {
 		ran = true
 		return nil
 	})
@@ -217,8 +217,8 @@ func TestWithLock_RunsFn(t *testing.T) {
 
 func TestWithLockRetry_EventualSuccess(t *testing.T) {
 	attempts := 0
-	err := Pranor Core.WithLockRetry(
-		Pranor Core.NoOpLocker{}, "k", "owner",
+	err := pranorcore.WithLockRetry(
+		pranorcore.NoOpLocker{}, "k", "owner",
 		time.Second, 3, time.Millisecond,
 		func() error {
 			attempts++

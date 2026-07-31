@@ -156,7 +156,7 @@ func (c *HTTPLockClient) post(path string, body, out interface{}) error {
 // ──────────────────────────────────────────────────────────────────────────────
 // WithLock — functional helper for mutex-style usage
 //
-//	err := Pranor Core.WithLock(locker, "billing:invoice:42", myID, 10*time.Second, func() error {
+//	err := pranorcore.WithLock(locker, "billing:invoice:42", myID, 10*time.Second, func() error {
 //	    return processInvoice(42)
 //	})
 // ──────────────────────────────────────────────────────────────────────────────

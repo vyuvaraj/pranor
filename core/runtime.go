@@ -28,9 +28,9 @@ type MeshResolver interface {
 //
 // Usage:
 //
-//	rt := Pranor Core.NewRuntime("my-service",
-//	    Pranor Core.WithSelfAddr("http://localhost:8080"),
-//	    Pranor Core.WithMeshAddr("http://localhost:8089"),
+//	rt := pranorcore.NewRuntime("my-service",
+//	    pranorcore.WithSelfAddr("http://localhost:8080"),
+//	    pranorcore.WithMeshAddr("http://localhost:8089"),
 //	)
 //	// Wire the concrete mesh client (lives in Pranor Mesh/pkg/client)
 //	rt.SetResolver(meshclient.NewMeshTransport(meshAddr, 5*time.Second))

@@ -33,7 +33,7 @@ func GetClaims(r *http.Request) *Claims {
 	if mc == nil {
 		return nil
 	}
-	// Map middleware.Claims to Pranor Core.Claims
+	// Map middleware.Claims to pranorcore.Claims
 	return &Claims{
 		Username: mc.Username,
 		Roles:    mc.Roles,

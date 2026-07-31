@@ -21,7 +21,7 @@ func newTenantRequest(t *testing.T, tokenTenantID, headerTenantID string) *httpt
 	t.Setenv("PRANOR_JWT_SECRET", testSecret)
 
 	// Generate token with embedded tenantID
-	token, err := Pranor Core.GenerateUserToken(testSecret, "alice", []string{"user"}, tokenTenantID, time.Hour)
+	token, err := pranorcore.GenerateUserToken(testSecret, "alice", []string{"user"}, tokenTenantID, time.Hour)
 	if err != nil {
 		t.Fatalf("failed to generate token: %v", err)
 	}
@@ -33,10 +33,10 @@ func newTenantRequest(t *testing.T, tokenTenantID, headerTenantID string) *httpt
 	}
 
 	// Chain: AuthMiddleware → TenantMiddleware → echo handler
-	handler := Pranor Core.AuthMiddleware(
-		Pranor Core.TenantMiddleware(
+	handler := pranorcore.AuthMiddleware(
+		pranorcore.TenantMiddleware(
 			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				tid := Pranor Core.GetTenantID(r)
+				tid := pranorcore.GetTenantID(r)
 				w.WriteHeader(http.StatusOK)
 				w.Write([]byte(tid))
 			}),
@@ -97,19 +97,19 @@ func TestTenantMiddleware_NoTenantInToken(t *testing.T) {
 // when TenantMiddleware has not run (no value in context).
 func TestGetTenantID_Default(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
-	if tid := Pranor Core.GetTenantID(req); tid != "" {
+	if tid := pranorcore.GetTenantID(req); tid != "" {
 		t.Errorf("expected empty tenant ID without middleware, got '%s'", tid)
 	}
 }
 
 func BenchmarkTokenGenerationAndVerification(b *testing.B) {
 	secret := "my-perf-test-secret-key-32-chars-long"
-	token, err := Pranor Core.GenerateUserToken(secret, "alice", []string{"user"}, "tenant-a", time.Hour)
+	token, err := pranorcore.GenerateUserToken(secret, "alice", []string{"user"}, "tenant-a", time.Hour)
 	if err != nil {
 		b.Fatalf("failed to generate token: %v", err)
 	}
 
-	validator := Pranor Core.NewAuthValidator(secret, "", "")
+	validator := pranorcore.NewAuthValidator(secret, "", "")
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

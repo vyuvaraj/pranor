@@ -8,7 +8,7 @@ import (
 )
 
 func TestWorkspaceDependenciesAndModules(t *testing.T) {
-	// Root directory is 2 levels up from packages/Pranor Core/pkg
+	// Root directory is 2 levels up from core/pkg
 	rootDir, err := filepath.Abs(filepath.Join("..", "..", ".."))
 	if err != nil {
 		t.Fatalf("failed to locate root dir: %v", err)
@@ -38,7 +38,7 @@ func TestWorkspaceDependenciesAndModules(t *testing.T) {
 		"packages/Pranor Notify",
 		"packages/Pranor Flow",
 		"packages/Pranor Hub",
-		"packages/Pranor Core",
+		"core",
 		"packages/pranor-lockctl",
 		"packages/pranor-secretctl",
 	}

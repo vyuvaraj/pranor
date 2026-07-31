@@ -49,7 +49,7 @@ func TestJWKSVerification(t *testing.T) {
 	defer jwksServer.Close()
 
 	// 3. Generate an RS256 token signed by the private key
-	token, err := Pranor Core.GenerateUserTokenRS256(privKey, kid, "bob", []string{"user"}, "tenant123", time.Hour)
+	token, err := pranorcore.GenerateUserTokenRS256(privKey, kid, "bob", []string{"user"}, "tenant123", time.Hour)
 	if err != nil {
 		t.Fatalf("failed to generate RS256 token: %v", err)
 	}
@@ -59,8 +59,8 @@ func TestJWKSVerification(t *testing.T) {
 	t.Setenv("PRANOR_JWT_SECRET", "") // Unset HS256 secret
 
 	// 5. Build handler chain
-	handler := Pranor Core.AuthMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		claims := Pranor Core.GetClaims(r)
+	handler := pranorcore.AuthMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		claims := pranorcore.GetClaims(r)
 		if claims == nil {
 			http.Error(w, "no claims", http.StatusUnauthorized)
 			return

@@ -52,7 +52,7 @@ pranor run main.pnr --watch
 
 ### 2. Start the Pranor Gate API Gateway
 ```bash
-servgate --config gateway.json
+pranor-gate --config gateway.json
 ```
 
 Open `http://localhost:8080/dashboard` in your browser to view the interactive real-time visualizer!

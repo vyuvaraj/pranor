@@ -49,8 +49,8 @@ This document outlines the planned evolutionary stages of **Pranor Gate** to evo
 ---
 
 ## Phase 6: Traffic Replay & Developer Tooling (Completed)
-- [x] **Traffic Replay & Validation**: Implement a dry-run utility (`servgate replay`) to replay production traffic logs against new middleware versions before deployment.
-- [x] **One-Command Middleware Marketplace**: Install public or private WASM modules via `servgate install <name>` (resolving from `Pranor Hub`).
+- [x] **Traffic Replay & Validation**: Implement a dry-run utility (`pranor-gate replay`) to replay production traffic logs against new middleware versions before deployment.
+- [x] **One-Command Middleware Marketplace**: Install public or private WASM modules via `pranor-gate install <name>` (resolving from `Pranor Hub`).
 - [x] **Native Serv Language Compilation**: Direct compiler toolchain support in `Pranor` to build middleware (`pranor build --target wasm`).
 
 ---

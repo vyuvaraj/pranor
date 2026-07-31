@@ -1,7 +1,7 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: servqueueclusters.serv.dev
+  name: pranor-pulseclusters.serv.dev
 spec:
   group: serv.dev
   versions:
@@ -20,7 +20,7 @@ spec:
                   default: 3
                 image:
                   type: string
-                  default: "ghcr.io/vyuvaraj/servqueue:latest"
+                  default: "ghcr.io/vyuvaraj/pranor-pulse:latest"
                 storageSize:
                   type: string
                   default: "10Gi"
@@ -39,8 +39,8 @@ spec:
                   type: integer
   scope: Namespaced
   names:
-    plural: servqueueclusters
-    singular: servqueuecluster
+    plural: pranor-pulseclusters
+    singular: pranor-pulsecluster
     kind: Pranor PulseCluster
     shortNames:
       - sqc

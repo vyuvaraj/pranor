@@ -8,7 +8,7 @@ package storage
 //
 // The SQLiteStore implements the same Append/Recover API as the binary WAL
 // so the broker engine can swap backends via an environment variable:
-//   SERVQUEUE_STORAGE_BACKEND=sqlite  (default: binary WAL)
+//   PRANOR_PULSE_STORAGE_BACKEND=sqlite  (default: binary WAL)
 //
 // Usage from BrokerEngine:
 //   store, _ := storage.OpenSQLiteStore("Pranor Pulse.db")
@@ -207,7 +207,7 @@ func (s *SQLiteStore) Close() error {
 // IsSQLiteAvailable returns true if the pure-Go SQLite driver binary is
 // loadable — used to guard backend selection at startup.
 func IsSQLiteAvailable() bool {
-	tmpPath := os.TempDir() + "/servqueue_probe.db"
+	tmpPath := os.TempDir() + "/pranor-pulse_probe.db"
 	db, err := sql.Open("sqlite", tmpPath)
 	if err != nil {
 		return false

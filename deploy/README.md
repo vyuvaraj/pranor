@@ -1,7 +1,7 @@
 # Pranor Deploy
 
 ```bash
-docker run -p 8088:8088 ghcr.io/vyuvaraj/servcloud:latest
+docker run -p 8088:8088 ghcr.io/vyuvaraj/pranor-deploy:latest
 ```
 
 `Pranor Deploy` is the managed deployment platform and process orchestrator for the **Pranor** ecosystem. It provides PaaS-style service deployment, blue/green and canary strategies, per-branch preview environments, container isolation, and deep integration with `Pranor Gate` for automatic routing registration.
@@ -109,29 +109,29 @@ Developer API Request
 
 ### Direct Deploy
 ```bash
-curl -X POST http://servcloud:8088/api/v1/deployments \
+curl -X POST http://pranor-deploy:8088/api/v1/deployments \
   -d '{"service": "orders-api", "image": "ghcr.io/myorg/orders:v2.1.0", "strategy": "direct", "port": 3000}'
 ```
 
 ### Blue/Green Deploy
 ```bash
 # Deploy green (new version)
-curl -X POST http://servcloud:8088/api/v1/deployments \
+curl -X POST http://pranor-deploy:8088/api/v1/deployments \
   -d '{"service": "orders-api", "image": "ghcr.io/myorg/orders:v2.2.0", "strategy": "blue-green"}'
 # → { "id": "dep-456", "status": "green-standby", "green_url": "http://green-orders:3001" }
 
 # Cut over all traffic to green
-curl -X POST http://servcloud:8088/api/v1/deployments/dep-456/cutover
+curl -X POST http://pranor-deploy:8088/api/v1/deployments/dep-456/cutover
 # → Pranor Gate atomically switches all /api/orders traffic to green
 
 # Rollback if needed
-curl -X POST http://servcloud:8088/api/v1/deployments/dep-456/rollback
+curl -X POST http://pranor-deploy:8088/api/v1/deployments/dep-456/rollback
 ```
 
 ### Canary Deploy
 ```bash
 # Deploy canary at 5% traffic
-curl -X POST http://servcloud:8088/api/v1/deployments \
+curl -X POST http://pranor-deploy:8088/api/v1/deployments \
   -d '{
     "service": "orders-api",
     "image": "ghcr.io/myorg/orders:v2.3.0",
@@ -141,7 +141,7 @@ curl -X POST http://servcloud:8088/api/v1/deployments \
   }'
 
 # Progressive promotion: 5% → 25% → 50% → 100%
-curl -X POST http://servcloud:8088/api/v1/deployments/dep-789/promote \
+curl -X POST http://pranor-deploy:8088/api/v1/deployments/dep-789/promote \
   -d '{"weight": 25}'
 ```
 
@@ -151,12 +151,12 @@ curl -X POST http://servcloud:8088/api/v1/deployments/dep-789/promote \
 
 ```bash
 # Create preview environment for a feature branch
-curl -X POST http://servcloud:8088/api/v1/previews \
+curl -X POST http://pranor-deploy:8088/api/v1/previews \
   -d '{"branch": "feature/new-checkout", "ttl": "7d"}'
 # → { "id": "prev-001", "url": "https://feature-new-checkout.preview.pranor.net", "expires_at": "..." }
 
 # Destroy preview
-curl -X DELETE http://servcloud:8088/api/v1/previews/prev-001
+curl -X DELETE http://pranor-deploy:8088/api/v1/previews/prev-001
 ```
 
 ---
@@ -165,20 +165,20 @@ curl -X DELETE http://servcloud:8088/api/v1/previews/prev-001
 
 ```bash
 docker run -p 8088:8088 \
-  -e SERVCLOUD_SERVGATE_URL=http://servgate:8080 \
-  -e SERVCLOUD_OTEL_ENDPOINT=http://servtrace:4318 \
-  -e SERVCLOUD_CONTAINER_RUNTIME=docker \
+  -e PRANOR_DEPLOY_PRANOR_GATE_URL=http://pranor-gate:8080 \
+  -e PRANOR_DEPLOY_OTEL_ENDPOINT=http://pranor-trace:4318 \
+  -e PRANOR_DEPLOY_CONTAINER_RUNTIME=docker \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  ghcr.io/vyuvaraj/servcloud:latest
+  ghcr.io/vyuvaraj/pranor-deploy:latest
 ```
 
 ### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SERVCLOUD_PORT` | `8088` | HTTP listener port |
-| `SERVCLOUD_SERVGATE_URL` | — | Pranor Gate URL for route registration |
-| `SERVCLOUD_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
-| `SERVCLOUD_CONTAINER_RUNTIME` | `process` | `process` (raw) or `docker` (OCI container) |
-| `SERVCLOUD_PREVIEW_DOMAIN` | — | Base domain for preview environments |
-| `SERVCLOUD_PREVIEW_TTL` | `7d` | Default preview environment TTL |
+| `PRANOR_DEPLOY_PORT` | `8088` | HTTP listener port |
+| `PRANOR_DEPLOY_PRANOR_GATE_URL` | — | Pranor Gate URL for route registration |
+| `PRANOR_DEPLOY_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
+| `PRANOR_DEPLOY_CONTAINER_RUNTIME` | `process` | `process` (raw) or `docker` (OCI container) |
+| `PRANOR_DEPLOY_PREVIEW_DOMAIN` | — | Base domain for preview environments |
+| `PRANOR_DEPLOY_PREVIEW_TTL` | `7d` | Default preview environment TTL |

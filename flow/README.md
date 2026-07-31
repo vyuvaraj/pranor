@@ -1,7 +1,7 @@
 # Pranor Flow
 
 ```bash
-docker run -p 8089:8089 ghcr.io/vyuvaraj/servflow:latest
+docker run -p 8089:8089 ghcr.io/vyuvaraj/pranor-flow:latest
 ```
 
 `Pranor Flow` is a stateful, DAG-based workflow orchestrator and Saga compensation engine for the **Pranor** ecosystem. It supports durable execution with checkpointing, WASM step functions, sub-workflow composition, per-execution tracing, and a Dead Letter Workflow Queue with manual retry.
@@ -123,7 +123,7 @@ Execute Workflow (POST /api/workflows/execute)
 ## Defining Workflows
 
 ```bash
-curl -X POST http://servflow:8089/api/workflows/define \
+curl -X POST http://pranor-flow:8089/api/workflows/define \
   -d '{
     "name": "order-fulfillment",
     "steps": [
@@ -154,7 +154,7 @@ curl -X POST http://servflow:8089/api/workflows/define \
 Execute it:
 
 ```bash
-curl -X POST http://servflow:8089/api/workflows/execute \
+curl -X POST http://pranor-flow:8089/api/workflows/execute \
   -d '{"workflow": "order-fulfillment", "input": {"order_id": "ord-123", "amount": 99.99}}'
 # → { "instance_id": "wf-abc-001", "status": "running" }
 ```
@@ -177,7 +177,7 @@ If `charge-payment` fails after `reserve-inventory` succeeded:
 ## WASM Step Functions
 
 ```bash
-curl -X POST http://servflow:8089/api/workflows/define \
+curl -X POST http://pranor-flow:8089/api/workflows/define \
   -d '{
     "name": "ml-pipeline",
     "steps": [
@@ -203,7 +203,7 @@ curl -X POST http://servflow:8089/api/workflows/define \
 ## Sub-workflow Composition
 
 ```bash
-curl -X POST http://servflow:8089/api/workflows/define \
+curl -X POST http://pranor-flow:8089/api/workflows/define \
   -d '{
     "name": "full-onboarding",
     "steps": [
@@ -225,18 +225,18 @@ curl -X POST http://servflow:8089/api/workflows/define \
 
 ```bash
 docker run -p 8089:8089 \
-  -e SERVFLOW_CHECKPOINT_DIR=/data/checkpoints \
-  -e SERVFLOW_OTEL_ENDPOINT=http://servtrace:4318 \
+  -e PRANOR_FLOW_CHECKPOINT_DIR=/data/checkpoints \
+  -e PRANOR_FLOW_OTEL_ENDPOINT=http://pranor-trace:4318 \
   -v flow-data:/data \
-  ghcr.io/vyuvaraj/servflow:latest
+  ghcr.io/vyuvaraj/pranor-flow:latest
 ```
 
 ### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SERVFLOW_PORT` | `8089` | HTTP listener port |
-| `SERVFLOW_CHECKPOINT_DIR` | `./checkpoints` | Directory for workflow state checkpoint files |
-| `SERVFLOW_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
-| `SERVFLOW_WASM_MODULES_DIR` | `./wasm` | Directory for WASM step module files |
-| `SERVFLOW_DLQ_MAX_SIZE` | `1000` | Max workflows retained in DLQ |
+| `PRANOR_FLOW_PORT` | `8089` | HTTP listener port |
+| `PRANOR_FLOW_CHECKPOINT_DIR` | `./checkpoints` | Directory for workflow state checkpoint files |
+| `PRANOR_FLOW_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
+| `PRANOR_FLOW_WASM_MODULES_DIR` | `./wasm` | Directory for WASM step module files |
+| `PRANOR_FLOW_DLQ_MAX_SIZE` | `1000` | Max workflows retained in DLQ |

@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 echo ""
-echo "  servcron installed successfully"
-echo "  Run: servcron --version"
+echo "  pranor-chrono installed successfully"
+echo "  Run: pranor-chrono --version"
 echo "  Docs: https://github.com/vyuvaraj/Pranor Chrono"
 echo ""

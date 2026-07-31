@@ -49,7 +49,7 @@ S3 & Data Commands:
   placement  <bucket> <key>          Find the node owning a specific key
 
 Admin & Daemon Commands:
-  status                              Check status of running servstored daemon
+  status                              Check status of running pranor-vaultd daemon
   admin-buckets                       List buckets via admin API
   admin-create-bucket <bucket>        Create a bucket via admin API
   bench [flags]                       Run built-in benchmark test (--ops, --concurrency, --object-size)
@@ -610,7 +610,7 @@ func cmdAdminStatus(args []string) error {
 	adminURL := strings.TrimRight(adminEndpoint, "/") + "/api/v1/health"
 	resp, err := client.Get(adminURL)
 	if err != nil {
-		return fmt.Errorf("error connecting to servstored daemon at %s: %w", adminURL, err)
+		return fmt.Errorf("error connecting to pranor-vaultd daemon at %s: %w", adminURL, err)
 	}
 	defer resp.Body.Close()
 

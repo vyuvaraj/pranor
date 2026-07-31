@@ -1,7 +1,7 @@
 # Pranor Cache
 
 ```bash
-docker run -p 8084:8084 ghcr.io/vyuvaraj/servcache:latest
+docker run -p 8084:8084 ghcr.io/vyuvaraj/pranor-cache:latest
 ```
 
 Pranor Cache is the distributed, high-performance caching service for the Pranor ecosystem. It exposes a low-latency REST API backed by pluggable engines (in-memory or Redis) with native support for OpenTelemetry context propagation, read-through/write-behind database synchronisation, key pattern invalidation, and multi-region replication.

@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 echo ""
-echo "  servmail installed successfully"
-echo "  Run: servmail --version"
+echo "  pranor-notify installed successfully"
+echo "  Run: pranor-notify --version"
 echo "  Docs: https://github.com/vyuvaraj/Pranor Notify"
 echo ""

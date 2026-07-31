@@ -101,7 +101,7 @@ PORT = "8080"
 LOG_LEVEL = "warn"
 DATABASE_URL = "postgres://prod-host:5432/tasks"
 CACHE_URL = "redis://prod-redis:6379"
-BROKER_URL = "servqueue://prod-queue:61613"
+BROKER_URL = "pranor-pulse://prod-queue:61613"
 
 # ---------------------------------------------------------------------------
 # [deploy] — Deployment defaults

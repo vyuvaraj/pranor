@@ -1,4 +1,4 @@
-project_name: servmail
+project_name: pranor-notify
 version: 2
 
 before:
@@ -6,9 +6,9 @@ before:
     - go mod tidy
 
 builds:
-  - id: servmail
+  - id: pranor-notify
     main: .
-    binary: servmail
+    binary: pranor-notify
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     env:
@@ -20,9 +20,9 @@ builds:
       - -X main.buildDate={{.Date}}
 
 archives:
-  - id: servmail
-    builds: [servmail]
-    name_template: "servmail_{{.Version}}_{{.Os}}_{{.Arch}}"
+  - id: pranor-notify
+    builds: [pranor-notify]
+    name_template: "pranor-notify_{{.Version}}_{{.Os}}_{{.Arch}}"
     format_overrides:
       - goos: windows
         formats: [zip]
@@ -45,8 +45,8 @@ changelog:
 
 dockers:
   - image_templates:
-      - "ghcr.io/vyuvaraj/servmail:{{.Tag}}"
-      - "ghcr.io/vyuvaraj/servmail:latest"
+      - "ghcr.io/vyuvaraj/pranor-notify:{{.Tag}}"
+      - "ghcr.io/vyuvaraj/pranor-notify:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
       - "--label=org.opencontainers.image.title=Pranor Notify"
@@ -55,7 +55,7 @@ dockers:
       - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Notify"
 
 brews:
-  - name: servmail
+  - name: pranor-notify
     repository:
       owner: vyuvaraj
       name: homebrew-serv
@@ -63,9 +63,9 @@ brews:
     description: "Email delivery and SMTP service from the ServVerse platform"
     license: "Apache-2.0"
     install: |
-      bin.install "servmail"
+      bin.install "pranor-notify"
     test: |
-      system "#{bin}/servmail", "--version"
+      system "#{bin}/pranor-notify", "--version"
 
 scoops:
   - repository:
@@ -77,9 +77,9 @@ scoops:
 
 
 nfpms:
-  - id: servmail-pkg
-    package_name: servmail
-    builds: [servmail]
+  - id: pranor-notify-pkg
+    package_name: pranor-notify
+    builds: [pranor-notify]
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Notify
     maintainer: Yuvaraj <vyuvaraj@github.com>
@@ -91,7 +91,7 @@ nfpms:
     bindir: /usr/local/bin
     contents:
       - src: README.md
-        dst: /usr/share/doc/servmail/README.md
+        dst: /usr/share/doc/pranor-notify/README.md
     scripts:
       postinstall: scripts/postinstall.sh
       preremove: scripts/preremove.sh

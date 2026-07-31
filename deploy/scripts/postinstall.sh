@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 echo ""
-echo "  servcloud installed successfully"
-echo "  Run: servcloud --version"
+echo "  pranor-deploy installed successfully"
+echo "  Run: pranor-deploy --version"
 echo "  Docs: https://github.com/vyuvaraj/Pranor Deploy"
 echo ""

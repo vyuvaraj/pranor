@@ -1,7 +1,7 @@
 # Pranor Mesh
 
 ```bash
-docker run -p 8095:8095 ghcr.io/vyuvaraj/servmesh:latest
+docker run -p 8095:8095 ghcr.io/vyuvaraj/pranor-mesh:latest
 ```
 
 `Pranor Mesh` is the intelligent service mesh for the **Pranor** ecosystem, providing latency-aware load balancing, distributed rate limiting, live topology telemetry, and chaos fault injection — all without requiring sidecar proxies.
@@ -79,11 +79,11 @@ Service A ──→ Pranor Mesh Router ──→ Service B (selected by P2C)
 
 ```bash
 # Register backends for a service
-curl -X POST http://servmesh:8095/api/v1/services \
+curl -X POST http://pranor-mesh:8095/api/v1/services \
   -d '{"name": "orders-api", "endpoints": ["http://orders-1:3000", "http://orders-2:3000", "http://orders-3:3000"], "locality_zone": "us-east-1a"}'
 
-# Route a request (servmesh selects backend via P2C)
-curl -X POST http://servmesh:8095/api/v1/route \
+# Route a request (pranor-mesh selects backend via P2C)
+curl -X POST http://pranor-mesh:8095/api/v1/route \
   -d '{"service": "orders-api", "caller_zone": "us-east-1a"}'
 # → { "selected_endpoint": "http://orders-2:3000", "latency_p99_ms": 12 }
 ```
@@ -94,7 +94,7 @@ curl -X POST http://servmesh:8095/api/v1/route \
 
 ```bash
 # Set global rate limit for a service
-curl -X POST http://servmesh:8095/api/v1/ratelimit/policy \
+curl -X POST http://pranor-mesh:8095/api/v1/ratelimit/policy \
   -d '{"service": "orders-api", "requests_per_second": 500, "burst": 1000}'
 ```
 
@@ -112,7 +112,7 @@ Node 3 ──┘    (shared global counter)
 
 ```bash
 # Inject 200ms latency into 30% of calls to payments-api
-curl -X POST http://servmesh:8095/api/v1/chaos/inject \
+curl -X POST http://pranor-mesh:8095/api/v1/chaos/inject \
   -d '{
     "target_service": "payments-api",
     "fault_type": "latency",
@@ -122,11 +122,11 @@ curl -X POST http://servmesh:8095/api/v1/chaos/inject \
   }'
 
 # Inject 5% HTTP 503 errors
-curl -X POST http://servmesh:8095/api/v1/chaos/inject \
+curl -X POST http://pranor-mesh:8095/api/v1/chaos/inject \
   -d '{"target_service": "inventory-api", "fault_type": "error", "error_code": 503, "percentage": 5, "duration": "2m"}'
 
 # Abort an experiment
-curl -X POST http://servmesh:8095/api/v1/chaos/abort/exp-123
+curl -X POST http://pranor-mesh:8095/api/v1/chaos/abort/exp-123
 ```
 
 ---
@@ -135,21 +135,21 @@ curl -X POST http://servmesh:8095/api/v1/chaos/abort/exp-123
 
 ```bash
 docker run -p 8095:8095 \
-  -e SERVMESH_SERVCACHE_URL=http://servcache:6379 \
-  -e SERVMESH_SERVCONSOLE_WS_URL=ws://servconsole:8083/ws/topology \
-  -e SERVMESH_OTEL_ENDPOINT=http://servtrace:4318 \
-  ghcr.io/vyuvaraj/servmesh:latest
+  -e PRANOR_MESH_PRANOR_CACHE_URL=http://pranor-cache:6379 \
+  -e PRANOR_MESH_PRANOR_CONSOLE_WS_URL=ws://pranor-console:8083/ws/topology \
+  -e PRANOR_MESH_OTEL_ENDPOINT=http://pranor-trace:4318 \
+  ghcr.io/vyuvaraj/pranor-mesh:latest
 ```
 
 ### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SERVMESH_PORT` | `8095` | HTTP listener port |
-| `SERVMESH_SERVCACHE_URL` | — | Pranor Cache URL for distributed rate limit state |
-| `SERVMESH_SERVCONSOLE_WS_URL` | — | Pranor Console WebSocket URL for topology push |
-| `SERVMESH_LOCALITY_ZONE` | — | Availability zone for locality-preference routing |
-| `SERVMESH_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
+| `PRANOR_MESH_PORT` | `8095` | HTTP listener port |
+| `PRANOR_MESH_PRANOR_CACHE_URL` | — | Pranor Cache URL for distributed rate limit state |
+| `PRANOR_MESH_PRANOR_CONSOLE_WS_URL` | — | Pranor Console WebSocket URL for topology push |
+| `PRANOR_MESH_LOCALITY_ZONE` | — | Availability zone for locality-preference routing |
+| `PRANOR_MESH_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
 
 ---
 

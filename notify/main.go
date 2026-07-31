@@ -89,14 +89,14 @@ func initStore() {
 	templateStore = storage.NewPranorVaultTemplateStore(client)
 	loadTemplatesFromStore()
 
-	queuePath := os.Getenv("SERVMAIL_QUEUE_PATH")
+	queuePath := os.Getenv("PRANOR_NOTIFY_QUEUE_PATH")
 	if queuePath == "" {
 		queuePath = "Pranor Notify-queue.jsonl"
 	}
 	mailDiskQueue = queue.NewDiskQueue(queuePath)
 	log.Printf("[INFO] Pranor Notify disk queue initialized: %s", queuePath)
 
-	retentionDaysStr := os.Getenv("SERVMAIL_RETENTION_DAYS")
+	retentionDaysStr := os.Getenv("PRANOR_NOTIFY_RETENTION_DAYS")
 	if retentionDaysStr != "" {
 		if days, err := strconv.Atoi(retentionDaysStr); err == nil && days > 0 {
 			go func() {

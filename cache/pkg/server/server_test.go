@@ -252,8 +252,8 @@ func TestServerMuxMetrics(t *testing.T) {
 	if rr.Code != http.StatusOK {
 		t.Errorf("expected 200 OK, got %d", rr.Code)
 	}
-	if !strings.Contains(rr.Body.String(), "servcache_hits_total") {
-		t.Errorf("expected metric 'servcache_hits_total' in metrics page")
+	if !strings.Contains(rr.Body.String(), "pranor-cache_hits_total") {
+		t.Errorf("expected metric 'pranor-cache_hits_total' in metrics page")
 	}
 }
 

@@ -1,4 +1,4 @@
-project_name: servtunnel
+project_name: pranor-tunnel
 version: 2
 
 before:
@@ -6,9 +6,9 @@ before:
     - go mod tidy
 
 builds:
-  - id: servtunnel
+  - id: pranor-tunnel
     main: .
-    binary: servtunnel
+    binary: pranor-tunnel
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     env:
@@ -20,9 +20,9 @@ builds:
       - -X main.buildDate={{.Date}}
 
 archives:
-  - id: servtunnel
-    builds: [servtunnel]
-    name_template: "servtunnel_{{.Version}}_{{.Os}}_{{.Arch}}"
+  - id: pranor-tunnel
+    builds: [pranor-tunnel]
+    name_template: "pranor-tunnel_{{.Version}}_{{.Os}}_{{.Arch}}"
     format_overrides:
       - goos: windows
         formats: [zip]
@@ -45,8 +45,8 @@ changelog:
 
 dockers:
   - image_templates:
-      - "ghcr.io/vyuvaraj/servtunnel:{{.Tag}}"
-      - "ghcr.io/vyuvaraj/servtunnel:latest"
+      - "ghcr.io/vyuvaraj/pranor-tunnel:{{.Tag}}"
+      - "ghcr.io/vyuvaraj/pranor-tunnel:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
       - "--label=org.opencontainers.image.title=Pranor Tunnel"
@@ -55,7 +55,7 @@ dockers:
       - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Tunnel"
 
 brews:
-  - name: servtunnel
+  - name: pranor-tunnel
     repository:
       owner: vyuvaraj
       name: homebrew-serv
@@ -63,9 +63,9 @@ brews:
     description: "Secure tunneling and port-forwarding service from the ServVerse platform"
     license: "Apache-2.0"
     install: |
-      bin.install "servtunnel"
+      bin.install "pranor-tunnel"
     test: |
-      system "#{bin}/servtunnel", "--version"
+      system "#{bin}/pranor-tunnel", "--version"
 
 scoops:
   - repository:
@@ -77,9 +77,9 @@ scoops:
 
 
 nfpms:
-  - id: servtunnel-pkg
-    package_name: servtunnel
-    builds: [servtunnel]
+  - id: pranor-tunnel-pkg
+    package_name: pranor-tunnel
+    builds: [pranor-tunnel]
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Tunnel
     maintainer: Yuvaraj <vyuvaraj@github.com>
@@ -91,7 +91,7 @@ nfpms:
     bindir: /usr/local/bin
     contents:
       - src: README.md
-        dst: /usr/share/doc/servtunnel/README.md
+        dst: /usr/share/doc/pranor-tunnel/README.md
     scripts:
       postinstall: scripts/postinstall.sh
       preremove: scripts/preremove.sh

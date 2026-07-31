@@ -1,11 +1,11 @@
 {
-  "name": "@pranor/queue-wasm",
+  "name": "@pranor/pulse-wasm",
   "version": "0.1.0",
   "description": "Embedded browser event broker powered by Pranor Pulse WebAssembly and Origin Private File System (OPFS)",
-  "main": "servqueue-embedded.js",
+  "main": "pranor-pulse-embedded.js",
   "types": "index.d.ts",
   "keywords": [
-    "servqueue",
+    "pranor-pulse",
     "wasm",
     "opfs",
     "offline-first",

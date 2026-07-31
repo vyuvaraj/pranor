@@ -1,4 +1,4 @@
-project_name: servcron
+project_name: pranor-chrono
 version: 2
 
 before:
@@ -6,9 +6,9 @@ before:
     - go mod tidy
 
 builds:
-  - id: servcron
+  - id: pranor-chrono
     main: .
-    binary: servcron
+    binary: pranor-chrono
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     env:
@@ -20,9 +20,9 @@ builds:
       - -X main.buildDate={{.Date}}
 
 archives:
-  - id: servcron
-    builds: [servcron]
-    name_template: "servcron_{{.Version}}_{{.Os}}_{{.Arch}}"
+  - id: pranor-chrono
+    builds: [pranor-chrono]
+    name_template: "pranor-chrono_{{.Version}}_{{.Os}}_{{.Arch}}"
     format_overrides:
       - goos: windows
         formats: [zip]
@@ -45,8 +45,8 @@ changelog:
 
 dockers:
   - image_templates:
-      - "ghcr.io/vyuvaraj/servcron:{{.Tag}}"
-      - "ghcr.io/vyuvaraj/servcron:latest"
+      - "ghcr.io/vyuvaraj/pranor-chrono:{{.Tag}}"
+      - "ghcr.io/vyuvaraj/pranor-chrono:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
       - "--label=org.opencontainers.image.title=Pranor Chrono"
@@ -55,7 +55,7 @@ dockers:
       - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Chrono"
 
 brews:
-  - name: servcron
+  - name: pranor-chrono
     repository:
       owner: vyuvaraj
       name: homebrew-serv
@@ -63,9 +63,9 @@ brews:
     description: "Distributed cron scheduler and job runner from the ServVerse platform"
     license: "Apache-2.0"
     install: |
-      bin.install "servcron"
+      bin.install "pranor-chrono"
     test: |
-      system "#{bin}/servcron", "--version"
+      system "#{bin}/pranor-chrono", "--version"
 
 scoops:
   - repository:
@@ -77,9 +77,9 @@ scoops:
 
 
 nfpms:
-  - id: servcron-pkg
-    package_name: servcron
-    builds: [servcron]
+  - id: pranor-chrono-pkg
+    package_name: pranor-chrono
+    builds: [pranor-chrono]
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Chrono
     maintainer: Yuvaraj <vyuvaraj@github.com>
@@ -91,7 +91,7 @@ nfpms:
     bindir: /usr/local/bin
     contents:
       - src: README.md
-        dst: /usr/share/doc/servcron/README.md
+        dst: /usr/share/doc/pranor-chrono/README.md
     scripts:
       postinstall: scripts/postinstall.sh
       preremove: scripts/preremove.sh

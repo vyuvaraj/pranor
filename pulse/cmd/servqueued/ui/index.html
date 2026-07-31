@@ -190,7 +190,7 @@
   <header>
     <div class="brand">
       <span class="brand-title">Pranor Pulse</span>
-      <span class="brand-badge">servqueued</span>
+      <span class="brand-badge">pranor-pulsed</span>
     </div>
     <div class="status-pill">
       <div class="dot"></div>
@@ -248,7 +248,7 @@
         <h2 class="panel-title">Live Message Stream Tail</h2>
       </div>
       <div class="code-box" id="stream-box">
-        [system] Pranor Pulse Standalone Daemon (servqueued) initialized.<br>
+        [system] Pranor Pulse Standalone Daemon (pranor-pulsed) initialized.<br>
         [system] Ready to accept publishing and subscription streams.
       </div>
     </div>
@@ -266,13 +266,13 @@
         let lag = 0;
 
         text.split('\n').forEach(line => {
-          if (line.startsWith('servqueued_messages_published_total') || line.startsWith('servqueue_messages_published_total')) {
+          if (line.startsWith('pranor-pulsed_messages_published_total') || line.startsWith('pranor-pulse_messages_published_total')) {
             published = line.split(' ')[1] || published;
           }
-          if (line.startsWith('servqueue_queue_depth')) {
+          if (line.startsWith('pranor-pulse_queue_depth')) {
             depth = line.split(' ')[1] || depth;
           }
-          if (line.startsWith('servqueue_consumer_lag')) {
+          if (line.startsWith('pranor-pulse_consumer_lag')) {
             lag = line.split(' ')[1] || lag;
           }
         });

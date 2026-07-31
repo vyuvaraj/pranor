@@ -508,7 +508,7 @@ func RollbackSaga(
 
 		if strings.HasPrefix(t.CompensateAction, "event://") {
 			topic := "/topic/" + strings.TrimPrefix(t.CompensateAction, "event://")
-			brokerAddr := os.Getenv("SERVQUEUE_ADDR")
+			brokerAddr := os.Getenv("PRANOR_PULSE_ADDR")
 			if brokerAddr == "" {
 				brokerAddr = "localhost:8082"
 			}

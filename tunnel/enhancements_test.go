@@ -237,8 +237,8 @@ func TestPersistentTunnelsInvitesAndCustomDomain(t *testing.T) {
 	relayPort := strings.Split(relayAddr, ":")[1]
 	relaySrv := server.NewServer(":"+relayPort, "localhost", inspector.New(10))
 	
-	os.Setenv("SERVTUNNEL_TOKEN", "my-test-token")
-	defer os.Unsetenv("SERVTUNNEL_TOKEN")
+	os.Setenv("PRANOR_TUNNEL_TOKEN", "my-test-token")
+	defer os.Unsetenv("PRANOR_TUNNEL_TOKEN")
 
 	go func() {
 		_ = relaySrv.Start()
@@ -434,10 +434,10 @@ func TestFederationAndAnalytics(t *testing.T) {
 	lnLocal.Close()
 	localPort := strings.Split(localAddr, ":")[1]
 
-	os.Setenv("SERVTUNNEL_FEDERATION_PEERS", "http://127.0.0.1:"+peerPort)
-	os.Setenv("SERVTUNNEL_TOKEN", "my-test-token")
-	defer os.Unsetenv("SERVTUNNEL_FEDERATION_PEERS")
-	defer os.Unsetenv("SERVTUNNEL_TOKEN")
+	os.Setenv("PRANOR_TUNNEL_FEDERATION_PEERS", "http://127.0.0.1:"+peerPort)
+	os.Setenv("PRANOR_TUNNEL_TOKEN", "my-test-token")
+	defer os.Unsetenv("PRANOR_TUNNEL_FEDERATION_PEERS")
+	defer os.Unsetenv("PRANOR_TUNNEL_TOKEN")
 
 	localSrv := server.NewServer(":"+localPort, "localhost", inspector.New(10))
 	go func() {

@@ -2,13 +2,13 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "servstore.fullname" . }}
+  name: {{ include "pranor-vault.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "servstore.labels" . | nindent 4 }}
+    {{- include "pranor-vault.labels" . | nindent 4 }}
 spec:
   minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
   selector:
     matchLabels:
-      {{- include "servstore.selectorLabels" . | nindent 6 }}
+      {{- include "pranor-vault.selectorLabels" . | nindent 6 }}
 {{- end }}

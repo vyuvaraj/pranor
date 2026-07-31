@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 echo ""
-echo "  servflow installed successfully"
-echo "  Run: servflow --version"
+echo "  pranor-flow installed successfully"
+echo "  Run: pranor-flow --version"
 echo "  Docs: https://github.com/vyuvaraj/Pranor Flow"
 echo ""

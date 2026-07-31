@@ -1,7 +1,7 @@
 # Pranor Notify
 
 ```bash
-docker run -p 8091:8091 ghcr.io/vyuvaraj/servmail:latest
+docker run -p 8091:8091 ghcr.io/vyuvaraj/pranor-notify:latest
 ```
 
 `Pranor Notify` is the transactional email and deliverability management service for the **Pranor** ecosystem. It handles sending, receiving, bounce management, unsubscribe compliance, DMARC enforcement, and provides a rich templating DSL and delivery analytics.
@@ -105,7 +105,7 @@ Bounce/Complaint Events → Suppression List + Webhook → Pranor Console Analyt
 Create a template:
 
 ```bash
-curl -X POST http://servmail:8091/api/v1/templates \
+curl -X POST http://pranor-notify:8091/api/v1/templates \
   -d '{
     "name": "welcome-email",
     "subject": "Welcome, {{ user.name }}!",
@@ -116,7 +116,7 @@ curl -X POST http://servmail:8091/api/v1/templates \
 Send using the template:
 
 ```bash
-curl -X POST http://servmail:8091/api/v1/send/template \
+curl -X POST http://pranor-notify:8091/api/v1/send/template \
   -d '{
     "template": "welcome-email",
     "to": "alice@example.com",
@@ -130,10 +130,10 @@ curl -X POST http://servmail:8091/api/v1/send/template \
 
 ```bash
 # Check DMARC policy for a domain
-curl http://servmail:8091/api/v1/dmarc/check?domain=example.com
+curl http://pranor-notify:8091/api/v1/dmarc/check?domain=example.com
 
 # Generate DMARC aggregate report
-curl -X POST http://servmail:8091/api/v1/dmarc/report \
+curl -X POST http://pranor-notify:8091/api/v1/dmarc/report \
   -d '{"reporting_period": "2026-07", "report_to": "dmarc-reports@example.com"}'
 ```
 
@@ -144,7 +144,7 @@ curl -X POST http://servmail:8091/api/v1/dmarc/report \
 Pranor Notify automatically injects unsubscribe headers on bulk sends:
 
 ```
-List-Unsubscribe: <https://servmail.yourapp.com/unsubscribe?token=xxx>
+List-Unsubscribe: <https://pranor-notify.yourapp.com/unsubscribe?token=xxx>
 List-Unsubscribe-Post: List-Unsubscribe=One-Click
 ```
 
@@ -156,25 +156,25 @@ When a mail client (Gmail, Apple Mail) sends the one-click unsubscribe POST, Pra
 
 ```bash
 docker run -p 8091:8091 \
-  -e SERVMAIL_SMTP_HOST=smtp.sendgrid.net \
-  -e SERVMAIL_SMTP_PORT=587 \
-  -e SERVMAIL_SMTP_USER=apikey \
-  -e SERVMAIL_SMTP_PASS=SG.xxxxx \
-  -e SERVMAIL_FROM_DOMAIN=yourapp.com \
-  -e SERVMAIL_OTEL_ENDPOINT=http://servtrace:4318 \
-  ghcr.io/vyuvaraj/servmail:latest
+  -e PRANOR_NOTIFY_SMTP_HOST=smtp.sendgrid.net \
+  -e PRANOR_NOTIFY_SMTP_PORT=587 \
+  -e PRANOR_NOTIFY_SMTP_USER=apikey \
+  -e PRANOR_NOTIFY_SMTP_PASS=SG.xxxxx \
+  -e PRANOR_NOTIFY_FROM_DOMAIN=yourapp.com \
+  -e PRANOR_NOTIFY_OTEL_ENDPOINT=http://pranor-trace:4318 \
+  ghcr.io/vyuvaraj/pranor-notify:latest
 ```
 
 ### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SERVMAIL_PORT` | `8091` | HTTP listener port |
-| `SERVMAIL_SMTP_HOST` | — | Outbound SMTP relay host |
-| `SERVMAIL_SMTP_PORT` | `587` | Outbound SMTP relay port |
-| `SERVMAIL_SMTP_USER` | — | SMTP authentication username |
-| `SERVMAIL_SMTP_PASS` | — | SMTP authentication password |
-| `SERVMAIL_FROM_DOMAIN` | — | Default sending domain |
-| `SERVMAIL_INBOUND_PORT` | — | SMTP port for inbound mail reception |
-| `SERVMAIL_DMARC_ENABLED` | `true` | Enable DMARC enforcement |
-| `SERVMAIL_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
+| `PRANOR_NOTIFY_PORT` | `8091` | HTTP listener port |
+| `PRANOR_NOTIFY_SMTP_HOST` | — | Outbound SMTP relay host |
+| `PRANOR_NOTIFY_SMTP_PORT` | `587` | Outbound SMTP relay port |
+| `PRANOR_NOTIFY_SMTP_USER` | — | SMTP authentication username |
+| `PRANOR_NOTIFY_SMTP_PASS` | — | SMTP authentication password |
+| `PRANOR_NOTIFY_FROM_DOMAIN` | — | Default sending domain |
+| `PRANOR_NOTIFY_INBOUND_PORT` | — | SMTP port for inbound mail reception |
+| `PRANOR_NOTIFY_DMARC_ENABLED` | `true` | Enable DMARC enforcement |
+| `PRANOR_NOTIFY_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |

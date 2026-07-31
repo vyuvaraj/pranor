@@ -22,7 +22,7 @@ import (
 
 // SyslogEmitFunc is overridable for testing or custom syslog transports.
 var SyslogEmitFunc = func(entry map[string]interface{}) {
-	logPath := os.Getenv("SERVCRON_EXEC_LOG_PATH")
+	logPath := os.Getenv("PRANOR_CHRONO_EXEC_LOG_PATH")
 	if logPath == "" {
 		return // syslog integration not configured
 	}

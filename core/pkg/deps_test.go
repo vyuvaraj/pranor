@@ -39,8 +39,8 @@ func TestWorkspaceDependenciesAndModules(t *testing.T) {
 		"packages/Pranor Flow",
 		"packages/Pranor Hub",
 		"packages/Pranor Core",
-		"packages/servlockctl",
-		"packages/servsecretctl",
+		"packages/pranor-lockctl",
+		"packages/pranor-secretctl",
 	}
 
 	for _, pkg := range expectedPackages {

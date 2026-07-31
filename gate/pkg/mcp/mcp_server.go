@@ -339,7 +339,7 @@ func RegisterPranorVaultTools(s *MCPServer, storeBaseURL string) {
 	client := &http.Client{Timeout: 10 * time.Second}
 
 	s.RegisterTool(MCPTool{
-		Name:        "servstore_list_buckets",
+		Name:        "pranor-vault_list_buckets",
 		Description: "List all buckets in Pranor Vault",
 		InputSchema: map[string]interface{}{
 			"type":       "object",
@@ -356,7 +356,7 @@ func RegisterPranorVaultTools(s *MCPServer, storeBaseURL string) {
 	})
 
 	s.RegisterTool(MCPTool{
-		Name:        "servstore_get_object",
+		Name:        "pranor-vault_get_object",
 		Description: "Get an object from a Pranor Vault bucket by key",
 		InputSchema: map[string]interface{}{
 			"type":     "object",
@@ -382,7 +382,7 @@ func RegisterPranorVaultTools(s *MCPServer, storeBaseURL string) {
 	})
 
 	s.RegisterTool(MCPTool{
-		Name:        "servstore_put_object",
+		Name:        "pranor-vault_put_object",
 		Description: "Upload an object to a Pranor Vault bucket",
 		InputSchema: map[string]interface{}{
 			"type":     "object",
@@ -423,7 +423,7 @@ func RegisterPranorPulseTools(s *MCPServer, queueBaseURL string) {
 	client := &http.Client{Timeout: 10 * time.Second}
 
 	s.RegisterTool(MCPTool{
-		Name:        "servqueue_topics",
+		Name:        "pranor-pulse_topics",
 		Description: "List all topics available in Pranor Pulse",
 		InputSchema: map[string]interface{}{
 			"type":       "object",
@@ -440,7 +440,7 @@ func RegisterPranorPulseTools(s *MCPServer, queueBaseURL string) {
 	})
 
 	s.RegisterTool(MCPTool{
-		Name:        "servqueue_publish",
+		Name:        "pranor-pulse_publish",
 		Description: "Publish a message to a Pranor Pulse topic",
 		InputSchema: map[string]interface{}{
 			"type":     "object",

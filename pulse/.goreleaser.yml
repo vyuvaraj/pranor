@@ -1,4 +1,4 @@
-project_name: servqueue
+project_name: pranor-pulse
 version: 2
 
 before:
@@ -6,10 +6,10 @@ before:
     - go mod tidy
 
 builds:
-  - id: servqueue
-    # Pranor Pulse's main package lives in cmd/servqueue/
-    main: ./cmd/servqueue
-    binary: servqueue
+  - id: pranor-pulse
+    # Pranor Pulse's main package lives in cmd/pranor-pulse/
+    main: ./cmd/pranor-pulse
+    binary: pranor-pulse
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     env:
@@ -21,9 +21,9 @@ builds:
       - -X main.buildDate={{.Date}}
 
 archives:
-  - id: servqueue
-    builds: [servqueue]
-    name_template: "servqueue_{{.Version}}_{{.Os}}_{{.Arch}}"
+  - id: pranor-pulse
+    builds: [pranor-pulse]
+    name_template: "pranor-pulse_{{.Version}}_{{.Os}}_{{.Arch}}"
     format_overrides:
       - goos: windows
         formats: [zip]
@@ -46,8 +46,8 @@ changelog:
 
 dockers:
   - image_templates:
-      - "ghcr.io/vyuvaraj/servqueue:{{.Tag}}"
-      - "ghcr.io/vyuvaraj/servqueue:latest"
+      - "ghcr.io/vyuvaraj/pranor-pulse:{{.Tag}}"
+      - "ghcr.io/vyuvaraj/pranor-pulse:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
       - "--label=org.opencontainers.image.title=Pranor Pulse"
@@ -56,7 +56,7 @@ dockers:
       - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Pulse"
 
 brews:
-  - name: servqueue
+  - name: pranor-pulse
     repository:
       owner: vyuvaraj
       name: homebrew-serv
@@ -64,9 +64,9 @@ brews:
     description: "Distributed message queue and event streaming service from the ServVerse platform"
     license: "Apache-2.0"
     install: |
-      bin.install "servqueue"
+      bin.install "pranor-pulse"
     test: |
-      system "#{bin}/servqueue", "--version"
+      system "#{bin}/pranor-pulse", "--version"
 
 scoops:
   - repository:
@@ -78,9 +78,9 @@ scoops:
 
 
 nfpms:
-  - id: servqueue-pkg
-    package_name: servqueue
-    builds: [servqueue]
+  - id: pranor-pulse-pkg
+    package_name: pranor-pulse
+    builds: [pranor-pulse]
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Pulse
     maintainer: Yuvaraj <vyuvaraj@github.com>
@@ -92,7 +92,7 @@ nfpms:
     bindir: /usr/local/bin
     contents:
       - src: README.md
-        dst: /usr/share/doc/servqueue/README.md
+        dst: /usr/share/doc/pranor-pulse/README.md
     scripts:
       postinstall: scripts/postinstall.sh
       preremove: scripts/preremove.sh

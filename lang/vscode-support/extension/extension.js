@@ -3151,7 +3151,7 @@ function openServdConsole(context) {
             fetch('http://localhost:8096/api/v1/servd/components')
                 .then(r => r.json())
                 .then(data => { document.getElementById('main').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>'; })
-                .catch(() => { document.getElementById('main').innerHTML = '<b>Embedded components: servgate, servqueue, servstore, servmesh, servtrace, servauth</b>'; });
+                .catch(() => { document.getElementById('main').innerHTML = '<b>Embedded components: pranor-gate, pranor-pulse, pranor-vault, pranor-mesh, pranor-trace, pranor-auth</b>'; });
         }
         fetchHealth();
     </script>

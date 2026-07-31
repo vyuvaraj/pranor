@@ -65,7 +65,7 @@ func (d *CSIDriver) NodePublishVolume(ctx context.Context, req *csi.NodePublishV
 	configPath := fmt.Sprintf("%s/Pranor Vault-csi.config", targetPath)
 	configData := fmt.Sprintf("volume-id=%s\nendpoint=%s\nbucket=%s\n",
 		volumeID,
-		os.Getenv("SERVSTORE_ENDPOINT"),
+		os.Getenv("PRANOR_VAULT_ENDPOINT"),
 		req.GetVolumeContext()["bucket"],
 	)
 	

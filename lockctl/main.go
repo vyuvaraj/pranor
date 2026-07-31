@@ -181,10 +181,10 @@ func sendRequest(client *http.Client, method, url string, bodyObj any, tenant, a
 }
 
 func printUsage() {
-	fmt.Println(`servlockctl is a command-line client for Pranor Lock.
+	fmt.Println(`pranor-lockctl is a command-line client for Pranor Lock.
 
 Usage:
-  servlockctl [command] [flags]
+  pranor-lockctl [command] [flags]
 
 Commands:
   acquire       Acquire a new lock

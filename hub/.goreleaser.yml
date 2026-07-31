@@ -1,4 +1,4 @@
-project_name: servregistry
+project_name: pranor-hub
 version: 2
 
 before:
@@ -6,9 +6,9 @@ before:
     - go mod tidy
 
 builds:
-  - id: servregistry
+  - id: pranor-hub
     main: .
-    binary: servregistry
+    binary: pranor-hub
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     env:
@@ -20,9 +20,9 @@ builds:
       - -X main.buildDate={{.Date}}
 
 archives:
-  - id: servregistry
-    builds: [servregistry]
-    name_template: "servregistry_{{.Version}}_{{.Os}}_{{.Arch}}"
+  - id: pranor-hub
+    builds: [pranor-hub]
+    name_template: "pranor-hub_{{.Version}}_{{.Os}}_{{.Arch}}"
     format_overrides:
       - goos: windows
         formats: [zip]
@@ -45,8 +45,8 @@ changelog:
 
 dockers:
   - image_templates:
-      - "ghcr.io/vyuvaraj/servregistry:{{.Tag}}"
-      - "ghcr.io/vyuvaraj/servregistry:latest"
+      - "ghcr.io/vyuvaraj/pranor-hub:{{.Tag}}"
+      - "ghcr.io/vyuvaraj/pranor-hub:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
       - "--label=org.opencontainers.image.title=Pranor Hub"
@@ -55,7 +55,7 @@ dockers:
       - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Hub"
 
 brews:
-  - name: servregistry
+  - name: pranor-hub
     repository:
       owner: vyuvaraj
       name: homebrew-serv
@@ -63,9 +63,9 @@ brews:
     description: "Service discovery and registry from the ServVerse platform"
     license: "Apache-2.0"
     install: |
-      bin.install "servregistry"
+      bin.install "pranor-hub"
     test: |
-      system "#{bin}/servregistry", "--version"
+      system "#{bin}/pranor-hub", "--version"
 
 scoops:
   - repository:
@@ -77,9 +77,9 @@ scoops:
 
 
 nfpms:
-  - id: servregistry-pkg
-    package_name: servregistry
-    builds: [servregistry]
+  - id: pranor-hub-pkg
+    package_name: pranor-hub
+    builds: [pranor-hub]
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Hub
     maintainer: Yuvaraj <vyuvaraj@github.com>
@@ -91,7 +91,7 @@ nfpms:
     bindir: /usr/local/bin
     contents:
       - src: README.md
-        dst: /usr/share/doc/servregistry/README.md
+        dst: /usr/share/doc/pranor-hub/README.md
     scripts:
       postinstall: scripts/postinstall.sh
       preremove: scripts/preremove.sh

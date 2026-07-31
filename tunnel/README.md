@@ -1,12 +1,12 @@
 # Pranor Tunnel
 
 ```bash
-servtunnel client --port 3000 --server tunnel.pranor.net
+pranor-tunnel client --port 3000 --server tunnel.pranor.net
 # → Exposes local port 3000 at https://abc123.tunnel.pranor.net
 ```
 
 ```bash
-docker run -p 8092:8092 ghcr.io/vyuvaraj/servtunnel:latest
+docker run -p 8092:8092 ghcr.io/vyuvaraj/pranor-tunnel:latest
 ```
 
 `Pranor Tunnel` is a secure, instant tunneling service for exposing local Pranor services to the internet during development and testing. One command creates a public URL that forwards requests to your local machine — ideal for webhook testing, OAuth callbacks, mobile app dev, and sharing work in progress.
@@ -96,20 +96,20 @@ Local Service (http://localhost:3000)
 
 ```bash
 docker run -p 8092:8092 \
-  -e SERVTUNNEL_DOMAIN=pranor.net \
-  -e SERVTUNNEL_JWT_SECRET=my-secret \
-  -e SERVTUNNEL_OTEL_ENDPOINT=http://servtrace:4318 \
-  ghcr.io/vyuvaraj/servtunnel:latest
+  -e PRANOR_TUNNEL_DOMAIN=pranor.net \
+  -e PRANOR_TUNNEL_JWT_SECRET=my-secret \
+  -e PRANOR_TUNNEL_OTEL_ENDPOINT=http://pranor-trace:4318 \
+  ghcr.io/vyuvaraj/pranor-tunnel:latest
 ```
 
 ### Client (local machine)
 
 ```bash
 # Install client
-go install github.com/vyuvaraj/pranor/Pranor Tunnel/cmd/servtunnel@latest
+go install github.com/vyuvaraj/pranor/Pranor Tunnel/cmd/pranor-tunnel@latest
 
 # Expose local port 3000 to a public URL
-servtunnel --server wss://tunnel.pranor.net --local http://localhost:3000
+pranor-tunnel --server wss://tunnel.pranor.net --local http://localhost:3000
 
 # Output:
 # ✓ Tunnel active: https://abc123.pranor.net
@@ -145,7 +145,7 @@ The terminal client shows real-time request logs:
 
 ```bash
 # Create a tunnel with JWT auth requirement
-servtunnel --server wss://tunnel.pranor.net \
+pranor-tunnel --server wss://tunnel.pranor.net \
   --local http://localhost:3000 \
   --auth jwt \
   --jwt-token eyJhbGciOi...
@@ -163,7 +163,7 @@ curl -X POST http://localhost:8092/api/v1/tunnels/tun-abc/share \
 Configure reconnect behavior in the client:
 
 ```bash
-servtunnel \
+pranor-tunnel \
   --server wss://tunnel.pranor.net \
   --local http://localhost:3000 \
   --reconnect-max-retries 10 \
@@ -180,13 +180,13 @@ servtunnel \
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SERVTUNNEL_PORT` | `8092` | HTTP/WebSocket listener port |
-| `SERVTUNNEL_DOMAIN` | — | Base domain for subdomains (e.g. `pranor.net`) |
-| `SERVTUNNEL_JWT_SECRET` | — | JWT signing secret for auth gating |
-| `SERVTUNNEL_MAX_RING_BUFFER` | `100` | Max captured requests per tunnel |
-| `SERVTUNNEL_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
-| `SERVTUNNEL_TLS_CERT` | — | TLS certificate path |
-| `SERVTUNNEL_TLS_KEY` | — | TLS key path |
+| `PRANOR_TUNNEL_PORT` | `8092` | HTTP/WebSocket listener port |
+| `PRANOR_TUNNEL_DOMAIN` | — | Base domain for subdomains (e.g. `pranor.net`) |
+| `PRANOR_TUNNEL_JWT_SECRET` | — | JWT signing secret for auth gating |
+| `PRANOR_TUNNEL_MAX_RING_BUFFER` | `100` | Max captured requests per tunnel |
+| `PRANOR_TUNNEL_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
+| `PRANOR_TUNNEL_TLS_CERT` | — | TLS certificate path |
+| `PRANOR_TUNNEL_TLS_KEY` | — | TLS key path |
 
 ### Wildcard DNS
 Configure your DNS provider to point `*.pranor.net` to the Pranor Tunnel server IP. See [docs/wildcard_dns.md](docs/wildcard_dns.md) for detailed setup.

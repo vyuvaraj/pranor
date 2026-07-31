@@ -97,8 +97,8 @@ func Handler() http.Handler {
 		defer registry.mu.RUnlock()
 
 		// Write http_requests_total
-		fmt.Fprintln(w, "# HELP servstore_http_requests_total Total number of HTTP requests processed.")
-		fmt.Fprintln(w, "# TYPE servstore_http_requests_total counter")
+		fmt.Fprintln(w, "# HELP pranor-vault_http_requests_total Total number of HTTP requests processed.")
+		fmt.Fprintln(w, "# TYPE pranor-vault_http_requests_total counter")
 		for key, count := range registry.httpRequests {
 			var method, path, status string
 			_, _ = fmt.Sscanf(key, "%s|%s|%s", &method, &path, &status)
@@ -107,43 +107,43 @@ func Handler() http.Handler {
 			if len(parts) == 3 {
 				method, path, status = parts[0], parts[1], parts[2]
 			}
-			fmt.Fprintf(w, "servstore_http_requests_total{method=\"%s\",path=\"%s\",status=\"%s\"} %d\n", method, path, status, count)
+			fmt.Fprintf(w, "pranor-vault_http_requests_total{method=\"%s\",path=\"%s\",status=\"%s\"} %d\n", method, path, status, count)
 		}
 
 		// Write http_in_flight_requests
-		fmt.Fprintln(w, "\n# HELP servstore_http_in_flight_requests Current number of HTTP requests being processed.")
-		fmt.Fprintln(w, "# TYPE servstore_http_in_flight_requests gauge")
-		fmt.Fprintf(w, "servstore_http_in_flight_requests %d\n", registry.inFlightRequests)
+		fmt.Fprintln(w, "\n# HELP pranor-vault_http_in_flight_requests Current number of HTTP requests being processed.")
+		fmt.Fprintln(w, "# TYPE pranor-vault_http_in_flight_requests gauge")
+		fmt.Fprintf(w, "pranor-vault_http_in_flight_requests %d\n", registry.inFlightRequests)
 
 		// Write request durations
-		fmt.Fprintln(w, "\n# HELP servstore_http_request_duration_seconds HTTP request latencies in seconds.")
-		fmt.Fprintln(w, "# TYPE servstore_http_request_duration_seconds summary")
+		fmt.Fprintln(w, "\n# HELP pranor-vault_http_request_duration_seconds HTTP request latencies in seconds.")
+		fmt.Fprintln(w, "# TYPE pranor-vault_http_request_duration_seconds summary")
 		for key, sum := range registry.requestDuration {
 			parts := splitKey(key)
 			if len(parts) == 2 {
 				method, path := parts[0], parts[1]
 				count := registry.requestCount[key]
-				fmt.Fprintf(w, "servstore_http_request_duration_seconds_sum{method=\"%s\",path=\"%s\"} %f\n", method, path, sum)
-				fmt.Fprintf(w, "servstore_http_request_duration_seconds_count{method=\"%s\",path=\"%s\"} %d\n", method, path, count)
+				fmt.Fprintf(w, "pranor-vault_http_request_duration_seconds_sum{method=\"%s\",path=\"%s\"} %f\n", method, path, sum)
+				fmt.Fprintf(w, "pranor-vault_http_request_duration_seconds_count{method=\"%s\",path=\"%s\"} %d\n", method, path, count)
 			}
 		}
 
 		// Write S3 latency and throughput performance metrics
 		s3Mu.Lock()
-		fmt.Fprintln(w, "\n# HELP servstore_s3_upload_bytes_total Total number of bytes uploaded to S3.")
-		fmt.Fprintln(w, "# TYPE servstore_s3_upload_bytes_total counter")
-		fmt.Fprintf(w, "servstore_s3_upload_bytes_total %d\n", s3UploadBytes)
+		fmt.Fprintln(w, "\n# HELP pranor-vault_s3_upload_bytes_total Total number of bytes uploaded to S3.")
+		fmt.Fprintln(w, "# TYPE pranor-vault_s3_upload_bytes_total counter")
+		fmt.Fprintf(w, "pranor-vault_s3_upload_bytes_total %d\n", s3UploadBytes)
 
-		fmt.Fprintln(w, "\n# HELP servstore_s3_download_bytes_total Total number of bytes downloaded from S3.")
-		fmt.Fprintln(w, "# TYPE servstore_s3_download_bytes_total counter")
-		fmt.Fprintf(w, "servstore_s3_download_bytes_total %d\n", s3DownloadBytes)
+		fmt.Fprintln(w, "\n# HELP pranor-vault_s3_download_bytes_total Total number of bytes downloaded from S3.")
+		fmt.Fprintln(w, "# TYPE pranor-vault_s3_download_bytes_total counter")
+		fmt.Fprintf(w, "pranor-vault_s3_download_bytes_total %d\n", s3DownloadBytes)
 
-		fmt.Fprintln(w, "\n# HELP servstore_s3_operations_total Total number of S3 actions executed.")
-		fmt.Fprintln(w, "# TYPE servstore_s3_operations_total counter")
+		fmt.Fprintln(w, "\n# HELP pranor-vault_s3_operations_total Total number of S3 actions executed.")
+		fmt.Fprintln(w, "# TYPE pranor-vault_s3_operations_total counter")
 		for key, count := range s3Operations {
 			parts := splitKey(key)
 			if len(parts) == 2 {
-				fmt.Fprintf(w, "servstore_s3_operations_total{op=\"%s\",status=\"%s\"} %d\n", parts[0], parts[1], count)
+				fmt.Fprintf(w, "pranor-vault_s3_operations_total{op=\"%s\",status=\"%s\"} %d\n", parts[0], parts[1], count)
 			}
 		}
 		s3Mu.Unlock()

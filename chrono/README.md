@@ -1,7 +1,7 @@
 # Pranor Chrono
 
 ```bash
-docker run -p 8085:8085 ghcr.io/vyuvaraj/servcron:latest
+docker run -p 8085:8085 ghcr.io/vyuvaraj/pranor-chrono:latest
 ```
 
 `Pranor Chrono` is the distributed, fault-tolerant job scheduling service for the **Pranor** ecosystem. It supports interval and cron scheduling, exactly-once semantics, DAG job chaining, Pranor cron-as-code declarations, persistent S3 job registries, and full OTel tracing.
@@ -107,15 +107,15 @@ docker run -p 8085:8085 ghcr.io/vyuvaraj/servcron:latest
 
 ```bash
 # Every 30 seconds
-curl -X POST http://servcron:8085/api/v1/jobs \
+curl -X POST http://pranor-chrono:8085/api/v1/jobs \
   -d '{"name": "health-check", "schedule": "30s", "callback_url": "http://myapp/health", "retry": {"max": 3, "backoff": "exponential"}}'
 
 # Every weekday at 9 AM (cron)
-curl -X POST http://servcron:8085/api/v1/jobs \
+curl -X POST http://pranor-chrono:8085/api/v1/jobs \
   -d '{"name": "daily-report", "schedule": "0 9 * * 1-5", "callback_url": "http://myapp/reports/daily"}'
 
 # Every hour
-curl -X POST http://servcron:8085/api/v1/jobs \
+curl -X POST http://pranor-chrono:8085/api/v1/jobs \
   -d '{"name": "cache-warmer", "schedule": "1h", "callback_url": "http://myapp/cache/warm"}'
 ```
 
@@ -124,7 +124,7 @@ curl -X POST http://servcron:8085/api/v1/jobs \
 ## DAG Job Chaining
 
 ```bash
-curl -X POST http://servcron:8085/api/v1/dag \
+curl -X POST http://pranor-chrono:8085/api/v1/dag \
   -d '{
     "name": "nightly-pipeline",
     "schedule": "0 2 * * *",
@@ -166,20 +166,20 @@ Pranor Chrono auto-reloads job definitions when `.serv` files change.
 
 ```bash
 docker run -p 8085:8085 \
-  -e SERVCRON_REDIS_URL=redis://redis:6379 \
-  -e SERVCRON_SERVSTORE_BUCKET=servcron-jobs \
-  -e SERVCRON_SERVSTORE_URL=http://servstore:7070 \
-  -e SERVCRON_OTEL_ENDPOINT=http://servtrace:4318 \
-  ghcr.io/vyuvaraj/servcron:latest
+  -e PRANOR_CHRONO_REDIS_URL=redis://redis:6379 \
+  -e PRANOR_CHRONO_PRANOR_VAULT_BUCKET=pranor-chrono-jobs \
+  -e PRANOR_CHRONO_PRANOR_VAULT_URL=http://pranor-vault:7070 \
+  -e PRANOR_CHRONO_OTEL_ENDPOINT=http://pranor-trace:4318 \
+  ghcr.io/vyuvaraj/pranor-chrono:latest
 ```
 
 ### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SERVCRON_PORT` | `8085` | HTTP listener port |
-| `SERVCRON_REDIS_URL` | — | Redis URL for distributed leader election |
-| `SERVCRON_SERVSTORE_URL` | — | Pranor Vault URL for job persistence |
-| `SERVCRON_SERVSTORE_BUCKET` | `servcron-jobs` | S3 bucket name for job registry |
-| `SERVCRON_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
-| `SERVCRON_PRANOR_FILES_DIR` | — | Directory to watch for `.serv` job definitions |
+| `PRANOR_CHRONO_PORT` | `8085` | HTTP listener port |
+| `PRANOR_CHRONO_REDIS_URL` | — | Redis URL for distributed leader election |
+| `PRANOR_CHRONO_PRANOR_VAULT_URL` | — | Pranor Vault URL for job persistence |
+| `PRANOR_CHRONO_PRANOR_VAULT_BUCKET` | `pranor-chrono-jobs` | S3 bucket name for job registry |
+| `PRANOR_CHRONO_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
+| `PRANOR_CHRONO_PRANOR_FILES_DIR` | — | Directory to watch for `.serv` job definitions |

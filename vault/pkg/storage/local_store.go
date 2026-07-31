@@ -69,9 +69,9 @@ func NewLocalStore(rootDir string) (*LocalStore, error) {
 	}
 
 	// Try to initialize ONNX if environment variables are provided
-	onnxLib := os.Getenv("SERVSTORE_ONNX_LIB")
-	onnxModel := os.Getenv("SERVSTORE_ONNX_MODEL")
-	onnxVocab := os.Getenv("SERVSTORE_ONNX_VOCAB")
+	onnxLib := os.Getenv("PRANOR_VAULT_ONNX_LIB")
+	onnxModel := os.Getenv("PRANOR_VAULT_ONNX_MODEL")
+	onnxVocab := os.Getenv("PRANOR_VAULT_ONNX_VOCAB")
 	if onnxLib != "" && onnxModel != "" {
 		_ = InitializeONNX(onnxLib, onnxModel, onnxVocab)
 	}

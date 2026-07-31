@@ -20,11 +20,11 @@ type PranorVaultBucketReconciler struct {
 	Log logr.Logger
 }
 
-// +kubebuilder:rbac:groups=storage.Pranor Vault.io,resources=servstorebuckets,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=storage.Pranor Vault.io,resources=servstorebuckets/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=storage.Pranor Vault.io,resources=pranor-vaultbuckets,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=storage.Pranor Vault.io,resources=pranor-vaultbuckets/status,verbs=get;update;patch
 
 func (r *PranorVaultBucketReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := r.Log.WithValues("servstorebucket", req.NamespacedName)
+	log := r.Log.WithValues("pranor-vaultbucket", req.NamespacedName)
 
 	var bucket operv1.PranorVaultBucket
 	if err := r.Get(ctx, req.NamespacedName, &bucket); err != nil {

@@ -4,9 +4,9 @@
 # Admin Console:   http://localhost:9001/ui/
 
 services:
-  servstore:
+  pranor-vault:
     build: .
-    container_name: servstore
+    container_name: pranor-vault
     ports:
       - "9000:9000"   # S3 API Port
       - "9001:9001"   # Admin Console & Management Port

@@ -190,8 +190,8 @@ These items complete the compiler→ecosystem loop defined in Phase 10.9 and ext
 
 | # | Item | Effort | Description |
 |---|------|--------|-------------|
-| 12.1 | **`servqueue://` compiler connector** | Large | ✅ Done — Native URI driver for Pranor Pulse STOMP. Enables `broker "servqueue://host"` from `.pnr` code without HTTP boilerplate. Extends `runtime/broker.go`. |
-| 12.2 | **`servgate://` route registration** | Medium | ✅ Done — Self-announce service routes to Pranor Gate at startup via compiler-emitted registration call. Enables zero-config routing in a Pranor deployment. |
+| 12.1 | **`pranor-pulse://` compiler connector** | Large | ✅ Done — Native URI driver for Pranor Pulse STOMP. Enables `broker "pranor-pulse://host"` from `.pnr` code without HTTP boilerplate. Extends `runtime/broker.go`. |
+| 12.2 | **`pranor-gate://` route registration** | Medium | ✅ Done — Self-announce service routes to Pranor Gate at startup via compiler-emitted registration call. Enables zero-config routing in a Pranor deployment. |
 | 12.3 | **`serv deploy --target k8s`** | Medium | ✅ Done — Generate Kubernetes Deployment + Service YAML from `serv.toml` project manifest. |
 | 12.4 | **`serv deploy --target fly`** | Small | ✅ Done — Generate `fly.toml` and trigger Fly.io deployment. |
 | 12.5 | **`serv new <template>`** | Small | ✅ Done — Starter project scaffolding — `api`, `worker`, `event-processor`, `full-stack`, `microservice`. |
@@ -275,9 +275,9 @@ Native language-level integration with the proposed Pranor components (Pranor Au
 
 | # | Item | Effort | Description | Status |
 |---|------|--------|-------------|--------|
-| 16.1 | **`auth` keyword (Pranor Auth backend)** | Medium | `auth "servauth://localhost:8095"` connects to the Pranor Auth identity provider. `auth.register()`, `auth.login()`, `auth.currentUser()`, `auth.requireRole("admin")` ? first-class identity management without external IdP SDK. | [x] |
+| 16.1 | **`auth` keyword (Pranor Auth backend)** | Medium | `auth "pranor-auth://localhost:8095"` connects to the Pranor Auth identity provider. `auth.register()`, `auth.login()`, `auth.currentUser()`, `auth.requireRole("admin")` ? first-class identity management without external IdP SDK. | [x] |
 | 16.2 | **`database` via ServDB proxy** | Small | `database "servdb://pool/mydb"` routes through the ServDB connection pooler. Transparent ? same `db.query()` API, but benefits from pooling, read/write splitting, and query analytics. | [x] |
-| 16.3 | **`notify` keyword** | Small | `notify "servmail://localhost:8096"` with `notify.send(channel, template, data)`. Unified notification dispatch to email, Slack, SMS via Pranor Notify hub. | [x] |
+| 16.3 | **`notify` keyword** | Small | `notify "pranor-notify://localhost:8096"` with `notify.send(channel, template, data)`. Unified notification dispatch to email, Slack, SMS via Pranor Notify hub. | [x] |
 | 16.4 | **`workflow` blocks (Pranor Flow backend)** | Large | `workflow "order-process" { step "validate" { ... } -> step "charge" { ... } -> step "fulfill" { ... } }` ? compiles to Pranor Flow API calls with automatic state checkpointing. Differs from existing `workflow` (10.7) by delegating state to the external Pranor Flow orchestrator for cross-service, long-running processes. | [x] |
 | 16.5 | **`serv dev` with new components** | Small | `serv dev main.pnr` auto-starts Pranor Auth, ServDB, Pranor Notify, Pranor Flow alongside existing services when the `.pnr` file references them. | [x] |
 

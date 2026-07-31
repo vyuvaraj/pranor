@@ -31,7 +31,7 @@ Copy `config.example.json` to `config.json` and launch Pranor Gate:
 
 ```bash
 cp config.example.json config.json
-docker run -p 8080:8080 -v ./config.json:/config.json ghcr.io/vyuvaraj/servgate:latest
+docker run -p 8080:8080 -v ./config.json:/config.json ghcr.io/vyuvaraj/pranor-gate:latest
 ```
 
 ### 2. End-to-End AI Gateway + Ollama Setup
@@ -72,7 +72,7 @@ curl -X POST http://localhost:8080/ai/v1/chat \
 
 ### 🧩 WASM & Policy-as-Code
 - **Sandboxed WASI execution**: Compile guest WASM modules to run inline on request/response cycles
-- **Policy-as-Code Compiler**: Compile `.policy` rule files directly to sandboxed `.wasm` modules using `servgate policy compile`
+- **Policy-as-Code Compiler**: Compile `.policy` rule files directly to sandboxed `.wasm` modules using `pranor-gate policy compile`
 
 ### 🤖 AI & LLM Gateway (AI-native)
 - **Prompt Guard**: Injection detection & input sanitization (blocks prompt injection attempts before they reach LLMs)
@@ -113,21 +113,21 @@ Pranor Gate uses a simple JSON configuration. A minimal `config.example.json` is
 
 Pranor Gate includes CLI subcommands for shadow traffic testing and policy compilation:
 
-### 1. Traffic Replay Engine (`servgate replay`)
+### 1. Traffic Replay Engine (`pranor-gate replay`)
 Replay historical production traffic logs (`.jsonl`) against a WASM middleware module to evaluate performance and correctness before deploying:
 
 ```bash
-servgate replay \
+pranor-gate replay \
   --log traffic_log.jsonl \
   --middleware auth_filter.wasm \
   --output report.json
 ```
 
-### 2. Policy-as-Code Compiler (`servgate policy compile`)
+### 2. Policy-as-Code Compiler (`pranor-gate policy compile`)
 Compile human-readable API security policy files (`.policy`) directly into WebAssembly modules:
 
 ```bash
-servgate policy compile rules.policy -o security_rules.wasm
+pranor-gate policy compile rules.policy -o security_rules.wasm
 ```
 
 ---

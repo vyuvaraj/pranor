@@ -1,5 +1,5 @@
 apiVersion: v2
-name: servstore
+name: pranor-vault
 description: |
   A cloud-native, distributed, AI-native, S3-compatible object storage engine.
   Deploys a Pranor Vault cluster as a Kubernetes StatefulSet with optional TLS,

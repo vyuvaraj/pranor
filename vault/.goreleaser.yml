@@ -1,4 +1,4 @@
-project_name: servstore
+project_name: pranor-vault
 version: 2
 
 before:
@@ -7,9 +7,9 @@ before:
 
 builds:
   # Primary server daemon
-  - id: servstore
-    main: ./cmd/servstore
-    binary: servstore
+  - id: pranor-vault
+    main: ./cmd/pranor-vault
+    binary: pranor-vault
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     env:
@@ -21,9 +21,9 @@ builds:
       - -X main.buildDate={{.Date}}
 
   # Single unified CLI tool for operators and users
-  - id: servstore-cli
-    main: ./cmd/servstore
-    binary: servstore
+  - id: pranor-vault-cli
+    main: ./cmd/pranor-vault
+    binary: pranor-vault
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     env:
@@ -37,7 +37,7 @@ builds:
   # Kubernetes CSI driver — Linux-only (runs as a DaemonSet sidecar)
   - id: csi-driver
     main: ./cmd/csi-driver
-    binary: servstore-csi
+    binary: pranor-vault-csi
     goos: [linux]
     goarch: [amd64, arm64]
     env:
@@ -51,7 +51,7 @@ builds:
   # Kubernetes operator — Linux-only
   - id: operator
     main: ./cmd/operator
-    binary: servstore-operator
+    binary: pranor-vault-operator
     goos: [linux]
     goarch: [amd64, arm64]
     env:
@@ -64,9 +64,9 @@ builds:
 
 archives:
   # Server binary archive (for operators deploying manually)
-  - id: servstore-server
-    builds: [servstore]
-    name_template: "servstore_{{.Version}}_{{.Os}}_{{.Arch}}"
+  - id: pranor-vault-server
+    builds: [pranor-vault]
+    name_template: "pranor-vault_{{.Version}}_{{.Os}}_{{.Arch}}"
     format_overrides:
       - goos: windows
         formats: [zip]
@@ -75,9 +75,9 @@ archives:
       - LICENSE
 
   # CLI archive (for developers)
-  - id: servstore-cli-archive
-    builds: [servstore-cli]
-    name_template: "servstore-cli_{{.Version}}_{{.Os}}_{{.Arch}}"
+  - id: pranor-vault-cli-archive
+    builds: [pranor-vault-cli]
+    name_template: "pranor-vault-cli_{{.Version}}_{{.Os}}_{{.Arch}}"
     format_overrides:
       - goos: windows
         formats: [zip]
@@ -99,11 +99,11 @@ changelog:
       - Merge branch
 
 dockers:
-  - id: servstore-image
+  - id: pranor-vault-image
     image_templates:
-      - "ghcr.io/vyuvaraj/servstore:{{.Tag}}"
-      - "ghcr.io/vyuvaraj/servstore:latest"
-    ids: [servstore]
+      - "ghcr.io/vyuvaraj/pranor-vault:{{.Tag}}"
+      - "ghcr.io/vyuvaraj/pranor-vault:latest"
+    ids: [pranor-vault]
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
       - "--label=org.opencontainers.image.title=Pranor Vault"
@@ -113,8 +113,8 @@ dockers:
 
 brews:
   # Publish the CLI to Homebrew (most useful for developers)
-  - name: servstore
-    ids: [servstore-cli-archive]
+  - name: pranor-vault
+    ids: [pranor-vault-cli-archive]
     repository:
       owner: vyuvaraj
       name: homebrew-serv
@@ -122,12 +122,12 @@ brews:
     description: "Distributed object and block storage service from the ServVerse platform"
     license: "Apache-2.0"
     install: |
-      bin.install "servstore-cli" => "servstore"
+      bin.install "pranor-vault-cli" => "pranor-vault"
     test: |
-      system "#{bin}/servstore", "--version"
+      system "#{bin}/pranor-vault", "--version"
 
 scoops:
-  - ids: [servstore-cli-archive]
+  - ids: [pranor-vault-cli-archive]
     repository:
       owner: vyuvaraj
       name: scoop-serv
@@ -137,9 +137,9 @@ scoops:
 
 
 nfpms:
-  - id: servstore-pkg
-    package_name: servstore
-    builds: [servstore]
+  - id: pranor-vault-pkg
+    package_name: pranor-vault
+    builds: [pranor-vault]
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Vault
     maintainer: Yuvaraj <vyuvaraj@github.com>
@@ -151,7 +151,7 @@ nfpms:
     bindir: /usr/local/bin
     contents:
       - src: README.md
-        dst: /usr/share/doc/servstore/README.md
+        dst: /usr/share/doc/pranor-vault/README.md
     scripts:
       postinstall: scripts/postinstall.sh
       preremove: scripts/preremove.sh

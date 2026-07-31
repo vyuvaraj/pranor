@@ -1,7 +1,7 @@
 # Pranor Trace
 
 ```bash
-docker run -p 8090:8090 ghcr.io/vyuvaraj/servtrace:latest
+docker run -p 8090:8090 ghcr.io/vyuvaraj/pranor-trace:latest
 ```
 
 `Pranor Trace` is the distributed tracing and continuous profiling service for the **Pranor** ecosystem. It ingests OTLP-format traces, assembles waterfall hierarchies, provides SLO burn rate alerting, and delivers eBPF-powered flamegraph profiling with automatic OTel correlation.
@@ -104,7 +104,7 @@ OTLP SDK (Go/Python/JS/...)
 Define SLOs with dual burn windows:
 
 ```bash
-curl -X POST http://servtrace:8090/api/v1/slo \
+curl -X POST http://pranor-trace:8090/api/v1/slo \
   -d '{
     "service": "orders-api",
     "slo_name": "availability",
@@ -118,7 +118,7 @@ curl -X POST http://servtrace:8090/api/v1/slo \
 
 Query burn rate:
 ```bash
-curl http://servtrace:8090/api/v1/slo/orders-api/burn-rate
+curl http://pranor-trace:8090/api/v1/slo/orders-api/burn-rate
 # → { "slo": "availability", "budget_remaining": 0.82, "burn_rate_1h": 2.1, "burn_rate_6h": 0.8, "alerting": false }
 ```
 
@@ -130,10 +130,10 @@ eBPF profiling runs continuously in the background. Access profiles via:
 
 ```bash
 # Get current CPU flamegraph for orders-api
-curl http://servtrace:8090/api/v1/flamegraph/orders-api > flamegraph.svg
+curl http://pranor-trace:8090/api/v1/flamegraph/orders-api > flamegraph.svg
 
 # Get flamegraph slice correlated to a specific slow span
-curl http://servtrace:8090/api/v1/flamegraph/orders-api/correlated/abc123/span456
+curl http://pranor-trace:8090/api/v1/flamegraph/orders-api/correlated/abc123/span456
 ```
 
 ---
@@ -142,27 +142,27 @@ curl http://servtrace:8090/api/v1/flamegraph/orders-api/correlated/abc123/span45
 
 ```bash
 docker run -p 8090:8090 \
-  -e SERVTRACE_MAX_TRACES=50000 \
-  -e SERVTRACE_EBPF_ENABLED=true \
-  -e SERVTRACE_OTEL_EXPORT=http://collector:4318 \
-  ghcr.io/vyuvaraj/servtrace:latest
+  -e PRANOR_TRACE_MAX_TRACES=50000 \
+  -e PRANOR_TRACE_EBPF_ENABLED=true \
+  -e PRANOR_TRACE_OTEL_EXPORT=http://collector:4318 \
+  ghcr.io/vyuvaraj/pranor-trace:latest
 ```
 
 Configure your services to send OTLP traces:
 
 ```bash
 # Go
-OTEL_EXPORTER_OTLP_ENDPOINT=http://servtrace:8090 ./my-service
+OTEL_EXPORTER_OTLP_ENDPOINT=http://pranor-trace:8090 ./my-service
 
 # Python
-opentelemetry-instrument --exporter-otlp-endpoint http://servtrace:8090 python app.py
+opentelemetry-instrument --exporter-otlp-endpoint http://pranor-trace:8090 python app.py
 ```
 
 ### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SERVTRACE_PORT` | `8090` | HTTP listener port |
-| `SERVTRACE_MAX_TRACES` | `10000` | Max traces in memory before eviction |
-| `SERVTRACE_EBPF_ENABLED` | `false` | Enable eBPF continuous profiling |
-| `SERVTRACE_OTEL_EXPORT` | — | Re-export spans to another OTLP collector |
+| `PRANOR_TRACE_PORT` | `8090` | HTTP listener port |
+| `PRANOR_TRACE_MAX_TRACES` | `10000` | Max traces in memory before eviction |
+| `PRANOR_TRACE_EBPF_ENABLED` | `false` | Enable eBPF continuous profiling |
+| `PRANOR_TRACE_OTEL_EXPORT` | — | Re-export spans to another OTLP collector |

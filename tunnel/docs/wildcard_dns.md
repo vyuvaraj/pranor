@@ -19,7 +19,7 @@ To route incoming subdomains (e.g., `app1.pranor.net`, `test-env.pranor.net`) to
 
 ## 2. Reverse Proxy Configuration with TLS
 
-It is best practice to run the `servtunnel server` behind a reverse proxy (like **Nginx** or **Caddy**) for TLS termination, security, and WebSocket upgrade handling.
+It is best practice to run the `pranor-tunnel server` behind a reverse proxy (like **Nginx** or **Caddy**) for TLS termination, security, and WebSocket upgrade handling.
 
 ### Option A: Nginx Configuration
 
@@ -96,5 +96,5 @@ Caddy automatically provisions and renews wildcard certificates using ACME (DNS-
 Start the Pranor Tunnel relay server listening on the local loopback port matching your reverse proxy configuration:
 
 ```bash
-servtunnel server --port 8443 --domain pranor.net
+pranor-tunnel server --port 8443 --domain pranor.net
 ```

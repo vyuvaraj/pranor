@@ -133,7 +133,7 @@ type Server struct {
 
 // NewServer creates a new relay server.
 func NewServer(addr, baseDomain string, insp *inspector.Inspector) *Server {
-	idleTimeoutStr := os.Getenv("SERVTUNNEL_IDLE_TIMEOUT")
+	idleTimeoutStr := os.Getenv("PRANOR_TUNNEL_IDLE_TIMEOUT")
 	idleTimeout := 60 * time.Second
 	if d, err := time.ParseDuration(idleTimeoutStr); err == nil {
 		idleTimeout = d
@@ -142,7 +142,7 @@ func NewServer(addr, baseDomain string, insp *inspector.Inspector) *Server {
 	}
 
 	reserved := make(map[string]string)
-	if envReserved := os.Getenv("SERVTUNNEL_RESERVED_SUBDOMAINS"); envReserved != "" {
+	if envReserved := os.Getenv("PRANOR_TUNNEL_RESERVED_SUBDOMAINS"); envReserved != "" {
 		parts := strings.Split(envReserved, ",")
 		for _, part := range parts {
 			subParts := strings.SplitN(part, ":", 2)
@@ -156,7 +156,7 @@ func NewServer(addr, baseDomain string, insp *inspector.Inspector) *Server {
 		}
 	}
 
-	peersStr := os.Getenv("SERVTUNNEL_FEDERATION_PEERS")
+	peersStr := os.Getenv("PRANOR_TUNNEL_FEDERATION_PEERS")
 	var peers []string
 	if peersStr != "" {
 		for _, p := range strings.Split(peersStr, ",") {
@@ -171,8 +171,8 @@ func NewServer(addr, baseDomain string, insp *inspector.Inspector) *Server {
 		addr:               addr,
 		baseDomain:         baseDomain,
 		inspector:          insp,
-		jwtSecret:          os.Getenv("SERVTUNNEL_JWT_SECRET"),
-		staticToken:        os.Getenv("SERVTUNNEL_TOKEN"),
+		jwtSecret:          os.Getenv("PRANOR_TUNNEL_JWT_SECRET"),
+		staticToken:        os.Getenv("PRANOR_TUNNEL_TOKEN"),
 		idleTimeout:        idleTimeout,
 		reservedSubdomains: reserved,
 		tunnels:            make(map[string]*tunnelConn),
@@ -245,10 +245,10 @@ func (s *Server) Start() error {
 		Handler: dispatcher,
 	}
 
-	tlsCert := os.Getenv("SERVTUNNEL_TLS_CERT")
-	tlsKey := os.Getenv("SERVTUNNEL_TLS_KEY")
-	autocertEnabled := os.Getenv("SERVTUNNEL_AUTOCERT") == "true"
-	autocertDomain := os.Getenv("SERVTUNNEL_AUTOCERT_DOMAIN")
+	tlsCert := os.Getenv("PRANOR_TUNNEL_TLS_CERT")
+	tlsKey := os.Getenv("PRANOR_TUNNEL_TLS_KEY")
+	autocertEnabled := os.Getenv("PRANOR_TUNNEL_AUTOCERT") == "true"
+	autocertDomain := os.Getenv("PRANOR_TUNNEL_AUTOCERT_DOMAIN")
 
 	if autocertEnabled && autocertDomain != "" {
 		certManager := &autocert.Manager{
@@ -292,7 +292,7 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	return nil
 }
 
-// authenticate checks the incoming request against SERVTUNNEL_JWT_SECRET or SERVTUNNEL_TOKEN.
+// authenticate checks the incoming request against PRANOR_TUNNEL_JWT_SECRET or PRANOR_TUNNEL_TOKEN.
 func (s *Server) authenticate(r *http.Request) error {
 	secret := s.jwtSecret
 	token := s.staticToken
@@ -531,7 +531,7 @@ func (s *Server) handleWebSocket(w http.ResponseWriter, r *http.Request) {
 	tc.mu.Unlock()
 
 	// Periodic analytics reporting
-	analyticsURL := os.Getenv("SERVTUNNEL_ANALYTICS_URL")
+	analyticsURL := os.Getenv("PRANOR_TUNNEL_ANALYTICS_URL")
 	var analyticsStop chan struct{}
 	if analyticsURL != "" {
 		analyticsStop = make(chan struct{})

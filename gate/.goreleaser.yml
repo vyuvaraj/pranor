@@ -1,4 +1,4 @@
-project_name: servgate
+project_name: pranor-gate
 version: 2
 
 before:
@@ -6,9 +6,9 @@ before:
     - go mod tidy
 
 builds:
-  - id: servgate
+  - id: pranor-gate
     main: .
-    binary: servgate
+    binary: pranor-gate
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     env:
@@ -20,9 +20,9 @@ builds:
       - -X main.buildDate={{.Date}}
 
 archives:
-  - id: servgate
-    builds: [servgate]
-    name_template: "servgate_{{.Version}}_{{.Os}}_{{.Arch}}"
+  - id: pranor-gate
+    builds: [pranor-gate]
+    name_template: "pranor-gate_{{.Version}}_{{.Os}}_{{.Arch}}"
     format_overrides:
       - goos: windows
         formats: [zip]
@@ -46,8 +46,8 @@ changelog:
 
 dockers:
   - image_templates:
-      - "ghcr.io/vyuvaraj/servgate:{{.Tag}}"
-      - "ghcr.io/vyuvaraj/servgate:latest"
+      - "ghcr.io/vyuvaraj/pranor-gate:{{.Tag}}"
+      - "ghcr.io/vyuvaraj/pranor-gate:latest"
     # goreleaser builds in a temp dir with only the binary + Dockerfile.
     # Dockerfile.goreleaser expects a pre-built binary (no source build stage).
     dockerfile: Dockerfile.goreleaser
@@ -60,7 +60,7 @@ dockers:
       - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Gate"
 
 brews:
-  - name: servgate
+  - name: pranor-gate
     repository:
       owner: vyuvaraj
       name: homebrew-serv
@@ -68,9 +68,9 @@ brews:
     description: "High-performance API gateway and reverse proxy from the ServVerse platform"
     license: "Apache-2.0"
     install: |
-      bin.install "servgate"
+      bin.install "pranor-gate"
     test: |
-      system "#{bin}/servgate", "--version"
+      system "#{bin}/pranor-gate", "--version"
 
 scoops:
   - repository:
@@ -82,9 +82,9 @@ scoops:
 
 
 nfpms:
-  - id: servgate-pkg
-    package_name: servgate
-    builds: [servgate]
+  - id: pranor-gate-pkg
+    package_name: pranor-gate
+    builds: [pranor-gate]
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Gate
     maintainer: Yuvaraj <vyuvaraj@github.com>
@@ -96,7 +96,7 @@ nfpms:
     bindir: /usr/local/bin
     contents:
       - src: README.md
-        dst: /usr/share/doc/servgate/README.md
+        dst: /usr/share/doc/pranor-gate/README.md
     scripts:
       postinstall: scripts/postinstall.sh
       preremove: scripts/preremove.sh

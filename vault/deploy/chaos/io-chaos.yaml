@@ -1,14 +1,14 @@
 apiVersion: chaos-mesh.org/v1alpha1
 kind: IOChaos
 metadata:
-  name: servstore-io-latency
+  name: pranor-vault-io-latency
   namespace: default
 spec:
   action: mixed
   mode: one
   selector:
     labelSelectors:
-      'app.kubernetes.io/name': 'servstore'
+      'app.kubernetes.io/name': 'pranor-vault'
   volumeMountPath: /data
   delay:
     read: '500ms'

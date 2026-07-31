@@ -77,8 +77,8 @@ scoops:
 
 
 nfpms:
-  - id: servpool-pkg
-    package_name: servpool
+  - id: pranor-pool-pkg
+    package_name: pranor-pool
     builds: [servdb]
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Pool
@@ -91,7 +91,7 @@ nfpms:
     bindir: /usr/local/bin
     contents:
       - src: README.md
-        dst: /usr/share/doc/servpool/README.md
+        dst: /usr/share/doc/pranor-pool/README.md
     scripts:
       postinstall: scripts/postinstall.sh
       preremove: scripts/preremove.sh

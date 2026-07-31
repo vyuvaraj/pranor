@@ -1,7 +1,7 @@
 apiVersion: chaos-mesh.org/v1alpha1
 kind: PodChaos
 metadata:
-  name: servstore-pod-failure
+  name: pranor-vault-pod-failure
   namespace: default
 spec:
   action: pod-failure
@@ -9,6 +9,6 @@ spec:
   duration: '5m'
   selector:
     labelSelectors:
-      'app.kubernetes.io/name': 'servstore'
+      'app.kubernetes.io/name': 'pranor-vault'
   scheduler:
     cron: '*/10 * * * *'

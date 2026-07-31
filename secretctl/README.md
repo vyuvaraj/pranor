@@ -1,13 +1,13 @@
-# servsecretctl
+# pranor-secretctl
 
-`servsecretctl` is the standalone, open-source command-line interface (CLI) administration client for **Pranor Secret** (Secret & Credential Manager).
+`pranor-secretctl` is the standalone, open-source command-line interface (CLI) administration client for **Pranor Secret** (Secret & Credential Manager).
 
 It provides terminal controls to set, get, delete, rollback, and list secrets, as well as running child commands with secrets injected directly into their environment.
 
 ## Installation
 
 ```bash
-go build -o servsecretctl.exe .
+go build -o pranor-secretctl.exe .
 ```
 
 ## Configuration
@@ -24,42 +24,42 @@ You can configure the client using flags or environment variables:
 
 ### 1. Set a secret
 ```bash
-servsecretctl set --key db.password --value "supersecretpass"
+pranor-secretctl set --key db.password --value "supersecretpass"
 ```
 
 ### 2. Retrieve a secret
 ```bash
-servsecretctl get --key db.password
+pranor-secretctl get --key db.password
 ```
 
 ### 3. Delete a secret
 ```bash
-servsecretctl delete --key db.password
+pranor-secretctl delete --key db.password
 ```
 
 ### 4. List secret keys in tenant scope
 ```bash
-servsecretctl list
+pranor-secretctl list
 ```
 
 ### 5. Rotate master encryption key
 ```bash
-servsecretctl rotate --new-key "32_byte_hex_key_here"
+pranor-secretctl rotate --new-key "32_byte_hex_key_here"
 ```
 
 ### 6. Rollback a secret to previous version
 ```bash
-servsecretctl rollback --key db.password
+pranor-secretctl rollback --key db.password
 ```
 
 ### 7. Run command with secrets injected into environment
 ```bash
-servsecretctl run --cmd "npm run start"
+pranor-secretctl run --cmd "npm run start"
 ```
 
 ### 8. Check Health
 ```bash
-servsecretctl health
+pranor-secretctl health
 ```
 
 ## License

@@ -3,7 +3,7 @@
 ## Differentiating Factors (Why Pranor Tunnel vs. Ngrok/Cloudflared?)
 * **Ecosystem Tracing**: Deep, zero-config integration with Pranor Core. Spans from incoming tunneled requests automatically connect to parent request traces and flow directly into Pranor Console.
 * **REST-Accessible Inspector**: Unlike proprietary dashboards, the built-in request inspector has a fully scriptable REST API for CI/CD test automation.
-* **Zero Vendor Lock-in**: Self-host the relay server in one command (`servtunnel server`) with no licensing overhead.
+* **Zero Vendor Lock-in**: Self-host the relay server in one command (`pranor-tunnel server`) with no licensing overhead.
 
 ## Current Status: v0.1.0 — MVP
 

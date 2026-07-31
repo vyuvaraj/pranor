@@ -1,4 +1,4 @@
-project_name: servflow
+project_name: pranor-flow
 version: 2
 
 before:
@@ -6,9 +6,9 @@ before:
     - go mod tidy
 
 builds:
-  - id: servflow
+  - id: pranor-flow
     main: .
-    binary: servflow
+    binary: pranor-flow
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     env:
@@ -20,9 +20,9 @@ builds:
       - -X main.buildDate={{.Date}}
 
 archives:
-  - id: servflow
-    builds: [servflow]
-    name_template: "servflow_{{.Version}}_{{.Os}}_{{.Arch}}"
+  - id: pranor-flow
+    builds: [pranor-flow]
+    name_template: "pranor-flow_{{.Version}}_{{.Os}}_{{.Arch}}"
     format_overrides:
       - goos: windows
         formats: [zip]
@@ -45,8 +45,8 @@ changelog:
 
 dockers:
   - image_templates:
-      - "ghcr.io/vyuvaraj/servflow:{{.Tag}}"
-      - "ghcr.io/vyuvaraj/servflow:latest"
+      - "ghcr.io/vyuvaraj/pranor-flow:{{.Tag}}"
+      - "ghcr.io/vyuvaraj/pranor-flow:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
       - "--label=org.opencontainers.image.title=Pranor Flow"
@@ -55,7 +55,7 @@ dockers:
       - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Flow"
 
 brews:
-  - name: servflow
+  - name: pranor-flow
     repository:
       owner: vyuvaraj
       name: homebrew-serv
@@ -63,9 +63,9 @@ brews:
     description: "Workflow orchestration and pipeline service from the ServVerse platform"
     license: "Apache-2.0"
     install: |
-      bin.install "servflow"
+      bin.install "pranor-flow"
     test: |
-      system "#{bin}/servflow", "--version"
+      system "#{bin}/pranor-flow", "--version"
 
 scoops:
   - repository:
@@ -77,9 +77,9 @@ scoops:
 
 
 nfpms:
-  - id: servflow-pkg
-    package_name: servflow
-    builds: [servflow]
+  - id: pranor-flow-pkg
+    package_name: pranor-flow
+    builds: [pranor-flow]
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Flow
     maintainer: Yuvaraj <vyuvaraj@github.com>
@@ -91,7 +91,7 @@ nfpms:
     bindir: /usr/local/bin
     contents:
       - src: README.md
-        dst: /usr/share/doc/servflow/README.md
+        dst: /usr/share/doc/pranor-flow/README.md
     scripts:
       postinstall: scripts/postinstall.sh
       preremove: scripts/preremove.sh

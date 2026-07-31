@@ -69,10 +69,10 @@ func (g *Gateway) handleRegisterFederation(w http.ResponseWriter, r *http.Reques
 	_, _ = w.Write([]byte("Federation rule registered successfully"))
 }
 
-// initFederationRules in EE: parses SERVSTORE_FEDERATION_MAP env var.
+// initFederationRules in EE: parses PRANOR_VAULT_FEDERATION_MAP env var.
 func initFederationRules() []FederationRule {
 	var rules []FederationRule
-	if fedMap := os.Getenv("SERVSTORE_FEDERATION_MAP"); fedMap != "" {
+	if fedMap := os.Getenv("PRANOR_VAULT_FEDERATION_MAP"); fedMap != "" {
 		for _, part := range strings.Split(fedMap, ",") {
 			part = strings.TrimSpace(part)
 			if part == "" {

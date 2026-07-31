@@ -3,23 +3,23 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ include "servstore.fullname" . }}-csi
+  name: {{ include "pranor-vault.fullname" . }}-csi
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "servstore.labels" . | nindent 4 }}
+    {{- include "pranor-vault.labels" . | nindent 4 }}
     app.kubernetes.io/component: csi-driver
 spec:
   selector:
     matchLabels:
-      {{- include "servstore.selectorLabels" . | nindent 6 }}
+      {{- include "pranor-vault.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: csi-driver
   template:
     metadata:
       labels:
-        {{- include "servstore.selectorLabels" . | nindent 8 }}
+        {{- include "pranor-vault.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: csi-driver
     spec:
-      serviceAccountName: {{ include "servstore.serviceAccountName" . }}
+      serviceAccountName: {{ include "pranor-vault.serviceAccountName" . }}
       hostNetwork: false
       containers:
       - name: csi-driver
@@ -34,8 +34,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
-        - name: SERVSTORE_ENDPOINT
-          value: "http://{{ include "servstore.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}"
+        - name: PRANOR_VAULT_ENDPOINT
+          value: "http://{{ include "pranor-vault.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}"
         volumeMounts:
         - name: plugin-dir
           mountPath: {{ .Values.csiDriver.socketDir }}
@@ -74,7 +74,7 @@ spec:
 apiVersion: storage.k8s.io/v1
 kind: CSIDriver
 metadata:
-  name: csi.servstore.io
+  name: csi.pranor-vault.io
 spec:
   attachRequired: false
   podInfoOnMount: true

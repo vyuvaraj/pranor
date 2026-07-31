@@ -50,8 +50,8 @@ func runServer() {
 	// Initialize OpenTelemetry.
 	otel.Init()
 
-	addr := getEnvOrDefault("SERVTUNNEL_ADDR", ":8443")
-	baseDomain := getEnvOrDefault("SERVTUNNEL_DOMAIN", "localhost")
+	addr := getEnvOrDefault("PRANOR_TUNNEL_ADDR", ":8443")
+	baseDomain := getEnvOrDefault("PRANOR_TUNNEL_DOMAIN", "localhost")
 	inspectSize := 100
 
 	// Parse flags from remaining args.
@@ -164,11 +164,11 @@ func runClient() {
 		log.Printf("Loaded tunnel config from %s", cfgPath)
 		relayURL := cfgFile.Relay
 		if relayURL == "" {
-			relayURL = getEnvOrDefault("SERVTUNNEL_RELAY", "ws://localhost:8443/ws/connect")
+			relayURL = getEnvOrDefault("PRANOR_TUNNEL_RELAY", "ws://localhost:8443/ws/connect")
 		}
 		globalToken := cfgFile.Token
 		if globalToken == "" {
-			globalToken = getEnvOrDefault("SERVTUNNEL_TOKEN", "")
+			globalToken = getEnvOrDefault("PRANOR_TUNNEL_TOKEN", "")
 		}
 
 		var wg sync.WaitGroup
@@ -204,10 +204,10 @@ func runClient() {
 	}
 
 	localPort := os.Args[2]
-	relayURL := getEnvOrDefault("SERVTUNNEL_RELAY", "ws://localhost:8443/ws/connect")
+	relayURL := getEnvOrDefault("PRANOR_TUNNEL_RELAY", "ws://localhost:8443/ws/connect")
 	subdomain := ""
 	customDomain := ""
-	token := getEnvOrDefault("SERVTUNNEL_TOKEN", "")
+	token := getEnvOrDefault("PRANOR_TUNNEL_TOKEN", "")
 	inspectPort := "4040"
 	shareAuth := ""
 
@@ -349,9 +349,9 @@ func printUsage() {
 	fmt.Println("  Pranor Tunnel client 8080 --relay ws://relay.Pranor.net:8443/ws/connect --subdomain myapp")
 	fmt.Println()
 	fmt.Println("Environment variables:")
-	fmt.Println("  SERVTUNNEL_ADDR    Server listen address (default: :8443)")
-	fmt.Println("  SERVTUNNEL_DOMAIN  Base domain (default: localhost)")
-	fmt.Println("  SERVTUNNEL_RELAY   Client relay URL (default: ws://localhost:8443/ws/connect)")
+	fmt.Println("  PRANOR_TUNNEL_ADDR    Server listen address (default: :8443)")
+	fmt.Println("  PRANOR_TUNNEL_DOMAIN  Base domain (default: localhost)")
+	fmt.Println("  PRANOR_TUNNEL_RELAY   Client relay URL (default: ws://localhost:8443/ws/connect)")
 }
 
 func getEnvOrDefault(key, defaultVal string) string {

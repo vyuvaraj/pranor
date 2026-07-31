@@ -6,7 +6,7 @@ import (
 )
 
 func TestSQLiteStoreAppendAndRecover(t *testing.T) {
-	path := os.TempDir() + "/servqueue_test.db"
+	path := os.TempDir() + "/pranor-pulse_test.db"
 	defer os.Remove(path)
 
 	store, err := OpenSQLiteStore(path)
@@ -34,7 +34,7 @@ func TestSQLiteStoreAppendAndRecover(t *testing.T) {
 }
 
 func TestSQLiteStoreQuerySQL(t *testing.T) {
-	path := os.TempDir() + "/servqueue_query_test.db"
+	path := os.TempDir() + "/pranor-pulse_query_test.db"
 	defer os.Remove(path)
 
 	store, err := OpenSQLiteStore(path)
@@ -57,7 +57,7 @@ func TestSQLiteStoreQuerySQL(t *testing.T) {
 }
 
 func TestSQLiteStoreQuerySQLRejectNonSelect(t *testing.T) {
-	path := os.TempDir() + "/servqueue_nsel_test.db"
+	path := os.TempDir() + "/pranor-pulse_nsel_test.db"
 	defer os.Remove(path)
 
 	store, err := OpenSQLiteStore(path)
@@ -73,7 +73,7 @@ func TestSQLiteStoreQuerySQLRejectNonSelect(t *testing.T) {
 }
 
 func TestSQLiteTopicStats(t *testing.T) {
-	path := os.TempDir() + "/servqueue_stats_test.db"
+	path := os.TempDir() + "/pranor-pulse_stats_test.db"
 	defer os.Remove(path)
 
 	store, err := OpenSQLiteStore(path)
@@ -99,7 +99,7 @@ func TestSQLiteTopicStats(t *testing.T) {
 }
 
 func TestSQLiteMessageCount(t *testing.T) {
-	path := os.TempDir() + "/servqueue_count_test.db"
+	path := os.TempDir() + "/pranor-pulse_count_test.db"
 	defer os.Remove(path)
 
 	store, err := OpenSQLiteStore(path)
@@ -122,7 +122,7 @@ func TestSQLiteMessageCount(t *testing.T) {
 }
 
 func TestSQLiteTrimTopic(t *testing.T) {
-	path := os.TempDir() + "/servqueue_trim_test.db"
+	path := os.TempDir() + "/pranor-pulse_trim_test.db"
 	defer os.Remove(path)
 
 	store, err := OpenSQLiteStore(path)

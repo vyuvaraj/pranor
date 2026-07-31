@@ -80,7 +80,7 @@ func (a *AutoTLSManager) GenerateSelfSignedCert() (*tls.Config, error) {
 		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
 		BasicConstraintsValid: true,
 		IPAddresses:           []net.IP{net.ParseIP("127.0.0.1")},
-		DNSNames:              []string{"localhost", "servgateway.local"},
+		DNSNames:              []string{"localhost", "pranor-gate.local"},
 	}
 
 	certBytes, err := x509.CreateCertificate(rand.Reader, &template, &template, &priv.PublicKey, priv)

@@ -88,15 +88,15 @@ func (d *PranorGatewayDaemon) Start() error {
 		}
 
 		go func() {
-			log.Printf("[servgatewayd] Web Admin UI listening on http://localhost%s/ui/", d.config.AdminAddr)
+			log.Printf("[pranor-gated] Web Admin UI listening on http://localhost%s/ui/", d.config.AdminAddr)
 			if err := d.adminServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-				log.Printf("[servgatewayd] Admin server error: %v", err)
+				log.Printf("[pranor-gated] Admin server error: %v", err)
 			}
 		}()
 	}
 	d.mu.Unlock()
 
-	log.Printf("[servgatewayd] Standalone PranorGateway Daemon listening on %s", d.config.Addr)
+	log.Printf("[pranor-gated] Standalone PranorGateway Daemon listening on %s", d.config.Addr)
 	return d.server.ListenAndServe()
 }
 
@@ -104,7 +104,7 @@ func (d *PranorGatewayDaemon) createHTTPHandler() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"status":"ok","daemon":"servgatewayd"}`))
+		w.Write([]byte(`{"status":"ok","daemon":"pranor-gated"}`))
 	})
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -138,7 +138,7 @@ func (d *PranorGatewayDaemon) handleHealth(w http.ResponseWriter, r *http.Reques
 		"version":     "2.0.0",
 		"uptime_sec":  uptime,
 		"route_count": routeCount,
-		"daemon":      "servgatewayd",
+		"daemon":      "pranor-gated",
 	})
 }
 
@@ -192,7 +192,7 @@ func (d *PranorGatewayDaemon) handleWebAdminUI(w http.ResponseWriter, r *http.Re
 <body>
     <div class="card">
         <h1>⚡ PranorGateway Admin Console</h1>
-        <p>Standalone API Gateway Daemon (<span class="badge">servgatewayd v2.0.0</span>)</p>
+        <p>Standalone API Gateway Daemon (<span class="badge">pranor-gated v2.0.0</span>)</p>
     </div>
     <div class="card">
         <h2>Registered Routes</h2>

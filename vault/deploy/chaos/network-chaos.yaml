@@ -1,14 +1,14 @@
 apiVersion: chaos-mesh.org/v1alpha1
 kind: NetworkChaos
 metadata:
-  name: servstore-network-loss
+  name: pranor-vault-network-loss
   namespace: default
 spec:
   action: delay
   mode: all
   selector:
     labelSelectors:
-      'app.kubernetes.io/name': 'servstore'
+      'app.kubernetes.io/name': 'pranor-vault'
   delay:
     latency: '200ms'
     correlation: '50'

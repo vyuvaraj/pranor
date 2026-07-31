@@ -1,4 +1,4 @@
-project_name: servtrace
+project_name: pranor-trace
 version: 2
 
 before:
@@ -6,9 +6,9 @@ before:
     - go mod tidy
 
 builds:
-  - id: servtrace
+  - id: pranor-trace
     main: .
-    binary: servtrace
+    binary: pranor-trace
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     env:
@@ -20,9 +20,9 @@ builds:
       - -X main.buildDate={{.Date}}
 
 archives:
-  - id: servtrace
-    builds: [servtrace]
-    name_template: "servtrace_{{.Version}}_{{.Os}}_{{.Arch}}"
+  - id: pranor-trace
+    builds: [pranor-trace]
+    name_template: "pranor-trace_{{.Version}}_{{.Os}}_{{.Arch}}"
     format_overrides:
       - goos: windows
         formats: [zip]
@@ -45,8 +45,8 @@ changelog:
 
 dockers:
   - image_templates:
-      - "ghcr.io/vyuvaraj/servtrace:{{.Tag}}"
-      - "ghcr.io/vyuvaraj/servtrace:latest"
+      - "ghcr.io/vyuvaraj/pranor-trace:{{.Tag}}"
+      - "ghcr.io/vyuvaraj/pranor-trace:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
       - "--label=org.opencontainers.image.title=Pranor Trace"
@@ -55,7 +55,7 @@ dockers:
       - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Trace"
 
 brews:
-  - name: servtrace
+  - name: pranor-trace
     repository:
       owner: vyuvaraj
       name: homebrew-serv
@@ -63,9 +63,9 @@ brews:
     description: "Distributed tracing and observability service from the ServVerse platform"
     license: "Apache-2.0"
     install: |
-      bin.install "servtrace"
+      bin.install "pranor-trace"
     test: |
-      system "#{bin}/servtrace", "--version"
+      system "#{bin}/pranor-trace", "--version"
 
 scoops:
   - repository:
@@ -77,9 +77,9 @@ scoops:
 
 
 nfpms:
-  - id: servtrace-pkg
-    package_name: servtrace
-    builds: [servtrace]
+  - id: pranor-trace-pkg
+    package_name: pranor-trace
+    builds: [pranor-trace]
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Trace
     maintainer: Yuvaraj <vyuvaraj@github.com>
@@ -91,7 +91,7 @@ nfpms:
     bindir: /usr/local/bin
     contents:
       - src: README.md
-        dst: /usr/share/doc/servtrace/README.md
+        dst: /usr/share/doc/pranor-trace/README.md
     scripts:
       postinstall: scripts/postinstall.sh
       preremove: scripts/preremove.sh

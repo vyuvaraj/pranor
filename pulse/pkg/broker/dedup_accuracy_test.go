@@ -17,10 +17,10 @@ func TestExactlyOnceDedupAccuracy(t *testing.T) {
 	defer os.Remove("queue.wal")
 
 	// Set publish rate limiter high or disable it to not interfere
-	os.Setenv("SERVQUEUE_PUBLISH_RATE", "100000")
-	os.Setenv("SERVQUEUE_PUBLISH_CAPACITY", "100000")
-	defer os.Unsetenv("SERVQUEUE_PUBLISH_RATE")
-	defer os.Unsetenv("SERVQUEUE_PUBLISH_CAPACITY")
+	os.Setenv("PRANOR_PULSE_PUBLISH_RATE", "100000")
+	os.Setenv("PRANOR_PULSE_PUBLISH_CAPACITY", "100000")
+	defer os.Unsetenv("PRANOR_PULSE_PUBLISH_RATE")
+	defer os.Unsetenv("PRANOR_PULSE_PUBLISH_CAPACITY")
 
 	engine := NewBrokerEngine()
 	defer engine.Stop()

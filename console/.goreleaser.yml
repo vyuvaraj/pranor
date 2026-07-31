@@ -1,4 +1,4 @@
-project_name: servconsole
+project_name: pranor-console
 version: 2
 
 before:
@@ -6,9 +6,9 @@ before:
     - go mod tidy
 
 builds:
-  - id: servconsole
+  - id: pranor-console
     main: .
-    binary: servconsole
+    binary: pranor-console
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     env:
@@ -20,9 +20,9 @@ builds:
       - -X main.buildDate={{.Date}}
 
 archives:
-  - id: servconsole
-    builds: [servconsole]
-    name_template: "servconsole_{{.Version}}_{{.Os}}_{{.Arch}}"
+  - id: pranor-console
+    builds: [pranor-console]
+    name_template: "pranor-console_{{.Version}}_{{.Os}}_{{.Arch}}"
     format_overrides:
       - goos: windows
         formats: [zip]
@@ -45,8 +45,8 @@ changelog:
 
 dockers:
   - image_templates:
-      - "ghcr.io/vyuvaraj/servconsole:{{.Tag}}"
-      - "ghcr.io/vyuvaraj/servconsole:latest"
+      - "ghcr.io/vyuvaraj/pranor-console:{{.Tag}}"
+      - "ghcr.io/vyuvaraj/pranor-console:latest"
     dockerfile: Dockerfile.goreleaser
     extra_files:
       - web/
@@ -57,7 +57,7 @@ dockers:
       - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Console"
 
 brews:
-  - name: servconsole
+  - name: pranor-console
     repository:
       owner: vyuvaraj
       name: homebrew-serv
@@ -65,9 +65,9 @@ brews:
     description: "Management console and dashboard for the ServVerse platform"
     license: "Apache-2.0"
     install: |
-      bin.install "servconsole"
+      bin.install "pranor-console"
     test: |
-      system "#{bin}/servconsole", "--version"
+      system "#{bin}/pranor-console", "--version"
 
 scoops:
   - repository:
@@ -79,9 +79,9 @@ scoops:
 
 
 nfpms:
-  - id: servconsole-pkg
-    package_name: servconsole
-    builds: [servconsole]
+  - id: pranor-console-pkg
+    package_name: pranor-console
+    builds: [pranor-console]
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Console
     maintainer: Yuvaraj <vyuvaraj@github.com>
@@ -93,7 +93,7 @@ nfpms:
     bindir: /usr/local/bin
     contents:
       - src: README.md
-        dst: /usr/share/doc/servconsole/README.md
+        dst: /usr/share/doc/pranor-console/README.md
     scripts:
       postinstall: scripts/postinstall.sh
       preremove: scripts/preremove.sh

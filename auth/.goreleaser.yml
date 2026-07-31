@@ -1,4 +1,4 @@
-project_name: servauth
+project_name: pranor-auth
 version: 2
 
 before:
@@ -6,9 +6,9 @@ before:
     - go mod tidy
 
 builds:
-  - id: servauth
+  - id: pranor-auth
     main: .
-    binary: servauth
+    binary: pranor-auth
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     env:
@@ -20,9 +20,9 @@ builds:
       - -X main.buildDate={{.Date}}
 
 archives:
-  - id: servauth
-    builds: [servauth]
-    name_template: "servauth_{{.Version}}_{{.Os}}_{{.Arch}}"
+  - id: pranor-auth
+    builds: [pranor-auth]
+    name_template: "pranor-auth_{{.Version}}_{{.Os}}_{{.Arch}}"
     format_overrides:
       - goos: windows
         formats: [zip]
@@ -45,8 +45,8 @@ changelog:
 
 dockers:
   - image_templates:
-      - "ghcr.io/vyuvaraj/servauth:{{.Tag}}"
-      - "ghcr.io/vyuvaraj/servauth:latest"
+      - "ghcr.io/vyuvaraj/pranor-auth:{{.Tag}}"
+      - "ghcr.io/vyuvaraj/pranor-auth:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
       - "--label=org.opencontainers.image.title=Pranor Auth"
@@ -55,7 +55,7 @@ dockers:
       - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Auth"
 
 brews:
-  - name: servauth
+  - name: pranor-auth
     repository:
       owner: vyuvaraj
       name: homebrew-serv
@@ -63,9 +63,9 @@ brews:
     description: "Authentication and authorization service from the ServVerse platform"
     license: "Apache-2.0"
     install: |
-      bin.install "servauth"
+      bin.install "pranor-auth"
     test: |
-      system "#{bin}/servauth", "--version"
+      system "#{bin}/pranor-auth", "--version"
 
 scoops:
   - repository:
@@ -77,9 +77,9 @@ scoops:
 
 
 nfpms:
-  - id: servauth-pkg
-    package_name: servauth
-    builds: [servauth]
+  - id: pranor-auth-pkg
+    package_name: pranor-auth
+    builds: [pranor-auth]
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Auth
     maintainer: Yuvaraj <vyuvaraj@github.com>
@@ -91,7 +91,7 @@ nfpms:
     bindir: /usr/local/bin
     contents:
       - src: README.md
-        dst: /usr/share/doc/servauth/README.md
+        dst: /usr/share/doc/pranor-auth/README.md
     scripts:
       postinstall: scripts/postinstall.sh
       preremove: scripts/preremove.sh

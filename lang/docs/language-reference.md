@@ -652,7 +652,7 @@ tool "lookup_order" "Look up an order by ID" (args) {
 Bind and interact with Pranor Vault S3 storage natively:
 ```serv
 bucket media {
-    path "servstore://media-bucket"
+    path "pranor-vault://media-bucket"
     allowed_types ["image/jpeg", "image/png", "application/pdf"]
 }
 
@@ -664,7 +664,7 @@ media.put("user_1_avatar.png", req.body.file)
 Declare semantic index and document query stores directly:
 ```serv
 rag DocumentIndex {
-    source "servstore://docs"
+    source "pranor-vault://docs"
     embed "openai"
     chunk 512
 }

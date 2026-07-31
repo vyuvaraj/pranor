@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "servstore.fullname" . }}
+  name: {{ include "pranor-vault.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "servstore.labels" . | nindent 4 }}
+    {{- include "pranor-vault.labels" . | nindent 4 }}
 spec:
-  serviceName: {{ include "servstore.fullname" . }}-headless
+  serviceName: {{ include "pranor-vault.fullname" . }}-headless
   replicas: {{ .Values.replicaCount }}
   # Rolling upgrade: replace one pod at a time, wait for Ready before proceeding.
   updateStrategy:
@@ -16,11 +16,11 @@ spec:
   podManagementPolicy: OrderedReady
   selector:
     matchLabels:
-      {{- include "servstore.selectorLabels" . | nindent 6 }}
+      {{- include "pranor-vault.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "servstore.selectorLabels" . | nindent 8 }}
+        {{- include "pranor-vault.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -29,7 +29,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      serviceAccountName: {{ include "servstore.serviceAccountName" . }}
+      serviceAccountName: {{ include "pranor-vault.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       # Pod anti-affinity: spread nodes across Kubernetes hosts for HA
@@ -40,7 +40,7 @@ spec:
             podAffinityTerm:
               labelSelector:
                 matchLabels:
-                  {{- include "servstore.selectorLabels" . | nindent 18 }}
+                  {{- include "pranor-vault.selectorLabels" . | nindent 18 }}
               topologyKey: kubernetes.io/hostname
         {{- with .Values.affinity }}
         {{- toYaml . | nindent 8 }}
@@ -54,7 +54,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-      - name: servstore
+      - name: pranor-vault
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         securityContext:
@@ -90,7 +90,7 @@ spec:
         - "--rate-limit-burst={{ .Values.rateLimit.burst }}"
         {{- end }}
         # Peer discovery via headless Service DNS
-        - "--node-addr=$(POD_NAME).{{ include "servstore.fullname" . }}-headless.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.containerPort }}"
+        - "--node-addr=$(POD_NAME).{{ include "pranor-vault.fullname" . }}-headless.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.containerPort }}"
         - "--node-id=$(POD_NAME)"
         env:
         - name: POD_NAME
@@ -101,19 +101,19 @@ spec:
         - name: ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ if .Values.auth.existingSecret }}{{ .Values.auth.existingSecret }}{{ else }}{{ include "servstore.fullname" . }}-auth{{ end }}
+              name: {{ if .Values.auth.existingSecret }}{{ .Values.auth.existingSecret }}{{ else }}{{ include "pranor-vault.fullname" . }}-auth{{ end }}
               key: access-key
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ if .Values.auth.existingSecret }}{{ .Values.auth.existingSecret }}{{ else }}{{ include "servstore.fullname" . }}-auth{{ end }}
+              name: {{ if .Values.auth.existingSecret }}{{ .Values.auth.existingSecret }}{{ else }}{{ include "pranor-vault.fullname" . }}-auth{{ end }}
               key: secret-key
         {{- end }}
         {{- if .Values.encryption.enabled }}
         - name: ENCRYPTION_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ if .Values.encryption.existingSecret }}{{ .Values.encryption.existingSecret }}{{ else }}{{ include "servstore.fullname" . }}-encryption{{ end }}
+              name: {{ if .Values.encryption.existingSecret }}{{ .Values.encryption.existingSecret }}{{ else }}{{ include "pranor-vault.fullname" . }}-encryption{{ end }}
               key: {{ .Values.encryption.secretKey }}
         {{- end }}
         livenessProbe:

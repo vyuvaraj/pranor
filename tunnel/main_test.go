@@ -411,7 +411,7 @@ func TestListTunnelsEmpty(t *testing.T) {
 }
 
 func TestTokenHandshakeValidation(t *testing.T) {
-	t.Setenv("SERVTUNNEL_TOKEN", "super-secret-token")
+	t.Setenv("PRANOR_TUNNEL_TOKEN", "super-secret-token")
 
 	// Start relay server on a random port.
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
@@ -602,7 +602,7 @@ func TestClientReconnection(t *testing.T) {
 }
 
 func TestConnectionIdleDisconnect(t *testing.T) {
-	t.Setenv("SERVTUNNEL_IDLE_TIMEOUT", "200ms")
+	t.Setenv("PRANOR_TUNNEL_IDLE_TIMEOUT", "200ms")
 
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
@@ -1216,7 +1216,7 @@ func TestMultipleTunnels(t *testing.T) {
 }
 
 func TestReservedSubdomains(t *testing.T) {
-	t.Setenv("SERVTUNNEL_RESERVED_SUBDOMAINS", "special:secrettoken,other:anothertoken")
+	t.Setenv("PRANOR_TUNNEL_RESERVED_SUBDOMAINS", "special:secrettoken,other:anothertoken")
 
 	l, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
@@ -1291,8 +1291,8 @@ func TestReservedSubdomains(t *testing.T) {
 
 func TestTLSServerConfig(t *testing.T) {
 	t.Run("TLS Env Check", func(t *testing.T) {
-		t.Setenv("SERVTUNNEL_TLS_CERT", "nonexistent.crt")
-		t.Setenv("SERVTUNNEL_TLS_KEY", "nonexistent.key")
+		t.Setenv("PRANOR_TUNNEL_TLS_CERT", "nonexistent.crt")
+		t.Setenv("PRANOR_TUNNEL_TLS_KEY", "nonexistent.key")
 		
 		insp := inspector.New(10)
 		s := server.NewServer(":9999", "localhost", insp)
@@ -1317,8 +1317,8 @@ func TestTLSServerConfig(t *testing.T) {
 	})
 
 	t.Run("AutoTLS Env Check", func(t *testing.T) {
-		t.Setenv("SERVTUNNEL_AUTOCERT", "true")
-		t.Setenv("SERVTUNNEL_AUTOCERT_DOMAIN", "example.com")
+		t.Setenv("PRANOR_TUNNEL_AUTOCERT", "true")
+		t.Setenv("PRANOR_TUNNEL_AUTOCERT_DOMAIN", "example.com")
 		
 		insp := inspector.New(10)
 		s := server.NewServer(":9999", "localhost", insp)

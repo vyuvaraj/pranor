@@ -163,8 +163,8 @@ func TestHTTPPublish(t *testing.T) {
 
 	bodyBytes, _ := io.ReadAll(promResp.Body)
 	bodyStr := string(bodyBytes)
-	if !strings.Contains(bodyStr, "servqueue_messages_published_total") {
-		t.Errorf("Expected Prometheus metrics to contain servqueue_messages_published_total, got %s", bodyStr)
+	if !strings.Contains(bodyStr, "pranor-pulse_messages_published_total") {
+		t.Errorf("Expected Prometheus metrics to contain pranor-pulse_messages_published_total, got %s", bodyStr)
 	}
 }
 
@@ -421,7 +421,7 @@ func TestReplayAndOffsets(t *testing.T) {
 	// Use an isolated WAL per test run to avoid pollution from other tests that
 	// also write to the default "queue.wal" in the working directory.
 	walPath := filepath.Join(t.TempDir(), "replay_test.wal")
-	t.Setenv("SERVQUEUE_WAL_PATH", walPath)
+	t.Setenv("PRANOR_PULSE_WAL_PATH", walPath)
 
 	engine := broker.NewBrokerEngine()
 	// t.Cleanup is LIFO: register engine.Close() first so it runs last —
@@ -532,11 +532,11 @@ func TestPublishRateLimiter(t *testing.T) {
 	// Use a very low refill rate (0.001 tokens/sec = 1 token per ~17 min)
 	// so the bucket cannot meaningfully refill between three near-instant calls.
 	// Capacity=2 means the first 2 publishes consume all tokens; the 3rd must fail.
-	os.Setenv("SERVQUEUE_PUBLISH_RATE", "0.001")
-	os.Setenv("SERVQUEUE_PUBLISH_CAPACITY", "2")
+	os.Setenv("PRANOR_PULSE_PUBLISH_RATE", "0.001")
+	os.Setenv("PRANOR_PULSE_PUBLISH_CAPACITY", "2")
 	defer func() {
-		os.Unsetenv("SERVQUEUE_PUBLISH_RATE")
-		os.Unsetenv("SERVQUEUE_PUBLISH_CAPACITY")
+		os.Unsetenv("PRANOR_PULSE_PUBLISH_RATE")
+		os.Unsetenv("PRANOR_PULSE_PUBLISH_CAPACITY")
 	}()
 
 	engine := broker.NewBrokerEngine()
@@ -902,8 +902,8 @@ func TestBackpressure(t *testing.T) {
 	_ = os.Remove("queue.wal")
 	defer os.Remove("queue.wal")
 
-	os.Setenv("SERVQUEUE_BACKPRESSURE_LIMIT", "2")
-	defer os.Unsetenv("SERVQUEUE_BACKPRESSURE_LIMIT")
+	os.Setenv("PRANOR_PULSE_BACKPRESSURE_LIMIT", "2")
+	defer os.Unsetenv("PRANOR_PULSE_BACKPRESSURE_LIMIT")
 
 	engine := broker.NewBrokerEngine()
 	defer engine.Stop()

@@ -32,7 +32,7 @@ Enhance the single-node capabilities with enterprise security, management utilit
   - [x] Prometheus metrics endpoint (Request rate, latency, storage utilization, active connections)
   - [x] OpenTelemetry (OTel) tracing integration for API handlers
 - **CLI Client & DevOps**:
-  - [x] A lightweight Go CLI (`servstore-cli`) to manage buckets, objects, policy configurations, and cluster state from the terminal
+  - [x] A lightweight Go CLI (`pranor-vault-cli`) to manage buckets, objects, policy configurations, and cluster state from the terminal
   - [x] Automated GitHub Actions CI pipeline running builds, tests, and formatting checks
   - [x] 3-Node local clustering Docker Compose setup for instant orchestration testing
 
@@ -162,7 +162,7 @@ These create a **moat** around Pranor Vault — capabilities that MinIO, Ceph, A
 | 10.8 | **Single-binary with embedded web console** | Already Done | Storage server + web UI + CLI all in one binary. No Docker, no separate admin service, no nginx. Copy one file, run it, open a browser. | Pure Go embedding. MinIO separates console into a separate service. Ceph requires a dashboard package. |
 | 10.9 | **Hybrid vector+metadata queries** | Medium | `GET /bucket?query=semantic&q=architecture&filter=author:alice&after=2025-01-01` — combine semantic similarity with structured metadata filters in one query. AWS S3 Vectors + metadata filtering inspired, but unified. | Vector search + metadata filter in one engine. AWS S3 Vectors added this in GA (Dec 2025) — Pranor Vault can match it natively. |
 | 10.10 | **Cold-tier with transparent rehydration** | Already Done | Archive cold CAS blocks to any S3-compatible backend (Glacier, Backblaze B2). `GetObject` transparently re-hydrates — the client doesn't know the object was archived. No lifecycle transition delays. | Transparent lazy-load from cold storage. AWS Glacier needs explicit restore with hours of delay. Pranor Vault rehydrates on first access. |
-| 10.11 | **Language-native client (compiler-generated)** | Already Done | Pranor's `store "servstore://host/bucket"` compiles to a type-safe S3 client with auto-auth, connection pooling, and pipeline integration. No SDK import needed. | Compiler generates the client code. Every other storage system requires manually importing an SDK. |
+| 10.11 | **Language-native client (compiler-generated)** | Already Done | Pranor's `store "pranor-vault://host/bucket"` compiles to a type-safe S3 client with auto-auth, connection pooling, and pipeline integration. No SDK import needed. | Compiler generates the client code. Every other storage system requires manually importing an SDK. |
 | 10.12 | **AI-native positioning: Search + Compute + Store unified** | Vision | Position Pranor Vault as the first storage engine that unifies: (1) store objects, (2) search them semantically, (3) transform them with serverless compute — all in one binary, one API, one query language. | The convergence of S3 + vector DB + serverless functions in a single engine. Nobody else offers all three together. |
 
 > See [UNIFIED_ROADMAP.md](../UNIFIED_ROADMAP.md) for the full ecosystem priority matrix and architectural recommendations.

@@ -8,7 +8,7 @@ curl -X POST http://localhost:8086/api/auth/login -d '{"username":"dev","passwor
 ```
 
 ```bash
-docker run -p 8086:8086 ghcr.io/vyuvaraj/servauth:latest
+docker run -p 8086:8086 ghcr.io/vyuvaraj/pranor-auth:latest
 ```
 
 `Pranor Auth` is the authentication and authorization service for the **Pranor** ecosystem. It provides passkey/WebAuthn login, adaptive MFA, OAuth2/OIDC provider functionality, JWT issuance and rotation, RBAC, and seamless integration with `Pranor Gate` for API-level enforcement.
@@ -23,7 +23,7 @@ docker run -p 8086:8086 ghcr.io/vyuvaraj/servauth:latest
 - [MFA & Adaptive Step-Up](#mfa--adaptive-step-up)
 - [JWT & OAuth2/OIDC](#jwt--oauth2oidc)
 - [RBAC](#rbac)
-- [Pranor Gate Integration](#servgate-integration)
+- [Pranor Gate Integration](#pranor-gate-integration)
 - [Getting Started](#getting-started)
 
 ---
@@ -164,7 +164,7 @@ Configure Pranor Gate to verify Pranor Auth JWTs:
     "target": "http://orders:3000",
     "auth": {
       "type": "bearer",
-      "jwks_url": "http://servauth:8086/.well-known/jwks.json",
+      "jwks_url": "http://pranor-auth:8086/.well-known/jwks.json",
       "required_scope": "orders:read"
     }
   }]
@@ -177,11 +177,11 @@ Configure Pranor Gate to verify Pranor Auth JWTs:
 
 ```bash
 # Create roles
-curl -X POST http://servauth:8086/api/v1/rbac/roles \
+curl -X POST http://pranor-auth:8086/api/v1/rbac/roles \
   -d '{"name": "admin", "permissions": ["orders:read", "orders:write", "orders:delete"]}'
 
 # Assign role to user
-curl -X POST http://servauth:8086/api/v1/rbac/users/user-123/roles \
+curl -X POST http://pranor-auth:8086/api/v1/rbac/users/user-123/roles \
   -d '{"roles": ["admin"]}'
 ```
 
@@ -191,24 +191,24 @@ curl -X POST http://servauth:8086/api/v1/rbac/users/user-123/roles \
 
 ```bash
 docker run -p 8086:8086 \
-  -e SERVAUTH_JWT_SECRET=my-rsa-key.pem \
-  -e SERVAUTH_SESSION_SECRET=32-byte-random-secret \
-  -e SERVAUTH_SERVMAIL_URL=http://servmail:8091 \
-  -e SERVAUTH_OTEL_ENDPOINT=http://servtrace:4318 \
-  ghcr.io/vyuvaraj/servauth:latest
+  -e PRANOR_AUTH_JWT_SECRET=my-rsa-key.pem \
+  -e PRANOR_AUTH_SESSION_SECRET=32-byte-random-secret \
+  -e PRANOR_AUTH_PRANOR_NOTIFY_URL=http://pranor-notify:8091 \
+  -e PRANOR_AUTH_OTEL_ENDPOINT=http://pranor-trace:4318 \
+  ghcr.io/vyuvaraj/pranor-auth:latest
 ```
 
 ### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SERVAUTH_PORT` | `8086` | HTTP listener port |
-| `SERVAUTH_JWT_ALGORITHM` | `RS256` | JWT signing algorithm (`RS256` or `ES256`) |
-| `SERVAUTH_JWT_KEY_PATH` | — | Path to RSA/EC private key for JWT signing |
-| `SERVAUTH_SESSION_SECRET` | — | 32-byte secret for session token signing |
-| `SERVAUTH_MFA_TOTP_ISSUER` | `Pranor` | TOTP issuer name shown in authenticator apps |
-| `SERVAUTH_SERVMAIL_URL` | — | Pranor Notify URL for email OTP delivery |
-| `SERVAUTH_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
+| `PRANOR_AUTH_PORT` | `8086` | HTTP listener port |
+| `PRANOR_AUTH_JWT_ALGORITHM` | `RS256` | JWT signing algorithm (`RS256` or `ES256`) |
+| `PRANOR_AUTH_JWT_KEY_PATH` | — | Path to RSA/EC private key for JWT signing |
+| `PRANOR_AUTH_SESSION_SECRET` | — | 32-byte secret for session token signing |
+| `PRANOR_AUTH_MFA_TOTP_ISSUER` | `Pranor` | TOTP issuer name shown in authenticator apps |
+| `PRANOR_AUTH_PRANOR_NOTIFY_URL` | — | Pranor Notify URL for email OTP delivery |
+| `PRANOR_AUTH_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
 
 ---
 

@@ -23,12 +23,12 @@ type PranorVaultCredentialReconciler struct {
 	Log logr.Logger
 }
 
-// +kubebuilder:rbac:groups=storage.Pranor Vault.io,resources=servstorecredentials,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=storage.Pranor Vault.io,resources=servstorecredentials/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=storage.Pranor Vault.io,resources=pranor-vaultcredentials,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=storage.Pranor Vault.io,resources=pranor-vaultcredentials/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups="",resources=secrets,verbs=get;list;watch
 
 func (r *PranorVaultCredentialReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := r.Log.WithValues("servstorecredential", req.NamespacedName)
+	log := r.Log.WithValues("pranor-vaultcredential", req.NamespacedName)
 
 	var cred operv1.PranorVaultCredential
 	if err := r.Get(ctx, req.NamespacedName, &cred); err != nil {

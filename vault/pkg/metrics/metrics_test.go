@@ -34,19 +34,19 @@ func TestMetricsRegistry(t *testing.T) {
 	body := rr.Body.String()
 
 	// 3. Verify format and values
-	if !strings.Contains(body, `servstore_http_requests_total{method="GET",path="/test-bucket",status="200"} 2`) {
+	if !strings.Contains(body, `pranor-vault_http_requests_total{method="GET",path="/test-bucket",status="200"} 2`) {
 		t.Error("missing or incorrect GET request total metric")
 	}
-	if !strings.Contains(body, `servstore_http_requests_total{method="PUT",path="/test-bucket",status="201"} 1`) {
+	if !strings.Contains(body, `pranor-vault_http_requests_total{method="PUT",path="/test-bucket",status="201"} 1`) {
 		t.Error("missing or incorrect PUT request total metric")
 	}
-	if !strings.Contains(body, "servstore_http_in_flight_requests 1") {
+	if !strings.Contains(body, "pranor-vault_http_in_flight_requests 1") {
 		t.Error("incorrect in-flight requests count")
 	}
-	if !strings.Contains(body, `servstore_http_request_duration_seconds_sum{method="GET",path="/test-bucket"} 0.400000`) {
+	if !strings.Contains(body, `pranor-vault_http_request_duration_seconds_sum{method="GET",path="/test-bucket"} 0.400000`) {
 		t.Error("incorrect request duration sum")
 	}
-	if !strings.Contains(body, `servstore_http_request_duration_seconds_count{method="GET",path="/test-bucket"} 2`) {
+	if !strings.Contains(body, `pranor-vault_http_request_duration_seconds_count{method="GET",path="/test-bucket"} 2`) {
 		t.Error("incorrect request duration count")
 	}
 }

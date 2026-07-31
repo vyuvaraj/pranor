@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 echo ""
-echo "  servqueue installed successfully"
-echo "  Run: servqueue --version"
+echo "  pranor-pulse installed successfully"
+echo "  Run: pranor-pulse --version"
 echo "  Docs: https://github.com/vyuvaraj/Pranor Pulse"
 echo ""

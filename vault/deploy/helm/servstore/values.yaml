@@ -2,12 +2,12 @@
 replicaCount: 3
 
 image:
-  repository: ghcr.io/vyuvaraj/servstore
+  repository: ghcr.io/vyuvaraj/pranor-vault
   tag: "latest"
   pullPolicy: IfNotPresent
 
 # -- Unique node ID prefix; each pod gets <nodeIdPrefix>-<ordinal>
-nodeIdPrefix: "servstore"
+nodeIdPrefix: "pranor-vault"
 
 # -- Port the Pranor Vault S3 server listens on inside the container
 containerPort: 9000
@@ -100,7 +100,7 @@ operator:
   # -- Deploy the Pranor Vault Kubernetes Operator alongside the cluster
   enabled: true
   image:
-    repository: ghcr.io/vyuvaraj/servstore-operator
+    repository: ghcr.io/vyuvaraj/pranor-vault-operator
     tag: "latest"
     pullPolicy: IfNotPresent
   resources:
@@ -115,10 +115,10 @@ operator:
 csiDriver:
   enabled: false
   image:
-    repository: ghcr.io/vyuvaraj/servstore-csi
+    repository: ghcr.io/vyuvaraj/pranor-vault-csi
     tag: "latest"
     pullPolicy: IfNotPresent
-  socketDir: /var/lib/kubelet/plugins/csi.servstore.io
+  socketDir: /var/lib/kubelet/plugins/csi.pranor-vault.io
 
 # -- Additional pod annotations
 podAnnotations: {}

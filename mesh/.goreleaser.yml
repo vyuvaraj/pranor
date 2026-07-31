@@ -1,4 +1,4 @@
-project_name: servmesh
+project_name: pranor-mesh
 version: 2
 
 before:
@@ -6,9 +6,9 @@ before:
     - go mod tidy
 
 builds:
-  - id: servmesh
+  - id: pranor-mesh
     main: .
-    binary: servmesh
+    binary: pranor-mesh
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     env:
@@ -20,9 +20,9 @@ builds:
       - -X main.buildDate={{.Date}}
 
 archives:
-  - id: servmesh
-    builds: [servmesh]
-    name_template: "servmesh_{{.Version}}_{{.Os}}_{{.Arch}}"
+  - id: pranor-mesh
+    builds: [pranor-mesh]
+    name_template: "pranor-mesh_{{.Version}}_{{.Os}}_{{.Arch}}"
     format_overrides:
       - goos: windows
         formats: [zip]
@@ -45,8 +45,8 @@ changelog:
 
 dockers:
   - image_templates:
-      - "ghcr.io/vyuvaraj/servmesh:{{.Tag}}"
-      - "ghcr.io/vyuvaraj/servmesh:latest"
+      - "ghcr.io/vyuvaraj/pranor-mesh:{{.Tag}}"
+      - "ghcr.io/vyuvaraj/pranor-mesh:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
       - "--label=org.opencontainers.image.title=Pranor Mesh"
@@ -55,7 +55,7 @@ dockers:
       - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Mesh"
 
 brews:
-  - name: servmesh
+  - name: pranor-mesh
     repository:
       owner: vyuvaraj
       name: homebrew-serv
@@ -63,9 +63,9 @@ brews:
     description: "Service mesh and sidecar proxy from the ServVerse platform"
     license: "Apache-2.0"
     install: |
-      bin.install "servmesh"
+      bin.install "pranor-mesh"
     test: |
-      system "#{bin}/servmesh", "--version"
+      system "#{bin}/pranor-mesh", "--version"
 
 scoops:
   - repository:
@@ -77,9 +77,9 @@ scoops:
 
 
 nfpms:
-  - id: servmesh-pkg
-    package_name: servmesh
-    builds: [servmesh]
+  - id: pranor-mesh-pkg
+    package_name: pranor-mesh
+    builds: [pranor-mesh]
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Mesh
     maintainer: Yuvaraj <vyuvaraj@github.com>
@@ -91,7 +91,7 @@ nfpms:
     bindir: /usr/local/bin
     contents:
       - src: README.md
-        dst: /usr/share/doc/servmesh/README.md
+        dst: /usr/share/doc/pranor-mesh/README.md
     scripts:
       postinstall: scripts/postinstall.sh
       preremove: scripts/preremove.sh

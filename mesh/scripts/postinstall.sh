@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 echo ""
-echo "  servmesh installed successfully"
-echo "  Run: servmesh --version"
+echo "  pranor-mesh installed successfully"
+echo "  Run: pranor-mesh --version"
 echo "  Docs: https://github.com/vyuvaraj/Pranor Mesh"
 echo ""

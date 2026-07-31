@@ -1,7 +1,7 @@
 # Pranor Pulse
 
 ```bash
-docker run -p 9090:9090 ghcr.io/vyuvaraj/servqueue:latest
+docker run -p 9090:9090 ghcr.io/vyuvaraj/pranor-pulse:latest
 ```
 
 `Pranor Pulse` is a full-featured, enterprise-grade message broker for the **Pranor** ecosystem. It supports server-side STOMP brokering, browser-local OPFS-backed queueing, multi-protocol adapters (Kafka wire, MQTT v5), and advanced security (FIPS 140-3, post-quantum cryptography, blind E2EE).
@@ -35,7 +35,7 @@ docker run -p 9090:9090 ghcr.io/vyuvaraj/servqueue:latest
 
 ### 🌐 Browser & OPFS (Local-First)
 - **OPFS Storage Driver** (`pkg/opfs`): Full browser-native persistent queue using Origin Private File System
-- **WASM/JS FFI bindings** (`@pranor/queue-wasm`): Use Pranor Pulse from the browser with a TypeScript SDK
+- **WASM/JS FFI bindings** (`@pranor/pulse-wasm`): Use Pranor Pulse from the browser with a TypeScript SDK
 - **SharedWorker multi-tab coordination**: Single broker across all browser tabs via SharedWorker
 - **Multi-tab OPFS leader election**: `navigator.locks`-based lease protocol ensures only one tab acts as queue leader at a time
 - **Client-side AES-256-GCM encryption at rest**: Messages encrypted before writing to OPFS
@@ -130,11 +130,11 @@ docker run -p 9090:9090 ghcr.io/vyuvaraj/servqueue:latest
 Install the browser SDK:
 
 ```bash
-npm install @pranor/queue-wasm
+npm install @pranor/pulse-wasm
 ```
 
 ```typescript
-import { Pranor Pulse } from '@pranor/queue-wasm';
+import { Pranor Pulse } from '@pranor/pulse-wasm';
 
 const queue = new Pranor Pulse({ encryption: 'aes-256-gcm' });
 await queue.publish('orders', { id: 1, item: 'Widget' });
@@ -173,15 +173,15 @@ await queue.enableOfflineSync({ serverUrl: 'wss://queue.pranor.net' });
 
 ```bash
 # Standalone daemon
-servqueued --port 9090 --storage ./data --tls
+pranor-pulsed --port 9090 --storage ./data --tls
 
 # CLI
-servqueue publish orders '{"id": 1}'
-servqueue consume orders --group my-service
+pranor-pulse publish orders '{"id": 1}'
+pranor-pulse consume orders --group my-service
 serv queue publish orders '{"id": 1}'   # Pranor integration
 
 # Kubernetes Operator
-kubectl apply -f servqueuecluster.yaml
+kubectl apply -f pranor-pulsecluster.yaml
 
 # KEDA auto-scaling
 kubectl apply -f keda-scaledobject.yaml   # Scale consumers on lag
@@ -197,23 +197,23 @@ Cross-cloud active-active geo-replication with automated failover and conflict r
 
 ```bash
 docker run -p 9090:9090 \
-  -e SERVQUEUE_STORAGE_PATH=/data \
-  -e SERVQUEUE_OTEL_ENDPOINT=http://servtrace:4318 \
+  -e PRANOR_PULSE_STORAGE_PATH=/data \
+  -e PRANOR_PULSE_OTEL_ENDPOINT=http://pranor-trace:4318 \
   -v queue-data:/data \
-  ghcr.io/vyuvaraj/servqueue:latest
+  ghcr.io/vyuvaraj/pranor-pulse:latest
 ```
 
 ### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SERVQUEUE_PORT` | `9090` | Listener port |
-| `SERVQUEUE_STORAGE_PATH` | `./data` | WAL and segment storage directory |
-| `SERVQUEUE_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
-| `SERVQUEUE_S3_BUCKET` | — | S3 bucket for tiered offloading |
-| `SERVQUEUE_KAFKA_COMPAT` | `false` | Enable Kafka wire protocol adapter |
-| `SERVQUEUE_MQTT_PORT` | — | MQTT listener port |
-| `SERVQUEUE_FIPS` | `false` | Enable FIPS 140-3 mode (EE) |
+| `PRANOR_PULSE_PORT` | `9090` | Listener port |
+| `PRANOR_PULSE_STORAGE_PATH` | `./data` | WAL and segment storage directory |
+| `PRANOR_PULSE_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
+| `PRANOR_PULSE_S3_BUCKET` | — | S3 bucket for tiered offloading |
+| `PRANOR_PULSE_KAFKA_COMPAT` | `false` | Enable Kafka wire protocol adapter |
+| `PRANOR_PULSE_MQTT_PORT` | — | MQTT listener port |
+| `PRANOR_PULSE_FIPS` | `false` | Enable FIPS 140-3 mode (EE) |
 
 ---
 

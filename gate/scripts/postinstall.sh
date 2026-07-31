@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 echo ""
-echo "  servgate installed successfully"
-echo "  Run: servgate --version"
+echo "  pranor-gate installed successfully"
+echo "  Run: pranor-gate --version"
 echo "  Docs: https://github.com/vyuvaraj/Pranor Gate"
 echo ""

@@ -136,7 +136,7 @@ func getGitBranchSubdomainForServ() string {
 
 func runTunnelInspect() {
 	relayHost := "http://localhost:8443"
-	if envHost := os.Getenv("SERVTUNNEL_URL"); envHost != "" {
+	if envHost := os.Getenv("PRANOR_TUNNEL_URL"); envHost != "" {
 		relayHost = envHost
 	}
 
@@ -154,7 +154,7 @@ func runTunnelInspect() {
 
 	tunnelsURL := fmt.Sprintf("%s/api/tunnels", strings.TrimSuffix(relayHost, "/"))
 	tReq, _ := http.NewRequest("GET", tunnelsURL, nil)
-	authToken := os.Getenv("SERVTUNNEL_TOKEN")
+	authToken := os.Getenv("PRANOR_TUNNEL_TOKEN")
 	if authToken != "" {
 		tReq.Header.Set("Authorization", "Bearer "+authToken)
 	}

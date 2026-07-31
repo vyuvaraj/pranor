@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 echo ""
-echo "  servpool installed successfully"
-echo "  Run: servpool --version"
+echo "  pranor-pool installed successfully"
+echo "  Run: pranor-pool --version"
 echo "  Docs: https://github.com/vyuvaraj/Pranor Pool"
 echo ""

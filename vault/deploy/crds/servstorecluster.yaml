@@ -1,16 +1,16 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: servstoreclusters.storage.servstore.io
+  name: pranor-vaultclusters.storage.pranor-vault.io
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.0
 spec:
-  group: storage.servstore.io
+  group: storage.pranor-vault.io
   names:
     kind: Pranor VaultCluster
     listKind: Pranor VaultClusterList
-    plural: servstoreclusters
-    singular: servstorecluster
+    plural: pranor-vaultclusters
+    singular: pranor-vaultcluster
     shortNames: ["ssc"]
   scope: Namespaced
   versions:
@@ -50,7 +50,7 @@ spec:
                 description: Number of Pranor Vault storage nodes.
               image:
                 type: string
-                description: Container image for the Pranor Vault server (e.g. ghcr.io/vyuvaraj/servstore:latest).
+                description: Container image for the Pranor Vault server (e.g. ghcr.io/vyuvaraj/pranor-vault:latest).
               dataDir:
                 type: string
                 default: /data

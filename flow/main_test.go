@@ -708,7 +708,7 @@ func TestEventDrivenSagaCompensation(t *testing.T) {
 	
 	brokerAddr, cleanup := startMockStompServer(t)
 	defer cleanup()
-	t.Setenv("SERVQUEUE_ADDR", brokerAddr)
+	t.Setenv("PRANOR_PULSE_ADDR", brokerAddr)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/workflows/define", handleDefine)

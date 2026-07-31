@@ -1,4 +1,4 @@
-project_name: servcache
+project_name: pranor-cache
 version: 2
 
 before:
@@ -6,9 +6,9 @@ before:
     - go mod tidy
 
 builds:
-  - id: servcache
+  - id: pranor-cache
     main: .
-    binary: servcache
+    binary: pranor-cache
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     env:
@@ -20,9 +20,9 @@ builds:
       - -X main.buildDate={{.Date}}
 
 archives:
-  - id: servcache
-    builds: [servcache]
-    name_template: "servcache_{{.Version}}_{{.Os}}_{{.Arch}}"
+  - id: pranor-cache
+    builds: [pranor-cache]
+    name_template: "pranor-cache_{{.Version}}_{{.Os}}_{{.Arch}}"
     format_overrides:
       - goos: windows
         formats: [zip]
@@ -45,8 +45,8 @@ changelog:
 
 dockers:
   - image_templates:
-      - "ghcr.io/vyuvaraj/servcache:{{.Tag}}"
-      - "ghcr.io/vyuvaraj/servcache:latest"
+      - "ghcr.io/vyuvaraj/pranor-cache:{{.Tag}}"
+      - "ghcr.io/vyuvaraj/pranor-cache:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
       - "--label=org.opencontainers.image.title=Pranor Cache"
@@ -55,7 +55,7 @@ dockers:
       - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Cache"
 
 brews:
-  - name: servcache
+  - name: pranor-cache
     repository:
       owner: vyuvaraj
       name: homebrew-serv
@@ -63,9 +63,9 @@ brews:
     description: "Distributed caching service from the ServVerse platform"
     license: "Apache-2.0"
     install: |
-      bin.install "servcache"
+      bin.install "pranor-cache"
     test: |
-      system "#{bin}/servcache", "--version"
+      system "#{bin}/pranor-cache", "--version"
 
 scoops:
   - repository:
@@ -77,9 +77,9 @@ scoops:
 
 
 nfpms:
-  - id: servcache-pkg
-    package_name: servcache
-    builds: [servcache]
+  - id: pranor-cache-pkg
+    package_name: pranor-cache
+    builds: [pranor-cache]
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Cache
     maintainer: Yuvaraj <vyuvaraj@github.com>
@@ -91,7 +91,7 @@ nfpms:
     bindir: /usr/local/bin
     contents:
       - src: README.md
-        dst: /usr/share/doc/servcache/README.md
+        dst: /usr/share/doc/pranor-cache/README.md
     scripts:
       postinstall: scripts/postinstall.sh
       preremove: scripts/preremove.sh

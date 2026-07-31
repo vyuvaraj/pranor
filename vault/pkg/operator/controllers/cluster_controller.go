@@ -24,14 +24,14 @@ type PranorVaultClusterReconciler struct {
 	Log logr.Logger
 }
 
-// +kubebuilder:rbac:groups=storage.Pranor Vault.io,resources=servstoreclusters,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=storage.Pranor Vault.io,resources=servstoreclusters/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=storage.Pranor Vault.io,resources=pranor-vaultclusters,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=storage.Pranor Vault.io,resources=pranor-vaultclusters/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=apps,resources=statefulsets,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups="",resources=services;configmaps;persistentvolumeclaims,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=policy,resources=poddisruptionbudgets,verbs=get;list;watch;create;update;patch;delete
 
 func (r *PranorVaultClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := r.Log.WithValues("servstorecluster", req.NamespacedName)
+	log := r.Log.WithValues("pranor-vaultcluster", req.NamespacedName)
 
 	// Fetch the PranorVaultCluster instance
 	var cluster operv1.PranorVaultCluster

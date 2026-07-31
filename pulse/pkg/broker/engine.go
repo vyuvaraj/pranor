@@ -74,7 +74,7 @@ func NewBrokerEngine() *BrokerEngine {
 	}
 
 	walPath := "queue.wal"
-	if override := os.Getenv("SERVQUEUE_WAL_PATH"); override != "" {
+	if override := os.Getenv("PRANOR_PULSE_WAL_PATH"); override != "" {
 		walPath = override
 	}
 	wal, walErr := storage.OpenWAL(walPath)
@@ -105,12 +105,12 @@ func NewBrokerEngine() *BrokerEngine {
 
 	rate := 100.0
 	capacity := 100.0
-	if rateStr := os.Getenv("SERVQUEUE_PUBLISH_RATE"); rateStr != "" {
+	if rateStr := os.Getenv("PRANOR_PULSE_PUBLISH_RATE"); rateStr != "" {
 		if r, err := strconv.ParseFloat(rateStr, 64); err == nil && r > 0 {
 			rate = r
 		}
 	}
-	if capStr := os.Getenv("SERVQUEUE_PUBLISH_CAPACITY"); capStr != "" {
+	if capStr := os.Getenv("PRANOR_PULSE_PUBLISH_CAPACITY"); capStr != "" {
 		if c, err := strconv.ParseFloat(capStr, 64); err == nil && c > 0 {
 			capacity = c
 		}
@@ -132,9 +132,9 @@ func NewBrokerEngine() *BrokerEngine {
 		}
 	}
 
-	if s3Endpoint := os.Getenv("SERVQUEUE_S3_ENDPOINT"); s3Endpoint != "" {
-		s3Bucket := os.Getenv("SERVQUEUE_S3_BUCKET")
-		s3Token := os.Getenv("SERVQUEUE_S3_TOKEN")
+	if s3Endpoint := os.Getenv("PRANOR_PULSE_S3_ENDPOINT"); s3Endpoint != "" {
+		s3Bucket := os.Getenv("PRANOR_PULSE_S3_BUCKET")
+		s3Token := os.Getenv("PRANOR_PULSE_S3_TOKEN")
 		engine.ConfigureOffloader(s3Endpoint, s3Bucket, s3Token)
 	}
 
@@ -667,7 +667,7 @@ func (e *BrokerEngine) PublishPartition(ctx context.Context, topic string, key s
 	// Backpressure check
 	pq := e.getOrCreateQueue(topic)
 	limit := 1000
-	if limitStr := os.Getenv("SERVQUEUE_BACKPRESSURE_LIMIT"); limitStr != "" {
+	if limitStr := os.Getenv("PRANOR_PULSE_BACKPRESSURE_LIMIT"); limitStr != "" {
 		if parsed, err := strconv.Atoi(limitStr); err == nil && parsed > 0 {
 			limit = parsed
 		}
@@ -765,7 +765,7 @@ func (e *BrokerEngine) Publish(ctx context.Context, topic string, payload string
 	// Backpressure check
 	pq := e.getOrCreateQueue(topic)
 	limit := 1000
-	if limitStr := os.Getenv("SERVQUEUE_BACKPRESSURE_LIMIT"); limitStr != "" {
+	if limitStr := os.Getenv("PRANOR_PULSE_BACKPRESSURE_LIMIT"); limitStr != "" {
 		if parsed, err := strconv.Atoi(limitStr); err == nil && parsed > 0 {
 			limit = parsed
 		}

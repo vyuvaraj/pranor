@@ -1,9 +1,9 @@
 /**
- * @pranor/queue-wasm — SharedWorker Multi-Tab Coordinator
+ * @pranor/pulse-wasm — SharedWorker Multi-Tab Coordinator
  * Ensures single OPFS file handle access across multiple browser tabs via SharedWorker & BroadcastChannel.
  */
 
-const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('servqueue_events') : null;
+const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('pranor-pulse_events') : null;
 const ports = new Set();
 
 self.onconnect = (e) => {

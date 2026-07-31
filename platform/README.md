@@ -51,11 +51,11 @@ Pranor Platform
 ```json
 {
   "components": [
-    { "name": "servgate",   "running": true },
-    { "name": "servqueue",  "running": true },
-    { "name": "servstore",  "running": true },
-    { "name": "servmesh",   "running": false },
-    { "name": "servtrace",  "running": true }
+    { "name": "pranor-gate",   "running": true },
+    { "name": "pranor-pulse",  "running": true },
+    { "name": "pranor-vault",  "running": true },
+    { "name": "pranor-mesh",   "running": false },
+    { "name": "pranor-trace",  "running": true }
   ]
 }
 ```
@@ -64,12 +64,12 @@ Pranor Platform
 
 ```go
 rt := platform.NewServdRuntime()
-rt.RegisterComponent("servgate")
-rt.RegisterComponent("servqueue")
-rt.RegisterComponent("servstore")
+rt.RegisterComponent("pranor-gate")
+rt.RegisterComponent("pranor-pulse")
+rt.RegisterComponent("pranor-vault")
 
-rt.StartComponent("servgate")
-rt.StartComponent("servqueue")
+rt.StartComponent("pranor-gate")
+rt.StartComponent("pranor-pulse")
 
 // Graceful shutdown
 defer rt.Shutdown(ctx)
@@ -118,7 +118,7 @@ curl http://servplatform:8096/api/v1/platform/chaos/faults
 ```bash
 # List all services
 servctl get services
-# → ["servgate", "servqueue", "servstore", "servmesh", "servtrace"]
+# → ["pranor-gate", "pranor-pulse", "pranor-vault", "pranor-mesh", "pranor-trace"]
 
 # List cluster nodes
 servctl get nodes
@@ -170,8 +170,8 @@ curl http://servplatform:8096/api/v1/platform/health/rollup
 #     "healthy": false,
 #     "total": 5, "passing": 4, "failing": 1,
 #     "components": [
-#       { "name": "servgate",  "healthy": true,  "latency_ns": 2000000 },
-#       { "name": "servstore", "healthy": false, "message": "disk full" },
+#       { "name": "pranor-gate",  "healthy": true,  "latency_ns": 2000000 },
+#       { "name": "pranor-vault", "healthy": false, "message": "disk full" },
 #       ...
 #     ]
 #   }
@@ -182,7 +182,7 @@ curl http://servplatform:8096/api/v1/platform/health/rollup
 ```go
 api := health.NewUnifiedHealthAPI()
 api.ReportHealth(health.ComponentHealth{
-    Name:    "servgate",
+    Name:    "pranor-gate",
     Healthy: true,
     Latency: 2 * time.Millisecond,
 })
@@ -199,17 +199,17 @@ Programmatically generate production deployment manifests for Docker Compose and
 ```go
 gen := distribution.NewDistributionGenerator()
 components := []distribution.ComponentSpec{
-    {Name: "servgate",  Image: "ghcr.io/vyuvaraj/servgate:latest",  Port: 8080, Replicas: 2, EnvVars: map[string]string{"LOG_LEVEL": "info"}},
-    {Name: "servqueue", Image: "ghcr.io/vyuvaraj/servqueue:latest", Port: 9090, Replicas: 3},
-    {Name: "servstore", Image: "ghcr.io/vyuvaraj/servstore:latest", Port: 7070, Replicas: 2},
+    {Name: "pranor-gate",  Image: "ghcr.io/vyuvaraj/pranor-gate:latest",  Port: 8080, Replicas: 2, EnvVars: map[string]string{"LOG_LEVEL": "info"}},
+    {Name: "pranor-pulse", Image: "ghcr.io/vyuvaraj/pranor-pulse:latest", Port: 9090, Replicas: 3},
+    {Name: "pranor-vault", Image: "ghcr.io/vyuvaraj/pranor-vault:latest", Port: 7070, Replicas: 2},
 }
 
 compose := gen.GenerateDockerCompose(components)
 // compose.Content:
 // version: '3.8'
 // services:
-//   servgate:
-//     image: ghcr.io/vyuvaraj/servgate:latest
+//   pranor-gate:
+//     image: ghcr.io/vyuvaraj/pranor-gate:latest
 //     ports:
 //       - "8080:8080"
 //     environment:
@@ -226,10 +226,10 @@ helm := gen.GenerateHelmValues(components)
 // global:
 //   imageTag: latest
 // services:
-//   servgate:
+//   pranor-gate:
 //     enabled: true
 //     replicas: 2
-//     image: ghcr.io/vyuvaraj/servgate:latest
+//     image: ghcr.io/vyuvaraj/pranor-gate:latest
 //     port: 8080
 //   ...
 ```

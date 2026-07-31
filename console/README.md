@@ -1,7 +1,7 @@
 # Pranor Console
 
 ```bash
-docker run -p 8083:8083 ghcr.io/vyuvaraj/servconsole:latest
+docker run -p 8083:8083 ghcr.io/vyuvaraj/pranor-console:latest
 ```
 
 `Pranor Console` is the unified, premium management dashboard and observability console for the **Pranor** ecosystem. It provides a single pane of glass for managing Pranor Gate, Pranor Pulse, Pranor Vault, Pranor Mesh, Pranor Deploy, Pranor Trace, Pranor Flow, and all other Pranor components — with a glassmorphic, real-time UI designed for power users.
@@ -142,12 +142,12 @@ Pranor Console Backend (Go)
 
 ```bash
 docker run -p 8083:8083 \
-  -e SERVCONSOLE_SERVGATE_URL=http://servgate:8080 \
-  -e SERVCONSOLE_SERVQUEUE_URL=http://servqueue:9090 \
-  -e SERVCONSOLE_SERVSTORE_URL=http://servstore:7070 \
-  -e SERVCONSOLE_SERVTRACE_URL=http://servtrace:4318 \
-  -e SERVCONSOLE_SERVMESH_URL=http://servmesh:8095 \
-  ghcr.io/vyuvaraj/servconsole:latest
+  -e PRANOR_CONSOLE_PRANOR_GATE_URL=http://pranor-gate:8080 \
+  -e PRANOR_CONSOLE_PRANOR_PULSE_URL=http://pranor-pulse:9090 \
+  -e PRANOR_CONSOLE_PRANOR_VAULT_URL=http://pranor-vault:7070 \
+  -e PRANOR_CONSOLE_PRANOR_TRACE_URL=http://pranor-trace:4318 \
+  -e PRANOR_CONSOLE_PRANOR_MESH_URL=http://pranor-mesh:8095 \
+  ghcr.io/vyuvaraj/pranor-console:latest
 ```
 
 Open `http://localhost:8083` in your browser.
@@ -158,10 +158,10 @@ Open `http://localhost:8083` in your browser.
 
 | Variable | Description |
 |----------|-------------|
-| `SERVCONSOLE_PORT` | HTTP port (default: `8083`) |
-| `SERVCONSOLE_SERVGATE_URL` | Pranor Gate backend URL |
-| `SERVCONSOLE_SERVQUEUE_URL` | Pranor Pulse backend URL |
-| `SERVCONSOLE_SERVSTORE_URL` | Pranor Vault backend URL |
-| `SERVCONSOLE_SERVTRACE_URL` | Pranor Trace OTLP URL |
-| `SERVCONSOLE_SERVMESH_URL` | Pranor Mesh backend URL |
-| `SERVCONSOLE_AUTH_TOKEN` | Static admin auth token |
+| `PRANOR_CONSOLE_PORT` | HTTP port (default: `8083`) |
+| `PRANOR_CONSOLE_PRANOR_GATE_URL` | Pranor Gate backend URL |
+| `PRANOR_CONSOLE_PRANOR_PULSE_URL` | Pranor Pulse backend URL |
+| `PRANOR_CONSOLE_PRANOR_VAULT_URL` | Pranor Vault backend URL |
+| `PRANOR_CONSOLE_PRANOR_TRACE_URL` | Pranor Trace OTLP URL |
+| `PRANOR_CONSOLE_PRANOR_MESH_URL` | Pranor Mesh backend URL |
+| `PRANOR_CONSOLE_AUTH_TOKEN` | Static admin auth token |

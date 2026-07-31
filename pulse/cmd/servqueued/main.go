@@ -21,7 +21,7 @@ func main() {
 	dataDir := flag.String("data-dir", "./data", "Directory for local WAL storage log segments")
 	flag.Parse()
 
-	log.Printf("Starting Pranor Pulse Standalone Daemon (servqueued) on port %d...", *port)
+	log.Printf("Starting Pranor Pulse Standalone Daemon (pranor-pulsed) on port %d...", *port)
 	log.Printf("Local WAL Data Directory: %s", *dataDir)
 
 	driver := core.NewMemoryDriver()
@@ -31,27 +31,27 @@ func main() {
 	// Embedded HTTP Health API
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"status": "UP", "service": "servqueued"}`))
+		_, _ = w.Write([]byte(`{"status": "UP", "service": "pranor-pulsed"}`))
 	})
 
 	// Prometheus Metrics Endpoint (SQ.M7)
 	http.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; version=0.0.4")
-		fmt.Fprintf(w, "# HELP servqueued_up Pranor Pulse daemon availability status (1 = UP).\n")
-		fmt.Fprintf(w, "# TYPE servqueued_up gauge\n")
-		fmt.Fprintf(w, "servqueued_up 1\n\n")
+		fmt.Fprintf(w, "# HELP pranor-pulsed_up Pranor Pulse daemon availability status (1 = UP).\n")
+		fmt.Fprintf(w, "# TYPE pranor-pulsed_up gauge\n")
+		fmt.Fprintf(w, "pranor-pulsed_up 1\n\n")
 
-		fmt.Fprintf(w, "# HELP servqueued_messages_published_total Total published messages in daemon.\n")
-		fmt.Fprintf(w, "# TYPE servqueued_messages_published_total counter\n")
-		fmt.Fprintf(w, "servqueued_messages_published_total 0\n\n")
+		fmt.Fprintf(w, "# HELP pranor-pulsed_messages_published_total Total published messages in daemon.\n")
+		fmt.Fprintf(w, "# TYPE pranor-pulsed_messages_published_total counter\n")
+		fmt.Fprintf(w, "pranor-pulsed_messages_published_total 0\n\n")
 
-		fmt.Fprintf(w, "# HELP servqueued_active_topics Active topics registered.\n")
-		fmt.Fprintf(w, "# TYPE servqueued_active_topics gauge\n")
-		fmt.Fprintf(w, "servqueued_active_topics 1\n\n")
+		fmt.Fprintf(w, "# HELP pranor-pulsed_active_topics Active topics registered.\n")
+		fmt.Fprintf(w, "# TYPE pranor-pulsed_active_topics gauge\n")
+		fmt.Fprintf(w, "pranor-pulsed_active_topics 1\n\n")
 
-		fmt.Fprintf(w, "# HELP servqueued_consumer_lag_records Calculated total consumer lag.\n")
-		fmt.Fprintf(w, "# TYPE servqueued_consumer_lag_records gauge\n")
-		fmt.Fprintf(w, "servqueued_consumer_lag_records 0\n")
+		fmt.Fprintf(w, "# HELP pranor-pulsed_consumer_lag_records Calculated total consumer lag.\n")
+		fmt.Fprintf(w, "# TYPE pranor-pulsed_consumer_lag_records gauge\n")
+		fmt.Fprintf(w, "pranor-pulsed_consumer_lag_records 0\n")
 	})
 
 	// Embedded Web Admin UI (SQ.M4)
@@ -65,16 +65,16 @@ func main() {
 
 	go func() {
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("servqueued failed to start server: %v", err)
+			log.Fatalf("pranor-pulsed failed to start server: %v", err)
 		}
 	}()
 
-	log.Printf("servqueued Web Admin UI available at http://localhost:%d/ui/", *port)
+	log.Printf("pranor-pulsed Web Admin UI available at http://localhost:%d/ui/", *port)
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 	<-stop
 
-	log.Println("Shutting down servqueued gracefully...")
+	log.Println("Shutting down pranor-pulsed gracefully...")
 	_ = server.Close()
 }

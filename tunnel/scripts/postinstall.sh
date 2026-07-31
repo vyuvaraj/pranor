@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 echo ""
-echo "  servtunnel installed successfully"
-echo "  Run: servtunnel --version"
+echo "  pranor-tunnel installed successfully"
+echo "  Run: pranor-tunnel --version"
 echo "  Docs: https://github.com/vyuvaraj/Pranor Tunnel"
 echo ""

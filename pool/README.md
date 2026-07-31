@@ -1,7 +1,7 @@
 # Pranor Pool
 
 ```bash
-docker run -p 8094:8094 ghcr.io/vyuvaraj/servpool:latest
+docker run -p 8094:8094 ghcr.io/vyuvaraj/pranor-pool:latest
 ```
 
 `Pranor Pool` is an intelligent, observable database connection pool manager for the **Pranor** ecosystem. It provides read/write splitting, connection health validation, leak detection, query telemetry, prepared statement caching, and pool saturation alerting.
@@ -117,7 +117,7 @@ Application Caller
 
 ```bash
 # Create a pool with primary + replicas
-curl -X POST http://servpool:8094/api/v1/pools \
+curl -X POST http://pranor-pool:8094/api/v1/pools \
   -d '{
     "name": "orders-db",
     "primary": "postgres://user:pass@primary:5432/orders",
@@ -139,15 +139,15 @@ curl -X POST http://servpool:8094/api/v1/pools \
 
 ```bash
 # Check pool stats (utilization + wait queue depth)
-curl http://servpool:8094/api/v1/pools/orders-db/stats
+curl http://pranor-pool:8094/api/v1/pools/orders-db/stats
 # → { "total": 50, "active": 38, "idle": 12, "wait_queue": 2, "utilization_pct": 76 }
 
 # View detected leaks
-curl http://servpool:8094/api/v1/pools/orders-db/leaks
+curl http://pranor-pool:8094/api/v1/pools/orders-db/leaks
 # → [ { "conn_id": "conn-42", "held_since": "2026-07-26T10:00:00Z", "goroutine": "main.go:84", ... } ]
 
 # Force reclaim leaked connections
-curl -X POST http://servpool:8094/api/v1/pools/orders-db/reclaim
+curl -X POST http://pranor-pool:8094/api/v1/pools/orders-db/reclaim
 ```
 
 ---
@@ -156,11 +156,11 @@ curl -X POST http://servpool:8094/api/v1/pools/orders-db/reclaim
 
 ```bash
 # View p99 latency by query signature
-curl http://servpool:8094/api/v1/pools/orders-db/query-stats
+curl http://pranor-pool:8094/api/v1/pools/orders-db/query-stats
 # → { "queries": [ { "signature": "SELECT * FROM orders WHERE id = ?", "p50": 3, "p99": 45, "count": 10234 }, ... ] }
 
 # Recent slow queries
-curl http://servpool:8094/api/v1/pools/orders-db/slow-queries
+curl http://pranor-pool:8094/api/v1/pools/orders-db/slow-queries
 ```
 
 ---
@@ -171,7 +171,7 @@ Pranor Pool automatically caches prepared statements per connection:
 
 ```go
 // Application uses Pranor Pool client — no special code needed
-db := servpool.Open("orders-db", "http://servpool:8094")
+db := pranor-pool.Open("orders-db", "http://pranor-pool:8094")
 rows, err := db.Query("SELECT id, total FROM orders WHERE user_id = $1", userID)
 // Pranor Pool automatically uses cached prepared statement on subsequent calls
 ```
@@ -182,17 +182,17 @@ rows, err := db.Query("SELECT id, total FROM orders WHERE user_id = $1", userID)
 
 ```bash
 docker run -p 8094:8094 \
-  -e SERVPOOL_OTEL_ENDPOINT=http://servtrace:4318 \
-  -e SERVPOOL_SERVCONSOLE_URL=http://servconsole:8083 \
-  ghcr.io/vyuvaraj/servpool:latest
+  -e PRANOR_POOL_OTEL_ENDPOINT=http://pranor-trace:4318 \
+  -e PRANOR_POOL_PRANOR_CONSOLE_URL=http://pranor-console:8083 \
+  ghcr.io/vyuvaraj/pranor-pool:latest
 ```
 
 ### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SERVPOOL_PORT` | `8094` | HTTP listener port |
-| `SERVPOOL_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
-| `SERVPOOL_SERVCONSOLE_URL` | — | Pranor Console URL for saturation alerts |
-| `SERVPOOL_DEFAULT_MAX_CONN` | `25` | Default max connections per pool |
-| `SERVPOOL_LEAK_CHECK_INTERVAL` | `30s` | How often to run leak detection sweep |
+| `PRANOR_POOL_PORT` | `8094` | HTTP listener port |
+| `PRANOR_POOL_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
+| `PRANOR_POOL_PRANOR_CONSOLE_URL` | — | Pranor Console URL for saturation alerts |
+| `PRANOR_POOL_DEFAULT_MAX_CONN` | `25` | Default max connections per pool |
+| `PRANOR_POOL_LEAK_CHECK_INTERVAL` | `30s` | How often to run leak detection sweep |

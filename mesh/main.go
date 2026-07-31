@@ -194,10 +194,10 @@ func (p *devProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func startServer(srv *http.Server) {
-	if os.Getenv("SERVMESH_MTLS_REQUIRED") == "true" {
-		certFile := os.Getenv("SERVMESH_CERT")
-		keyFile := os.Getenv("SERVMESH_KEY")
-		caFile := os.Getenv("SERVMESH_CACERT")
+	if os.Getenv("PRANOR_MESH_MTLS_REQUIRED") == "true" {
+		certFile := os.Getenv("PRANOR_MESH_CERT")
+		keyFile := os.Getenv("PRANOR_MESH_KEY")
+		caFile := os.Getenv("PRANOR_MESH_CACERT")
 
 		if certFile != "" && keyFile != "" {
 			tlsConfig := &tls.Config{

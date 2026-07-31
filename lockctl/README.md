@@ -1,13 +1,13 @@
-# servlockctl
+# pranor-lockctl
 
-`servlockctl` is the standalone, open-source command-line interface (CLI) administration client for **Pranor Lock** (Distributed Lock Manager).
+`pranor-lockctl` is the standalone, open-source command-line interface (CLI) administration client for **Pranor Lock** (Distributed Lock Manager).
 
 It allows you to acquire, release, renew, and query lock leases directly from your terminal.
 
 ## Installation
 
 ```bash
-go build -o servlockctl.exe .
+go build -o pranor-lockctl.exe .
 ```
 
 ## Configuration
@@ -24,29 +24,29 @@ You can configure the client using flags or environment variables:
 
 ### 1. Acquire a lock
 ```bash
-servlockctl acquire --key my-resource --ttl 10000 --owner cli-user
+pranor-lockctl acquire --key my-resource --ttl 10000 --owner cli-user
 ```
 Returns lock status and lease parameters (fencing token, owner).
 
 ### 2. Release a lock
 ```bash
-servlockctl release --key my-resource --owner cli-user --fencing-token 12345
+pranor-lockctl release --key my-resource --owner cli-user --fencing-token 12345
 ```
 
 ### 3. Renew a lock lease
 ```bash
-servlockctl renew --key my-resource --owner cli-user --fencing-token 12345 --ttl 10000
+pranor-lockctl renew --key my-resource --owner cli-user --fencing-token 12345 --ttl 10000
 ```
 
 ### 4. Query active locks status
 ```bash
-servlockctl status
+pranor-lockctl status
 ```
 Returns a JSON array of all active locks, waiters, and lease diagnostics.
 
 ### 5. Check Health
 ```bash
-servlockctl health
+pranor-lockctl health
 ```
 
 ## License

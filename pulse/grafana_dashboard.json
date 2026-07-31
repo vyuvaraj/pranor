@@ -15,7 +15,7 @@
       "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
       "targets": [
         {
-          "expr": "servqueue_messages_published_total",
+          "expr": "pranor-pulse_messages_published_total",
           "legendFormat": "Published Messages"
         }
       ]
@@ -26,7 +26,7 @@
       "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
       "targets": [
         {
-          "expr": "servqueue_queue_depth",
+          "expr": "pranor-pulse_queue_depth",
           "legendFormat": "WAL Entries"
         }
       ]
@@ -37,7 +37,7 @@
       "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
       "targets": [
         {
-          "expr": "servqueue_consumer_lag",
+          "expr": "pranor-pulse_consumer_lag",
           "legendFormat": "Consumer Lag"
         }
       ]
@@ -48,7 +48,7 @@
       "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
       "targets": [
         {
-          "expr": "servqueue_wasm_executions_total",
+          "expr": "pranor-pulse_wasm_executions_total",
           "legendFormat": "WASM Executions"
         }
       ]
@@ -59,7 +59,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
       "targets": [
         {
-          "expr": "rate(servqueue_messages_published_total[1m])",
+          "expr": "rate(pranor-pulse_messages_published_total[1m])",
           "legendFormat": "Publish Rate (msg/s)"
         }
       ]
@@ -70,7 +70,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
       "targets": [
         {
-          "expr": "rate(servqueue_wasm_execution_errors_total[1m])",
+          "expr": "rate(pranor-pulse_wasm_execution_errors_total[1m])",
           "legendFormat": "WASM Errors/s"
         }
       ]
@@ -79,7 +79,7 @@
   "refresh": "5s",
   "schemaVersion": 38,
   "style": "dark",
-  "tags": ["servqueue", "messaging", "pranor"],
+  "tags": ["pranor-pulse", "messaging", "pranor"],
   "time": { "from": "now-1h", "to": "now" },
   "timepicker": {},
   "timezone": "browser",

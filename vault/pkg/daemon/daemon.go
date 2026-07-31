@@ -145,15 +145,15 @@ func (d *PranorVaultDaemon) Start() error {
 		}
 
 		go func() {
-			log.Printf("[servstored] Storage Web Console UI listening on http://localhost%s/ui/", d.config.AdminAddr)
+			log.Printf("[pranor-vaultd] Storage Web Console UI listening on http://localhost%s/ui/", d.config.AdminAddr)
 			if err := d.adminServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-				log.Printf("[servstored] Console admin server error: %v", err)
+				log.Printf("[pranor-vaultd] Console admin server error: %v", err)
 			}
 		}()
 	}
 	d.mu.Unlock()
 
-	log.Printf("[servstored] Standalone S3 Object Store Daemon listening on %s", d.config.Addr)
+	log.Printf("[pranor-vaultd] Standalone S3 Object Store Daemon listening on %s", d.config.Addr)
 	return d.server.ListenAndServe()
 }
 
@@ -161,7 +161,7 @@ func (d *PranorVaultDaemon) createS3Handler() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"status":"ok","daemon":"servstored"}`))
+		w.Write([]byte(`{"status":"ok","daemon":"pranor-vaultd"}`))
 	})
 
 	// Delegate all S3 API requests to the real s3.Gateway
@@ -186,7 +186,7 @@ func (d *PranorVaultDaemon) handleHealth(w http.ResponseWriter, r *http.Request)
 		"version":      "2.0.0",
 		"uptime_sec":   uptime,
 		"bucket_count": bucketCount,
-		"daemon":       "servstored",
+		"daemon":       "pranor-vaultd",
 	})
 }
 
@@ -278,7 +278,7 @@ func (d *PranorVaultDaemon) handleWebAdminUI(w http.ResponseWriter, r *http.Requ
 <body>
     <div class="card">
         <h1>📦 Pranor Vault Storage Console</h1>
-        <p>Standalone S3-Compatible Object Store Daemon (<span class="badge" id="version-badge">servstored v2.0.0</span>)</p>
+        <p>Standalone S3-Compatible Object Store Daemon (<span class="badge" id="version-badge">pranor-vaultd v2.0.0</span>)</p>
         <p>Uptime: <span id="uptime">0s</span> | Total Buckets: <span id="bucket-count">0</span></p>
     </div>
     <div class="card">

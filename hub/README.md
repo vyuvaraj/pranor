@@ -1,7 +1,7 @@
 # Pranor Hub
 
 ```bash
-docker run -p 8090:8090 ghcr.io/vyuvaraj/servregistry:latest
+docker run -p 8090:8090 ghcr.io/vyuvaraj/pranor-hub:latest
 ```
 
 Pranor Hub is the lightweight, S3-backed community package hub and registry server for the Pranor ecosystem. It allows sharing, versioning, and resolving packages written for `pranor` microservices.

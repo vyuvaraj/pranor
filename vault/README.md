@@ -20,19 +20,19 @@ docker compose up -d
 # Admin Console UI listening at http://localhost:9001/ui/
 ```
 
-### 2. Standard S3 Operations (via AWS S3 CLI or `servstore` CLI)
+### 2. Standard S3 Operations (via AWS S3 CLI or `pranor-vault` CLI)
 ```bash
 export AWS_ACCESS_KEY_ID=minioadmin
 export AWS_SECRET_ACCESS_KEY=minioadmin
 
 # Create a bucket and upload a document via AWS CLI
 aws s3 mb s3://knowledge --endpoint-url http://localhost:9000
-aws s3 cp ./deploy/helm/servstore/README.md s3://knowledge/deploy-guide.md --endpoint-url http://localhost:9000
+aws s3 cp ./deploy/helm/pranor-vault/README.md s3://knowledge/deploy-guide.md --endpoint-url http://localhost:9000
 
-# Or use the unified servstore CLI
-servstore mb s3://knowledge
-servstore put knowledge deploy-guide.md ./deploy/helm/servstore/README.md
-servstore ls knowledge
+# Or use the unified pranor-vault CLI
+pranor-vault mb s3://knowledge
+pranor-vault put knowledge deploy-guide.md ./deploy/helm/pranor-vault/README.md
+pranor-vault ls knowledge
 ```
 
 ### 3. AI-Native Semantic Vector Search (End-to-End)
@@ -70,8 +70,8 @@ curl -X POST http://localhost:9000/api/v1/search/hybrid \
 ### ☁️ Core Object Storage
 - **100% S3 Wire Protocol Compatibility**: Drop-in replacement for AWS S3 — works with all existing S3 clients (aws-cli, boto3, aws-sdk-js, etc.)
 - **Erasure Coding (Reed-Solomon)**: Configurable data/parity shard ratios for space-efficient fault tolerance
-- **Standalone daemon** (`servstored`): Production-ready daemon serving S3 API (`:9000`) and Admin Console (`:9001`)
-- **Unified CLI (`servstore`)**: Single CLI for object storage management, IAM policies, and cluster administration
+- **Standalone daemon** (`pranor-vaultd`): Production-ready daemon serving S3 API (`:9000`) and Admin Console (`:9001`)
+- **Unified CLI (`pranor-vault`)**: Single CLI for object storage management, IAM policies, and cluster administration
 - **Multi-language client SDKs**: Go, Python, TypeScript/JS, Rust
 
 ### 🔀 Tiering & Replication
@@ -89,10 +89,10 @@ curl -X POST http://localhost:9000/api/v1/search/hybrid \
 
 ### 🌿 Bucket Branching (Git-like)
 - **Copy-on-Write (CoW) virtual metadata pointer engine**: Branch a bucket in O(1) — no data copy; branches share storage until modified
-- **Bucket branch diff & merge**: `servstore diff branch-a branch-b` shows changed objects; merge branches with conflict resolution
+- **Bucket branch diff & merge**: `pranor-vault diff branch-a branch-b` shows changed objects; merge branches with conflict resolution
 - **Isolated virtual namespace router**: Each branch gets its own S3-compatible namespace; branches are fully isolated
 - **REST API**: `POST /api/v1/buckets/{name}/branch`, `POST /api/v1/buckets/{name}/merge`
-- **CLI**: `servstore branch create`, `servstore branch diff`, `servstore branch merge`
+- **CLI**: `pranor-vault branch create`, `pranor-vault branch diff`, `pranor-vault branch merge`
 
 ### 🌐 Browser & P2P
 - **OPFS local sync** (`@pranor/store-wasm`): Browser-local object storage using Origin Private File System; syncs to server when online
@@ -161,26 +161,26 @@ curl -X POST http://localhost:9000/api/v1/search/hybrid \
 
 ---
 
-## Unified CLI Reference (`servstore`)
+## Unified CLI Reference (`pranor-vault`)
 
-Pranor Vault ships a single, unified CLI tool (`servstore`) that connects to both the S3 API endpoint and the Admin management API:
+Pranor Vault ships a single, unified CLI tool (`pranor-vault`) that connects to both the S3 API endpoint and the Admin management API:
 
 ```bash
 # Global flags
-servstore --endpoint http://localhost:9000 --admin-endpoint http://localhost:9001 <command>
+pranor-vault --endpoint http://localhost:9000 --admin-endpoint http://localhost:9001 <command>
 
 # S3 & Data Management
-servstore mb s3://my-bucket                    # Make bucket
-servstore rb s3://my-bucket                    # Remove bucket
-servstore ls s3://my-bucket                    # List bucket contents
-servstore put my-bucket photo.jpg ./photo.jpg  # Upload object
-servstore get my-bucket photo.jpg ./dest.jpg   # Download object
-servstore rm my-bucket photo.jpg               # Delete object
-servstore lock my-bucket photo.jpg 30d         # WORM Object Lock (30 days)
+pranor-vault mb s3://my-bucket                    # Make bucket
+pranor-vault rb s3://my-bucket                    # Remove bucket
+pranor-vault ls s3://my-bucket                    # List bucket contents
+pranor-vault put my-bucket photo.jpg ./photo.jpg  # Upload object
+pranor-vault get my-bucket photo.jpg ./dest.jpg   # Download object
+pranor-vault rm my-bucket photo.jpg               # Delete object
+pranor-vault lock my-bucket photo.jpg 30d         # WORM Object Lock (30 days)
 
 # Admin & Server Health
-servstore status                               # Daemon status & uptime
-servstore admin-buckets                        # List buckets via Admin API
+pranor-vault status                               # Daemon status & uptime
+pranor-vault admin-buckets                        # List buckets via Admin API
 ```
 
 ---
@@ -192,14 +192,14 @@ Objects uploaded to enabled buckets are automatically embedded:
 ```bash
 # Upload a text document — embedding generated automatically
 aws s3 cp docs/manual.txt s3://my-bucket/manual.txt \
-  --endpoint-url http://servstore:7070
+  --endpoint-url http://pranor-vault:7070
 
 # Hybrid search (keyword + vector, RRF combined)
-curl -X POST http://servstore:7070/api/v1/search/hybrid \
+curl -X POST http://pranor-vault:7070/api/v1/search/hybrid \
   -d '{"bucket": "my-bucket", "query": "installation guide", "k": 5, "metric": "cosine"}'
 
 # Pure vector ANN search
-curl -X POST http://servstore:7070/api/v1/search/vector \
+curl -X POST http://pranor-vault:7070/api/v1/search/vector \
   -d '{"bucket": "my-bucket", "vector": [0.12, -0.34, ...], "k": 10, "min_score": 0.8}'
 ```
 
@@ -224,16 +224,16 @@ curl -X POST http://servstore:7070/api/v1/search/vector \
 
 ```bash
 # Create a branch (instant, no data copy)
-servstore branch create my-bucket --name feature-x
+pranor-vault branch create my-bucket --name feature-x
 
 # Make changes to the branch
 aws s3 cp new-file.txt s3://my-bucket@feature-x/new-file.txt
 
 # Diff branch vs main
-servstore branch diff my-bucket feature-x
+pranor-vault branch diff my-bucket feature-x
 
 # Merge branch back
-servstore branch merge my-bucket --source feature-x --into main
+pranor-vault branch merge my-bucket --source feature-x --into main
 ```
 
 ---
@@ -286,14 +286,14 @@ aws s3 cp myfile.txt s3://my-bucket/ --endpoint-url http://localhost:7070
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SERVSTORE_PORT` | `7070` | HTTP listener port |
-| `SERVSTORE_DATA_DIR` | `./data` | Object storage root directory |
-| `SERVSTORE_ERASURE_DATA_SHARDS` | `6` | Reed-Solomon data shards |
-| `SERVSTORE_ERASURE_PARITY_SHARDS` | `2` | Reed-Solomon parity shards |
-| `SERVSTORE_VECTOR_ENABLED` | `false` | Enable auto-embedding & HNSW index |
-| `SERVSTORE_EMBEDDING_MODEL` | — | Embedding model endpoint URL |
-| `SERVSTORE_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
-| `SERVSTORE_S3_TIER_COLD_URL` | — | Cold tier S3 endpoint |
+| `PRANOR_VAULT_PORT` | `7070` | HTTP listener port |
+| `PRANOR_VAULT_DATA_DIR` | `./data` | Object storage root directory |
+| `PRANOR_VAULT_ERASURE_DATA_SHARDS` | `6` | Reed-Solomon data shards |
+| `PRANOR_VAULT_ERASURE_PARITY_SHARDS` | `2` | Reed-Solomon parity shards |
+| `PRANOR_VAULT_VECTOR_ENABLED` | `false` | Enable auto-embedding & HNSW index |
+| `PRANOR_VAULT_EMBEDDING_MODEL` | — | Embedding model endpoint URL |
+| `PRANOR_VAULT_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
+| `PRANOR_VAULT_S3_TIER_COLD_URL` | — | Cold tier S3 endpoint |
 
 ---
 

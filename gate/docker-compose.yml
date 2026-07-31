@@ -4,20 +4,20 @@
 # Ollama:   http://localhost:11434
 
 services:
-  servgate:
+  pranor-gate:
     build: .
-    container_name: servgate
+    container_name: pranor-gate
     ports:
       - "8080:8080"
     environment:
-      SERVGATE_AI_EMBEDDING_URL: http://ollama:11434/api/embed
+      PRANOR_GATE_AI_EMBEDDING_URL: http://ollama:11434/api/embed
     depends_on:
       - ollama
     restart: unless-stopped
 
   ollama:
     image: ollama/ollama:latest
-    container_name: servgate-ollama
+    container_name: pranor-gate-ollama
     ports:
       - "11434:11434"
     restart: unless-stopped

@@ -544,4 +544,22 @@ func (ap *AuthProvider) GeneratePresignedURL(baseURL, method, bucket, key string
 	)
 
 	// String to sign
-	stringToSign := fmt.Sprintf("AWS4-HMA
+	stringToSign := fmt.Sprintf("AWS4-HMAC-SHA256\n%s\n%s\n%s",
+		amzDate,
+		credentialScope,
+		hexEncode(sum256([]byte(canonicalRequest))),
+	)
+
+	// Signing key
+	kDate := hmacSHA256([]byte("AWS4"+secretKey), []byte(dateStr))
+	kRegion := hmacSHA256(kDate, []byte(region))
+	kService := hmacSHA256(kRegion, []byte(service))
+	kSigning := hmacSHA256(kService, []byte("aws4_request"))
+
+	signature := hexEncode(hmacSHA256(kSigning, []byte(stringToSign)))
+
+	presignedURL := fmt.Sprintf("%s%s?%s&X-Amz-Signature=%s",
+		baseURL, path, canonicalQuery, signature)
+
+	return presignedURL, nil
+}

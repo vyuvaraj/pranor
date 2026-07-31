@@ -131,4 +131,10 @@ func (e *ErasureCodec) WriteWithQuorum(shards [][]byte, minQuorum int, writer No
 	}
 
 	if !status.QuorumSatisfied {
-		return status, fmt.Errorf("quorum write failed: ver
+		return status, fmt.Errorf("quorum write failed: verified %d/%d shards (required: %d). First error: %v",
+			verified, totalShards, minQuorum, firstErr)
+	}
+
+	return status, nil
+}
+

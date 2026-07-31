@@ -203,4 +203,11 @@ func TestChaos_ConcurrentWritesDuringPartitionAndHeal(t *testing.T) {
 	ctx := context.Background()
 	for _, bucket := range committed {
 		for _, n := range []*testRaftNode{node1, node2, node3} {
-			if _, err := n.store.GetBucket(ctx
+			if _, err := n.store.GetBucket(ctx, bucket); err != nil {
+				t.Errorf("committed bucket %q missing on %s: %v", bucket, n.nodeID, err)
+			}
+		}
+	}
+
+	_ = storage.ErrBucketNotFound // suppress import-not-used if nothing else uses it
+}

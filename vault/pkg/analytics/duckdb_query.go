@@ -49,4 +49,7 @@ func (e *InlineQueryEngine) ExecuteQuery(ctx context.Context, sqlQuery string, p
 func (e *InlineQueryEngine) QueryToJSON(ctx context.Context, sqlQuery string, payload []byte) ([]byte, error) {
 	res, err := e.ExecuteQuery(ctx, sqlQuery, payload)
 	if err != nil {
-		re
+		return nil, err
+	}
+	return json.Marshal(res)
+}

@@ -48,4 +48,6 @@ func (wc *WebConsole) handleEventSnapshots(w http.ResponseWriter, r *http.Reques
 		io.Copy(w, reader)
 
 	default:
-		WriteJSONError(w, r, "Method not allowed", "ERR_METHOD_NOT_
+		WriteJSONError(w, r, "Method not allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+	}
+}

@@ -129,4 +129,12 @@ func (hr *HashRing) GetRingSnapshot() map[string]interface{} {
 
 	uniqueNodes := make([]string, 0, len(hr.nodes))
 	for n := range hr.nodes {
-		uniqueNodes = append(uniqueNod
+		uniqueNodes = append(uniqueNodes, n)
+	}
+
+	return map[string]interface{}{
+		"replicas": hr.replicas,
+		"ring":     ringMap,
+		"nodes":    uniqueNodes,
+	}
+}

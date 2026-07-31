@@ -102,4 +102,7 @@ func TestTimeTravelQueries(t *testing.T) {
 	}
 	defer readerLatest.Close()
 	dataLatest, _ := io.ReadAll(readerLatest)
-	if 
+	if !bytes.Equal(dataLatest, content3) {
+		t.Errorf("expected %q, got %q", content3, dataLatest)
+	}
+}

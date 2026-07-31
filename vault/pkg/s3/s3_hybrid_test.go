@@ -275,4 +275,12 @@ func TestS3HybridAndExtensions(t *testing.T) {
 	}
 	var res4 ListBucketResult
 	if err := xml.NewDecoder(w.Body).Decode(&res4); err != nil {
-		t.Fatalf("Failed to decode 
+		t.Fatalf("Failed to decode ListBucketResult: %v", err)
+	}
+	fmt.Printf("Hybrid search before yesterday result: %+v\n", res4.Contents)
+	for _, c := range res4.Contents {
+		if c.Key == "raft-doc.txt" {
+			t.Errorf("did not expect 'raft-doc.txt' in results when before filter is in the past")
+		}
+	}
+}

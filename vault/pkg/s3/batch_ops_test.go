@@ -245,4 +245,12 @@ func TestS3BatchOperations(t *testing.T) {
 	// 6. Test Bulk Delete Operation
 	t.Run("Bulk Delete", func(t *testing.T) {
 		job := runBatchJob("Delete", "src-bucket", []string{"obj1.txt", "obj2.txt"}, nil)
-		if job.Status
+		if job.Status != "Completed" {
+			t.Errorf("expected job status Completed, got %s (error: %s)", job.Status, job.Error)
+		}
+
+		// Verify objects deleted
+		verifyObjectDeleted("src-bucket", "obj1.txt")
+		verifyObjectDeleted("src-bucket", "obj2.txt")
+	})
+}

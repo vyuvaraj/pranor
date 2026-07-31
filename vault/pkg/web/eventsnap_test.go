@@ -46,4 +46,6 @@ func TestEventSnapshotsWebAPI(t *testing.T) {
 
 	body, _ := io.ReadAll(respGet.Body)
 	if string(body) != payload {
-		t.Errorf("Expected snapshot payload
+		t.Errorf("Expected snapshot payload %q, got %q", payload, string(body))
+	}
+}

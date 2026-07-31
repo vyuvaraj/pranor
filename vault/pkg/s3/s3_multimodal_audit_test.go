@@ -109,4 +109,9 @@ func TestS3MultimodalAndAudit(t *testing.T) {
 	// Perform a read (GET) to check if another audit log entry gets generated
 	readObjReq, _ := http.NewRequest("GET", server.URL+"/"+bucket+"/nature.png", nil)
 	readObjReq.SetBasicAuth("admin", "admin")
-	readResp, err := cli
+	readResp, err := client.Do(readObjReq)
+	if err != nil {
+		t.Fatalf("GET object failed: %v", err)
+	}
+	readResp.Body.Close()
+}

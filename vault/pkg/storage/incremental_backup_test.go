@@ -124,4 +124,8 @@ func TestIncrementalBackupAndPITR(t *testing.T) {
 	}
 
 	// Verify backup.wal file was created
-	walPath := filepath.Join(tempDir, "backup.wal")
+	walPath := filepath.Join(tempDir, "backup.wal")
+	if _, err := os.Stat(walPath); os.IsNotExist(err) {
+		t.Errorf("Expected backup.wal to be created in store root")
+	}
+}

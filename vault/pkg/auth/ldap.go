@@ -66,4 +66,10 @@ func (lc *LDAPClient) Authenticate(username, password string) (bool, error) {
 	err = conn.Bind(bindDN, password)
 	if err != nil {
 		if ldap.IsErrorWithCode(err, ldap.LDAPResultInvalidCredentials) {
-			retu
+			return false, nil
+		}
+		return false, err
+	}
+
+	return true, nil
+}

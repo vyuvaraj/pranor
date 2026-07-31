@@ -140,4 +140,11 @@ func HandleWebSocketEvents(w http.ResponseWriter, r *http.Request) {
 		case <-ticker.C:
 			heartbeatEvent, _ := json.Marshal(cluster.ClusterEvent{
 				Type:      "heartbeat",
-				Timestamp: 
+				Timestamp: time.Now().UnixNano() / int64(time.Millisecond),
+			})
+			if err := session.send(heartbeatEvent); err != nil {
+				return
+			}
+		}
+	}
+}

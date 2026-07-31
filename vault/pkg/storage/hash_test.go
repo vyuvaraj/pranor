@@ -34,4 +34,6 @@ func BenchmarkBlake3Hashing(b *testing.B) {
 
 	b.ResetTimer()
 	for b.Loop() {
-		_ = 
+		_ = ParallelBlake3Hash(data)
+	}
+}

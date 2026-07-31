@@ -54,4 +54,6 @@ func ParallelBlake3Hash(data []byte) string {
 			rootHasher.Write(chunkHash)
 		}
 	}
-
+
+	return hex.EncodeToString(rootHasher.Sum(nil))
+}

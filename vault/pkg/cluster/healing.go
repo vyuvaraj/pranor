@@ -307,4 +307,16 @@ func (hm *HealingManager) checkRemoteKeyExists(ctx context.Context, bucket, key,
 }
 
 func (hm *HealingManager) purgeLocalKey(ctx context.Context, bucket, key string) error {
-	versions, _, 
+	versions, _, err := hm.store.ListObjectVersions(ctx, bucket, key, "", "", "", 1000)
+	if err != nil {
+		return err
+	}
+
+	for _, ver := range versions {
+		_, err := hm.store.DeleteObject(ctx, bucket, key, ver.VersionID)
+		if err != nil && !errors.Is(err, storage.ErrObjectNotFound) {
+			return err
+		}
+	}
+	return nil
+}

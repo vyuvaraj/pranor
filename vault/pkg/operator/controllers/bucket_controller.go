@@ -141,4 +141,8 @@ func (r *PranorVaultBucketReconciler) ensureBucket(ctx context.Context, endpoint
 	return nil
 }
 
-func (r *PranorVaultBucketReconciler) 
+func (r *PranorVaultBucketReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	return ctrl.NewControllerManagedBy(mgr).
+		For(&operv1.PranorVaultBucket{}).
+		Complete(r)
+}

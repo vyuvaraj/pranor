@@ -154,4 +154,8 @@ func TestHealingManagerAutoHealingAndRebalancing(t *testing.T) {
 	}
 
 	// Verify Node 1 local storage is purged of the key
-	_, err = store1.HeadObjec
+	_, err = store1.HeadObject(ctx, "test-bucket", "heal-me", "")
+	if err == nil {
+		t.Error("expected key to be purged from Node 1 local storage after rebalancing handoff")
+	}
+}

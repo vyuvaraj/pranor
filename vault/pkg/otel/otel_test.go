@@ -41,4 +41,6 @@ func TestOtelTracing(t *testing.T) {
 	// 5. Test traceparent generation
 	tpOut := Traceparent(ctx)
 	if tpOut == "" {
-		t.Error("Expected 
+		t.Error("Expected traceparent output, got empty")
+	}
+}

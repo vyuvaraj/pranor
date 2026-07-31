@@ -176,4 +176,8 @@ func TestS3CloudEventsNotifications(t *testing.T) {
 	if delCE["type"] != "com.Pranor Vault.s3.object.deleted" {
 		t.Errorf("expected type deleted, got %v", delCE["type"])
 	}
-	delData
+	delData := delCE["data"].(map[string]interface{})
+	if delData["event"] != "ObjectRemoved:Delete" {
+		t.Errorf("expected ObjectRemoved:Delete data, got %v", delData["event"])
+	}
+}

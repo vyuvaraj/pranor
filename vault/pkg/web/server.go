@@ -583,4 +583,29 @@ func (wc *WebConsole) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					}
 				} else {
 					if err := wc.store.DeleteUserPolicy(r.Context(), username); err != nil {
-		
+						WriteJSONError(w, r, err.Error(), "ERR_POLICY_DELETE_FAILED", http.StatusInternalServerError)
+						return
+					}
+				}
+				w.WriteHeader(http.StatusNoContent)
+				return
+			}
+		}
+	}
+
+	// 3. Serve standard assets or proxy to S3 Gateway
+	isAsset := false
+	if path == "/style.css" || path == "/app.js" || path == "/favicon.ico" || path == "/login.html" {
+		isAsset = true
+	} else if path == "/" && strings.Contains(accept, "text/html") {
+		r.URL.Path = "/index.html"
+		isAsset = true
+	}
+
+	if isAsset {
+		wc.fileServer.ServeHTTP(w, r)
+		return
+	}
+
+	wc.gateway.ServeHTTP(w, r)
+}

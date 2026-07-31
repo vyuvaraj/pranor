@@ -138,4 +138,9 @@ func TestDynamicNodeJoinAndRebalancing(t *testing.T) {
 	// Verify that the data is now present on one of the remote nodes (2 or 3)
 	// and was purged from Node 1 local storage (if node-1 was not an owner or removed)
 	if !isNode1LiveOwner || isNode1LiveOwner {
-		_, headErr := store1.HeadObject(ctx, "scale-bu
+		_, headErr := store1.HeadObject(ctx, "scale-bucket", "rebalance-item", "")
+		if headErr == nil {
+			t.Errorf("expected object to be purged from node-1 after rebalancing")
+		}
+	}
+}

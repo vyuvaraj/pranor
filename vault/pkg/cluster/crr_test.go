@@ -150,4 +150,10 @@ func TestCrossRegionReplication(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to read from region 2: %v", err)
 	}
-	readPayload, _ := io.
+	readPayload, _ := io.ReadAll(rc)
+	rc.Close()
+
+	if !bytes.Equal(readPayload, payload) {
+		t.Errorf("crr data mismatch: expected %q, got %q", payload, readPayload)
+	}
+}

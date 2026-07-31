@@ -70,4 +70,7 @@ func (e *CoWBranchEngine) MergeBranch(ctx context.Context, parentBucket, branchN
 		return 0, fmt.Errorf("branch %s not found for merge", branchName)
 	}
 
-	mergedCount := len
+	mergedCount := len(b.Overlays)
+	delete(e.branches, bKey)
+	return mergedCount, nil
+}

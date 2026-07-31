@@ -315,4 +315,13 @@ func TestPipeline_OutputKeyStoredToBucket(t *testing.T) {
 		t.Fatalf("Run: %v", err)
 	}
 	if result.OutputKey != "out/persisted.bin" {
-		t.Er
+		t.Errorf("OutputKey = %q, want %q", result.OutputKey, "out/persisted.bin")
+	}
+	got, err := store.GetObjectBytes(context.Background(), bucket, "out/persisted.bin", "")
+	if err != nil {
+		t.Fatalf("GetObjectBytes: %v", err)
+	}
+	if !bytes.Equal(got, input) {
+		t.Errorf("stored output = %q, want %q", got, input)
+	}
+}

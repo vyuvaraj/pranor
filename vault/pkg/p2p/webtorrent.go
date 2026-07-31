@@ -55,4 +55,6 @@ func (p *BrowserP2PMesh) GetOffloadStats() (uint64, uint64, float64) {
 	if total == 0 {
 		return 0, 0, 0.0
 	}
-	ratio := (float64(p.offloadBytes) / float64(total)) * 10
+	ratio := (float64(p.offloadBytes) / float64(total)) * 100.0
+	return p.offloadBytes, p.originBytes, ratio
+}

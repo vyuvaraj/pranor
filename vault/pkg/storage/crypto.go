@@ -71,4 +71,7 @@ func decryptPayload(key []byte, ciphertext []byte) ([]byte, error) {
 	nonce, ciphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
 	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
-		return nil, fmt.Errorf
+		return nil, fmt.Errorf("crypto: decryption failed: %w", err)
+	}
+	return plaintext, nil
+}

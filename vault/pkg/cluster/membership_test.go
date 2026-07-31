@@ -60,4 +60,6 @@ func TestMembershipTimeouts(t *testing.T) {
 	mm.mu.RUnlock()
 
 	if p.Status != "offline" {
-		t.Errorf(
+		t.Errorf("Expected status to be offline, got %s", p.Status)
+	}
+}

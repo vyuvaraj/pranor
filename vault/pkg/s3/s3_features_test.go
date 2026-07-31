@@ -170,4 +170,10 @@ func TestS3Features(t *testing.T) {
 	// Verify they are deleted in storage
 	_, _, err = store.GetObject(ctx, "b1", "file1.txt", "")
 	if err == nil {
-		t.Error("f
+		t.Error("file1.txt should have been deleted")
+	}
+	_, _, err = store.GetObject(ctx, "b1", "file2.txt", "")
+	if err == nil {
+		t.Error("file2.txt should have been deleted")
+	}
+}

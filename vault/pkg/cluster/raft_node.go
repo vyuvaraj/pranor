@@ -224,4 +224,15 @@ func JoinCluster(seedHTTPAddr, localNodeID, localRaftAddr string) error {
 	}
 	url = strings.TrimSuffix(url, "/") + "/console/cluster/join"
 
-	resp, err := http.Post(url, "application/json", stri
+	resp, err := http.Post(url, "application/json", strings.NewReader(string(body)))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("failed to join cluster, status: %d", resp.StatusCode)
+	}
+
+	return nil
+}

@@ -160,3 +160,11 @@ func TestExecute_ServLangComplexWASM(t *testing.T) {
 	input := []byte("complex hello")
 	output, err := wasm.Execute(ctx, wasmBytes, input, 64, 30)
 	if err != nil {
+		t.Fatalf("Execute failed: %v", err)
+	}
+
+	expected := "COMPLEX_RESULT: 24"
+	if string(output) != expected {
+		t.Errorf("expected %q, got %q", expected, string(output))
+	}
+}

@@ -139,4 +139,9 @@ func TestVectorStoreHTTP(t *testing.T) {
 	if sw.Code != http.StatusOK {
 		t.Fatalf("stats: expected 200, got %d", sw.Code)
 	}
-	var stats map[string]interfac
+	var stats map[string]interface{}
+	json.NewDecoder(sw.Body).Decode(&stats)
+	if stats["bucket"] != "testbucket" {
+		t.Errorf("stats bucket mismatch: %v", stats)
+	}
+}

@@ -137,4 +137,10 @@ func (s *LocalStore) RecoverFromWAL() error {
 					}
 				}
 			} else {
-				// Mark latest latest version as
+				// Mark latest latest version as delete marker or clear it
+				_ = s.pebbleDB.Delete([]byte("o:"+entry.Bucket+":"+entry.Key), pebble.Sync)
+			}
+		}
+	}
+	return nil
+}

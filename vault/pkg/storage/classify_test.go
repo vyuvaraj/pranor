@@ -96,4 +96,7 @@ func TestAutoClassifyIntegration(t *testing.T) {
 		t.Fatalf("GetObjectTagging failed: %v", err)
 	}
 
-	if tags["ai-class"] != "invo
+	if tags["ai-class"] != "invoice" {
+		t.Errorf("expected retrieved tag ai-class=invoice, got %q", tags["ai-class"])
+	}
+}

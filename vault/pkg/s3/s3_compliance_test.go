@@ -217,4 +217,10 @@ func TestS3ComplianceMultipartLifecycle(t *testing.T) {
 	completeBody := fmt.Sprintf(`<CompleteMultipartUpload><Part><PartNumber>1</PartNumber><ETag>%s</ETag></Part></CompleteMultipartUpload>`, partETag)
 	req3 := httptest.NewRequest(http.MethodPost,
 		fmt.Sprintf("/mp-bucket/big.bin?uploadId=%s", initResp.UploadID),
-		strings
+		strings.NewReader(completeBody))
+	w3 := httptest.NewRecorder()
+	gw.ServeHTTP(w3, req3)
+	if w3.Code != http.StatusOK {
+		t.Errorf("CompleteMultipartUpload: expected 200, got %d; body: %s", w3.Code, w3.Body.String())
+	}
+}

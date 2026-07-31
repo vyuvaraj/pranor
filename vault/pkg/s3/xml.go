@@ -177,3 +177,13 @@ type DeletedResult struct {
 	VersionId             string `xml:"VersionId,omitempty"`
 	DeleteMarker          bool   `xml:"DeleteMarker,omitempty"`
 	DeleteMarkerVersionId string `xml:"DeleteMarkerVersionId,omitempty"`
+}
+
+type DeleteErrorResult struct {
+	Key       string `xml:"Key"`
+	VersionId string `xml:"VersionId,omitempty"`
+	Code      string `xml:"Code"`
+	Message   string `xml:"Message"`
+}
+
+

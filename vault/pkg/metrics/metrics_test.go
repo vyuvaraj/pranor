@@ -45,4 +45,6 @@ func TestMetricsRegistry(t *testing.T) {
 		t.Error("incorrect request duration sum")
 	}
 	if !strings.Contains(body, `pranorVault_http_request_duration_seconds_count{method="GET",path="/test-bucket"} 2`) {
-		t.Error(
+		t.Error("incorrect request duration count")
+	}
+}

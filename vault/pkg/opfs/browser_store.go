@@ -53,4 +53,7 @@ func (b *BrowserStoreSDK) SyncToPranorVault(ctx context.Context, path string) ([
 		"status":      "SYNCED",
 		"opfs_path":   path,
 		"size_bytes":  f.Size,
-		"synced_time"
+		"synced_time": time.Now(),
+	}
+	return json.Marshal(respMap)
+}

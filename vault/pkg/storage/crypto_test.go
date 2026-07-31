@@ -57,4 +57,6 @@ func TestCryptoNonceUniqueness(t *testing.T) {
 func TestDeriveKeyLength(t *testing.T) {
 	key := deriveKey("any passphrase")
 	if len(key) != 32 {
-		t.F
+		t.Fatalf("expected 32-byte key, got %d", len(key))
+	}
+}

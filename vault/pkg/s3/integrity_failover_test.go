@@ -111,4 +111,7 @@ func TestGatewayFailoverOnIntegrityCorruption(t *testing.T) {
 	}
 }
 
-func filepathJoinLocalStore(elem ...string) string {
+func filepathJoinLocalStore(elem ...string) string {
+	// Simple helper to avoid OS specific slash issues
+	return strings.Join(elem, string(os.PathSeparator))
+}

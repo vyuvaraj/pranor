@@ -182,4 +182,12 @@ func (vs *VectorStore) handleSearch(w http.ResponseWriter, r *http.Request, buck
 func (vs *VectorStore) handleStats(w http.ResponseWriter, r *http.Request, bucket string) {
 	count, dim, exists := vs.Stats(bucket)
 	if !exists {
-		http.Error(w, fmt.Sprintf(`{"error":"bucket %q not f
+		http.Error(w, fmt.Sprintf(`{"error":"bucket %q not found"}`, bucket), http.StatusNotFound)
+		return
+	}
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"bucket": bucket,
+		"count":  strconv.Itoa(count),
+		"dim":    dim,
+	})
+}

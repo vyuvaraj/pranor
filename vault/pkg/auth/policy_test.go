@@ -63,4 +63,6 @@ func TestPolicyWildcards(t *testing.T) {
 	}
 
 	if !p.IsAllowed("s3:PutObject", "arn:aws:s3:::public-bucket/folder/subfolder/file.bin") {
-		t.Error("Expected wi
+		t.Error("Expected wildcard action and resource path match to be allowed")
+	}
+}

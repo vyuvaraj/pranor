@@ -46,4 +46,6 @@ func TestANNQueryEngine_QueryANNWithFilter(t *testing.T) {
 
 	aqe.HTTPHandler().ServeHTTP(w, httpreq)
 	if w.Code != http.StatusOK {
-		t.Fatalf(
+		t.Fatalf("expected HTTP 200, got %d", w.Code)
+	}
+}

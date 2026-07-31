@@ -35,3 +35,6 @@ func TestMmapHNSWGraph_InsertAndReload(t *testing.T) {
 	if !found || len(node1.Neighbors) != 1 || node1.Neighbors[0] != "node-2" {
 		t.Errorf("unexpected reloaded node1 data: %+v", node1)
 	}
+
+	_ = os.Remove(indexPath)
+}

@@ -81,4 +81,6 @@ func TestMetadataFSMApply(t *testing.T) {
 	}
 
 	if len(bucket.Lifecycle) != 1 || bucket.Lifecycle[0].ID != "rule-1" {
-		t.Errorf("Expecte
+		t.Errorf("Expected lifecycle rule 'rule-1' to be registered, got %+v", bucket.Lifecycle)
+	}
+}

@@ -61,4 +61,10 @@ func FuzzS3GatewayRequests(f *testing.F) {
 		// Run ServeHTTP. Defend against panics (asserting recovery and no crashes).
 		defer func() {
 			if r := recover(); r != nil {
-				t.Fatalf("panic caught: %v\nMethod: %s, URL: %s, BodyLen: %d", r, method, reqUrl, le
+				t.Fatalf("panic caught: %v\nMethod: %s, URL: %s, BodyLen: %d", r, method, reqUrl, len(body))
+			}
+		}()
+
+		gateway.ServeHTTP(rec, req)
+	})
+}

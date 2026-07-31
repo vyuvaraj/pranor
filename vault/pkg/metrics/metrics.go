@@ -183,4 +183,9 @@ func GetMetricsSnapshot() map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"http_requests_total":    
+		"http_requests_total":           httpReqs,
+		"http_in_flight_requests":       registry.inFlightRequests,
+		"http_request_duration_seconds": reqDurations,
+		"http_request_duration_counts":  reqCounts,
+	}
+}

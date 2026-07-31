@@ -95,4 +95,9 @@ func ValidateToken(tokenStr string, secret []byte) (*JWTClaims, error) {
 	}
 
 	// Verify expiration
-	if claim
+	if claims.ExpiresAt < time.Now().Unix() {
+		return nil, ErrExpiredToken
+	}
+
+	return &claims, nil
+}

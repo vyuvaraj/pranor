@@ -166,3 +166,12 @@ type StorageEngine interface {
 }
 
 type LocalKey struct {
+	Bucket string
+	Key    string
+}
+
+type ContextKey string
+const VersionIDContextKey ContextKey = "versionID"
+const TimeTravelContextKey ContextKey = "timeTravel"
+
+

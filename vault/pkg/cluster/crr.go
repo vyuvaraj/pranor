@@ -184,4 +184,9 @@ func (c *CRRManager) replicateDeleteToNode(ctx context.Context, bucket, key, ver
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.Status
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
+		body, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("remote node status %d: %s", resp.StatusCode, string(body))
+	}
+	return nil
+}

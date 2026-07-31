@@ -338,4 +338,18 @@ func (d *PranorVaultDaemon) Shutdown(ctx context.Context) error {
 	if d.adminServer != nil {
 		_ = d.adminServer.Shutdown(ctx)
 	}
-	if d.s
+	if d.server != nil {
+		return d.server.Shutdown(ctx)
+	}
+	return nil
+}
+
+func RunDaemonSignalHandler(d *PranorVaultDaemon) {
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+	<-sigChan
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	_ = d.Shutdown(ctx)
+}

@@ -195,4 +195,9 @@ func GetRecentSpans() []otelSpan {
 	return res
 }
 
-func Traceparent(ctx context.C
+func Traceparent(ctx context.Context) string {
+	if parentSpan, ok := ctx.Value(spanContextKey).(*Span); ok && parentSpan != nil {
+		return fmt.Sprintf("00-%s-%s-01", parentSpan.TraceID, parentSpan.SpanID)
+	}
+	return ""
+}

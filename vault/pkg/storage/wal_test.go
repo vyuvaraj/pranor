@@ -51,4 +51,6 @@ func TestWALRecovery(t *testing.T) {
 		t.Errorf("expected recovered bucket: %v", err)
 	}
 	if b.Name != "my-bucket" {
-		t.Errorf("expected bu
+		t.Errorf("expected bucket name 'my-bucket', got '%s'", b.Name)
+	}
+}

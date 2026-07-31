@@ -179,4 +179,12 @@ func BenchmarkHNSWvsLinearSearch(b *testing.B) {
 			var list []distKey
 			for k := 0; k < numVectors; k++ {
 				dist := CosineDistance(query, vectors[k])
-		
+				list = append(list, distKey{key: keys[k], dist: dist})
+			}
+			sort.Slice(list, func(x, y int) bool {
+				return list[x].dist < list[y].dist
+			})
+			_ = list[:5]
+		}
+	})
+}

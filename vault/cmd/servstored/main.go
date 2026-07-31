@@ -30,4 +30,6 @@ func main() {
 	go daemon.RunDaemonSignalHandler(d)
 
 	if err := d.Start(); err != nil {
-		log.Printf("pranor-vault
+		log.Printf("pranor-vaultd stopped: %v", err)
+	}
+}

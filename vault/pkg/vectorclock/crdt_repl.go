@@ -47,4 +47,7 @@ func (v *VectorClockReplicationNode) MergeVectorClocks(remoteNode string, remote
 
 func (v *VectorClockReplicationNode) FormatClock() string {
 	v.mu.RLock()
-	defer v.mu.RUnlo
+	defer v.mu.RUnlock()
+
+	return fmt.Sprintf("%v", v.Clock)
+}

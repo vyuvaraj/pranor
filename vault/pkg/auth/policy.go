@@ -93,4 +93,8 @@ func matchWildcard(pattern, val string) bool {
 		idx := strings.Index(val, parts[i])
 		if idx == -1 {
 			return false
-		}
+		}
+		val = val[idx+len(parts[i]):]
+	}
+	return strings.HasSuffix(val, parts[len(parts)-1])
+}

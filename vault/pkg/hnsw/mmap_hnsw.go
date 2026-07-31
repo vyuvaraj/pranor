@@ -88,4 +88,8 @@ func (mh *MmapHNSWGraph) loadFromDisk() error {
 	}
 	var nodes map[string]*HNSWGraphNode
 	if err := json.Unmarshal(data, &nodes); err != nil {
-		return fmt.Errorf("fai
+		return fmt.Errorf("failed to unmarshal HNSW index disk file: %w", err)
+	}
+	mh.nodes = nodes
+	return nil
+}

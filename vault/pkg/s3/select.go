@@ -447,4 +447,19 @@ func writeEventFrame(w io.Writer, eventType, contentType string, payload []byte)
 
 	// Message CRC
 	fullMessage := append(preamble, headersBuf.Bytes()...)
-	fullMessage = ap
+	fullMessage = append(fullMessage, payload...)
+	msgCRC := crc32.ChecksumIEEE(fullMessage)
+	msgCRCBuf := make([]byte, 4)
+	binary.BigEndian.PutUint32(msgCRCBuf, msgCRC)
+
+	_, err := w.Write(msgCRCBuf)
+	return err
+}
+
+func writeHeader(buf *bytes.Buffer, name, value string) {
+	buf.WriteByte(byte(len(name)))
+	buf.WriteString(name)
+	buf.WriteByte(7) // Header value type 7 is string
+	binary.Write(buf, binary.BigEndian, uint16(len(value)))
+	buf.WriteString(value)
+}

@@ -143,4 +143,9 @@ func getPolicyJSON(policy string) string {
 	return policy
 }
 
-func (r *PranorVaultCredentialReconciler) SetupWithManager(mgr ctrl.Ma
+func (r *PranorVaultCredentialReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	return ctrl.NewControllerManagedBy(mgr).
+		For(&operv1.PranorVaultCredential{}).
+		Owns(&corev1.Secret{}).
+		Complete(r)
+}

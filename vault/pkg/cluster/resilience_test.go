@@ -305,4 +305,12 @@ func TestResilience_MetadataLinearizability(t *testing.T) {
 	wg.Wait()
 
 	// Verify all proposed buckets exist locally
-	for i :=
+	for i := 0; i < workers; i++ {
+		for j := 0; j < opsPerWorker; j++ {
+			bucketName := fmt.Sprintf("lin-bucket-%d-%d", i, j)
+			if _, err := node1.store.GetBucket(context.Background(), bucketName); err != nil {
+				t.Errorf("Linearizability check failed, bucket %s missing: %v", bucketName, err)
+			}
+		}
+	}
+}

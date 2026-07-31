@@ -89,4 +89,7 @@ func TestHashRingDistribution(t *testing.T) {
 		// A rough distribution check. With 1000 keys and 5 nodes, we expect roughly 200 per node.
 		// Since hashing is pseudo-random, allow a wider margin (e.g. 50 to 350 keys).
 		if count < 50 || count > 350 {
-			t.Logf("Node %s got %d keys, which is outside the typical sof
+			t.Logf("Node %s got %d keys, which is outside the typical soft-bound [50, 350] but acceptable for random FNV-1a distribution", n, count)
+		}
+	}
+}

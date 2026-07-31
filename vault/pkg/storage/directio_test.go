@@ -38,4 +38,6 @@ func TestPerformance_DirectIOWrites(t *testing.T) {
 	}
 
 	if !bytes.Equal(readData, data) {
-		t.Error("content corruption dete
+		t.Error("content corruption detected in DirectIO roundtrip")
+	}
+}

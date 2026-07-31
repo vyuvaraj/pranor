@@ -148,4 +148,10 @@ func (aqe *ANNQueryEngine) HTTPHandler() http.Handler {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		w.W
+		w.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			"count":   len(matches),
+			"matches": matches,
+		})
+	})
+}

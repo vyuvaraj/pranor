@@ -15,4 +15,5 @@ type ColdTierManager struct {
 
 // stubPath returns the .cold stub path (single arg: data file path).
 func stubPath(dataPath string) string {
-	return dat
+	return dataPath + ".cold"
+}

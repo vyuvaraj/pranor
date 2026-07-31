@@ -38,4 +38,6 @@ func AutoClassify(key string, contentType string, content []byte) map[string]str
 	}
 
 	tags["ai-class"] = class
-	tags["ai-confidence"] = fmt.Sprintf("
+	tags["ai-confidence"] = fmt.Sprintf("%.2f", confidence)
+	return tags
+}

@@ -6,4 +6,5 @@ package import "errors"
 // In Enterprise Edition, this function automatically chunks the uploaded object content
 // and generates TF-IDF vector embeddings stored alongside the object.
 func TriggerVectorization(bucket, key string, content []byte) error {
-	return errors.New("Enterprise Edition required for automatic vectorization pip
+	return errors.New("Enterprise Edition required for automatic vectorization pipeline")
+}

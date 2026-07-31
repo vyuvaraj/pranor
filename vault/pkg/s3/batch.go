@@ -186,4 +186,11 @@ func (g *Gateway) handleGetBatchJob(w http.ResponseWriter, r *http.Request) {
 
 	job, exists := g.batchMgr.GetJob(jobID)
 	if !exists {
-		g.writeErrorCtx(w, r, http.StatusNotFound, "NoSuc
+		g.writeErrorCtx(w, r, http.StatusNotFound, "NoSuchJob", "The specified batch job does not exist")
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(job)
+}

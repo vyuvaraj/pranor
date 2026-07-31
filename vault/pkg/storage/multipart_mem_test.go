@@ -185,4 +185,15 @@ func TestMultipartStreamingVerification(t *testing.T) {
 
 	if !bytes.Equal(got, expected) {
 		t.Errorf("content mismatch: got %d bytes, want %d bytes; first diff at byte %d",
-			len(got), l
+			len(got), len(expected), firstDiff(got, expected))
+	}
+}
+
+func firstDiff(a, b []byte) int {
+	for i := 0; i < len(a) && i < len(b); i++ {
+		if a[i] != b[i] {
+			return i
+		}
+	}
+	return len(a)
+}

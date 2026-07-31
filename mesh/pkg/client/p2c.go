@@ -1,6 +1,4 @@
-package client
-
-import (
+package import (
 	"math/rand"
 	"sync"
 	"time"

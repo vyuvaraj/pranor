@@ -1,6 +1,4 @@
-package handlers
-
-import (
+package import (
 	"encoding/json"
 	"fmt"
 	"log"

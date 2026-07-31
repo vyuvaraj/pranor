@@ -1,6 +1,4 @@
-package proxy
-
-import (
+package import (
 	"bufio"
 	"fmt"
 	"io"

@@ -1,6 +1,4 @@
-package main_test
-
-import (
+package import (
 	"errors"
 	"sync"
 	"testing"

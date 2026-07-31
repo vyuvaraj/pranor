@@ -1,8 +1,6 @@
 //go:build !js || !wasm
 
-package wasm
-
-import "fmt"
+package import "fmt"
 
 // Stub main for non-WASM targets (e.g. linux/amd64, windows, darwin)
 func main() {

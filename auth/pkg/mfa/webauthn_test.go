@@ -1,6 +1,4 @@
-package mfa
-
-import (
+package import (
 	"testing"
 )
 

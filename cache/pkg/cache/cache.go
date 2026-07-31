@@ -1,6 +1,4 @@
-package cache
-
-import (
+package import (
 	"bytes"
 	"container/list"
 	"encoding/json"

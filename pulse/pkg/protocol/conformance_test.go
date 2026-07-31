@@ -1,6 +1,4 @@
-package protocol
-
-import (
+package import (
 	"bytes"
 	"fmt"
 	"testing"

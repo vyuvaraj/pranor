@@ -1,6 +1,4 @@
-package profiler
-
-import (
+package import (
 	"fmt"
 	"sort"
 	"strings"

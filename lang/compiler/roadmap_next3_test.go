@@ -1,6 +1,4 @@
-package compiler
-
-import (
+package import (
 	"strings"
 	"testing"
 	"github.com/vyuvaraj/pranor/lang/runtime"
@@ -58,13 +56,13 @@ workflow OrderProcessing(orderId) {
 
 func TestTraceSourceMapping(t *testing.T) {
 	// Setup a mock SrvSourceMap
-	runtime.pnrSourceMap = map[string]int{
+	runtime.PnrSourceMap = map[string]int{
 		"main.go:42": 15,
 	}
 
 	// Mock caller stack frame lookup by simulating stack entry
 	// (getSrvCallerLine will not match TestTraceSourceMapping directly, but we verify getSrvCallerLine handles nil and key lookups correctly)
-	runtime.pnrSourceMap["roadmap_next3_test.go:66"] = 15
+	runtime.PnrSourceMap["roadmap_next3_test.go:66"] = 15
 	
 	// Temporarily override otelEnabled for testing getSrvCallerLine
 	// (we can verify getSrvCallerLine behavior directly through private call simulations if needed, or by invoking it via reflection/stubs)

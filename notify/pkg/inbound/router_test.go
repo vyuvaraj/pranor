@@ -1,6 +1,4 @@
-package inbound
-
-import (
+package import (
 	"context"
 	"encoding/json"
 	"io"

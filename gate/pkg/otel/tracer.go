@@ -1,6 +1,4 @@
-package otel
-
-import (
+package import (
 	"github.com/vyuvaraj/pranor/core"
 )
 

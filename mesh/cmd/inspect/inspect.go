@@ -6,9 +6,7 @@
 // Usage:
 //
 //	go run ./cmd/inspect/ [--registry <url>] [--service <name>] [--watch]
-package main
-
-import (
+package import (
 	"encoding/json"
 	"flag"
 	"fmt"

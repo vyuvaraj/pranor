@@ -1,6 +1,4 @@
-package vectorclock
-
-import (
+package import (
 	"fmt"
 	"sync"
 )

@@ -1,6 +1,4 @@
-package incidents
-
-import (
+package import (
 	"encoding/json"
 	"net/http"
 	"sync"

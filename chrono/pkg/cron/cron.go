@@ -1,6 +1,4 @@
-package cron
-
-import (
+package import (
 	"bytes"
 	"crypto/rand"
 	"encoding/hex"

@@ -1,6 +1,4 @@
-package proxy
-
-import (
+package import (
 	"testing"
 )
 

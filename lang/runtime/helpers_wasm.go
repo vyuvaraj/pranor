@@ -1,8 +1,6 @@
 //go:build wasm
 
-package runtime
-
-import (
+package import (
 	"fmt"
 	"os"
 	"strings"
@@ -10,6 +8,7 @@ import (
 	"time"
 )
 
+var PnrSourceMap map[string]int
 var SrvSourceMap map[string]int
 
 // Request represents an HTTP request (stub for WASM target).

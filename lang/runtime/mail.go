@@ -1,6 +1,4 @@
-package runtime
-
-import (
+package import (
 	"bytes"
 	"encoding/json"
 	"errors"

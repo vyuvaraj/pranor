@@ -1,6 +1,4 @@
-package webhook
-
-import (
+package import (
 	"bytes"
 	"crypto/hmac"
 	"crypto/sha256"

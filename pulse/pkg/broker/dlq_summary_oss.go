@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package broker
-
-import (
+package import (
 	"errors"
 )
 

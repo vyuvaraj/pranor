@@ -1,6 +1,4 @@
-package security
-
-import (
+package import (
 	"encoding/base64"
 	"fmt"
 	"net/http"

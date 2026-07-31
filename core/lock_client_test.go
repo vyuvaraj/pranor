@@ -1,4 +1,4 @@
-package PranorCore_test
+package core_test
 
 import (
 	"encoding/json"

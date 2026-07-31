@@ -1,6 +1,4 @@
-package daemon
-
-import (
+package import (
 	"context"
 	"testing"
 

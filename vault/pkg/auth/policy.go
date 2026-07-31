@@ -1,6 +1,4 @@
-package auth
-
-import (
+package import (
 	"encoding/json"
 	"strings"
 )

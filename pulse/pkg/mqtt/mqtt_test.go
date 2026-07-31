@@ -1,6 +1,4 @@
-package mqtt
-
-import (
+package import (
 	"bytes"
 	"testing"
 )

@@ -4,9 +4,7 @@
 // subdomain, and then proxies incoming tunnel requests to a local HTTP
 // service. It provides colorful terminal output showing each proxied
 // request in real-time.
-package client
-
-import (
+package import (
 	"bytes"
 	"encoding/base64"
 	"fmt"

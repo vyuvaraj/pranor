@@ -1,6 +1,4 @@
-package cli
-
-import (
+package import (
 	"strings"
 	"testing"
 )

@@ -1,6 +1,4 @@
-package main
-
-import (
+package import (
 	"bytes"
 	"context"
 	"crypto/tls"
@@ -940,9 +938,7 @@ func runPolicyCommand() {
 `, methodCond, pathCond, cond, action))
 	}
 
-	goSource := fmt.Sprintf(`package main
-
-import (
+	goSource := fmt.Sprintf(`package import (
 	"encoding/json"
 	"fmt"
 	"io"

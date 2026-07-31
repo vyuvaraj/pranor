@@ -1,9 +1,7 @@
 // Package operator contains the Go type definitions for the Pranor Vault
 // Custom Resource Definitions (CRDs). These types implement runtime.Object
 // and are registered with the controller-runtime scheme.
-package operator
-
-import (
+package import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 )

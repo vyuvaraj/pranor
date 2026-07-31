@@ -1,6 +1,4 @@
-package cache
-
-import (
+package import (
 	"math"
 	"math/rand"
 	"sync"

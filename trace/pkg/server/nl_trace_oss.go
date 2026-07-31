@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package server
-
-import (
+package import (
 	"encoding/json"
 	"net/http"
 	"strconv"

@@ -1,6 +1,4 @@
-package security
-
-import (
+package import (
 	"fmt"
 	"sync"
 	"sync/atomic"

@@ -1,6 +1,4 @@
-package main
-
-import (
+package import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"

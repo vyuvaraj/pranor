@@ -1,6 +1,4 @@
-package resilience
-
-import (
+package import (
 	"errors"
 	"testing"
 	"time"

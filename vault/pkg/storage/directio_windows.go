@@ -1,8 +1,6 @@
 //go:build windows
 
-package storage
-
-import (
+package import (
 	"fmt"
 	"os"
 	"syscall"

@@ -1,6 +1,4 @@
-package profiler
-
-import (
+package import (
 	"strings"
 	"testing"
 	"time"

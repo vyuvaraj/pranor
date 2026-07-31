@@ -1,8 +1,6 @@
 //go:build !wasm
 
-package runtime
-
-import (
+package import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"

@@ -1,6 +1,4 @@
-package ws
-
-import (
+package import (
 	"bufio"
 	"context"
 	"net/http"

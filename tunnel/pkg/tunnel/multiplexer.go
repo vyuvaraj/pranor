@@ -1,6 +1,4 @@
-package tunnel
-
-import (
+package import (
 	"bytes"
 	"encoding/binary"
 	"fmt"

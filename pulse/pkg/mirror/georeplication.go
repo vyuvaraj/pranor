@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package mirror
-
-import (
+package import (
 	"context"
 	"fmt"
 	"sync"

@@ -1,6 +1,4 @@
-package runtime
-
-type ActorMessage struct {
+package actormessage struct {
 	Payload interface{}
 	Reply   chan interface{}
 }

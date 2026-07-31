@@ -1,8 +1,6 @@
 //go:build !wasm
 
-package runtime
-
-import (
+package import (
 	"bytes"
 	"encoding/hex"
 	"encoding/json"
@@ -28,6 +26,7 @@ var (
 	otelService  string
 	otelMu       sync.RWMutex
 
+	PnrSourceMap map[string]int
 	SrvSourceMap map[string]int
 )
 
@@ -165,8 +164,12 @@ func OtelEnabled() bool {
 	return otelEnabled
 }
 
-func getSrvCallerLine() int {
-	if SrvSourceMap == nil {
+func getPnrCallerLine() int {
+	sm := PnrSourceMap
+	if sm == nil {
+		sm = SrvSourceMap
+	}
+	if sm == nil {
 		return 0
 	}
 	for i := 2; i < 15; i++ {
@@ -176,11 +179,15 @@ func getSrvCallerLine() int {
 		}
 		baseFile := filepath.Base(file)
 		key := fmt.Sprintf("%s:%d", baseFile, line)
-		if pnrLine, exists := SrvSourceMap[key]; exists {
+		if pnrLine, exists := sm[key]; exists {
 			return pnrLine
 		}
 	}
 	return 0
+}
+
+func getSrvCallerLine() int {
+	return getPnrCallerLine()
 }
 
 // TraceRequest creates a span for an HTTP request and returns trace context.

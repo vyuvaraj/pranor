@@ -1,6 +1,4 @@
-package opfs
-
-import (
+package import (
 	"os"
 	"path/filepath"
 	"testing"

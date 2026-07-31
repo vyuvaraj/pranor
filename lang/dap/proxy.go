@@ -1,6 +1,4 @@
-package dap
-
-import (
+package import (
 	"bufio"
 	"encoding/json"
 	"fmt"

@@ -1,6 +1,4 @@
-package server
-
-import (
+package import (
 	"bufio"
 	"bytes"
 	"net"

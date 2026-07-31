@@ -1,6 +1,4 @@
-package deploy
-
-import (
+package import (
 	"context"
 	"testing"
 	"time"

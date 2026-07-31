@@ -1,6 +1,4 @@
-package auth
-
-import (
+package import (
 	"net/http"
 	"net/http/httptest"
 	"os"

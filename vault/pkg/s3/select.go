@@ -1,6 +1,4 @@
-package s3
-
-import (
+package import (
 	"bytes"
 	"encoding/binary"
 	"encoding/csv"

@@ -1,6 +1,4 @@
-package web
-
-import (
+package import (
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/json"

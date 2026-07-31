@@ -4,9 +4,7 @@
 // requests from the public internet. It routes incoming HTTP requests to
 // the correct tunnel client based on the subdomain extracted from the
 // Host header (e.g., "abc123.Pranor.net" → tunnel "abc123").
-package server
-
-import (
+package import (
 	"bytes"
 	"context"
 	"encoding/base64"

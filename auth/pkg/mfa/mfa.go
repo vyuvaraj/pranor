@@ -1,6 +1,4 @@
-package mfa
-
-import (
+package import (
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/binary"

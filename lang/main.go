@@ -1,6 +1,4 @@
-package main
-
-import (
+package import (
 	"flag"
 	"fmt"
 	"os"

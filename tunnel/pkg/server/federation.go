@@ -1,8 +1,6 @@
 //go:build enterprise
 
-package server
-
-import (
+package import (
 	"fmt"
 	"net/http"
 	"time"

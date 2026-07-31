@@ -1,6 +1,4 @@
-package proxy
-
-import (
+package import (
 	"encoding/json"
 	"fmt"
 	"strings"

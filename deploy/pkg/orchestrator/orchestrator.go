@@ -1,6 +1,4 @@
-package orchestrator
-
-import (
+package import (
 	"bufio"
 	"bytes"
 	"fmt"
@@ -761,7 +759,7 @@ CMD ["./pranorice"]
 
 	if dockerAvailable {
 		proc.logMutex.Lock()
-		proc.logs = append(proc.logs, fmt.Sprintf("[%s] Docker engine connected. Building image serv-%s...", time.Now().Format(time.RFC3339), proc.Name))
+		proc.logs = append(proc.logs, fmt.Sprintf("[%s] Docker engine connected. Building image pranor-%s...", time.Now().Format(time.RFC3339), proc.Name))
 		proc.logMutex.Unlock()
 
 		buildCmd := exec.Command("docker", "build", "-t", "pranor-"+proc.Name, ".")
@@ -775,7 +773,7 @@ CMD ["./pranorice"]
 		exec.Command("docker", "rm", "-f", "pranor-"+proc.Name).Run()
 
 		proc.logMutex.Lock()
-		proc.logs = append(proc.logs, fmt.Sprintf("[%s] Running container serv-%s on port %d...", time.Now().Format(time.RFC3339), proc.Name, proc.Port))
+		proc.logs = append(proc.logs, fmt.Sprintf("[%s] Running container pranor-%s on port %d...", time.Now().Format(time.RFC3339), proc.Name, proc.Port))
 		proc.logMutex.Unlock()
 
 		runCmd := exec.Command("docker", "run", "-d", "-p", fmt.Sprintf("%d:%d", proc.Port, proc.Port), "--name", "pranor-"+proc.Name, "pranor-"+proc.Name)

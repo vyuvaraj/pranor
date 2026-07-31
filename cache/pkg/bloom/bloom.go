@@ -1,6 +1,4 @@
-package bloom
-
-import (
+package import (
 	"hash/fnv"
 	"math"
 	"sync"

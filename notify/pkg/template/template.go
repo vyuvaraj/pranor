@@ -1,6 +1,4 @@
-package template
-
-import (
+package import (
 	"bytes"
 	"text/template"
 )

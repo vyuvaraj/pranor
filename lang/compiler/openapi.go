@@ -1,6 +1,4 @@
-package compiler
-
-import (
+package import (
 	"encoding/json"
 	"strings"
 )

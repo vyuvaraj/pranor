@@ -1,6 +1,4 @@
-package s3
-
-import (
+package import (
 	"encoding/json"
 	"encoding/xml"
 	"net/http"

@@ -1,6 +1,4 @@
-package search
-
-import (
+package import (
 	"encoding/json"
 	"net/http"
 	"strings"

@@ -1,6 +1,4 @@
-package auth
-
-import (
+package import (
 	"crypto/tls"
 	"fmt"
 	"net/url"

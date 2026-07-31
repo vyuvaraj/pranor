@@ -1,6 +1,4 @@
-package delivery
-
-import (
+package import (
 	"bufio"
 	"log"
 	"net"

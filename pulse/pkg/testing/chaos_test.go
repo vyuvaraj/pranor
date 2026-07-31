@@ -1,6 +1,4 @@
-package testing
-
-import (
+package import (
 	"context"
 	"strings"
 	"testing"

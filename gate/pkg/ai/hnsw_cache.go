@@ -1,6 +1,4 @@
-package ai
-
-import (
+package import (
 	"container/heap"
 	"crypto/sha256"
 	"encoding/hex"

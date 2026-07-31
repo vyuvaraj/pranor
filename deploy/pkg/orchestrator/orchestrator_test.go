@@ -1,6 +1,4 @@
-package orchestrator
-
-import (
+package import (
 	"os"
 	"testing"
 )

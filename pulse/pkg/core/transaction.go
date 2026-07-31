@@ -1,6 +1,4 @@
-package core
-
-import (
+package import (
 	"fmt"
 	"sync"
 	"time"

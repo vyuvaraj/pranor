@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package kafka
-
-import (
+package import (
 	"context"
 	"encoding/binary"
 	"fmt"

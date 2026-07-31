@@ -1,6 +1,4 @@
-package compiler
-
-import "strings"
+package import "strings"
 
 func toGoType(t string) string {
 	// Handle optional types: int? -> interface{} (can be nil)

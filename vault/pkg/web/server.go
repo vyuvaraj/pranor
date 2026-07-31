@@ -1,6 +1,4 @@
-package web
-
-import (
+package import (
 	"crypto/rand"
 	"embed"
 	"encoding/hex"

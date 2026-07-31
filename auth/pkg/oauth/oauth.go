@@ -1,6 +1,4 @@
-package oauth
-
-type ClientCredentials struct {
+package clientcredentials struct {
 	ClientID     string
 	ClientSecret string
 }

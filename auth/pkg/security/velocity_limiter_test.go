@@ -1,6 +1,4 @@
-package security
-
-import (
+package import (
 	"sync"
 	"testing"
 	"time"

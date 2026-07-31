@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package storage
-
-import (
+package import (
 	"fmt"
 	"io"
 	"net/http"

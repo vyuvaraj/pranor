@@ -1,6 +1,4 @@
-package raft
-
-import (
+package import (
 	"crypto/sha256"
 	"fmt"
 	"sync"

@@ -1,6 +1,4 @@
-package slo
-
-import (
+package import (
 	"testing"
 )
 

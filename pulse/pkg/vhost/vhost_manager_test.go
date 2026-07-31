@@ -1,6 +1,4 @@
-package vhost
-
-import (
+package import (
 	"testing"
 )
 

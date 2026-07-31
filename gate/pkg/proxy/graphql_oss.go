@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package proxy
-
-import (
+package import (
 	"net/http"
 )
 

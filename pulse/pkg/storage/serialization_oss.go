@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package storage
-
-import "fmt"
+package import "fmt"
 
 // IsZeroCopySupported indicates if zero-copy serialization is supported.
 const IsZeroCopySupported = false

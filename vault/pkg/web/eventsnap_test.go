@@ -1,6 +1,4 @@
-package web
-
-import (
+package import (
 	"bytes"
 	"io"
 	"net/http"

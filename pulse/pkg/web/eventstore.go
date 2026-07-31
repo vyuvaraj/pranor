@@ -1,6 +1,4 @@
-package web
-
-import (
+package import (
 	"encoding/json"
 	"net/http"
 	"os"

@@ -1,6 +1,4 @@
-package Pranor Pulse
-
-import (
+package import (
 	"bytes"
 	"encoding/json"
 	"fmt"

@@ -1,6 +1,4 @@
-package ai
-
-import (
+package import (
 	"context"
 	"testing"
 )

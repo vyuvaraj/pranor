@@ -1,6 +1,4 @@
-package namespaces
-
-import (
+package import (
 	"testing"
 )
 

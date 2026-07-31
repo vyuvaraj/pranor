@@ -1,6 +1,4 @@
-package registry
-
-import (
+package import (
 	"bytes"
 	"context"
 	"crypto/sha256"

@@ -1,6 +1,4 @@
-package waf
-
-import (
+package import (
 	"context"
 	"fmt"
 	"regexp"

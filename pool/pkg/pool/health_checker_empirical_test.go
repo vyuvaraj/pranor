@@ -1,6 +1,4 @@
-package pool_test
-
-import (
+package import (
 	"context"
 	"strings"
 	"sync"

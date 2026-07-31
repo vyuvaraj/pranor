@@ -1,6 +1,4 @@
-package otel
-
-import (
+package import (
 	"context"
 	"testing"
 )

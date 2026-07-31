@@ -1,6 +1,4 @@
-package cluster
-
-import (
+package import (
 	"bytes"
 	"context"
 	"net/http/httptest"

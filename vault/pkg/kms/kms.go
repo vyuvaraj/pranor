@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package kms
-
-import (
+package import (
 	"context"
 )
 

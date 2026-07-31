@@ -1,6 +1,4 @@
-package vector
-
-import (
+package import (
 	"encoding/json"
 	"fmt"
 	"net/http"

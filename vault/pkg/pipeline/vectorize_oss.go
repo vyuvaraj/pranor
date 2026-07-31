@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package pipeline
-
-import "errors"
+package import "errors"
 
 // TriggerVectorization is an OSS stub for the AI.13 Automatic Vectorization Pipeline.
 // In Enterprise Edition, this function automatically chunks the uploaded object content

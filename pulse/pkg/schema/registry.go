@@ -2,9 +2,7 @@
 // It enforces message contract validation at the broker: producers must send
 // messages conforming to a registered JSON Schema, Avro, or Protobuf contract,
 // or their messages are rejected before routing.
-package schema
-
-import (
+package import (
 	"encoding/json"
 	"errors"
 	"fmt"

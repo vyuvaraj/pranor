@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package handlers
-
-import "net/http"
+package import "net/http"
 
 // IsVisualDesignerSupported indicates if the real-time visual DAG designer is supported.
 const IsVisualDesignerSupported = false

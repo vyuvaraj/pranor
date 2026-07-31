@@ -1,8 +1,6 @@
 //go:build !wasm
 
-package runtime
-
-import (
+package import (
 	"encoding/json"
 	"net/http"
 	"sync"

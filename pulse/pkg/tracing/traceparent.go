@@ -1,6 +1,4 @@
-package tracing
-
-import (
+package import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"

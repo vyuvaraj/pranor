@@ -1,6 +1,4 @@
-package store
-
-import (
+package import (
 	"crypto/rsa"
 	"encoding/json"
 	"errors"

@@ -1,6 +1,4 @@
-package sessions
-
-import (
+package import (
 	"encoding/hex"
 	"errors"
 	"fmt"

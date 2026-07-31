@@ -1,6 +1,4 @@
-package main
-
-import (
+package import (
 	"bytes"
 	"os"
 	"os/exec"

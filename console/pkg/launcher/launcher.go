@@ -1,6 +1,4 @@
-package launcher
-
-import (
+package import (
 	"encoding/json"
 	"fmt"
 	"log"

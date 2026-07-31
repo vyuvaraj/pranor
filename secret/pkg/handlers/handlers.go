@@ -1,6 +1,4 @@
-package handlers
-
-import (
+package import (
 	"encoding/hex"
 	"encoding/json"
 	"net"

@@ -1,6 +1,4 @@
-package cache
-
-import (
+package import (
 	"errors"
 	"sync"
 	"sync/atomic"

@@ -1,6 +1,4 @@
-package codegen
-
-import (
+package import (
 	"strings"
 	"testing"
 )

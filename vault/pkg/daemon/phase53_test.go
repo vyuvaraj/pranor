@@ -1,6 +1,4 @@
-package daemon
-
-import (
+package import (
 	"bytes"
 	"context"
 	"strings"

@@ -1,8 +1,6 @@
 // Package operator implements Kubernetes operators for Pranor Vault.
 // This file contains the main entry point for the operator binary.
-package main
-
-import (
+package import (
     "flag"
     "fmt"
     "os"

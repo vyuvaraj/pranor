@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package worm
-
-import (
+package import (
 	"context"
 	"time"
 )

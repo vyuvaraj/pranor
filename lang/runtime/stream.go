@@ -1,6 +1,4 @@
-package runtime
-
-import (
+package import (
 	"encoding/json"
 	"strings"
 	"sync"

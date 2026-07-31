@@ -1,6 +1,4 @@
-package preview
-
-import (
+package import (
 	"fmt"
 	"regexp"
 	"strings"

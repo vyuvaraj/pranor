@@ -1,6 +1,4 @@
-package lifecycle
-
-import (
+package import (
 	"context"
 	"fmt"
 	"sync"

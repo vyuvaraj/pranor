@@ -1,8 +1,6 @@
 //go:build !windows
 
-package storage
-
-import "os"
+package import "os"
 
 // WriteFileDirectIO writes data directly to disk bypassing the host OS page cache.
 // On non-Windows platforms, it falls back to standard OS write paths.

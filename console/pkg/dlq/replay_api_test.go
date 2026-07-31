@@ -1,6 +1,4 @@
-package dlq
-
-import (
+package import (
 	"bytes"
 	"context"
 	"encoding/json"

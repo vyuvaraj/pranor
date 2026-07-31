@@ -1,6 +1,4 @@
-package config
-
-import (
+package import (
 	"encoding/json"
 	"flag"
 	"log"

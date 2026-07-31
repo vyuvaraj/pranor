@@ -1,6 +1,4 @@
-package lock_test
-
-import (
+package import (
 	"testing"
 	"time"
 

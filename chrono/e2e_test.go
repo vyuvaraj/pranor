@@ -1,6 +1,4 @@
-package main_test
-
-import (
+package import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"

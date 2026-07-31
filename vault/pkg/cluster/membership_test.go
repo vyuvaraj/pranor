@@ -1,6 +1,4 @@
-package cluster
-
-import (
+package import (
 	"testing"
 	"time"
 )

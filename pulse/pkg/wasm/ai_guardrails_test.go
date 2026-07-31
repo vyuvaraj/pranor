@@ -1,6 +1,4 @@
-package wasm
-
-import (
+package import (
 	"testing"
 )
 

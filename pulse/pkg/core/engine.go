@@ -1,6 +1,4 @@
-package core
-
-import (
+package import (
 	"crypto/sha256"
 	"fmt"
 	"strings"

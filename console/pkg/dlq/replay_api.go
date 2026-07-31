@@ -1,6 +1,4 @@
-package dlq
-
-import (
+package import (
 	"context"
 	"encoding/json"
 	"fmt"

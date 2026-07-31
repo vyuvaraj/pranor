@@ -1,6 +1,4 @@
-package storage
-
-import (
+package import (
 	"bytes"
 	"testing"
 )

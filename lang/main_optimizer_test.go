@@ -1,6 +1,4 @@
-package main
-
-import (
+package import (
 	"os"
 	"testing"
 	"github.com/vyuvaraj/pranor/lang/compiler"

@@ -1,6 +1,4 @@
-package metrics
-
-import (
+package import (
 	"net/http"
 	"net/http/httptest"
 	"strings"

@@ -1,6 +1,4 @@
-package main_test
-
-import (
+package import (
 	"fmt"
 	"strings"
 	"sync"

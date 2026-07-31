@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package mesh
-
-import (
+package import (
 	"context"
 )
 

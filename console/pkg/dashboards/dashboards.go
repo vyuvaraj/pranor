@@ -1,6 +1,4 @@
-package dashboards
-
-import (
+package import (
 	"bytes"
 	"encoding/json"
 	"fmt"

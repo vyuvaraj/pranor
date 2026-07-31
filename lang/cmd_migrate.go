@@ -1,6 +1,4 @@
-package main
-
-import (
+package import (
 	"database/sql"
 	"fmt"
 	"os"

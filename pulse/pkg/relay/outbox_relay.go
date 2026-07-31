@@ -1,6 +1,4 @@
-package relay
-
-import (
+package import (
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -78,7 +76,7 @@ func (r *OutboxRelay) SyncNow() error {
 		return err
 	}
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Pranor Pulse-Outbox-Sync", "true")
+	req.Header.Set("X-Pranor-Pulse-Outbox-Sync", "true")
 	req.Header.Set("X-WebTransport-Mode", "quic-multiplex")
 	req.Header.Set("Sec-WebTransport-Http3-Draft", "draft02")
 

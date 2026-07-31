@@ -1,4 +1,4 @@
-package Pranor Core
+package core_test
 
 import (
 	"net/http"

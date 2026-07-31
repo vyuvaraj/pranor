@@ -1,6 +1,4 @@
-package compiler
-
-import (
+package import (
 	"go/format"
 	"strings"
 	"testing"

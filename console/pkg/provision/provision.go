@@ -1,6 +1,4 @@
-package provision
-
-import (
+package import (
 	"encoding/json"
 	"fmt"
 	"net/http"

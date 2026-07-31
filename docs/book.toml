@@ -1,0 +1,17 @@
+[book]
+title = "Pranor Documentation"
+authors = ["vyuvaraj"]
+language = "en"
+src = "."
+
+[build]
+build-dir = "../_site"
+
+[output.html]
+default-theme = "navy"
+preferred-dark-theme = "coal"
+git-repository-url = "https://github.com/vyuvaraj/pranor"
+edit-url-template = "https://github.com/vyuvaraj/pranor/edit/main/docs/{path}"
+
+[output.html.search]
+enable = true

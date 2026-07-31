@@ -1,6 +1,4 @@
-package broker
-
-import (
+package import (
 	"bytes"
 	"context"
 	"errors"

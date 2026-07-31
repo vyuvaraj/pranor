@@ -1,6 +1,4 @@
-package main
-
-import (
+package import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"

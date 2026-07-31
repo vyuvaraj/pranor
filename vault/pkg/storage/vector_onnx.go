@@ -1,8 +1,6 @@
 //go:build cgo
 
-package storage
-
-import (
+package import (
 	"fmt"
 	"math"
 	"os"

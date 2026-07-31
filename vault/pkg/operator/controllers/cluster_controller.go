@@ -1,6 +1,4 @@
-package controllers
-
-import (
+package import (
 	"context"
 	"fmt"
 

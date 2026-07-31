@@ -1,6 +1,4 @@
-package schema
-
-import (
+package import (
 	"encoding/json"
 	"fmt"
 	"io"

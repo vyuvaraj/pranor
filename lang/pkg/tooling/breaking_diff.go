@@ -1,6 +1,4 @@
-package tooling
-
-import (
+package import (
 	"fmt"
 	"strings"
 

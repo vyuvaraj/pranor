@@ -1,6 +1,4 @@
-package ebpf
-
-type XDPDDoSAction int
+package xdpddosaction int
 
 const (
 	XDPPass XDPDDoSAction = iota

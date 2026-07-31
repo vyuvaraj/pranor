@@ -1,6 +1,4 @@
-package erasure
-
-import (
+package import (
 	"fmt"
 )
 

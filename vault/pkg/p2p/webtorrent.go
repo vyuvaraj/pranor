@@ -1,6 +1,4 @@
-package p2p
-
-import (
+package import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"

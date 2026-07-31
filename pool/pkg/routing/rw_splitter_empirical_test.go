@@ -1,6 +1,4 @@
-package routing_test
-
-import (
+package import (
 	"fmt"
 	"math"
 	"sync"

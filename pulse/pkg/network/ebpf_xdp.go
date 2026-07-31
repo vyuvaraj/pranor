@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package network
-
-import (
+package import (
 	"fmt"
 	"sync"
 	"time"

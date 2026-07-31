@@ -1,6 +1,4 @@
-package ratelimit
-
-import (
+package import (
 	"fmt"
 	"net"
 	"net/http"

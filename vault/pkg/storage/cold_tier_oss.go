@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package storage
-
-import "fmt"
+package import "fmt"
 
 // IsIntelligentTieringSupported indicates if Glacier and lifecycle auto-tiering is supported.
 const IsIntelligentTieringSupported = false

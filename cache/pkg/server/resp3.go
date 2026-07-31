@@ -1,7 +1,5 @@
 // Package server provides server transports for Pranor Cache, including RESP3 protocol support.
-package server
-
-import (
+package import (
 	"bufio"
 	"fmt"
 	"io"

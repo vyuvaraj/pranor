@@ -1,6 +1,4 @@
-package k8s
-
-import (
+package import (
 	"context"
 	"testing"
 )

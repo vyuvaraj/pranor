@@ -1,6 +1,4 @@
-package deploy
-
-import (
+package import (
 	"context"
 	"net/http"
 	"net/http/httptest"

@@ -1,6 +1,4 @@
-package kafka
-
-import (
+package import (
 	"bytes"
 	"encoding/binary"
 	"testing"

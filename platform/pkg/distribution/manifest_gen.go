@@ -1,6 +1,4 @@
-package distribution
-
-import (
+package import (
 	"encoding/json"
 	"fmt"
 	"strings"

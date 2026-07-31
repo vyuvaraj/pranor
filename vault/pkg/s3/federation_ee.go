@@ -1,8 +1,6 @@
 //go:build enterprise
 
-package s3
-
-import (
+package import (
 	"encoding/json"
 	"log/slog"
 	"net/http"

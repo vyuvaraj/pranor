@@ -1,6 +1,4 @@
-package tiering
-
-import (
+package import (
 	"context"
 	"fmt"
 	"sync"

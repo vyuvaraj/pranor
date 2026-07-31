@@ -1,6 +1,4 @@
-package pool
-
-import (
+package import (
 	"context"
 	"fmt"
 	"runtime"

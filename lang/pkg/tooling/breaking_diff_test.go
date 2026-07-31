@@ -1,6 +1,4 @@
-package tooling
-
-import (
+package import (
 	"testing"
 
 	"github.com/vyuvaraj/pranor/lang/pkg/codegen"

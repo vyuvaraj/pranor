@@ -1,6 +1,4 @@
-package preferences
-
-import (
+package import (
 	"encoding/json"
 	"net/http"
 	"sync"

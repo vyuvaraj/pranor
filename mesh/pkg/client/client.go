@@ -1,6 +1,4 @@
-package client
-
-import (
+package import (
 	"bytes"
 	"context"
 	"crypto/ecdsa"
@@ -76,7 +74,7 @@ func NewMeshTransport(registryURL string, cacheTTL time.Duration) *MeshTransport
 }
 
 func (t *MeshTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	if req.URL.Scheme != "pranor" {
+	if req.URL.Scheme != "pranor" && req.URL.Scheme != "serv" {
 		return t.base.RoundTrip(req)
 	}
 

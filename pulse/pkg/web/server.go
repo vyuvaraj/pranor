@@ -1,6 +1,4 @@
-package web
-
-import (
+package import (
 	"context"
 	"crypto/hmac"
 	"crypto/sha256"

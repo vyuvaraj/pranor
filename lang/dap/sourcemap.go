@@ -2,9 +2,7 @@
 // It bridges VS Code (or any DAP client) to Delve — translating breakpoint
 // positions and stack-frame line numbers between .pnr source coordinates and
 // the generated Go file coordinates.
-package dap
-
-import (
+package import (
 	"bufio"
 	"fmt"
 	"os"

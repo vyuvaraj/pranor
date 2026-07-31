@@ -1,6 +1,4 @@
-package branch
-
-import (
+package import (
 	"context"
 	"testing"
 )

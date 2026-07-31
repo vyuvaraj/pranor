@@ -1,6 +1,4 @@
-package tabs
-
-import (
+package import (
 	"encoding/json"
 	"fmt"
 	"net/http"

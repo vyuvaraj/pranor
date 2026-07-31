@@ -1,6 +1,4 @@
-package engine
-
-import (
+package import (
 	"encoding/json"
 	"fmt"
 	"strings"

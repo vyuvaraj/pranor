@@ -1,6 +1,4 @@
-package main
-
-import (
+package import (
 	"archive/tar"
 	"bytes"
 	"compress/gzip"

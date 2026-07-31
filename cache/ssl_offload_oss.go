@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package main
-
-import "net/http"
+package import "net/http"
 
 // IsSSLOffloadingSupported indicates if hardware SSL/TLS offloading is supported.
 const IsSSLOffloadingSupported = false

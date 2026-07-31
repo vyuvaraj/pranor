@@ -1,6 +1,4 @@
-package s3
-
-import (
+package import (
 	"bytes"
 	"net/http"
 	"net/http/httptest"

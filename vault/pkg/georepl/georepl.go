@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package georepl
-
-import (
+package import (
 	"context"
 )
 

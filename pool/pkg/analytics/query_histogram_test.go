@@ -1,6 +1,4 @@
-package analytics
-
-import (
+package import (
 	"net/http"
 	"net/http/httptest"
 	"testing"

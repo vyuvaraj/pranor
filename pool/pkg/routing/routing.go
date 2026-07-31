@@ -1,6 +1,4 @@
-package routing
-
-import (
+package import (
 	"context"
 	"encoding/json"
 	"fmt"

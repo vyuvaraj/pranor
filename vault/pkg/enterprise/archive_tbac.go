@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package enterprise
-
-import (
+package import (
 	"context"
 )
 

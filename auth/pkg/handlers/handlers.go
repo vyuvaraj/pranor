@@ -1,6 +1,4 @@
-package handlers
-
-import (
+package import (
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"

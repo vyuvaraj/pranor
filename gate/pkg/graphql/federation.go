@@ -1,6 +1,4 @@
-package graphql
-
-import (
+package import (
 	"context"
 	"fmt"
 	"strings"

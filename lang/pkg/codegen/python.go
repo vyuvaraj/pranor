@@ -1,6 +1,4 @@
-package codegen
-
-import (
+package import (
 	"fmt"
 	"strings"
 )

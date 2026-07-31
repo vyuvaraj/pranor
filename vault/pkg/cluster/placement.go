@@ -1,6 +1,4 @@
-package cluster
-
-import (
+package import (
 	"errors"
 	"hash/fnv"
 	"sort"

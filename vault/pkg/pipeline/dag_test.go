@@ -1,6 +1,4 @@
-package pipeline_test
-
-import (
+package import (
 	"bytes"
 	"context"
 	"os"

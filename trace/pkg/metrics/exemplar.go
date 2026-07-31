@@ -1,6 +1,4 @@
-package metrics
-
-import (
+package import (
 	"fmt"
 	"net/http"
 	"strings"

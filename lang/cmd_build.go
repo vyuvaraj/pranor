@@ -1,6 +1,4 @@
-package main
-
-import (
+package import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
@@ -301,19 +299,17 @@ func buildServNoExit(pnrFile, outputBinary, target, goos, goarch, tags string) (
 		}
 
 		if len(mappings) > 0 {
-			smCode := fmt.Sprintf(`package main
-
-import "github.com/vyuvaraj/pranor/lang/runtime"
+			smCode := fmt.Sprintf(`package import "github.com/vyuvaraj/pranor/lang/runtime"
 
 func init() {
-	if runtime.pnrSourceMap == nil {
-		runtime.pnrSourceMap = make(map[string]int)
+	if runtime.PnrSourceMap == nil {
+		runtime.PnrSourceMap = make(map[string]int)
 	}
 	maps := map[string]int{
 		%s,
 	}
 	for k, v := range maps {
-		runtime.pnrSourceMap[k] = v
+		runtime.PnrSourceMap[k] = v
 	}
 }
 `, strings.Join(mappings, ",\n\t\t"))

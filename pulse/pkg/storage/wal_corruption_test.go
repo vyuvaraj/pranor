@@ -1,6 +1,4 @@
-package storage
-
-import (
+package import (
 	"encoding/binary"
 	"os"
 	"path/filepath"

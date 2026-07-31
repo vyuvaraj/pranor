@@ -1,6 +1,4 @@
-package main
-
-import (
+package import (
 	"io"
 	"net/http"
 	"net/http/httptest"

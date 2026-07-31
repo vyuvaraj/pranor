@@ -1,8 +1,6 @@
 //go:build !enterprise
 
-package wasm
-
-import (
+package import (
 	"fmt"
 	"regexp"
 	"strings"

@@ -1,6 +1,4 @@
-package tabs
-
-import (
+package import (
 	"bytes"
 	"encoding/json"
 	"io"

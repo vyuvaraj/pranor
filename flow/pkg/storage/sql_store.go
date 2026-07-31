@@ -1,6 +1,4 @@
-package storage
-
-import (
+package import (
 	"database/sql"
 	"encoding/json"
 	"fmt"

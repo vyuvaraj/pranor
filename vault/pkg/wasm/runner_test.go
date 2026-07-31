@@ -1,6 +1,4 @@
-package wasm_test
-
-import (
+package import (
 	"bytes"
 	"context"
 	"os"
@@ -68,7 +66,7 @@ func main() {
 		t.Fatalf("Execute failed: %v", err)
 	}
 
-	expected := "HELLO Pranor Vault WASM"
+	expected := "HELLO PRANOR VAULT WASM"
 	if string(output) != expected {
 		t.Errorf("expected %q, got %q", expected, string(output))
 	}

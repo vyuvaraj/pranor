@@ -1,6 +1,4 @@
-package web
-
-import (
+package import (
 	"crypto/ed25519"
 	"embed"
 	"encoding/base64"

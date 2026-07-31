@@ -1,6 +1,6 @@
 Generating project scaffolding for prompt: "Create an API serving user details"...
 2026/07/18 09:37:56 [INFO] AI initialized: provider=openai model=gpt-4o-mini
-Successfully scaffolded service code into main.srv!
+Successfully scaffolded service code into main.pnr!
 Generating project scaffolding for prompt: "create API and write tests"...
 2026/07/18 09:37:56 [INFO] AI initialized: provider=openai model=gpt-4o-mini
 Attempt 1 generated code has compiler/analysis errors. Retrying with feedback...
@@ -8,7 +8,7 @@ Attempt 2 generated code has compiler/analysis errors. Retrying with feedback...
 Attempt 3 generated code has compiler/analysis errors. Retrying with feedback...
 AI scaffolding generator failed after 4 attempts with errors:
 Test suite execution failed with output:
-Running tests from main.srv...
+Running tests from main.pnr...
 go: updates to go.mod needed; to update it:
 	go mod tidy
 Tests failed: exit status 1
@@ -30,10 +30,10 @@ Tests failed: exit status 1
 15: func Test_PassingTest(t *testing.T) {
 16: 	runtime.ResetTestState()
 17: 	defer runtime.ResetTestState()
-18: 	// .srv line 3
+18: 	// .pnr line 3
 19: 	var x int = 1
 20: 	_ = x
-21: 	// .srv line 4
+21: 	// .pnr line 4
 22: 	func() {
 23: 			got := interface{}(x)
 24: 			want := interface{}(1)

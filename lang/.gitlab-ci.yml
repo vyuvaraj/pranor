@@ -27,8 +27,8 @@ test:compile:
   script:
     - |
       failed=0
-      for f in examples/*.srv; do
-        ./serv build "$f" -o /tmp/test_bin 2>/dev/null
+      for f in examples/*.pnr; do
+        ./pranor build "$f" -o /tmp/test_bin 2>/dev/null
         if [ $? -ne 0 ]; then
           echo "FAIL: $f"
           failed=$((failed+1))
@@ -45,9 +45,9 @@ test:unit:
   image: golang:${GO_VERSION}
   needs: [build:compiler]
   script:
-    - ./serv test examples/12_static_types.srv
-    - ./serv test examples/14_phase3_features.srv
-    - ./serv test examples/20_raw_strings.srv
+    - ./pranor test examples/12_static_types.pnr
+    - ./pranor test examples/14_phase3_features.pnr
+    - ./pranor test examples/20_raw_strings.pnr
   allow_failure: false
 
 test:format:
@@ -57,8 +57,8 @@ test:format:
   script:
     - |
       unformatted=0
-      for f in examples/*.srv; do
-        ./serv fmt --check "$f" 2>/dev/null
+      for f in examples/*.pnr; do
+        ./pranor fmt --check "$f" 2>/dev/null
         if [ $? -ne 0 ]; then
           echo "Needs formatting: $f"
           unformatted=$((unformatted+1))

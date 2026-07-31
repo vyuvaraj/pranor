@@ -34,7 +34,7 @@ func (r *StackTraceRewriter) getSourceMap(goFile string) *dap.SourceMap {
 		return sm
 	}
 
-	sm, err := dap.ParseSourceMap(goFile, r.pnrFile)
+	sm, err := dap.ParseSourceMap(goFile, r.srvFile)
 	if err != nil {
 		r.smCache[goFile] = nil
 		return nil
@@ -60,7 +60,7 @@ func (r *StackTraceRewriter) Rewrite(src io.Reader, dst io.Writer) {
 				if sm != nil {
 					srvLine, ok := sm.GoToSrvApprox(goLine)
 					if ok {
-						line = fmt.Sprintf("%s%s:%d%s", indent, r.pnrFile, srvLine, suffix)
+						line = fmt.Sprintf("%s%s:%d%s", indent, r.srvFile, srvLine, suffix)
 					}
 				}
 			}

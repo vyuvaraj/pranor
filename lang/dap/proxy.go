@@ -101,7 +101,7 @@ type Proxy struct {
 func NewProxy(sm *SourceMap, dlvAddr string) *Proxy {
 	return &Proxy{
 		sm:      sm,
-		srvFile: sm.pnrFile(),
+		srvFile: sm.SrvFile(),
 		goFile:  sm.GoFile(),
 		dlvAddr: dlvAddr,
 	}
@@ -191,7 +191,7 @@ func (p *Proxy) translateClientMessage(raw []byte) ([]byte, error) {
 	}
 
 	// Only translate if the source is our .pnr file.
-	if !isSrvFile(args.Source.Path, p.pnrFile) {
+	if !isSrvFile(args.Source.Path, p.srvFile) {
 		return raw, nil
 	}
 
@@ -201,13 +201,13 @@ func (p *Proxy) translateClientMessage(raw []byte) ([]byte, error) {
 
 	// Translate each breakpoint line.
 	for i, bp := range args.Breakpoints {
-		if goLine, ok := p.sm.pnrToGo(bp.Line); ok {
+		if goLine, ok := p.sm.SrvToGo(bp.Line); ok {
 			args.Breakpoints[i].Line = goLine
 		}
 	}
 	// Also translate the legacy "lines" array if present.
 	for i, srvLine := range args.Lines {
-		if goLine, ok := p.sm.pnrToGo(srvLine); ok {
+		if goLine, ok := p.sm.SrvToGo(srvLine); ok {
 			args.Lines[i] = goLine
 		}
 	}
@@ -249,8 +249,8 @@ func (p *Proxy) translateDlvMessage(raw []byte) ([]byte, error) {
 		if srvLine, ok := p.sm.GoToSrv(frame.Line); ok {
 			body.StackFrames[i].Line = srvLine
 			body.StackFrames[i].Source = &SourceSpec{
-				Path: p.pnrFile,
-				Name: filepath.Base(p.pnrFile),
+				Path: p.srvFile,
+				Name: filepath.Base(p.srvFile),
 			}
 			modified = true
 		}

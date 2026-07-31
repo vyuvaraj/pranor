@@ -74,8 +74,8 @@ func ParseSourceMap(genGoPath, srvPath string) (*SourceMap, error) {
 			// Record: the Go statement on the next line maps to srvLine.
 			sm.goToSrv[goLine+1] = srvLine
 			// Record the first Go line for this srv line (prefer earlier lines).
-			if _, exists := sm.pnrToGo[srvLine]; !exists {
-				sm.pnrToGo[srvLine] = goLine + 1
+			if _, exists := sm.srvToGo[srvLine]; !exists {
+				sm.srvToGo[srvLine] = goLine + 1
 			}
 		}
 	}
@@ -103,7 +103,7 @@ func (sm *SourceMap) GoToSrv(goLine int) (srvLine int, ok bool) {
 // SrvToGo returns the Go line number that best corresponds to the given .pnr
 // line number. ok is false when the map is empty.
 func (sm *SourceMap) SrvToGo(srvLine int) (goLine int, ok bool) {
-	if gl, exists := sm.pnrToGo[srvLine]; exists {
+	if gl, exists := sm.srvToGo[srvLine]; exists {
 		return gl, true
 	}
 	// No exact match — fall through to nearest-neighbour search.
@@ -158,7 +158,7 @@ func (sm *SourceMap) GoToSrvApprox(goLine int) (srvLine int, ok bool) {
 func (sm *SourceMap) GoFile() string { return sm.goFile }
 
 // SrvFile returns the absolute path of the original .pnr source file.
-func (sm *SourceMap) SrvFile() string { return sm.pnrFile }
+func (sm *SourceMap) SrvFile() string { return sm.srvFile }
 
 // Len returns the number of Go lines that have a known .pnr mapping.
 func (sm *SourceMap) Len() int { return len(sm.goToSrv) }

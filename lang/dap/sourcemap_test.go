@@ -114,7 +114,7 @@ func TestSrvToGo(t *testing.T) {
 
 	srvLines := []int{3, 4, 7, 8, 9, 12, 13, 14}
 	for _, srvLine := range srvLines {
-		goLine, ok := sm.pnrToGo(srvLine)
+		goLine, ok := sm.SrvToGo(srvLine)
 		if !ok {
 			t.Errorf("SrvToGo(%d): no mapping found", srvLine)
 			continue
@@ -145,7 +145,7 @@ func TestNearestGoLine(t *testing.T) {
 
 	// srv line 5 and 6 have no direct mapping in the sample (they are blank
 	// lines / closing braces between functions). The nearest should be 4 or 7.
-	goLine, ok := sm.pnrToGo(5)
+	goLine, ok := sm.SrvToGo(5)
 	if !ok {
 		t.Fatal("SrvToGo(5) returned not-found; expected nearest fallback")
 	}
@@ -167,7 +167,7 @@ func TestEmptyFile(t *testing.T) {
 		t.Errorf("expected 0 entries for file with no srv comments, got %d", sm.Len())
 	}
 	// SrvToGo on empty map should still return false without panicking.
-	_, ok := sm.pnrToGo(1)
+	_, ok := sm.SrvToGo(1)
 	if ok {
 		t.Error("SrvToGo(1) on empty map should return ok=false")
 	}

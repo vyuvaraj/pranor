@@ -239,8 +239,8 @@ func EndTrace(rt *RequestTrace, statusCode int) {
 		},
 		Status: 1, // OK
 	}
-	if rt.pnrLine > 0 {
-		span.Attributes["srv.source_line"] = rt.pnrLine
+	if rt.SrvLine > 0 {
+		span.Attributes["srv.source_line"] = rt.SrvLine
 	}
 
 	if statusCode >= 400 {

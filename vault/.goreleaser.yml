@@ -117,9 +117,9 @@ brews:
     ids: [pranor-vault-cli-archive]
     repository:
       owner: vyuvaraj
-      name: homebrew-serv
+      name: homebrew-pranor
     homepage: "https://github.com/vyuvaraj/Pranor Vault"
-    description: "Distributed object and block storage service from the ServVerse platform"
+    description: "Distributed object and block storage service from the Pranor platform"
     license: "Apache-2.0"
     install: |
       bin.install "pranor-vault-cli" => "pranor-vault"
@@ -130,9 +130,9 @@ scoops:
   - ids: [pranor-vault-cli-archive]
     repository:
       owner: vyuvaraj
-      name: scoop-serv
+      name: scoop-pranor
     homepage: "https://github.com/vyuvaraj/Pranor Vault"
-    description: "Distributed object and block storage service from the ServVerse platform"
+    description: "Distributed object and block storage service from the Pranor platform"
     license: "Apache-2.0"
 
 
@@ -143,7 +143,7 @@ nfpms:
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Vault
     maintainer: Yuvaraj <vyuvaraj@github.com>
-    description: Object storage service from the ServVerse platform
+    description: Object storage service from the Pranor platform
     license: Apache-2.0
     formats:
       - deb

@@ -1,4 +1,4 @@
-name: ServTunnel CI
+name: PranorTunnel CI
 
 on:
   push:

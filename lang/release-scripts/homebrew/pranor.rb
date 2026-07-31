@@ -1,25 +1,25 @@
 class Serv < Formula
   desc "Programming language for background services, schedulers, and APIs"
-  homepage "https://github.com/vyuvaraj/Serv-lang"
+  homepage "https://github.com/vyuvaraj/Pranor"
   version "1.0.0"
   license "MIT"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/vyuvaraj/Serv-lang/releases/download/v#{version}/serv-darwin-arm64.tar.gz"
+      url "https://github.com/vyuvaraj/Pranor/releases/download/v#{version}/serv-darwin-arm64.tar.gz"
       sha256 "REPLACE_WITH_ACTUAL_SHA256"
     else
-      url "https://github.com/vyuvaraj/Serv-lang/releases/download/v#{version}/serv-darwin-amd64.tar.gz"
+      url "https://github.com/vyuvaraj/Pranor/releases/download/v#{version}/serv-darwin-amd64.tar.gz"
       sha256 "REPLACE_WITH_ACTUAL_SHA256"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "https://github.com/vyuvaraj/Serv-lang/releases/download/v#{version}/serv-linux-arm64.tar.gz"
+      url "https://github.com/vyuvaraj/Pranor/releases/download/v#{version}/serv-linux-arm64.tar.gz"
       sha256 "REPLACE_WITH_ACTUAL_SHA256"
     else
-      url "https://github.com/vyuvaraj/Serv-lang/releases/download/v#{version}/serv-linux-amd64.tar.gz"
+      url "https://github.com/vyuvaraj/Pranor/releases/download/v#{version}/serv-linux-amd64.tar.gz"
       sha256 "REPLACE_WITH_ACTUAL_SHA256"
     end
   end
@@ -29,7 +29,7 @@ class Serv < Formula
   def install
     # Install binaries
     bin.install "serv"
-    bin.install "serv-lsp"
+    bin.install "pranor-lsp"
 
     # Install runtime, stdlib, and module files alongside the binary
     # These are needed for compilation (pranor.exe finds them relative to itself)
@@ -39,11 +39,11 @@ class Serv < Formula
     libexec.install "go.sum"
     libexec.install "declarations" if File.directory?("declarations")
 
-    # Create wrapper scripts that set SERV_HOME
+    # Create wrapper scripts that set PRANOR_HOME
     (bin/"serv").unlink
     (bin/"serv").write <<~EOS
       #!/bin/bash
-      export SERV_HOME="#{libexec}"
+      export PRANOR_HOME="#{libexec}"
       exec "#{libexec}/serv" "$@"
     EOS
 

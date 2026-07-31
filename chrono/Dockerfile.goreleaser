@@ -5,6 +5,6 @@
 FROM alpine:latest
 RUN apk add --no-cache ca-certificates tzdata
 WORKDIR /app
-COPY servcron .
+COPY pranor-chrono .
 EXPOSE 8092
 ENTRYPOINT ["./pranorcron"]

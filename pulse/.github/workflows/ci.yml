@@ -1,4 +1,4 @@
-name: ServQueue CI
+name: PranorPulse CI
 
 on:
   push:

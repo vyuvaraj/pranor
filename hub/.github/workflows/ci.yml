@@ -1,4 +1,4 @@
-name: ServRegistry CI
+name: PranorHub CI
 
 on:
   push:

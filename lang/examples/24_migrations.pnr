@@ -2,7 +2,7 @@
 
 database "sqlite://migrations_test.db"
 
-extern fn runMigrations() from "go:github.com/vyuvaraj/serv/packages/Serv-lang/runtime:RunMigrations"
+extern fn runMigrations() from "go:github.com/vyuvaraj/pranor/packages/Pranor/runtime:RunMigrations"
 
 migration "20260531_init" {
     db.query("CREATE TABLE IF NOT EXISTS test_users (id INTEGER PRIMARY KEY, name TEXT)")

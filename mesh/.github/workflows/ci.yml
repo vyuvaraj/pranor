@@ -1,4 +1,4 @@
-name: ServMesh CI
+name: PranorMesh CI
 
 on:
   push:

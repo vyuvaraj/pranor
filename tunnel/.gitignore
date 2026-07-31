@@ -1,4 +1,4 @@
-servtunnel.exe
+pranor-tunnel.exe
 *.log
 .build/
 dist/

@@ -1,4 +1,4 @@
-name: ServLock CI
+name: PranorLock CI
 
 on:
   push:
@@ -12,32 +12,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout ServShared
+      - name: Checkout PranorCore
         uses: actions/checkout@v4
         with:
-          repository: vyuvaraj/ServShared
-          path: ServShared
+          repository: vyuvaraj/PranorCore
+          path: PranorCore
 
-      - name: Checkout ServLock
+      - name: Checkout PranorLock
         uses: actions/checkout@v4
         with:
-          path: ServLock
+          path: PranorLock
 
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: "1.22"
           cache: true
-          cache-dependency-path: ServLock/go.sum
+          cache-dependency-path: PranorLock/go.sum
 
       - name: Build
-        working-directory: ServLock
+        working-directory: PranorLock
         run: go build ./...
 
       - name: Vet
-        working-directory: ServLock
+        working-directory: PranorLock
         run: go vet ./...
 
       - name: Test
-        working-directory: ServLock
+        working-directory: PranorLock
         run: go test ./... -timeout 120s

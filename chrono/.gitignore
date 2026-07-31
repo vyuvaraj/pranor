@@ -3,4 +3,4 @@
 *.prof
 .build/
 dist/
-servcron
+pranor-chrono

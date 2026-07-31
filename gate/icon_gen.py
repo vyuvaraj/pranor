@@ -119,17 +119,17 @@ pack_files = []
 
 for s in sizes:
     resized = base_icon.resize((s, s), Image.Resampling.LANCZOS)
-    filename = f"servgate_standalone_icon_{s}x{s}.png"
+    filename = f"pranor-gate_standalone_icon_{s}x{s}.png"
     resized.save(filename, "PNG")
     pack_files.append(filename)
 
 # Save high-quality ico version
-ico_name = "servgate_standalone_icon.ico"
+ico_name = "pranor-gate_standalone_icon.ico"
 base_icon.save(ico_name, format="ICO", sizes=[(16, 16), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
 pack_files.append(ico_name)
 
 # Package into a clean ZIP archive
-zip_filename = "servgate_standalone_logo_pack.zip"
+zip_filename = "pranor-gate_standalone_logo_pack.zip"
 with zipfile.ZipFile(zip_filename, 'w') as zf:
     for f in pack_files:
         zf.write(f)

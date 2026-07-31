@@ -1,4 +1,4 @@
-name: ServGate CI
+name: PranorGate CI
 
 on:
   push:

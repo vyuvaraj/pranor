@@ -1,4 +1,4 @@
-name: ServCron CI
+name: PranorChrono CI
 
 on:
   push:

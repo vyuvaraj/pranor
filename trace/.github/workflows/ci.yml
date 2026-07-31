@@ -1,4 +1,4 @@
-name: ServTrace CI
+name: PranorTrace CI
 
 on:
   push:

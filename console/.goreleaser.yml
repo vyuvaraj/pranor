@@ -60,9 +60,9 @@ brews:
   - name: pranor-console
     repository:
       owner: vyuvaraj
-      name: homebrew-serv
+      name: homebrew-pranor
     homepage: "https://github.com/vyuvaraj/Pranor Console"
-    description: "Management console and dashboard for the ServVerse platform"
+    description: "Management console and dashboard for the Pranor platform"
     license: "Apache-2.0"
     install: |
       bin.install "pranor-console"
@@ -72,9 +72,9 @@ brews:
 scoops:
   - repository:
       owner: vyuvaraj
-      name: scoop-serv
+      name: scoop-pranor
     homepage: "https://github.com/vyuvaraj/Pranor Console"
-    description: "Management console and dashboard for the ServVerse platform"
+    description: "Management console and dashboard for the Pranor platform"
     license: "Apache-2.0"
 
 
@@ -85,7 +85,7 @@ nfpms:
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Console
     maintainer: Yuvaraj <vyuvaraj@github.com>
-    description: Admin console and observability dashboard from the ServVerse platform
+    description: Admin console and observability dashboard from the Pranor platform
     license: Apache-2.0
     formats:
       - deb

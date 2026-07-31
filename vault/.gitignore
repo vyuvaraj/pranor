@@ -1,6 +1,6 @@
 data/
 build/
-/servstore
-/servstore-cli
+/pranor-vault
+/pranor-vault-cli
 *.exe
 *.log

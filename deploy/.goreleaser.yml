@@ -58,9 +58,9 @@ brews:
   - name: pranor-deploy
     repository:
       owner: vyuvaraj
-      name: homebrew-serv
+      name: homebrew-pranor
     homepage: "https://github.com/vyuvaraj/Pranor Deploy"
-    description: "Cloud infrastructure orchestration service from the ServVerse platform"
+    description: "Cloud infrastructure orchestration service from the Pranor platform"
     license: "Apache-2.0"
     install: |
       bin.install "pranor-deploy"
@@ -70,9 +70,9 @@ brews:
 scoops:
   - repository:
       owner: vyuvaraj
-      name: scoop-serv
+      name: scoop-pranor
     homepage: "https://github.com/vyuvaraj/Pranor Deploy"
-    description: "Cloud infrastructure orchestration service from the ServVerse platform"
+    description: "Cloud infrastructure orchestration service from the Pranor platform"
     license: "Apache-2.0"
 
 
@@ -83,7 +83,7 @@ nfpms:
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Deploy
     maintainer: Yuvaraj <vyuvaraj@github.com>
-    description: Branch preview deployments and cloud orchestration from the ServVerse platform
+    description: Branch preview deployments and cloud orchestration from the Pranor platform
     license: Apache-2.0
     formats:
       - deb

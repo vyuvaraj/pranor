@@ -1,4 +1,4 @@
-name: ServCache CI
+name: PranorCache CI
 
 on:
   push:

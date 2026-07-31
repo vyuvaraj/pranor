@@ -12,7 +12,7 @@ export route "POST" "/api/firmware/rollout" (req) {
 
     log.info(f"[Firmware System] Initiating rollout of firmware v{version} to all devices...")
 
-    // 1. In a real environment, query OCI/S3 via ServRegistry for package content
+    // 1. In a real environment, query OCI/S3 via PranorHub for package content
     // Here we simulate the registry download
     let registryKey = f"firmware/v{version}/package.tar.gz"
     log.info(f"[Firmware System] Registry lookup for key: {registryKey}")
@@ -37,5 +37,5 @@ export route "POST" "/api/firmware/rollout" (req) {
 subscribe "firmware.rollout" (msg) {
     let payload = json.parse(msg)
     let version = payload.version
-    log.info(f"[Orchestrator Worker] Pushing firmware v{version} update to ServCloud edge runtimes...")
+    log.info(f"[Orchestrator Worker] Pushing firmware v{version} update to PranorDeploy edge runtimes...")
 }

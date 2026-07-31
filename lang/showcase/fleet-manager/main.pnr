@@ -1,5 +1,5 @@
 // IoT Fleet Management & Telemetry System Showcase
-// Demonstrates: Serv-lang, ServStore, ServQueue, ServMesh, ServCloud, and ServRegistry
+// Demonstrates: Pranor, PranorVault, PranorPulse, PranorMesh, PranorDeploy, and PranorHub
 //
 // Run:   pranor run main.pnr --watch
 // Build: pranor build main.pnr -o fleet-manager.exe

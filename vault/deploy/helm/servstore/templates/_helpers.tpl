@@ -1,14 +1,14 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "servstore.name" -}}
+{{- define "pranor-vault.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Create a default fully qualified app name.
 */}}
-{{- define "servstore.fullname" -}}
+{{- define "pranor-vault.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -24,16 +24,16 @@ Create a default fully qualified app name.
 {{/*
 Chart label
 */}}
-{{- define "servstore.chart" -}}
+{{- define "pranor-vault.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "servstore.labels" -}}
-helm.sh/chart: {{ include "servstore.chart" . }}
-{{ include "servstore.selectorLabels" . }}
+{{- define "pranor-vault.labels" -}}
+helm.sh/chart: {{ include "pranor-vault.chart" . }}
+{{ include "pranor-vault.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -43,17 +43,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "servstore.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "servstore.name" . }}
+{{- define "pranor-vault.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "pranor-vault.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 ServiceAccount name
 */}}
-{{- define "servstore.serviceAccountName" -}}
+{{- define "pranor-vault.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "servstore.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "pranor-vault.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

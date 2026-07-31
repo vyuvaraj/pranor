@@ -17,7 +17,7 @@
     "env_set": {
         "PRANOR_HOME": "$dir"
     },
-    "post_install": "Write-Host 'Serv installed! Run: serv init myapp' -ForegroundColor Green",
+    "post_install": "Write-Host 'Serv installed! Run: pranor init myapp' -ForegroundColor Green",
     "checkver": {
         "github": "https://github.com/vyuvaraj/Pranor"
     },

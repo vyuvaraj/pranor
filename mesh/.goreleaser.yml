@@ -58,9 +58,9 @@ brews:
   - name: pranor-mesh
     repository:
       owner: vyuvaraj
-      name: homebrew-serv
+      name: homebrew-pranor
     homepage: "https://github.com/vyuvaraj/Pranor Mesh"
-    description: "Service mesh and sidecar proxy from the ServVerse platform"
+    description: "Service mesh and sidecar proxy from the Pranor platform"
     license: "Apache-2.0"
     install: |
       bin.install "pranor-mesh"
@@ -70,9 +70,9 @@ brews:
 scoops:
   - repository:
       owner: vyuvaraj
-      name: scoop-serv
+      name: scoop-pranor
     homepage: "https://github.com/vyuvaraj/Pranor Mesh"
-    description: "Service mesh and sidecar proxy from the ServVerse platform"
+    description: "Service mesh and sidecar proxy from the Pranor platform"
     license: "Apache-2.0"
 
 
@@ -83,7 +83,7 @@ nfpms:
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Mesh
     maintainer: Yuvaraj <vyuvaraj@github.com>
-    description: Service mesh and traffic management from the ServVerse platform
+    description: Service mesh and traffic management from the Pranor platform
     license: Apache-2.0
     formats:
       - deb

@@ -1,4 +1,4 @@
-// Serv Standard Library: S3/ServStore Client
+// Serv Standard Library: S3/PranorVault Client
 // Import: import { init, put, get, delete, list, at, search } from "stdlib/s3.pnr"
 
 export fn newClient(endpoint, accessKey, secretKey) {

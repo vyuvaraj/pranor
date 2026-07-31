@@ -3,6 +3,6 @@
 *.prof
 .build/
 dist/
-servtrace
+pranor-trace
 *_ee.go
 *_ee_test.go

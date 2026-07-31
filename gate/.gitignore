@@ -1,8 +1,8 @@
-servgate.exe
+pranor-gate.exe
 *.log
 .build/
 dist/
 vendor/
 *_ee.go
 *_ee_test.go
-.wazero-cache-servgate/
+.wazero-cache-pranor-gate/

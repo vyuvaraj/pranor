@@ -55,7 +55,7 @@ Write-Host "  Location:  $InstallDir" -ForegroundColor White
 Write-Host "  PRANOR_HOME: $InstallDir" -ForegroundColor White
 Write-Host ""
 Write-Host "  Restart your terminal, then:" -ForegroundColor Yellow
-Write-Host "    serv init myapp" -ForegroundColor White
+Write-Host "    pranor init myapp" -ForegroundColor White
 Write-Host "    cd myapp" -ForegroundColor White
 Write-Host "    pranor run main.pnr --watch" -ForegroundColor White
 Write-Host ""

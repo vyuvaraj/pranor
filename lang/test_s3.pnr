@@ -1,7 +1,7 @@
 import { newClient, createBucket, put, get, list, at, search, deleteObject, deleteBucket, setBucketVersioning } from "stdlib/s3.pnr"
 
-test "ServStore integration bucket and object lifecycle" {
-    // 1. Initialize client pointing to local ServStore gateway
+test "PranorVault integration bucket and object lifecycle" {
+    // 1. Initialize client pointing to local PranorVault gateway
     let client = newClient("http://localhost:8080", "admin", "adminsecret")
     assert client != nil
 

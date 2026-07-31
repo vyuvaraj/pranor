@@ -5,6 +5,6 @@
 FROM alpine:latest
 RUN apk add --no-cache ca-certificates tzdata
 WORKDIR /app
-COPY servauth .
+COPY pranor-auth .
 EXPOSE 8098
 ENTRYPOINT ["./pranorauth"]

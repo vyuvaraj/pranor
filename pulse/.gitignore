@@ -1,10 +1,10 @@
-servqueue.exe
+pranor-pulse.exe
 *.log
 .build/
 dist/
 vendor/
 queue.wal
-.wazero-cache-servqueue/
-**/wazero-cache-servqueue/
+.wazero-cache-pranor-pulse/
+**/wazero-cache-pranor-pulse/
 *_ee.go
 *_ee_test.go

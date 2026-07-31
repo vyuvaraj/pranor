@@ -16,15 +16,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Checkout ServTunnel
+      - name: Checkout PranorTunnel
         uses: actions/checkout@v4
         with:
-          repository: vyuvaraj/ServTunnel
-          path: ServTunnel-temp
+          repository: vyuvaraj/PranorTunnel
+          path: PranorTunnel-temp
 
-      - name: Move ServTunnel to parent directory
+      - name: Move PranorTunnel to parent directory
         shell: pwsh
-        run: Move-Item -Path ServTunnel-temp -Destination ../ServTunnel
+        run: Move-Item -Path PranorTunnel-temp -Destination ../PranorTunnel
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -91,14 +91,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Checkout ServTunnel
+      - name: Checkout PranorTunnel
         uses: actions/checkout@v4
         with:
-          repository: vyuvaraj/ServTunnel
-          path: ServTunnel-temp
+          repository: vyuvaraj/PranorTunnel
+          path: PranorTunnel-temp
 
-      - name: Move ServTunnel to parent directory
-        run: mv ServTunnel-temp ../ServTunnel
+      - name: Move PranorTunnel to parent directory
+        run: mv PranorTunnel-temp ../PranorTunnel
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -152,18 +152,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Checkout ServTunnel
+      - name: Checkout PranorTunnel
         uses: actions/checkout@v4
         with:
-          repository: vyuvaraj/ServTunnel
-          path: ServTunnel-temp
+          repository: vyuvaraj/PranorTunnel
+          path: PranorTunnel-temp
 
-      - name: Move ServTunnel to parent directory
+      - name: Move PranorTunnel to parent directory
         run: |
           if ("${{ matrix.goos }}" -eq "windows") {
-            Move-Item -Path ServTunnel-temp -Destination ../ServTunnel
+            Move-Item -Path PranorTunnel-temp -Destination ../PranorTunnel
           } else {
-            mv ServTunnel-temp ../ServTunnel
+            mv PranorTunnel-temp ../PranorTunnel
           }
         shell: pwsh
 

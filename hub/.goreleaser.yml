@@ -58,9 +58,9 @@ brews:
   - name: pranor-hub
     repository:
       owner: vyuvaraj
-      name: homebrew-serv
+      name: homebrew-pranor
     homepage: "https://github.com/vyuvaraj/Pranor Hub"
-    description: "Service discovery and registry from the ServVerse platform"
+    description: "Service discovery and registry from the Pranor platform"
     license: "Apache-2.0"
     install: |
       bin.install "pranor-hub"
@@ -70,9 +70,9 @@ brews:
 scoops:
   - repository:
       owner: vyuvaraj
-      name: scoop-serv
+      name: scoop-pranor
     homepage: "https://github.com/vyuvaraj/Pranor Hub"
-    description: "Service discovery and registry from the ServVerse platform"
+    description: "Service discovery and registry from the Pranor platform"
     license: "Apache-2.0"
 
 
@@ -83,7 +83,7 @@ nfpms:
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Hub
     maintainer: Yuvaraj <vyuvaraj@github.com>
-    description: Service registry and health monitoring from the ServVerse platform
+    description: Service registry and health monitoring from the Pranor platform
     license: Apache-2.0
     formats:
       - deb

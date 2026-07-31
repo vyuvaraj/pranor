@@ -1,4 +1,4 @@
-name: ServStore CI
+name: PranorVault CI
 
 on:
   push:

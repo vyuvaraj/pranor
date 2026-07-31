@@ -58,9 +58,9 @@ brews:
   - name: servdb
     repository:
       owner: vyuvaraj
-      name: homebrew-serv
+      name: homebrew-pranor
     homepage: "https://github.com/vyuvaraj/ServDB"
-    description: "Distributed database service from the ServVerse platform"
+    description: "Distributed database service from the Pranor platform"
     license: "Apache-2.0"
     install: |
       bin.install "servdb"
@@ -70,9 +70,9 @@ brews:
 scoops:
   - repository:
       owner: vyuvaraj
-      name: scoop-serv
+      name: scoop-pranor
     homepage: "https://github.com/vyuvaraj/ServDB"
-    description: "Distributed database service from the ServVerse platform"
+    description: "Distributed database service from the Pranor platform"
     license: "Apache-2.0"
 
 
@@ -83,7 +83,7 @@ nfpms:
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Pool
     maintainer: Yuvaraj <vyuvaraj@github.com>
-    description: Database connection pool manager from the ServVerse platform
+    description: Database connection pool manager from the Pranor platform
     license: Apache-2.0
     formats:
       - deb

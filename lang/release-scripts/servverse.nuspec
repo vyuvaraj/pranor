@@ -2,19 +2,19 @@
 <!-- Do not remove this test for utf-8: if “Ω” doesn’t appear as first char, Unicode is not supported for this file -->
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
-    <id>servverse</id>
+    <id>pranor</id>
     <version>3.1.0</version>
-    <packageSourceUrl>https://github.com/vyuvaraj/Serv-lang/tree/main/release-scripts</packageSourceUrl>
+    <packageSourceUrl>https://github.com/vyuvaraj/Pranor/tree/main/release-scripts</packageSourceUrl>
     <owners>Yuvaraj</owners>
-    <title>ServVerse Platform</title>
+    <title>Pranor Platform</title>
     <authors>Yuvaraj</authors>
-    <projectUrl>https://github.com/vyuvaraj/Serv-lang</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/vyuvaraj/Serv-lang/main/vscode-support/extension/images/icon.png</iconUrl>
-    <licenseUrl>https://github.com/vyuvaraj/Serv-lang/blob/main/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/vyuvaraj/Pranor</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/vyuvaraj/Pranor/main/vscode-support/extension/images/icon.png</iconUrl>
+    <licenseUrl>https://github.com/vyuvaraj/Pranor/blob/main/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <projectSourceUrl>https://github.com/vyuvaraj/Serv-lang</projectSourceUrl>
-    <docsUrl>https://github.com/vyuvaraj/Serv-lang/blob/main/readme.md</docsUrl>
-    <bugTrackerUrl>https://github.com/vyuvaraj/Serv-lang/issues</bugTrackerUrl>
+    <projectSourceUrl>https://github.com/vyuvaraj/Pranor</projectSourceUrl>
+    <docsUrl>https://github.com/vyuvaraj/Pranor/blob/main/readme.md</docsUrl>
+    <bugTrackerUrl>https://github.com/vyuvaraj/Pranor/issues</bugTrackerUrl>
     <tags>serv dsl microservices event-driven background-workers</tags>
     <summary>A Programming Language and complete microservices suite for background workers.</summary>
     <description>
@@ -25,7 +25,7 @@ Serv is a purpose-built compiled domain-specific language (DSL) that targets the
 * Integrated hot-reload.
 * Native microservice topology visualization and request tracing.
     </description>
-    <releaseNotes>https://github.com/vyuvaraj/Serv-lang/blob/main/vscode-support/extension/changelog.md</releaseNotes>
+    <releaseNotes>https://github.com/vyuvaraj/Pranor/blob/main/vscode-support/extension/changelog.md</releaseNotes>
   </metadata>
   <files>
     <file src="tools\**" target="tools" />

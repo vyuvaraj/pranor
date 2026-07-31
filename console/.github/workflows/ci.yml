@@ -1,4 +1,4 @@
-name: ServConsole CI
+name: PranorConsole CI
 
 on:
   push:

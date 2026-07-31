@@ -5,7 +5,7 @@
 FROM alpine:latest
 RUN apk add --no-cache ca-certificates tzdata wget
 WORKDIR /app
-COPY servconsole .
+COPY pranor-console .
 COPY web/ ./web/
 EXPOSE 8083
 ENTRYPOINT ["./pranorconsole"]

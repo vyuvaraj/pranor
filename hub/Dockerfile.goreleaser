@@ -5,6 +5,6 @@
 FROM alpine:latest
 RUN apk add --no-cache ca-certificates tzdata
 WORKDIR /app
-COPY servregistry .
+COPY pranor-hub .
 EXPOSE 8099
 ENTRYPOINT ["./pranorregistry"]

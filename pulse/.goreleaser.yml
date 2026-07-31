@@ -59,9 +59,9 @@ brews:
   - name: pranor-pulse
     repository:
       owner: vyuvaraj
-      name: homebrew-serv
+      name: homebrew-pranor
     homepage: "https://github.com/vyuvaraj/Pranor Pulse"
-    description: "Distributed message queue and event streaming service from the ServVerse platform"
+    description: "Distributed message queue and event streaming service from the Pranor platform"
     license: "Apache-2.0"
     install: |
       bin.install "pranor-pulse"
@@ -71,9 +71,9 @@ brews:
 scoops:
   - repository:
       owner: vyuvaraj
-      name: scoop-serv
+      name: scoop-pranor
     homepage: "https://github.com/vyuvaraj/Pranor Pulse"
-    description: "Distributed message queue and event streaming service from the ServVerse platform"
+    description: "Distributed message queue and event streaming service from the Pranor platform"
     license: "Apache-2.0"
 
 
@@ -84,7 +84,7 @@ nfpms:
     vendor: Yuvaraj
     homepage: https://github.com/vyuvaraj/Pranor Pulse
     maintainer: Yuvaraj <vyuvaraj@github.com>
-    description: Distributed message queue and event streaming from the ServVerse platform
+    description: Distributed message queue and event streaming from the Pranor platform
     license: Apache-2.0
     formats:
       - deb

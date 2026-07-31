@@ -20,7 +20,7 @@ RUN go mod download
 
 COPY . .
 RUN go build -ldflags="-s -w" -o /usr/local/bin/serv main.go
-RUN go build -ldflags="-s -w" -o /usr/local/bin/serv-lsp ./lsp/
+RUN go build -ldflags="-s -w" -o /usr/local/bin/pranor-lsp ./lsp/
 
 # Runtime image with Serv compiler + Go toolchain for compilation
 FROM golang:1.22-alpine
@@ -29,7 +29,7 @@ RUN apk add --no-cache ca-certificates python3
 
 # Copy Serv compiler
 COPY --from=builder /usr/local/bin/serv /usr/local/bin/serv
-COPY --from=builder /usr/local/bin/serv-lsp /usr/local/bin/serv-lsp
+COPY --from=builder /usr/local/bin/pranor-lsp /usr/local/bin/pranor-lsp
 
 # Copy runtime and stdlib (needed for compilation)
 COPY --from=builder /serv/runtime /serv/runtime

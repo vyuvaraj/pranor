@@ -1,4 +1,4 @@
-name: ServAuth CI
+name: PranorAuth CI
 
 on:
   push:

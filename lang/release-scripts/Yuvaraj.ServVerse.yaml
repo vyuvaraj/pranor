@@ -1,16 +1,16 @@
-# WinGet Manifest for ServVerse Platform
-# Package Identifier: Yuvaraj.ServVerse
+# WinGet Manifest for Pranor Platform
+# Package Identifier: Yuvaraj.Pranor
 # Version: 3.1.0
 
-PackageIdentifier: Yuvaraj.ServVerse
+PackageIdentifier: Yuvaraj.Pranor
 PackageVersion: 3.1.0
-PackageName: ServVerse
+PackageName: Pranor
 Publisher: Yuvaraj
 Author: Yuvaraj
 License: Apache-2.0
 LicenseUrl: https://github.com/vyuvaraj/Pranor/blob/main/LICENSE
 ShortDescription: A Programming Language and Microservice Suite for Event-Driven Background Services.
-Description: Serv is a modern DSL designed specifically for building background services, event-driven systems, and API microservices. This package installs the Serv compiler, local database engines, caches, brokers, and the complete ServVerse suite.
+Description: Serv is a modern DSL designed specifically for building background services, event-driven systems, and API microservices. This package installs the Serv compiler, local database engines, caches, brokers, and the complete Pranor suite.
 Moniker: pranor
 Tags:
   - serv
@@ -25,7 +25,7 @@ Tags:
 Installers:
   - Architecture: x64
     InstallerType: nullsoft
-    InstallerUrl: https://github.com/vyuvaraj/Pranor/releases/download/v3.1.0/ServVerse-3.1.0-windows-setup.exe
+    InstallerUrl: https://github.com/vyuvaraj/Pranor/releases/download/v3.1.0/Pranor-3.1.0-windows-setup.exe
     InstallerSha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 # Default mock sha placeholder
     Scope: machine
     UpgradeBehavior: install

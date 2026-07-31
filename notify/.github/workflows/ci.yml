@@ -1,4 +1,4 @@
-name: ServMail CI
+name: PranorNotify CI
 
 on:
   push:

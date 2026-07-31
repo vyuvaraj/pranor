@@ -1,5 +1,5 @@
 /**
- * @servverse/queue-wasm — Embedded Browser Event Broker TypeScript Definitions
+ * @pranor/queue-wasm — Embedded Browser Event Broker TypeScript Definitions
  */
 
 export interface LogEntry {
@@ -10,7 +10,7 @@ export interface LogEntry {
   synced: boolean;
 }
 
-export class ServQueueEmbedded {
+export class PranorPulseEmbedded {
   constructor(options?: { opfsPath?: string; serverUrl?: string });
 
   /**
@@ -24,7 +24,7 @@ export class ServQueueEmbedded {
   dequeue(topic: string, startOffset?: number, limit?: number): Promise<LogEntry[]>;
 
   /**
-   * Manually trigger offline outbox sync to backend ServQueue server
+   * Manually trigger offline outbox sync to backend PranorPulse server
    */
   syncOutbox(serverUrl?: string): Promise<{ status: string }>;
 
@@ -34,7 +34,7 @@ export class ServQueueEmbedded {
   getPendingSync(limit?: number): Promise<LogEntry[]>;
 }
 
-export class ServQueueSharedWorkerCoordinator {
+export class PranorPulseSharedWorkerCoordinator {
   constructor(workerUrl?: string);
   /**
    * Broadcast event to SharedWorker across all connected browser tabs

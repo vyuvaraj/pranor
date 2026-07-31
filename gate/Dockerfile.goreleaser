@@ -5,7 +5,7 @@
 FROM alpine:latest
 RUN apk add --no-cache ca-certificates tzdata
 WORKDIR /app
-COPY servgate .
+COPY pranor-gate .
 COPY config.json .
 EXPOSE 8080
 ENTRYPOINT ["./pranorgate"]

@@ -1,12 +1,12 @@
 """
-ServQueue Python Client SDK
+PranorPulse Python Client SDK
 """
 
 import json
 import urllib.request
 import urllib.error
 
-class ServQueueClient:
+class PranorPulseClient:
     def __init__(self, base_url="http://localhost:8082", auth_token=""):
         self.base_url = base_url.rstrip("/")
         self.auth_token = auth_token
@@ -32,7 +32,7 @@ class ServQueueClient:
                 return json.loads(res_body) if res_body else {}
         except urllib.error.HTTPError as e:
             err_body = e.read().decode("utf-8")
-            raise RuntimeError(f"ServQueue API Error ({e.code}): {err_body}")
+            raise RuntimeError(f"PranorPulse API Error ({e.code}): {err_body}")
 
     def publish(self, topic: str, payload: str):
         return self._request("POST", "/api/v1/publish", {"topic": topic, "payload": payload})

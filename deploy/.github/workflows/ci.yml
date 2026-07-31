@@ -1,4 +1,4 @@
-name: ServCloud CI
+name: PranorDeploy CI
 
 on:
   push:

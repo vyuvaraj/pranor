@@ -1,6 +1,6 @@
 # Binaries
 *.exe
-servconsole
+pranor-console
 audit.json
 *_ee.go
 *_ee_test.go

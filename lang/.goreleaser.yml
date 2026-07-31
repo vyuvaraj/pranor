@@ -44,7 +44,7 @@ changelog:
       - Merge branch
 
 # Note: Homebrew and Scoop are managed via the hand-crafted formulas in
-# homebrew-serv-repo and scoop-serv repos. The existing ci.yml handles
+# homebrew-pranor-repo and scoop-pranor repos. The existing ci.yml handles
 # cross-platform release builds directly via upload-artifact steps.
 # goreleaser is used here purely for consistent binary naming, checksums,
 # and a clean GitHub Releases page.

@@ -106,7 +106,7 @@ BROKER_URL = "pranor-pulse://prod-queue:61613"
 # ---------------------------------------------------------------------------
 # [deploy] — Deployment defaults
 # ---------------------------------------------------------------------------
-# Used by `serv deploy --target <target>` to generate deploy configs.
+# Used by `pranor deploy --target <target>` to generate deploy configs.
 
 [deploy]
 # Default deploy target (fly, railway, render, k8s, docker)

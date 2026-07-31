@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             nodeDevice.classList.add('active');
             nodeMesh.classList.add('active');
             lineDeviceMesh.classList.add('active');
-            flowBadge.textContent = 'ServMesh Routing to Endpoint';
+            flowBadge.textContent = 'Pranor Mesh Routing to Endpoint';
             flowBadge.style.color = '#4f46e5';
         } else if (step === 'broker') {
             nodeMesh.classList.add('active');

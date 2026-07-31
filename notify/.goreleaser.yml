@@ -49,17 +49,17 @@ dockers:
       - "ghcr.io/vyuvaraj/servmail:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
-      - "--label=org.opencontainers.image.title=ServMail"
+      - "--label=org.opencontainers.image.title=Pranor Notify"
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/ServMail"
+      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Notify"
 
 brews:
   - name: servmail
     repository:
       owner: vyuvaraj
       name: homebrew-serv
-    homepage: "https://github.com/vyuvaraj/ServMail"
+    homepage: "https://github.com/vyuvaraj/Pranor Notify"
     description: "Email delivery and SMTP service from the ServVerse platform"
     license: "Apache-2.0"
     install: |
@@ -71,7 +71,7 @@ scoops:
   - repository:
       owner: vyuvaraj
       name: scoop-serv
-    homepage: "https://github.com/vyuvaraj/ServMail"
+    homepage: "https://github.com/vyuvaraj/Pranor Notify"
     description: "Email delivery and SMTP service from the ServVerse platform"
     license: "Apache-2.0"
 
@@ -81,7 +81,7 @@ nfpms:
     package_name: servmail
     builds: [servmail]
     vendor: Yuvaraj
-    homepage: https://github.com/vyuvaraj/ServMail
+    homepage: https://github.com/vyuvaraj/Pranor Notify
     maintainer: Yuvaraj <vyuvaraj@github.com>
     description: Transactional email delivery service from the ServVerse platform
     license: Apache-2.0

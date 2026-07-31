@@ -1,7 +1,7 @@
 {
-  "name": "@servverse/queue-wasm",
+  "name": "@pranor/queue-wasm",
   "version": "0.1.0",
-  "description": "Embedded browser event broker powered by ServQueue WebAssembly and Origin Private File System (OPFS)",
+  "description": "Embedded browser event broker powered by Pranor Pulse WebAssembly and Origin Private File System (OPFS)",
   "main": "servqueue-embedded.js",
   "types": "index.d.ts",
   "keywords": [
@@ -13,6 +13,6 @@
     "message-queue",
     "local-first"
   ],
-  "author": "Servverse",
+  "author": "Pranor",
   "license": "AGPL-3.0"
 }

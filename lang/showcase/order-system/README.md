@@ -30,7 +30,7 @@ An event-driven order processing pipeline built with Serv — demonstrates modul
 ## Quick Start
 
 ```bash
-serv run showcase/order-system/main.srv --watch
+pranor run showcase/order-system/main.pnr --watch
 ```
 
 API starts on http://localhost:4000
@@ -64,20 +64,20 @@ curl http://localhost:4000/api/orders
 
 ```
 order-system/
-├── main.srv              — Server setup, infra declarations, scheduler
+├── main.pnr              — Server setup, infra declarations, scheduler
 ├── models/
-│   └── order.srv         — Order struct, methods, price catalog
+│   └── order.pnr         — Order struct, methods, price catalog
 ├── handlers/
-│   ├── api.srv           — HTTP route handlers (CRUD)
-│   ├── worker.srv        — Order processing subscriber
-│   └── notifier.srv      — Notification subscriber
+│   ├── api.pnr           — HTTP route handlers (CRUD)
+│   ├── worker.pnr        — Order processing subscriber
+│   └── notifier.pnr      — Notification subscriber
 ├── config.yml            — Runtime configuration
 └── README.md
 ```
 
 ## Switching to a Real Broker
 
-The system uses `broker "in-memory"` by default (zero dependencies). To use a real message broker, change one line in `main.srv`:
+The system uses `broker "in-memory"` by default (zero dependencies). To use a real message broker, change one line in `main.pnr`:
 
 ```serv
 // Pick one:
@@ -92,15 +92,15 @@ No other code changes needed — `publish` and `subscribe` work identically acro
 
 | Feature | File | Usage |
 |---------|------|-------|
-| Modular imports | `main.srv` | `import "handlers/api.srv"` |
-| Pub/Sub | `api.srv` → `worker.srv` → `notifier.srv` | Event-driven pipeline |
-| Database + Migrations | `main.srv`, `api.srv` | SQLite with schema versioning |
-| Caching | `api.srv` | 10s TTL on order list |
-| Structs & Methods | `models/order.srv` | `Order.summary()`, `getPrice()` |
-| Scheduled Jobs | `main.srv` | Retry stuck orders, daily summary |
-| JSON parsing | `api.srv`, `worker.srv` | Request/event body parsing |
+| Modular imports | `main.pnr` | `import "handlers/api.pnr"` |
+| Pub/Sub | `api.pnr` → `worker.pnr` → `notifier.pnr` | Event-driven pipeline |
+| Database + Migrations | `main.pnr`, `api.pnr` | SQLite with schema versioning |
+| Caching | `api.pnr` | 10s TTL on order list |
+| Structs & Methods | `models/order.pnr` | `Order.summary()`, `getPrice()` |
+| Scheduled Jobs | `main.pnr` | Retry stuck orders, daily summary |
+| JSON parsing | `api.pnr`, `worker.pnr` | Request/event body parsing |
 | F-string interpolation | Throughout | `f"Order #{orderId} created"` |
-| Pattern matching | `models/order.srv` | Price catalog via `match` |
+| Pattern matching | `models/order.pnr` | Price catalog via `match` |
 
 ## What This Shows
 

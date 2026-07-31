@@ -7,8 +7,8 @@ metadata:
 spec:
   group: storage.servstore.io
   names:
-    kind: ServStoreBucket
-    listKind: ServStoreBucketList
+    kind: Pranor VaultBucket
+    listKind: Pranor VaultBucketList
     plural: servstorebuckets
     singular: servstorebucket
     shortNames: ["ssb"]
@@ -42,7 +42,7 @@ spec:
             properties:
               clusterRef:
                 type: string
-                description: Name of the ServStoreCluster in the same namespace.
+                description: Name of the Pranor VaultCluster in the same namespace.
               versioning:
                 type: string
                 enum: [Enabled, Suspended, Disabled]

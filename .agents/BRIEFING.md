@@ -1,7 +1,7 @@
 # BRIEFING — 2026-07-26T08:56:38Z
 
 ## Mission
-Coordinate implementation and verification of 10 OSS roadmap items across 5 Servverse modules.
+Coordinate implementation and verification of 10 OSS roadmap items across 5 Pranor modules.
 
 ## 🔒 My Identity
 - Archetype: sentinel
@@ -15,7 +15,7 @@ Coordinate implementation and verification of 10 OSS roadmap items across 5 Serv
 - Must specify ORIGINAL_REQUEST.md path to victory auditor
 
 ## User Context
-- **Last user request**: Implement 10 pending OSS roadmap items across 5 Servverse modules.
+- **Last user request**: Implement 10 pending OSS roadmap items across 5 Pranor modules.
 - **Pending clarifications**: none
 - **Delivered results**: none
 

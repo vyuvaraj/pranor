@@ -3,5 +3,5 @@ set -e
 echo ""
 echo "  servpool installed successfully"
 echo "  Run: servpool --version"
-echo "  Docs: https://github.com/vyuvaraj/ServPool"
+echo "  Docs: https://github.com/vyuvaraj/Pranor Pool"
 echo ""

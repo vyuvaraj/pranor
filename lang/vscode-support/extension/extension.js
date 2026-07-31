@@ -15,7 +15,7 @@ function activate(context) {
         startLspClient(context, lspPath);
     } else {
         vscode.window.showInformationMessage(
-            'Serv LSP not found. Place serv-lsp or serv-lsp.exe in your PATH or workspace root.'
+            'Serv LSP not found. Place pranor-lsp or pranor-lsp.exe in your PATH or workspace root.'
         );
         activateBasicMode(context);
     }
@@ -25,9 +25,9 @@ function activate(context) {
     const codeLensProvider = vscode.languages.registerCodeLensProvider('serv', {
         provideCodeLenses(document) {
             let lenses = [];
-            // Serv-lang: test "name" { or test name {
+            // Pranor: test "name" { or test name {
             const testRegex = /^\s*test\s+"([^"]+)"/;
-            // Serv-lang: route "METHOD" "/path" or route METHOD "/path"
+            // Pranor: route "METHOD" "/path" or route METHOD "/path"
             const routeRegex = /^\s*route\s+"?(GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS)"?\s+"([^"]+)"/;
             for (let i = 0; i < document.lineCount; i++) {
                 const line = document.lineAt(i).text;
@@ -174,7 +174,7 @@ function activate(context) {
 function runServCommand(command, extraArgs = []) {
     const editor = vscode.window.activeTextEditor;
     if (!editor || editor.document.languageId !== 'serv') {
-        vscode.window.showWarningMessage('Open a .srv file first');
+        vscode.window.showWarningMessage('Open a .pnr file first');
         return;
     }
 
@@ -182,14 +182,14 @@ function runServCommand(command, extraArgs = []) {
     const servPath = findServBinary();
 
     if (!servPath) {
-        vscode.window.showErrorMessage('Serv compiler not found. Place serv.exe in workspace root or PATH.');
+        vscode.window.showErrorMessage('Serv compiler not found. Place pranor.exe in workspace root or PATH.');
         return;
     }
 
     // Build command args
     let args = [command, `"${filePath}"`, ...extraArgs];
     if (command === 'build') {
-        const outputName = path.basename(filePath, '.srv') + '.exe';
+        const outputName = path.basename(filePath, '.pnr') + '.exe';
         args = [command, `"${filePath}"`, '-o', outputName];
     }
 
@@ -227,7 +227,7 @@ function resolveToFile(configuredPath, binaryNames) {
 function findServBinary() {
     // Check config (supports both directory and file paths)
     const configPath = vscode.workspace.getConfiguration('serv').get('compilerPath');
-    const fromConfig = resolveToFile(configPath, ['serv.exe', 'serv']);
+    const fromConfig = resolveToFile(configPath, ['pranor.exe', 'serv']);
     if (fromConfig) return fromConfig;
 
     // Check workspace root and parent directories
@@ -235,7 +235,7 @@ function findServBinary() {
     if (workspaceFolders) {
         let dir = workspaceFolders[0].uri.fsPath;
         for (let i = 0; i < 4; i++) {
-            for (const name of ['serv.exe', 'serv']) {
+            for (const name of ['pranor.exe', 'serv']) {
                 const p = path.join(dir, name);
                 if (fs.existsSync(p)) return p;
             }
@@ -250,7 +250,7 @@ function findServBinary() {
 }
 
 function findLspBinary() {
-    const lspNames = ['serv-lsp.exe', 'serv-lsp'];
+    const lspNames = ['pranor-lsp.exe', 'pranor-lsp'];
 
     // 1. Check config (supports both directory and file paths)
     const configPath = vscode.workspace.getConfiguration('serv').get('lspPath');
@@ -313,7 +313,7 @@ function startLspClient(context, lspPath) {
     const clientOptions = {
         documentSelector: [
             { scheme: 'file', language: 'serv' },
-            { scheme: 'file', pattern: '**/*.srv' },
+            { scheme: 'file', pattern: '**/*.pnr' },
         ],
         outputChannel: debugChannel,
         traceOutputChannel: debugChannel,
@@ -350,7 +350,7 @@ function activateBasicMode(context) {
         let servPath = 'serv';
         if (workspaceFolders) {
             const root = workspaceFolders[0].uri.fsPath;
-            const winPath = path.join(root, 'serv.exe');
+            const winPath = path.join(root, 'pranor.exe');
             if (fs.existsSync(winPath)) servPath = winPath;
         }
 
@@ -392,7 +392,7 @@ function runNamedTest(docUri, testName) {
     const editor = vscode.window.activeTextEditor;
     const servPath = findServBinary();
     if (!servPath) {
-        vscode.window.showErrorMessage('Serv compiler not found. Place serv.exe in workspace root or PATH.');
+        vscode.window.showErrorMessage('Serv compiler not found. Place pranor.exe in workspace root or PATH.');
         return;
     }
 
@@ -403,7 +403,7 @@ function runNamedTest(docUri, testName) {
     } else if (editor && editor.document.languageId === 'serv') {
         filePath = editor.document.fileName;
     } else {
-        vscode.window.showWarningMessage('Open a .srv file first');
+        vscode.window.showWarningMessage('Open a .pnr file first');
         return;
     }
 
@@ -592,7 +592,7 @@ function openWorkflowVisualizer(context) {
             <script>mermaid.initialize({startOnLoad:true, theme: 'dark'});</script>
         </head>
         <body style="background: #1e1e2e; color: #cdd6f4; font-family: sans-serif; padding: 20px;">
-            <h2>ServFlow DAG Visualizer</h2>
+            <h2>Pranor Flow DAG Visualizer</h2>
             <div class="mermaid">
                 ${mermaidCode}
             </div>
@@ -613,8 +613,8 @@ function openQueueExplorer(context) {
         <!DOCTYPE html>
         <html>
         <body style="background: #1e1e2e; color: #cdd6f4; font-family: sans-serif; padding: 20px;">
-            <h2>ServQueue Broker Explorer</h2>
-            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to ServQueue...</div>
+            <h2>Pranor Pulse Broker Explorer</h2>
+            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to Pranor Pulse...</div>
             <table border="1" cellpadding="8" style="border-collapse: collapse; width: 100%; border-color: #444;">
                 <thead>
                     <tr style="background: #313244;">
@@ -676,8 +676,8 @@ function openStoreExplorer(context) {
         <!DOCTYPE html>
         <html>
         <body style="background: #1e1e2e; color: #cdd6f4; font-family: sans-serif; padding: 20px;">
-            <h2>ServStore Bucket Explorer</h2>
-            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to ServStore...</div>
+            <h2>Pranor Vault Bucket Explorer</h2>
+            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to Pranor Vault...</div>
             <ul id="buckets-list"></ul>
             <script>
                 async function loadBuckets() {
@@ -715,8 +715,8 @@ function openLocksExplorer(context) {
         <!DOCTYPE html>
         <html>
         <body style="background: #1e1e2e; color: #cdd6f4; font-family: sans-serif; padding: 20px;">
-            <h2>ServLock Contention Dashboard</h2>
-            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to ServLock...</div>
+            <h2>Pranor Lock Contention Dashboard</h2>
+            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to Pranor Lock...</div>
             <table border="1" cellpadding="8" style="border-collapse: collapse; width: 100%; border-color: #444;">
                 <thead>
                     <tr style="background: #313244;">
@@ -773,7 +773,7 @@ function openRouteSimulator(context) {
     let gateConfig = "{}";
     if (workspaceFolders) {
         const root = workspaceFolders[0].uri.fsPath;
-        const configPath = path.join(root, 'ServGate', 'config.json');
+        const configPath = path.join(root, 'Pranor Gate', 'config.json');
         if (fs.existsSync(configPath)) {
             gateConfig = fs.readFileSync(configPath, 'utf8');
         }
@@ -783,7 +783,7 @@ function openRouteSimulator(context) {
         <!DOCTYPE html>
         <html>
         <body style="background: #1e1e2e; color: #cdd6f4; font-family: sans-serif; padding: 20px;">
-            <h2>ServGate Route Simulator</h2>
+            <h2>Pranor Gate Route Simulator</h2>
             <p>Enter path to test route mapping:</p>
             <input type="text" id="route-path" value="/api/v1/users" style="padding: 8px; width: 300px; background: #313244; color: #cdd6f4; border: 1px solid #444; border-radius: 4px;">
             <button onclick="simulate()" style="padding: 8px 16px; background: #89b4fa; color: #11111b; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Simulate</button>
@@ -794,7 +794,7 @@ function openRouteSimulator(context) {
                     const pathVal = document.getElementById('route-path').value;
                     const result = document.getElementById('result');
                     if (!config || !config.routes) {
-                        result.innerHTML = "No configuration found at ServGate/config.json";
+                        result.innerHTML = "No configuration found at Pranor Gate/config.json";
                         return;
                     }
                     const route = config.routes.find(r => pathVal.startsWith(r.prefix));
@@ -823,8 +823,8 @@ function openCronExplorer(context) {
         <!DOCTYPE html>
         <html>
         <body style="background: #1e1e2e; color: #cdd6f4; font-family: sans-serif; padding: 20px;">
-            <h2>ServCron Schedule Manager</h2>
-            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to ServCron...</div>
+            <h2>Pranor Chrono Schedule Manager</h2>
+            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to Pranor Chrono...</div>
             <table border="1" cellpadding="8" style="border-collapse: collapse; width: 100%; border-color: #444;">
                 <thead>
                     <tr style="background: #313244;">
@@ -889,8 +889,8 @@ function openCacheInspector(context) {
         <!DOCTYPE html>
         <html>
         <body style="background: #1e1e2e; color: #cdd6f4; font-family: sans-serif; padding: 20px;">
-            <h2>ServCache Performance Dashboard</h2>
-            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to ServCache...</div>
+            <h2>Pranor Cache Performance Dashboard</h2>
+            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to Pranor Cache...</div>
             <div style="display: flex; gap: 20px; margin-bottom: 20px;">
                 <div style="padding: 15px; background: #313244; border-radius: 6px; flex: 1; text-align: center;">
                     <div style="font-size: 12px; color: #bac2de;">Hit Rate</div>
@@ -933,8 +933,8 @@ function openAuthInspector(context) {
         <!DOCTYPE html>
         <html>
         <body style="background: #1e1e2e; color: #cdd6f4; font-family: sans-serif; padding: 20px;">
-            <h2>ServAuth Progressive Risk Scoring</h2>
-            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to ServAuth...</div>
+            <h2>Pranor Auth Progressive Risk Scoring</h2>
+            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to Pranor Auth...</div>
             <table border="1" cellpadding="8" style="border-collapse: collapse; width: 100%; border-color: #444;">
                 <thead>
                     <tr style="background: #313244;">
@@ -966,13 +966,13 @@ function openAuthInspector(context) {
                         status.innerText = "⚠️ Offline (Showing mock fallback)";
                         body.innerHTML = \`
                             <tr>
-                                <td>admin@servverse.dev</td>
+                                <td>admin@pranor.dev</td>
                                 <td>macOS (Chromium)</td>
                                 <td>United States</td>
                                 <td style="color: #a6e3a1; font-weight: bold;">0 (Safe)</td>
                             </tr>
                             <tr>
-                                <td>user@servverse.dev</td>
+                                <td>user@pranor.dev</td>
                                 <td>iPhone (Safari) - New</td>
                                 <td>Germany - New</td>
                                 <td style="color: #f38ba8; font-weight: bold;">8 (MFA Step-up Required)</td>
@@ -1018,9 +1018,9 @@ function openMeshTopology(context) {
             <script>mermaid.initialize({startOnLoad:true, theme: 'dark'});</script>
         </head>
         <body style="background: #1e1e2e; color: #cdd6f4; font-family: sans-serif; padding: 20px;">
-            <h2>ServMesh Service Topology</h2>
-            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to ServMesh...</div>
-            <div id="diagram"><div class="mermaid">graph TD\n    ServGate-->ServAuth\n    ServGate-->ServQueue\n    ServGate-->ServFlow\n    ServFlow-->ServCron\n    ServFlow-->ServMail\n    ServAuth-->ServCache\n    ServQueue-->ServStore</div></div>
+            <h2>Pranor Mesh Service Topology</h2>
+            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to Pranor Mesh...</div>
+            <div id="diagram"><div class="mermaid">graph TD\n    Pranor Gate-->Pranor Auth\n    Pranor Gate-->Pranor Pulse\n    Pranor Gate-->Pranor Flow\n    Pranor Flow-->Pranor Chrono\n    Pranor Flow-->Pranor Notify\n    Pranor Auth-->Pranor Cache\n    Pranor Pulse-->Pranor Vault</div></div>
             <script>
                 async function loadTopology() {
                     const status = document.getElementById('status');
@@ -1055,8 +1055,8 @@ function openTraceViewer(context) {
         <!DOCTYPE html>
         <html>
         <body style="background: #1e1e2e; color: #cdd6f4; font-family: sans-serif; padding: 20px;">
-            <h2>ServTrace Distributed Request Tracer</h2>
-            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to ServTrace...</div>
+            <h2>Pranor Trace Distributed Request Tracer</h2>
+            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to Pranor Trace...</div>
             <input type="text" id="trace-filter" placeholder="Filter by service or trace ID..." style="padding: 8px; width: 350px; background: #313244; color: #cdd6f4; border: 1px solid #444; border-radius: 4px; margin-bottom: 12px;">
             <table border="1" cellpadding="8" style="border-collapse: collapse; width: 100%; border-color: #444;">
                 <thead>
@@ -1083,10 +1083,10 @@ function openTraceViewer(context) {
                     } catch(e) {
                         status.innerText = '⚠️ Offline (Showing mock spans)';
                         allTraces = [
-                            {trace_id:'abc-001', service:'ServGate', operation:'POST /api/orders', duration_ms:42, status:'OK'},
-                            {trace_id:'abc-001', service:'ServAuth', operation:'ValidateToken', duration_ms:8, status:'OK'},
-                            {trace_id:'abc-001', service:'ServQueue', operation:'Publish orders-topic', duration_ms:5, status:'OK'},
-                            {trace_id:'def-002', service:'ServFlow', operation:'RunWorkflow', duration_ms:310, status:'ERROR'},
+                            {trace_id:'abc-001', service:'Pranor Gate', operation:'POST /api/orders', duration_ms:42, status:'OK'},
+                            {trace_id:'abc-001', service:'Pranor Auth', operation:'ValidateToken', duration_ms:8, status:'OK'},
+                            {trace_id:'abc-001', service:'Pranor Pulse', operation:'Publish orders-topic', duration_ms:5, status:'OK'},
+                            {trace_id:'def-002', service:'Pranor Flow', operation:'RunWorkflow', duration_ms:310, status:'ERROR'},
                         ];
                         renderTable(allTraces);
                     }
@@ -1125,8 +1125,8 @@ function openRegistryMonitor(context) {
         <!DOCTYPE html>
         <html>
         <body style="background: #1e1e2e; color: #cdd6f4; font-family: sans-serif; padding: 20px;">
-            <h2>ServRegistry Health Monitor</h2>
-            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to ServRegistry...</div>
+            <h2>Pranor Hub Health Monitor</h2>
+            <div id="status" style="margin-bottom: 10px; color: #a6e3a1;">Connecting to Pranor Hub...</div>
             <table border="1" cellpadding="8" style="border-collapse: collapse; width: 100%; border-color: #444;">
                 <thead>
                     <tr style="background: #313244;">
@@ -1159,12 +1159,12 @@ function openRegistryMonitor(context) {
                     } catch(e) {
                         status.innerText = '⚠️ Offline (Showing mock registry)';
                         const mock = [
-                            {name:'ServAuth', host:'localhost', port:8098, healthy:true, uptime:'14h 32m'},
-                            {name:'ServGate', host:'localhost', port:8088, healthy:true, uptime:'14h 32m'},
-                            {name:'ServQueue', host:'localhost', port:8082, healthy:true, uptime:'14h 31m'},
-                            {name:'ServFlow', host:'localhost', port:8083, healthy:false, uptime:'0m (restarting)'},
-                            {name:'ServCron', host:'localhost', port:8087, healthy:true, uptime:'14h 30m'},
-                            {name:'ServCache', host:'localhost', port:8086, healthy:true, uptime:'14h 32m'},
+                            {name:'Pranor Auth', host:'localhost', port:8098, healthy:true, uptime:'14h 32m'},
+                            {name:'Pranor Gate', host:'localhost', port:8088, healthy:true, uptime:'14h 32m'},
+                            {name:'Pranor Pulse', host:'localhost', port:8082, healthy:true, uptime:'14h 31m'},
+                            {name:'Pranor Flow', host:'localhost', port:8083, healthy:false, uptime:'0m (restarting)'},
+                            {name:'Pranor Chrono', host:'localhost', port:8087, healthy:true, uptime:'14h 30m'},
+                            {name:'Pranor Cache', host:'localhost', port:8086, healthy:true, uptime:'14h 32m'},
                         ];
                         body.innerHTML = mock.map(s => \`
                             <tr>
@@ -1193,7 +1193,7 @@ function setupStatusBar(context) {
     statusItem.show();
     context.subscriptions.push(statusItem);
 
-    // Poll ServRegistry every 10s to update status bar health indicator
+    // Poll Pranor Hub every 10s to update status bar health indicator
     async function pollHealth() {
         try {
             const http = require('http');
@@ -1304,7 +1304,7 @@ class ServTestExplorerProvider {
                 const fullPath = path.join(dir, entry.name);
                 if (entry.isDirectory()) {
                     results.push(...this._findSrvFiles(fullPath));
-                } else if (entry.name.endsWith('.srv')) {
+                } else if (entry.name.endsWith('.pnr')) {
                     results.push(fullPath);
                 }
             }
@@ -1413,8 +1413,8 @@ function openDeploymentsPanel(context) {
         <!DOCTYPE html>
         <html>
         <body style="background: #1e1e2e; color: #cdd6f4; font-family: sans-serif; padding: 20px;">
-            <h2>ServCloud Branch Deployments</h2>
-            <div id="status" style="margin-bottom:10px; color:#a6e3a1;">Connecting to ServCloud...</div>
+            <h2>Pranor Deploy Branch Deployments</h2>
+            <div id="status" style="margin-bottom:10px; color:#a6e3a1;">Connecting to Pranor Deploy...</div>
             <table border="1" cellpadding="8" style="border-collapse:collapse; width:100%; border-color:#444;">
                 <thead>
                     <tr style="background:#313244;">
@@ -1445,14 +1445,14 @@ function openDeploymentsPanel(context) {
                         body.innerHTML = \`
                             <tr>
                                 <td style="font-family:monospace;">feat/order-v2</td>
-                                <td>ServGate</td>
+                                <td>Pranor Gate</td>
                                 <td><a href="#" style="color:#89b4fa;">preview-feat-order-v2.local</a></td>
                                 <td style="color:#a6e3a1; font-weight:bold;">running</td>
                                 <td style="font-size:12px;">2026-07-16 05:47</td>
                             </tr>
                             <tr>
                                 <td style="font-family:monospace;">fix/auth-bug</td>
-                                <td>ServAuth</td>
+                                <td>Pranor Auth</td>
                                 <td><a href="#" style="color:#89b4fa;">preview-fix-auth-bug.local</a></td>
                                 <td style="color:#f9e2af; font-weight:bold;">building</td>
                                 <td style="font-size:12px;">2026-07-16 06:01</td>
@@ -1482,8 +1482,8 @@ function openPoolInspector(context) {
         <!DOCTYPE html>
         <html>
         <body style="background: #1e1e2e; color: #cdd6f4; font-family: sans-serif; padding: 20px;">
-            <h2>ServPool DB Connection Pool</h2>
-            <div id="status" style="margin-bottom:10px; color:#a6e3a1;">Connecting to ServPool...</div>
+            <h2>Pranor Pool DB Connection Pool</h2>
+            <div id="status" style="margin-bottom:10px; color:#a6e3a1;">Connecting to Pranor Pool...</div>
             <div style="display:flex; gap:16px; margin-bottom:20px;">
                 <div style="padding:15px; background:#313244; border-radius:6px; flex:1; text-align:center;">
                     <div style="font-size:11px; color:#bac2de; margin-bottom:4px;">Active</div>
@@ -1555,8 +1555,8 @@ function openMailInspector(context) {
         <!DOCTYPE html>
         <html>
         <body style="background: #1e1e2e; color: #cdd6f4; font-family: sans-serif; padding: 20px;">
-            <h2>ServMail Queue Inspector</h2>
-            <div id="status" style="margin-bottom:10px; color:#a6e3a1;">Connecting to ServMail...</div>
+            <h2>Pranor Notify Queue Inspector</h2>
+            <div id="status" style="margin-bottom:10px; color:#a6e3a1;">Connecting to Pranor Notify...</div>
             <div style="display:flex; gap:16px; margin-bottom:20px;">
                 <div style="padding:15px; background:#313244; border-radius:6px; flex:1; text-align:center;">
                     <div style="font-size:11px; color:#bac2de; margin-bottom:4px;">Queued</div>
@@ -1825,7 +1825,7 @@ class ServTestGutterManager {
 function runTestsWithGutter(gutterManager) {
     const editor = vscode.window.activeTextEditor;
     if (!editor || editor.document.languageId !== 'serv') {
-        vscode.window.showWarningMessage('Open a .srv file to run tests with gutter decorations.');
+        vscode.window.showWarningMessage('Open a .pnr file to run tests with gutter decorations.');
         return;
     }
 
@@ -1890,7 +1890,7 @@ function runTestsWithGutter(gutterManager) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// CD.120 — ServTunnel Session Viewer
+// CD.120 — Pranor Tunnel Session Viewer
 // ═══════════════════════════════════════════════════════════════════════════════
 
 function openTunnelViewer(context) {
@@ -1905,8 +1905,8 @@ function openTunnelViewer(context) {
         <!DOCTYPE html>
         <html>
         <body style="background:#1e1e2e; color:#cdd6f4; font-family:sans-serif; padding:20px;">
-            <h2>ServTunnel — Active Sessions</h2>
-            <div id="status" style="margin-bottom:10px; color:#a6e3a1;">Connecting to ServTunnel...</div>
+            <h2>Pranor Tunnel — Active Sessions</h2>
+            <div id="status" style="margin-bottom:10px; color:#a6e3a1;">Connecting to Pranor Tunnel...</div>
             <div style="display:flex; gap:16px; margin-bottom:20px;">
                 <div style="padding:15px; background:#313244; border-radius:6px; flex:1; text-align:center;">
                     <div style="font-size:11px; color:#bac2de; margin-bottom:4px;">Active Tunnels</div>
@@ -1983,24 +1983,24 @@ function openTunnelViewer(context) {
 // Live-polling TreeDataProvider showing all 16 services with health status
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const SERV_MOCK_SERVICES = [
-    { name:'ServAuth',     port:8098, healthy:true,  uptime:'14h 32m' },
-    { name:'ServCache',    port:8086, healthy:true,  uptime:'14h 32m' },
-    { name:'ServCloud',    port:8084, healthy:true,  uptime:'14h 31m' },
-    { name:'ServConsole',  port:8085, healthy:true,  uptime:'14h 31m' },
-    { name:'ServCron',     port:8087, healthy:true,  uptime:'14h 30m' },
+const PRANOR_MOCK_SERVICES = [
+    { name:'Pranor Auth',     port:8098, healthy:true,  uptime:'14h 32m' },
+    { name:'Pranor Cache',    port:8086, healthy:true,  uptime:'14h 32m' },
+    { name:'Pranor Deploy',    port:8084, healthy:true,  uptime:'14h 31m' },
+    { name:'Pranor Console',  port:8085, healthy:true,  uptime:'14h 31m' },
+    { name:'Pranor Chrono',     port:8087, healthy:true,  uptime:'14h 30m' },
     { name:'ServDocs',     port:8096, healthy:true,  uptime:'14h 30m' },
-    { name:'ServFlow',     port:8083, healthy:true,  uptime:'14h 30m' },
-    { name:'ServGate',     port:8088, healthy:true,  uptime:'14h 32m' },
-    { name:'ServLock',     port:8089, healthy:true,  uptime:'14h 29m' },
-    { name:'ServMail',     port:8092, healthy:true,  uptime:'14h 28m' },
-    { name:'ServMesh',     port:8095, healthy:true,  uptime:'14h 32m' },
-    { name:'ServPool',     port:8093, healthy:true,  uptime:'14h 32m' },
-    { name:'ServQueue',    port:8082, healthy:true,  uptime:'14h 31m' },
-    { name:'ServRegistry', port:8090, healthy:true,  uptime:'14h 32m' },
-    { name:'ServStore',    port:8081, healthy:true,  uptime:'14h 32m' },
-    { name:'ServTrace',    port:8091, healthy:true,  uptime:'14h 32m' },
-    { name:'ServTunnel',   port:8094, healthy:true,  uptime:'14h 30m' },
+    { name:'Pranor Flow',     port:8083, healthy:true,  uptime:'14h 30m' },
+    { name:'Pranor Gate',     port:8088, healthy:true,  uptime:'14h 32m' },
+    { name:'Pranor Lock',     port:8089, healthy:true,  uptime:'14h 29m' },
+    { name:'Pranor Notify',     port:8092, healthy:true,  uptime:'14h 28m' },
+    { name:'Pranor Mesh',     port:8095, healthy:true,  uptime:'14h 32m' },
+    { name:'Pranor Pool',     port:8093, healthy:true,  uptime:'14h 32m' },
+    { name:'Pranor Pulse',    port:8082, healthy:true,  uptime:'14h 31m' },
+    { name:'Pranor Hub', port:8090, healthy:true,  uptime:'14h 32m' },
+    { name:'Pranor Vault',    port:8081, healthy:true,  uptime:'14h 32m' },
+    { name:'Pranor Trace',    port:8091, healthy:true,  uptime:'14h 32m' },
+    { name:'Pranor Tunnel',   port:8094, healthy:true,  uptime:'14h 30m' },
 ];
 
 class ServServicesPanelProvider {
@@ -2013,19 +2013,19 @@ class ServServicesPanelProvider {
         
         // Map of service name to dashboard command
         this._dashboards = {
-            'ServQueue': 'serv.exploreQueue',
-            'ServCache': 'serv.inspectCache',
-            'ServRegistry': 'serv.viewRegistry',
-            'ServTrace': 'serv.traceRequests',
-            'ServAuth': 'serv.inspectAuth',
-            'ServFlow': 'serv.visualizeWorkflow',
-            'ServStore': 'serv.exploreStore',
-            'ServLock': 'serv.exploreLocks',
-            'ServCron': 'serv.exploreCron',
+            'Pranor Pulse': 'serv.exploreQueue',
+            'Pranor Cache': 'serv.inspectCache',
+            'Pranor Hub': 'serv.viewRegistry',
+            'Pranor Trace': 'serv.traceRequests',
+            'Pranor Auth': 'serv.inspectAuth',
+            'Pranor Flow': 'serv.visualizeWorkflow',
+            'Pranor Vault': 'serv.exploreStore',
+            'Pranor Lock': 'serv.exploreLocks',
+            'Pranor Chrono': 'serv.exploreCron',
             'ServDocs': 'serv.openREPL', // REPL is a good interactive CLI tool for docs
-            'ServPool': 'serv.inspectPool',
-            'ServMail': 'serv.inspectMail',
-            'ServTunnel': 'serv.viewTunnels'
+            'Pranor Pool': 'serv.inspectPool',
+            'Pranor Notify': 'serv.inspectMail',
+            'Pranor Tunnel': 'serv.viewTunnels'
         };
 
         this.startPolling(context);
@@ -2099,7 +2099,7 @@ class ServServicesPanelProvider {
             this._loading = false;
         } catch (_) {
             if (this._loading) {
-                this._services = SERV_MOCK_SERVICES;
+                this._services = PRANOR_MOCK_SERVICES;
                 this._offline = true;
                 this._loading = false;
             }
@@ -2497,16 +2497,16 @@ class ServServicesPanelProvider {
 // organizeImports(): command to add ALL missing imports at once
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const SERV_STDLIB_MODULES = [
+const PRANOR_STDLIB_MODULES = [
     { name: 'db',     detail: 'Database queries and transactions',      doc: '`db.query()`, `db.exec()`, `db.transaction()`' },
-    { name: 'cache',  detail: 'Distributed caching via ServCache',      doc: '`cache.get()`, `cache.set()`, `cache.del()`, `cache.ttl()`' },
+    { name: 'cache',  detail: 'Distributed caching via Pranor Cache',      doc: '`cache.get()`, `cache.set()`, `cache.del()`, `cache.ttl()`' },
     { name: 'http',   detail: 'HTTP client requests',                   doc: '`http.get()`, `http.post()`, `http.put()`, `http.delete()`' },
-    { name: 'queue',  detail: 'Message publishing via ServQueue',       doc: '`queue.publish()`, `queue.subscribe()`, `queue.ack()`' },
-    { name: 'store',  detail: 'Object storage via ServStore',           doc: '`store.put()`, `store.get()`, `store.delete()`, `store.list()`' },
-    { name: 'lock',   detail: 'Distributed locks via ServLock',         doc: '`lock.acquire()`, `lock.release()`, `lock.tryAcquire()`' },
-    { name: 'cron',   detail: 'Scheduled jobs via ServCron',            doc: '`cron.register()`, `cron.list()`' },
-    { name: 'mail',   detail: 'Email sending via ServMail',             doc: '`mail.send()`, `mail.template()`' },
-    { name: 'flow',   detail: 'Workflow orchestration via ServFlow',    doc: '`flow.start()`, `flow.step()`, `flow.compensate()`' },
+    { name: 'queue',  detail: 'Message publishing via Pranor Pulse',       doc: '`queue.publish()`, `queue.subscribe()`, `queue.ack()`' },
+    { name: 'store',  detail: 'Object storage via Pranor Vault',           doc: '`store.put()`, `store.get()`, `store.delete()`, `store.list()`' },
+    { name: 'lock',   detail: 'Distributed locks via Pranor Lock',         doc: '`lock.acquire()`, `lock.release()`, `lock.tryAcquire()`' },
+    { name: 'cron',   detail: 'Scheduled jobs via Pranor Chrono',            doc: '`cron.register()`, `cron.list()`' },
+    { name: 'mail',   detail: 'Email sending via Pranor Notify',             doc: '`mail.send()`, `mail.template()`' },
+    { name: 'flow',   detail: 'Workflow orchestration via Pranor Flow',    doc: '`flow.start()`, `flow.step()`, `flow.compensate()`' },
     { name: 'json',   detail: 'JSON encode/decode',                     doc: '`json.encode()`, `json.decode()`, `json.pretty()`' },
     { name: 'log',    detail: 'Structured logging',                     doc: '`log.info()`, `log.warn()`, `log.error()`, `log.debug()`' },
     { name: 'env',    detail: 'Environment variables',                  doc: '`env.get()`, `env.require()`' },
@@ -2526,7 +2526,7 @@ class ServImportCompletionProvider {
         // Only trigger on lines that look like: "use <partial>"
         if (!/^\s*use\s+\w*$/.test(prefix)) return [];
 
-        return SERV_STDLIB_MODULES.map(mod => {
+        return PRANOR_STDLIB_MODULES.map(mod => {
             const item = new vscode.CompletionItem(mod.name, vscode.CompletionItemKind.Module);
             item.detail        = mod.detail;
             item.documentation = new vscode.MarkdownString(mod.doc);
@@ -2574,7 +2574,7 @@ class ServImportCodeActionProvider {
     }
 
     _findUsedModules(lines) {
-        const known = new Set(SERV_STDLIB_MODULES.map(m => m.name));
+        const known = new Set(PRANOR_STDLIB_MODULES.map(m => m.name));
         const used  = new Set();
         for (const line of lines) {
             const t = line.trim();
@@ -2599,7 +2599,7 @@ class ServImportCodeActionProvider {
 async function organizeImports() {
     const editor = vscode.window.activeTextEditor;
     if (!editor || editor.document.languageId !== 'serv') {
-        vscode.window.showWarningMessage('Open a .srv file to organize imports.');
+        vscode.window.showWarningMessage('Open a .pnr file to organize imports.');
         return;
     }
     const provider = new ServImportCodeActionProvider();
@@ -2682,35 +2682,35 @@ function _generateProjectFiles(name, templateId) {
 
     files['serv.toml'] = `[project]\nname = "${name}"\nversion = "0.1.0"\n\n[server]\nport = 8080\nenv = "development"\n\n[database]\ndriver = "sqlite"\ndsn = "./${name}.db"\n`;
     files['.gitignore'] = `*.db\n*.bin\ndist/\n.serv-cache/\n`;
-    files['README.md'] = `# ${name}\n\nA Serv service.\n\n## Run\n\n\`\`\`bash\nserv run main.srv\n\`\`\`\n\n## Test\n\n\`\`\`bash\nserv test tests/\n\`\`\`\n`;
+    files['README.md'] = `# ${name}\n\nA Serv service.\n\n## Run\n\n\`\`\`bash\npranor run main.pnr\n\`\`\`\n\n## Test\n\n\`\`\`bash\nserv test tests/\n\`\`\`\n`;
 
     switch (templateId) {
         case 'api':
-            files['main.srv'] = `use db\nuse log\nuse json\n\nserver "8080"\n\nstruct User {\n    id:    int,\n    name:  string,\n    email: string\n}\n\nroute "GET" "/health" (req) {\n    return { "status": "ok", "service": "${name}" }\n}\n\nroute "GET" "/users" (req) {\n    let users = db.query("SELECT id, name, email FROM users")?\n    return { "users": users }\n}\n\nroute "GET" "/users/:id" (req) {\n    let user = db.query("SELECT * FROM users WHERE id = ?", req.params.id)?\n    if user == nil { return 404, { "error": "not found" } }\n    return { "user": user }\n}\n\nroute "POST" "/users" (req) {\n    let body = json.decode(req.body)?\n    db.exec("INSERT INTO users (name, email) VALUES (?, ?)", body.name, body.email)?\n    log.info(f"Created user: {body.name}")\n    return 201, { "message": "user created" }\n}\n`;
-            files['tests/users_test.srv'] = `test "health check returns ok" {\n    let res = http.get("http://localhost:8080/health")\n    assert res.status == 200\n    assert res.body.status == "ok"\n}\n\ntest "create user returns 201" {\n    let res = http.post("http://localhost:8080/users", { "name": "Alice", "email": "alice@example.com" })\n    assert res.status == 201\n}\n`;
+            files['main.pnr'] = `use db\nuse log\nuse json\n\nserver "8080"\n\nstruct User {\n    id:    int,\n    name:  string,\n    email: string\n}\n\nroute "GET" "/health" (req) {\n    return { "status": "ok", "service": "${name}" }\n}\n\nroute "GET" "/users" (req) {\n    let users = db.query("SELECT id, name, email FROM users")?\n    return { "users": users }\n}\n\nroute "GET" "/users/:id" (req) {\n    let user = db.query("SELECT * FROM users WHERE id = ?", req.params.id)?\n    if user == nil { return 404, { "error": "not found" } }\n    return { "user": user }\n}\n\nroute "POST" "/users" (req) {\n    let body = json.decode(req.body)?\n    db.exec("INSERT INTO users (name, email) VALUES (?, ?)", body.name, body.email)?\n    log.info(f"Created user: {body.name}")\n    return 201, { "message": "user created" }\n}\n`;
+            files['tests/users_test.pnr'] = `test "health check returns ok" {\n    let res = http.get("http://localhost:8080/health")\n    assert res.status == 200\n    assert res.body.status == "ok"\n}\n\ntest "create user returns 201" {\n    let res = http.post("http://localhost:8080/users", { "name": "Alice", "email": "alice@example.com" })\n    assert res.status == 201\n}\n`;
             break;
         case 'worker':
-            files['main.srv'] = `use queue\nuse log\nuse db\n\nserver "8080"\n\nroute "GET" "/health" (req) {\n    return { "status": "ok", "service": "${name}" }\n}\n\nsubscribe "jobs.process" (msg) {\n    log.info(f"Processing job: {msg.id}")\n    db.exec("INSERT INTO job_results (job_id, status) VALUES (?, ?)", msg.id, "done")?\n    msg.ack()\n}\n\nsubscribe "jobs.dlq" (msg) {\n    log.warn(f"Dead letter job: {msg.id}")\n    msg.ack()\n}\n`;
-            files['tests/worker_test.srv'] = `test "health check returns ok" {\n    let res = http.get("http://localhost:8080/health")\n    assert res.status == 200\n}\n`;
+            files['main.pnr'] = `use queue\nuse log\nuse db\n\nserver "8080"\n\nroute "GET" "/health" (req) {\n    return { "status": "ok", "service": "${name}" }\n}\n\nsubscribe "jobs.process" (msg) {\n    log.info(f"Processing job: {msg.id}")\n    db.exec("INSERT INTO job_results (job_id, status) VALUES (?, ?)", msg.id, "done")?\n    msg.ack()\n}\n\nsubscribe "jobs.dlq" (msg) {\n    log.warn(f"Dead letter job: {msg.id}")\n    msg.ack()\n}\n`;
+            files['tests/worker_test.pnr'] = `test "health check returns ok" {\n    let res = http.get("http://localhost:8080/health")\n    assert res.status == 200\n}\n`;
             break;
         case 'scheduled':
-            files['main.srv'] = `use log\nuse db\n\nserver "8080"\n\nroute "GET" "/health" (req) {\n    return { "status": "ok", "service": "${name}" }\n}\n\nevery 5m {\n    log.info("Running cleanup task...")\n    db.exec("DELETE FROM temp_data WHERE created_at < ?", time.now() - 3600)?\n}\n\ncron "0 9 * * 1-5" {\n    log.info("Weekday morning task starting...")\n}\n`;
-            files['tests/scheduled_test.srv'] = `test "health check returns ok" {\n    let res = http.get("http://localhost:8080/health")\n    assert res.status == 200\n}\n`;
+            files['main.pnr'] = `use log\nuse db\n\nserver "8080"\n\nroute "GET" "/health" (req) {\n    return { "status": "ok", "service": "${name}" }\n}\n\nevery 5m {\n    log.info("Running cleanup task...")\n    db.exec("DELETE FROM temp_data WHERE created_at < ?", time.now() - 3600)?\n}\n\ncron "0 9 * * 1-5" {\n    log.info("Weekday morning task starting...")\n}\n`;
+            files['tests/scheduled_test.pnr'] = `test "health check returns ok" {\n    let res = http.get("http://localhost:8080/health")\n    assert res.status == 200\n}\n`;
             break;
         case 'fullstack':
-            files['main.srv'] = `use db\nuse cache\nuse queue\nuse log\nuse json\n\nserver "8080"\n\nroute "GET" "/health" (req) {\n    return { "status": "ok", "service": "${name}" }\n}\n\nroute "GET" "/items" (req) {\n    let cached = cache.get("items:all")\n    if cached != nil { return { "items": json.decode(cached), "source": "cache" } }\n    let items = db.query("SELECT * FROM items WHERE status = 'active'")?\n    cache.set("items:all", json.encode(items), 30)?\n    return { "items": items, "source": "db" }\n}\n\nroute "POST" "/items" (req) {\n    let body = json.decode(req.body)?\n    db.exec("INSERT INTO items (name, status) VALUES (?, 'active')", body.name)?\n    cache.del("items:all")?\n    queue.publish("items.created", { "name": body.name })?\n    return 201, { "message": "item created" }\n}\n\nsubscribe "items.created" (msg) {\n    log.info(f"New item: {msg.data.name}")\n    msg.ack()\n}\n\nevery 10m {\n    log.info("Cache warmup...")\n    let items = db.query("SELECT * FROM items WHERE status = 'active'")?\n    cache.set("items:all", json.encode(items), 600)?\n}\n`;
-            files['tests/items_test.srv'] = `test "health check returns ok" {\n    let res = http.get("http://localhost:8080/health")\n    assert res.status == 200\n}\n\ntest "create item returns 201" {\n    let res = http.post("http://localhost:8080/items", { "name": "Test Item" })\n    assert res.status == 201\n}\n`;
+            files['main.pnr'] = `use db\nuse cache\nuse queue\nuse log\nuse json\n\nserver "8080"\n\nroute "GET" "/health" (req) {\n    return { "status": "ok", "service": "${name}" }\n}\n\nroute "GET" "/items" (req) {\n    let cached = cache.get("items:all")\n    if cached != nil { return { "items": json.decode(cached), "source": "cache" } }\n    let items = db.query("SELECT * FROM items WHERE status = 'active'")?\n    cache.set("items:all", json.encode(items), 30)?\n    return { "items": items, "source": "db" }\n}\n\nroute "POST" "/items" (req) {\n    let body = json.decode(req.body)?\n    db.exec("INSERT INTO items (name, status) VALUES (?, 'active')", body.name)?\n    cache.del("items:all")?\n    queue.publish("items.created", { "name": body.name })?\n    return 201, { "message": "item created" }\n}\n\nsubscribe "items.created" (msg) {\n    log.info(f"New item: {msg.data.name}")\n    msg.ack()\n}\n\nevery 10m {\n    log.info("Cache warmup...")\n    let items = db.query("SELECT * FROM items WHERE status = 'active'")?\n    cache.set("items:all", json.encode(items), 600)?\n}\n`;
+            files['tests/items_test.pnr'] = `test "health check returns ok" {\n    let res = http.get("http://localhost:8080/health")\n    assert res.status == 200\n}\n\ntest "create item returns 201" {\n    let res = http.post("http://localhost:8080/items", { "name": "Test Item" })\n    assert res.status == 201\n}\n`;
             break;
         default: // minimal
-            files['main.srv'] = `use log\n\nserver "8080"\n\nroute "GET" "/" (req) {\n    return { "message": "Hello from ${name}!" }\n}\n\nroute "GET" "/health" (req) {\n    return { "status": "ok" }\n}\n`;
-            files['tests/main_test.srv'] = `test "root route returns hello" {\n    let res = http.get("http://localhost:8080/")\n    assert res.status == 200\n    assert res.body.message == "Hello from ${name}!"\n}\n`;
+            files['main.pnr'] = `use log\n\nserver "8080"\n\nroute "GET" "/" (req) {\n    return { "message": "Hello from ${name}!" }\n}\n\nroute "GET" "/health" (req) {\n    return { "status": "ok" }\n}\n`;
+            files['tests/main_test.pnr'] = `test "root route returns hello" {\n    let res = http.get("http://localhost:8080/")\n    assert res.status == 200\n    assert res.body.message == "Hello from ${name}!"\n}\n`;
     }
     return files;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// CD.118 — serv.deploy  One-Click Deploy to ServCloud
-// Quick Pick environment → Webview with live build log → ServCloud API / mock
+// CD.118 — serv.deploy  One-Click Deploy to Pranor Deploy
+// Quick Pick environment → Webview with live build log → Pranor Deploy API / mock
 // ═══════════════════════════════════════════════════════════════════════════════
 
 async function deployToCloud(context) {
@@ -2737,7 +2737,7 @@ async function deployToCloud(context) {
     );
     panel.webview.html = _getDeployHtml(serviceName, env.id);
 
-    // Try real ServCloud API; fall back to animated mock
+    // Try real Pranor Deploy API; fall back to animated mock
     const http = require('http');
     const bodyStr = JSON.stringify({ service: serviceName, environment: env.id });
     const req = http.request(
@@ -2764,7 +2764,7 @@ function _simulateMockDeploy(panel, service, envId) {
         { delay:  900, log: '[build]  Running tests...',                 status: 'running' },
         { delay: 1600, log: '[build]  Tests passed (4/4)',               status: 'running' },
         { delay: 2200, log: '[deploy] Packaging binary...',              status: 'running' },
-        { delay: 2900, log: '[deploy] Uploading to ServCloud...',        status: 'running' },
+        { delay: 2900, log: '[deploy] Uploading to Pranor Deploy...',        status: 'running' },
         { delay: 3600, log: '[deploy] Provisioning container...',        status: 'running' },
         { delay: 4300, log: '[deploy] Health check: waiting...',         status: 'running' },
         { delay: 4900, log: '[deploy] Health check: OK',                 status: 'running' },
@@ -2784,7 +2784,7 @@ function _getDeployHtml(service, env) {
         <div style="color:#bac2de;margin-bottom:18px;">Target: <span style="color:#f9e2af;font-weight:bold;">${env}</span></div>
         <div id="badge" style="display:inline-block;padding:6px 18px;border-radius:20px;background:#313244;color:#f9e2af;font-weight:bold;margin-bottom:18px;">&#9203; Building...</div>
         <div id="log" style="background:#181825;border-radius:8px;padding:16px;font-family:monospace;font-size:13px;min-height:220px;max-height:420px;overflow-y:auto;line-height:1.6;">
-            <span style="color:#6c7086;">Connecting to ServCloud...</span>
+            <span style="color:#6c7086;">Connecting to Pranor Deploy...</span>
         </div>
         <div id="url-box" style="display:none;margin-top:18px;padding:14px;background:#1e3a2f;border-radius:8px;border-left:3px solid #a6e3a1;">
             <div style="color:#a6e3a1;font-weight:bold;margin-bottom:6px;">&#10003; Deployment successful</div>
@@ -2843,7 +2843,7 @@ class ServCoverageManager {
     async runCoverage() {
         const editor = vscode.window.activeTextEditor;
         if (!editor || editor.document.languageId !== 'serv') {
-            vscode.window.showWarningMessage('Open a .srv file to run coverage highlights.');
+            vscode.window.showWarningMessage('Open a .pnr file to run coverage highlights.');
             return;
         }
 
@@ -2940,7 +2940,7 @@ function openPlayground(context) {
     const workspaceFolders = vscode.workspace.workspaceFolders;
     if (workspaceFolders) {
         const root = workspaceFolders[0].uri.fsPath;
-        const winPath = path.join(root, 'serv.exe');
+        const winPath = path.join(root, 'pranor.exe');
         if (fs.existsSync(winPath)) compilerPath = winPath;
     }
     
@@ -3025,8 +3025,8 @@ function executeServctlCommand(subCmd) {
 
 function checkBreakingChanges(context) {
     const editor = vscode.window.activeTextEditor;
-    if (!editor || !editor.document.fileName.endsWith('.srv')) {
-        vscode.window.showErrorMessage('Open a .srv file to check breaking changes.');
+    if (!editor || !editor.document.fileName.endsWith('.pnr')) {
+        vscode.window.showErrorMessage('Open a .pnr file to check breaking changes.');
         return;
     }
     const cp = require('child_process');
@@ -3043,8 +3043,8 @@ function checkBreakingChanges(context) {
 
 function generateClientCode(context, lang) {
     const editor = vscode.window.activeTextEditor;
-    if (!editor || !editor.document.fileName.endsWith('.srv')) {
-        vscode.window.showErrorMessage(`Open a .srv file to generate ${lang} client code.`);
+    if (!editor || !editor.document.fileName.endsWith('.pnr')) {
+        vscode.window.showErrorMessage(`Open a .pnr file to generate ${lang} client code.`);
         return;
     }
     const cp = require('child_process');
@@ -3072,7 +3072,7 @@ function openChaosControlPanel(context) {
     </style>
 </head>
 <body>
-    <h2>⚡ Servverse Platform Chaos Injection Engine</h2>
+    <h2>⚡ Pranor Platform Chaos Injection Engine</h2>
     <div class="card">
         <h3>Inject Fault</h3>
         <label>Fault Kind: </label>
@@ -3109,7 +3109,7 @@ function exportToPlayground(context) {
     if (!editor) return;
     const code = editor.document.getText();
     const encoded = encodeURIComponent(code);
-    vscode.env.openExternal(vscode.Uri.parse(`https://playground.servverse.dev/?code=${encoded}`));
+    vscode.env.openExternal(vscode.Uri.parse(`https://playground.pranor.dev/?code=${encoded}`));
 }
 
 function openServdConsole(context) {

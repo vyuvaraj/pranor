@@ -1,7 +1,7 @@
 {
   "name": "serv-vscode",
   "displayName": "Serv Programming Language Support",
-  "description": "Full language support for the Serv programming language (.srv files) — syntax highlighting, diagnostics, autocomplete, hover, go-to-definition, and LSP.",
+  "description": "Full language support for the Serv programming language (.pnr files) — syntax highlighting, diagnostics, autocomplete, hover, go-to-definition, and LSP.",
   "version": "3.4.0",
   "publisher": "vyuvaraj",
   "engines": {
@@ -25,7 +25,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vyuvaraj/Serv-lang"
+    "url": "https://github.com/vyuvaraj/Pranor"
   },
   "author": "Yuvaraj",
   "keywords": [
@@ -40,7 +40,7 @@
     "lsp",
     "go"
   ],
-  "homepage": "https://github.com/vyuvaraj/Serv-lang",
+  "homepage": "https://github.com/vyuvaraj/Pranor",
   "contributes": {
     "languages": [
       {
@@ -50,7 +50,7 @@
           "serv"
         ],
         "extensions": [
-          ".srv"
+          ".pnr"
         ],
         "configuration": "./language-configuration.json"
       }
@@ -58,7 +58,7 @@
     "grammars": [
       {
         "language": "serv",
-        "scopeName": "source.srv",
+        "scopeName": "source.pnr",
         "path": "./syntaxes/serv.tmLanguage.json"
       }
     ],
@@ -74,12 +74,12 @@
         "serv.lspPath": {
           "type": "string",
           "default": "",
-          "description": "Path to the serv-lsp binary. If empty, looks for 'serv-lsp' in PATH or workspace root."
+          "description": "Path to the pranor-lsp binary. If empty, looks for 'pranor-lsp' in PATH or workspace root."
         },
         "serv.compilerPath": {
           "type": "string",
           "default": "",
-          "description": "Path to the serv compiler binary. If empty, looks for 'serv' or 'serv.exe' in workspace root or PATH."
+          "description": "Path to the serv compiler binary. If empty, looks for 'serv' or 'pranor.exe' in workspace root or PATH."
         },
         "serv.enableInlayHints": {
           "type": "boolean",
@@ -89,7 +89,7 @@
         "serv.registryUrl": {
           "type": "string",
           "default": "http://localhost:8090/api/registry/services",
-          "description": "The URL of the ServRegistry microservice to fetch health statuses for the ServVerse services sidebar panel."
+          "description": "The URL of the Pranor Hub microservice to fetch health statuses for the ServVerse services sidebar panel."
         }
       }
     },
@@ -114,7 +114,7 @@
         {
           "id": "serv-test-explorer",
           "name": "Serv Tests",
-          "when": "workspaceContains:**/*.srv"
+          "when": "workspaceContains:**/*.pnr"
         }
       ]
     },
@@ -245,7 +245,7 @@
       },
       {
         "command": "serv.deploy",
-        "title": "Serv: Deploy to ServCloud"
+        "title": "Serv: Deploy to Pranor Deploy"
       },
       {
         "command": "serv.runCoverage",
@@ -314,7 +314,7 @@
   },
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/vyuvaraj/Serv-lang/issues"
+    "url": "https://github.com/vyuvaraj/Pranor/issues"
   },
   "devDependencies": {
     "@vscode/vsce": "^3.9.2"

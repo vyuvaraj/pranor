@@ -7,8 +7,8 @@ metadata:
 spec:
   group: storage.servstore.io
   names:
-    kind: ServStoreCluster
-    listKind: ServStoreClusterList
+    kind: Pranor VaultCluster
+    listKind: Pranor VaultClusterList
     plural: servstoreclusters
     singular: servstorecluster
     shortNames: ["ssc"]
@@ -47,10 +47,10 @@ spec:
                 type: integer
                 minimum: 1
                 maximum: 32
-                description: Number of ServStore storage nodes.
+                description: Number of Pranor Vault storage nodes.
               image:
                 type: string
-                description: Container image for the ServStore server (e.g. ghcr.io/vyuvaraj/servstore:latest).
+                description: Container image for the Pranor Vault server (e.g. ghcr.io/vyuvaraj/servstore:latest).
               dataDir:
                 type: string
                 default: /data

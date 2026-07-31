@@ -1,30 +1,30 @@
 {
     "version": "0.1.0",
     "description": "Programming language for background services, schedulers, and APIs",
-    "homepage": "https://github.com/vyuvaraj/Serv-lang",
+    "homepage": "https://github.com/vyuvaraj/Pranor",
     "license": "Apache-2.0",
     "depends": "go",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/vyuvaraj/Serv-lang/releases/download/v0.1.0/serv-windows-amd64.zip",
+            "url": "https://github.com/vyuvaraj/Pranor/releases/download/v0.1.0/serv-windows-amd64.zip",
             "hash": "acec7c31dc0f0ddba25bdeb21a84c3be6c9a2f41117730a9cd5f9145d4c16dce"
         }
     },
     "bin": [
-        "serv.exe",
-        "serv-lsp.exe"
+        "pranor.exe",
+        "pranor-lsp.exe"
     ],
     "env_set": {
-        "SERV_HOME": "$dir"
+        "PRANOR_HOME": "$dir"
     },
     "post_install": "Write-Host 'Serv installed! Run: serv init myapp' -ForegroundColor Green",
     "checkver": {
-        "github": "https://github.com/vyuvaraj/Serv-lang"
+        "github": "https://github.com/vyuvaraj/Pranor"
     },
     "autoupdate": {
         "architecture": {
             "64bit": {
-                "url": "https://github.com/vyuvaraj/Serv-lang/releases/download/v$version/serv-windows-amd64.zip"
+                "url": "https://github.com/vyuvaraj/Pranor/releases/download/v$version/serv-windows-amd64.zip"
             }
         }
     }

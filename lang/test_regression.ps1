@@ -10,7 +10,7 @@
 #   powershell -ExecutionPolicy Bypass -File test_regression.ps1 -Verbose    # Show details
 #
 # Requirements:
-# - serv.exe built (go build -o serv.exe main.go)
+# - pranor.exe built (go build -o pranor.exe main.go)
 # - curl available (built into Windows 10+)
 
 param(
@@ -40,12 +40,12 @@ function Write-Result($name, $status, $detail) {
     $script:results += [PSCustomObject]@{ Name=$name; Status=$status; Detail=$detail }
 }
 
-# Ensure serv.exe exists
-if (-not (Test-Path ".\serv.exe")) {
-    Write-Host "Building serv.exe..." -ForegroundColor Cyan
-    go build -o serv.exe main.go 2>&1 | Out-Null
+# Ensure pranor.exe exists
+if (-not (Test-Path ".\pranor.exe")) {
+    Write-Host "Building pranor.exe..." -ForegroundColor Cyan
+    go build -o pranor.exe main.go 2>&1 | Out-Null
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "FATAL: Failed to build serv.exe" -ForegroundColor Red
+        Write-Host "FATAL: Failed to build pranor.exe" -ForegroundColor Red
         exit 1
     }
 }
@@ -62,9 +62,9 @@ Write-Host "--------------------"
 # Ensure .build directory exists
 New-Item -ItemType Directory -Force -Path ".build" | Out-Null
 
-$examples = Get-ChildItem examples\*.srv | Sort-Object Name
+$examples = Get-ChildItem examples\*.pnr | Sort-Object Name
 foreach ($file in $examples) {
-    $null = & .\serv.exe build $file.FullName -o ..\.build\regression_test.exe 2>&1
+    $null = & .\pranor.exe build $file.FullName -o ..\.build\regression_test.exe 2>&1
     if ($LASTEXITCODE -eq 0) {
         $pass++
         Write-Result $file.Name "PASS" "compiled"
@@ -83,25 +83,25 @@ Write-Host "Phase 2: Unit Tests (serv test)" -ForegroundColor White
 Write-Host "--------------------------------"
 
 $testFiles = @(
-    "11_concurrent_maps.srv",
-    "12_static_types.srv",
-    "13_phase1_features.srv",
-    "14_phase3_features.srv",
-    "15_mcp_support.srv",
-    "18_python_pool.srv",
-    "19_rate_limiting.srv",
-    "20_raw_strings.srv",
-    "22_query_hooks.srv",
-    "24_migrations.srv",
-    "50_new_features.srv",
-    "52_event_sourcing.srv"
+    "11_concurrent_maps.pnr",
+    "12_static_types.pnr",
+    "13_phase1_features.pnr",
+    "14_phase3_features.pnr",
+    "15_mcp_support.pnr",
+    "18_python_pool.pnr",
+    "19_rate_limiting.pnr",
+    "20_raw_strings.pnr",
+    "22_query_hooks.pnr",
+    "24_migrations.pnr",
+    "50_new_features.pnr",
+    "52_event_sourcing.pnr"
 )
 
 foreach ($name in $testFiles) {
     $file = "examples\$name"
     if (-not (Test-Path $file)) { continue }
 
-    $output = & .\serv.exe test $file 2>&1 | Out-String
+    $output = & .\pranor.exe test $file 2>&1 | Out-String
     if ($LASTEXITCODE -eq 0) {
         $pass++
         Write-Result "$name (test)" "PASS" "tests passed"
@@ -122,13 +122,13 @@ Write-Host "------------------------------------------------------"
 # Files that start a server and have routes we can hit
 # Each uses port 8080, so we override PORT env var to avoid conflicts
 $serverTests = @(
-    @{ File="02_rest_api.srv"; Port="9001"; Endpoints=@("/health", "/test-query-headers?name=Antigravity") },
-    @{ File="37_structured_logging.srv"; Port="9002"; Endpoints=@("/health", "/api/users") },
-    @{ File="38_destructuring.srv"; Port="9003"; Endpoints=@("/health") },
-    @{ File="39_optional_chaining.srv"; Port="9004"; Endpoints=@("/health", "/api/user") },
-    @{ File="40_spread_operator.srv"; Port="9005"; Endpoints=@("/health", "/api/config") },
-    @{ File="41_new_features.srv"; Port="9006"; Endpoints=@("/health", "/api/status") },
-    @{ File="43_request_validation.srv"; Port="9007"; Endpoints=@("/health") }
+    @{ File="02_rest_api.pnr"; Port="9001"; Endpoints=@("/health", "/test-query-headers?name=Antigravity") },
+    @{ File="37_structured_logging.pnr"; Port="9002"; Endpoints=@("/health", "/api/users") },
+    @{ File="38_destructuring.pnr"; Port="9003"; Endpoints=@("/health") },
+    @{ File="39_optional_chaining.pnr"; Port="9004"; Endpoints=@("/health", "/api/user") },
+    @{ File="40_spread_operator.pnr"; Port="9005"; Endpoints=@("/health", "/api/config") },
+    @{ File="41_new_features.pnr"; Port="9006"; Endpoints=@("/health", "/api/status") },
+    @{ File="43_request_validation.pnr"; Port="9007"; Endpoints=@("/health") }
 )
 
 
@@ -136,14 +136,14 @@ $serverTests = @(
 foreach ($test in $serverTests) {
     $file = "examples\$($test.File)"
     $port = $test.Port
-    $binName = "..\.build\smoke_$($test.File -replace '\.srv$', '.exe')"
-    $binPath = ".build\smoke_$($test.File -replace '\.srv$', '.exe')"
+    $binName = "..\.build\smoke_$($test.File -replace '\.pnr$', '.exe')"
+    $binPath = ".build\smoke_$($test.File -replace '\.pnr$', '.exe')"
 
     # Clean previous
     Remove-Item $binPath -ErrorAction SilentlyContinue
 
-    # Build (serv places output relative to the .srv file's directory)
-    $null = & .\serv.exe build $file -o $binName 2>&1
+    # Build (serv places output relative to the .pnr file's directory)
+    $null = & .\pranor.exe build $file -o $binName 2>&1
     if ($LASTEXITCODE -ne 0) {
         $fail++
         Write-Result "$($test.File) (smoke)" "FAIL" "build failed"

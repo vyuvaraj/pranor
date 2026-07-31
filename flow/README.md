@@ -1,10 +1,10 @@
-# ServFlow
+# Pranor Flow
 
 ```bash
 docker run -p 8089:8089 ghcr.io/vyuvaraj/servflow:latest
 ```
 
-`ServFlow` is a stateful, DAG-based workflow orchestrator and Saga compensation engine for the **Servverse** ecosystem. It supports durable execution with checkpointing, WASM step functions, sub-workflow composition, per-execution tracing, and a Dead Letter Workflow Queue with manual retry.
+`Pranor Flow` is a stateful, DAG-based workflow orchestrator and Saga compensation engine for the **Pranor** ecosystem. It supports durable execution with checkpointing, WASM step functions, sub-workflow composition, per-execution tracing, and a Dead Letter Workflow Queue with manual retry.
 
 ---
 
@@ -31,10 +31,10 @@ docker run -p 8089:8089 ghcr.io/vyuvaraj/servflow:latest
 ### 💾 Durable Execution
 - **Checkpoint persistence**: Workflow state serialized to `.state` files on disk after every step — executions survive engine restarts
 - **Resume from checkpoint**: `POST /api/workflows/resume` restarts a workflow from its last successful checkpoint
-- **Idempotent step execution**: Steps can be marked idempotent; on replay, ServFlow skips already-completed steps
+- **Idempotent step execution**: Steps can be marked idempotent; on replay, Pranor Flow skips already-completed steps
 
 ### 🔄 Saga Compensation
-- **Automatic rollback on failure**: When a step fails after earlier steps have succeeded, ServFlow triggers `CompensateAction` in reverse topological order
+- **Automatic rollback on failure**: When a step fails after earlier steps have succeeded, Pranor Flow triggers `CompensateAction` in reverse topological order
 - **Per-step compensation actions**: Each step optionally declares a compensate endpoint — called when rolling back
 - **Partial compensation**: Compensates only completed steps — not future/skipped steps
 
@@ -56,7 +56,7 @@ docker run -p 8089:8089 ghcr.io/vyuvaraj/servflow:latest
 ### 📭 Dead Letter Workflow Queue
 - **DLQ for failed workflows**: Workflows that exhaust retries are moved to the DLWQ with full failure context
 - **Manual retry endpoint**: `POST /api/workflows/dlq/{id}/retry` re-queues a DLWQ workflow from the beginning or from last checkpoint
-- **DLWQ browser**: ServConsole shows failed workflows with their error details
+- **DLWQ browser**: Pranor Console shows failed workflows with their error details
 
 ---
 
@@ -82,7 +82,7 @@ Execute Workflow (POST /api/workflows/execute)
   │
   ▼
 ┌────────────────────────────────────────────────────┐
-│                    ServFlow Engine                  │
+│                    Pranor Flow Engine                  │
 │                                                    │
 │  Topological Sort → Parallel Ready Steps           │
 │       │                                            │
@@ -168,7 +168,7 @@ If `charge-payment` fails after `reserve-inventory` succeeded:
 ```
 1. reserve-inventory → ✅ SUCCESS
 2. charge-payment    → ❌ FAILURE
-3. ServFlow triggers compensations in reverse:
+3. Pranor Flow triggers compensations in reverse:
    → POST http://inventory/release  (compensate reserve-inventory)
 ```
 

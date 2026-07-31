@@ -1,10 +1,10 @@
-# ServMesh
+# Pranor Mesh
 
 ```bash
 docker run -p 8095:8095 ghcr.io/vyuvaraj/servmesh:latest
 ```
 
-`ServMesh` is the intelligent service mesh for the **Servverse** ecosystem, providing latency-aware load balancing, distributed rate limiting, live topology telemetry, and chaos fault injection — all without requiring sidecar proxies.
+`Pranor Mesh` is the intelligent service mesh for the **Pranor** ecosystem, providing latency-aware load balancing, distributed rate limiting, live topology telemetry, and chaos fault injection — all without requiring sidecar proxies.
 
 ---
 
@@ -27,12 +27,12 @@ docker run -p 8095:8095 ghcr.io/vyuvaraj/servmesh:latest
 - **Health-aware routing**: Unhealthy backends are automatically excluded; exponential recovery probing
 
 ### 🚦 Distributed Rate Limiting
-- **Global rate limiting via ServCache token buckets**: Rate limit counters stored in ServCache — all mesh nodes share state for true global enforcement (not per-node)
+- **Global rate limiting via Pranor Cache token buckets**: Rate limit counters stored in Pranor Cache — all mesh nodes share state for true global enforcement (not per-node)
 - **Per-service and per-route policies**: Define separate rate limits per service, per endpoint pattern
 - **Burst control**: Token bucket allows short bursts above sustained rate
 
 ### 🗺️ Live Topology Telemetry
-- **Real-time service topology graph**: ServMesh tracks all observed service-to-service call edges and pushes live updates to ServConsole via WebSocket
+- **Real-time service topology graph**: Pranor Mesh tracks all observed service-to-service call edges and pushes live updates to Pranor Console via WebSocket
 - **Traffic flow visualization**: Annotates edges with RPS, error rate, and p99 latency in real-time
 - **Dependency discovery**: Automatically discovers service dependencies without manual configuration
 
@@ -48,11 +48,11 @@ docker run -p 8095:8095 ghcr.io/vyuvaraj/servmesh:latest
 ## Architecture
 
 ```
-Service A ──→ ServMesh Router ──→ Service B (selected by P2C)
+Service A ──→ Pranor Mesh Router ──→ Service B (selected by P2C)
                     │
-                    ├── ServCache (distributed rate limit counters)
+                    ├── Pranor Cache (distributed rate limit counters)
                     ├── Chaos Engine (inject faults)
-                    └── Topology Emitter (→ ServConsole WebSocket)
+                    └── Topology Emitter (→ Pranor Console WebSocket)
 ```
 
 ---
@@ -98,11 +98,11 @@ curl -X POST http://servmesh:8095/api/v1/ratelimit/policy \
   -d '{"service": "orders-api", "requests_per_second": 500, "burst": 1000}'
 ```
 
-ServMesh uses `ServCache` token buckets — the rate limit is enforced globally across all ServMesh nodes:
+Pranor Mesh uses `Pranor Cache` token buckets — the rate limit is enforced globally across all Pranor Mesh nodes:
 
 ```
 Node 1 ──┐
-Node 2 ──┼──→ ServCache token bucket ──→ allow/deny
+Node 2 ──┼──→ Pranor Cache token bucket ──→ allow/deny
 Node 3 ──┘    (shared global counter)
 ```
 
@@ -146,8 +146,8 @@ docker run -p 8095:8095 \
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `SERVMESH_PORT` | `8095` | HTTP listener port |
-| `SERVMESH_SERVCACHE_URL` | — | ServCache URL for distributed rate limit state |
-| `SERVMESH_SERVCONSOLE_WS_URL` | — | ServConsole WebSocket URL for topology push |
+| `SERVMESH_SERVCACHE_URL` | — | Pranor Cache URL for distributed rate limit state |
+| `SERVMESH_SERVCONSOLE_WS_URL` | — | Pranor Console WebSocket URL for topology push |
 | `SERVMESH_LOCALITY_ZONE` | — | Availability zone for locality-preference routing |
 | `SERVMESH_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
 

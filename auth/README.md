@@ -1,4 +1,4 @@
-# ServAuth
+# Pranor Auth
 
 ```bash
 # 5-Minute Auth Quickstart
@@ -11,7 +11,7 @@ curl -X POST http://localhost:8086/api/auth/login -d '{"username":"dev","passwor
 docker run -p 8086:8086 ghcr.io/vyuvaraj/servauth:latest
 ```
 
-`ServAuth` is the authentication and authorization service for the **Servverse** ecosystem. It provides passkey/WebAuthn login, adaptive MFA, OAuth2/OIDC provider functionality, JWT issuance and rotation, RBAC, and seamless integration with `ServGate` for API-level enforcement.
+`Pranor Auth` is the authentication and authorization service for the **Pranor** ecosystem. It provides passkey/WebAuthn login, adaptive MFA, OAuth2/OIDC provider functionality, JWT issuance and rotation, RBAC, and seamless integration with `Pranor Gate` for API-level enforcement.
 
 ---
 
@@ -23,7 +23,7 @@ docker run -p 8086:8086 ghcr.io/vyuvaraj/servauth:latest
 - [MFA & Adaptive Step-Up](#mfa--adaptive-step-up)
 - [JWT & OAuth2/OIDC](#jwt--oauth2oidc)
 - [RBAC](#rbac)
-- [ServGate Integration](#servgate-integration)
+- [Pranor Gate Integration](#servgate-integration)
 - [Getting Started](#getting-started)
 
 ---
@@ -45,7 +45,7 @@ docker run -p 8086:8086 ghcr.io/vyuvaraj/servauth:latest
 ### 📱 Multi-Factor Authentication (MFA)
 - **TOTP (Time-based OTP)**: Standard RFC 6238 TOTP — compatible with Google Authenticator, Authy, 1Password
 - **SMS OTP**: Send one-time codes via SMS (configurable SMS provider)
-- **Email OTP**: Send one-time codes via email (integrates with `ServMail`)
+- **Email OTP**: Send one-time codes via email (integrates with `Pranor Notify`)
 - **Backup codes**: Generate and manage one-time recovery backup codes
 - **MFA enforcement policies**: Enforce MFA per user group, per role, or per app
 
@@ -71,7 +71,7 @@ docker run -p 8086:8086 ghcr.io/vyuvaraj/servauth:latest
 - **Role definitions**: Create hierarchical roles with inheritance (e.g., `admin` → `editor` → `viewer`)
 - **Permission assignment**: Assign granular permissions (e.g., `orders:read`, `orders:write`) to roles
 - **User-role binding**: Assign roles to users, groups, or OAuth2 clients
-- **Policy enforcement**: ServAuth validates role/permission on every API call when integrated with ServGate
+- **Policy enforcement**: Pranor Auth validates role/permission on every API call when integrated with Pranor Gate
 
 ---
 
@@ -86,7 +86,7 @@ Client (Browser/App)
     │
     ▼
 ┌──────────────────────────────────────────────┐
-│                  ServAuth                     │
+│                  Pranor Auth                     │
 │                                              │
 │  ┌───────────────┐  ┌──────────────────────┐ │
 │  │  WebAuthn     │  │  Session Manager     │ │
@@ -103,7 +103,7 @@ Client (Browser/App)
 │  └───────────────────────────────────────┘   │
 └──────────────────────────────────────────────┘
     │
-    └── ServGate (enforces JWT + RBAC per route)
+    └── Pranor Gate (enforces JWT + RBAC per route)
 ```
 
 ---
@@ -155,7 +155,7 @@ await fetch('/api/v1/auth/passkey/register/finish', {
 
 ## JWT & OAuth2/OIDC
 
-Configure ServGate to verify ServAuth JWTs:
+Configure Pranor Gate to verify Pranor Auth JWTs:
 
 ```json
 {
@@ -206,8 +206,8 @@ docker run -p 8086:8086 \
 | `SERVAUTH_JWT_ALGORITHM` | `RS256` | JWT signing algorithm (`RS256` or `ES256`) |
 | `SERVAUTH_JWT_KEY_PATH` | — | Path to RSA/EC private key for JWT signing |
 | `SERVAUTH_SESSION_SECRET` | — | 32-byte secret for session token signing |
-| `SERVAUTH_MFA_TOTP_ISSUER` | `Servverse` | TOTP issuer name shown in authenticator apps |
-| `SERVAUTH_SERVMAIL_URL` | — | ServMail URL for email OTP delivery |
+| `SERVAUTH_MFA_TOTP_ISSUER` | `Pranor` | TOTP issuer name shown in authenticator apps |
+| `SERVAUTH_SERVMAIL_URL` | — | Pranor Notify URL for email OTP delivery |
 | `SERVAUTH_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
 
 ---

@@ -49,17 +49,17 @@ dockers:
       - "ghcr.io/vyuvaraj/servcache:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
-      - "--label=org.opencontainers.image.title=ServCache"
+      - "--label=org.opencontainers.image.title=Pranor Cache"
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/ServCache"
+      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Cache"
 
 brews:
   - name: servcache
     repository:
       owner: vyuvaraj
       name: homebrew-serv
-    homepage: "https://github.com/vyuvaraj/ServCache"
+    homepage: "https://github.com/vyuvaraj/Pranor Cache"
     description: "Distributed caching service from the ServVerse platform"
     license: "Apache-2.0"
     install: |
@@ -71,7 +71,7 @@ scoops:
   - repository:
       owner: vyuvaraj
       name: scoop-serv
-    homepage: "https://github.com/vyuvaraj/ServCache"
+    homepage: "https://github.com/vyuvaraj/Pranor Cache"
     description: "Distributed caching service from the ServVerse platform"
     license: "Apache-2.0"
 
@@ -81,7 +81,7 @@ nfpms:
     package_name: servcache
     builds: [servcache]
     vendor: Yuvaraj
-    homepage: https://github.com/vyuvaraj/ServCache
+    homepage: https://github.com/vyuvaraj/Pranor Cache
     maintainer: Yuvaraj <vyuvaraj@github.com>
     description: High-performance distributed caching layer from the ServVerse platform
     license: Apache-2.0

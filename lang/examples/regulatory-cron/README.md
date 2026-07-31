@@ -7,13 +7,13 @@ A port of the Java regulatory-cron-service (Spring Boot 3.4 / Java 21) to Serv, 
 ### Prerequisites
 - Go 1.18+ (for building the Serv compiler)
 - MongoDB running on `localhost:27017`
-- Serv compiler built (`go build -o serv.exe main.go` from Serv-lang root)
+- Serv compiler built (`go build -o pranor.exe main.go` from Pranor root)
 
 ### Build & Run
 
 ```bash
-# From the Serv-lang root directory
-.\serv.exe build examples\regulatory-cron\main.srv -o examples\regulatory-cron\cron-service.exe
+# From the Pranor root directory
+.\pranor.exe build examples\regulatory-cron\main.pnr -o examples\regulatory-cron\cron-service.exe
 
 # Run from the regulatory-cron directory (so config.yml is found)
 cd examples\regulatory-cron
@@ -32,8 +32,8 @@ set server.port=8087
 # Or point to config explicitly
 .\cron-service.exe --config C:\path\to\config.yml
 
-# Or use SERV_CONFIG env var
-set SERV_CONFIG=C:\path\to\config.yml
+# Or use PRANOR_CONFIG env var
+set PRANOR_CONFIG=C:\path\to\config.yml
 .\cron-service.exe
 ```
 
@@ -60,29 +60,29 @@ curl http://localhost:8087/metrics
 
 ```
 regulatory-cron/
-├── main.srv                         # Entry point (imports + seed call)
-├── config.srv                       # Server/DB config (reads config.yml)
+├── main.pnr                         # Entry point (imports + seed call)
+├── config.pnr                       # Server/DB config (reads config.yml)
 ├── config.yml                       # YAML configuration
 ├── scheduler/
-│   ├── engine.srv                   # Job queue, workers, dispatch, schedulers
-│   └── seeder.srv                   # Seeds 12 sample jobs if DB is empty
+│   ├── engine.pnr                   # Job queue, workers, dispatch, schedulers
+│   └── seeder.pnr                   # Seeds 12 sample jobs if DB is empty
 ├── jobs/
-│   ├── data_sync.srv               # External API sync pattern
-│   ├── batch_processing.srv        # Chunked DB processing pattern
-│   └── cleanup.srv                 # Retention-based cleanup pattern
+│   ├── data_sync.pnr               # External API sync pattern
+│   ├── batch_processing.pnr        # Chunked DB processing pattern
+│   └── cleanup.pnr                 # Retention-based cleanup pattern
 ├── api/
-│   ├── middleware.srv              # X-Actor header middleware
-│   ├── jobs.srv                    # CRUD + pause/resume/trigger
-│   ├── dlq.srv                     # Dead Letter Queue endpoints
-│   ├── bulk.srv                    # Bulk operations
-│   └── stats.srv                   # Observability stats
+│   ├── middleware.pnr              # X-Actor header middleware
+│   ├── jobs.pnr                    # CRUD + pause/resume/trigger
+│   ├── dlq.pnr                     # Dead Letter Queue endpoints
+│   ├── bulk.pnr                    # Bulk operations
+│   └── stats.pnr                   # Observability stats
 ├── models/
-│   └── domain.srv                  # Structs & enums
+│   └── domain.pnr                  # Structs & enums
 ├── services/
-│   ├── executor.srv                # Retry engine with backoff
-│   ├── lock.srv                    # MongoDB distributed locks
-│   ├── dlq.srv                     # DLQ service logic
-│   └── alert.srv                   # Webhook alerts
+│   ├── executor.pnr                # Retry engine with backoff
+│   ├── lock.pnr                    # MongoDB distributed locks
+│   ├── dlq.pnr                     # DLQ service logic
+│   └── alert.pnr                   # Webhook alerts
 └── README.md
 ```
 
@@ -156,7 +156,7 @@ regulatory-cron/
 ## Troubleshooting
 
 **"unsupported database schema" error:**
-- The service can't find `config.yml`. Run from the `regulatory-cron/` directory, or set `SERV_CONFIG` env var.
+- The service can't find `config.yml`. Run from the `regulatory-cron/` directory, or set `PRANOR_CONFIG` env var.
 
 **"I/O error on GET request... null":**
 - The service isn't running or is on a different port. Check console output for "listening on port 8087".

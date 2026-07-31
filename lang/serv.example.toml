@@ -1,19 +1,19 @@
 # ============================================================================
-# serv.toml — Project Manifest for Serv-lang
+# serv.toml — Project Manifest for Pranor
 # ============================================================================
 #
 # This file defines a Serv project: its metadata, entry point, dependencies,
 # environment profiles, and deployment configuration.
 #
 # Place this file at the root of your project directory. When you run
-# `serv build ./` or `serv run ./`, the compiler reads this manifest to
+# `pranor build ./` or `pranor run ./`, the compiler reads this manifest to
 # locate the entry point and resolve dependencies.
 #
 # Minimal example (just 3 lines):
 #
 #   name = "my-service"
 #   version = "1.0.0"
-#   entry = "main.srv"
+#   entry = "main.pnr"
 #
 # Full reference below.
 # ============================================================================
@@ -25,15 +25,15 @@
 # Human-readable project name. Used in logs, deploy configs, and registry.
 name = "task-api"
 
-# Semantic version. Used by ServRegistry for package resolution.
+# Semantic version. Used by Pranor Hub for package resolution.
 version = "1.2.0"
 
-# Entry point file (relative to this directory). Default: "main.srv"
-# For single-file projects, this is the only .srv file.
+# Entry point file (relative to this directory). Default: "main.pnr"
+# For single-file projects, this is the only .pnr file.
 # For multi-file projects, this is the root file that imports others.
-entry = "main.srv"
+entry = "main.pnr"
 
-# Short description shown in ServRegistry search results.
+# Short description shown in Pranor Hub search results.
 description = "A simple task management API built with Serv"
 
 # Author info (optional, shown in registry).
@@ -43,12 +43,12 @@ author = "yourname"
 license = "MIT"
 
 # ---------------------------------------------------------------------------
-# [dependencies] — External packages from ServRegistry
+# [dependencies] — External packages from Pranor Hub
 # ---------------------------------------------------------------------------
 # Install with: serv install <package-name>
 # Format: package_name = "version"
 #
-# Packages are resolved from the configured registry (default: ServRegistry).
+# Packages are resolved from the configured registry (default: Pranor Hub).
 # Use `serv install jwt` to add a dependency and auto-update this section.
 
 [dependencies]
@@ -71,7 +71,7 @@ LOG_FORMAT = "json"
 # ---------------------------------------------------------------------------
 # [env.development] — Development profile overrides
 # ---------------------------------------------------------------------------
-# Activated with: serv run main.srv --env development
+# Activated with: pranor run main.pnr --env development
 # Merges on top of [env] defaults.
 
 [env.development]
@@ -83,7 +83,7 @@ DATABASE_URL = "sqlite://dev.db"
 # ---------------------------------------------------------------------------
 # [env.staging] — Staging profile
 # ---------------------------------------------------------------------------
-# Activated with: serv run main.srv --env staging
+# Activated with: pranor run main.pnr --env staging
 
 [env.staging]
 PORT = "8080"
@@ -94,7 +94,7 @@ CACHE_URL = "redis://staging-redis:6379"
 # ---------------------------------------------------------------------------
 # [env.production] — Production profile
 # ---------------------------------------------------------------------------
-# Activated with: serv run main.srv --env production
+# Activated with: pranor run main.pnr --env production
 
 [env.production]
 PORT = "8080"
@@ -140,13 +140,13 @@ vm_memory = "256mb"
 vm_cpus = 1
 
 # ---------------------------------------------------------------------------
-# [servverse] — Servverse ecosystem wiring (optional)
+# [pranor] — Pranor ecosystem wiring (optional)
 # ---------------------------------------------------------------------------
-# When deploying as part of a Servverse stack, these settings wire the
+# When deploying as part of a Pranor stack, these settings wire the
 # service into the ecosystem automatically. Alternatively, set the
 # SERVVERSE_DISCOVERY env var to a JSON manifest at runtime.
 
-[servverse]
+[pranor]
 gate = "http://localhost:8080"
 store = "http://localhost:8081"
 queue = "http://localhost:8082"

@@ -1,5 +1,5 @@
 /**
- * @servverse/queue-wasm — SharedWorker Multi-Tab Coordinator
+ * @pranor/queue-wasm — SharedWorker Multi-Tab Coordinator
  * Ensures single OPFS file handle access across multiple browser tabs via SharedWorker & BroadcastChannel.
  */
 

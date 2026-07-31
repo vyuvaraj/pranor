@@ -49,17 +49,17 @@ dockers:
       - "ghcr.io/vyuvaraj/servcron:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
-      - "--label=org.opencontainers.image.title=ServCron"
+      - "--label=org.opencontainers.image.title=Pranor Chrono"
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/ServCron"
+      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Chrono"
 
 brews:
   - name: servcron
     repository:
       owner: vyuvaraj
       name: homebrew-serv
-    homepage: "https://github.com/vyuvaraj/ServCron"
+    homepage: "https://github.com/vyuvaraj/Pranor Chrono"
     description: "Distributed cron scheduler and job runner from the ServVerse platform"
     license: "Apache-2.0"
     install: |
@@ -71,7 +71,7 @@ scoops:
   - repository:
       owner: vyuvaraj
       name: scoop-serv
-    homepage: "https://github.com/vyuvaraj/ServCron"
+    homepage: "https://github.com/vyuvaraj/Pranor Chrono"
     description: "Distributed cron scheduler and job runner from the ServVerse platform"
     license: "Apache-2.0"
 
@@ -81,7 +81,7 @@ nfpms:
     package_name: servcron
     builds: [servcron]
     vendor: Yuvaraj
-    homepage: https://github.com/vyuvaraj/ServCron
+    homepage: https://github.com/vyuvaraj/Pranor Chrono
     maintainer: Yuvaraj <vyuvaraj@github.com>
     description: Distributed cron job scheduler from the ServVerse platform
     license: Apache-2.0

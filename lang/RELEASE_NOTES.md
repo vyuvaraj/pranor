@@ -6,10 +6,10 @@ The first stable release of Serv — a programming language for building backgro
 
 ```bash
 # macOS/Linux
-curl -fsSL https://raw.githubusercontent.com/vyuvaraj/Serv-lang/main/release-scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/vyuvaraj/Pranor/main/release-scripts/install.sh | bash
 
 # Windows (PowerShell)
-irm https://raw.githubusercontent.com/vyuvaraj/Serv-lang/main/release-scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/vyuvaraj/Pranor/main/release-scripts/install.ps1 | iex
 ```
 
 **Prerequisite:** [Go 1.18+](https://go.dev/dl/) must be installed.
@@ -19,7 +19,7 @@ irm https://raw.githubusercontent.com/vyuvaraj/Serv-lang/main/release-scripts/in
 ```bash
 serv init myapp
 cd myapp
-serv run main.srv --watch
+pranor run main.pnr --watch
 # Visit http://localhost:8080/health
 ```
 
@@ -56,8 +56,8 @@ serv run main.srv --watch
 Auth, JWT, crypto, HTTP client, pagination, retry, circuit breaker, rate limiting, validation, feature flags, multi-tenancy, audit logging, and more. Import with `import { fn } from "stdlib/module"`.
 
 ### Toolchain
-- `serv build` — compile to native binary
-- `serv run --watch` — hot-reload development
+- `pranor build` — compile to native binary
+- `pranor run --watch` — hot-reload development
 - `serv test --cover` — testing with coverage
 - `serv lint` — static analysis (type errors, unused vars, unreachable code)
 - `serv fmt` — code formatter
@@ -109,4 +109,4 @@ Auth, JWT, crypto, HTTP client, pagination, retry, circuit breaker, rate limitin
 | Linux (ARM) | `serv-linux-arm64.tar.gz` |
 | Windows (x64) | `serv-windows-amd64.zip` |
 
-Each archive contains the compiler, LSP, runtime source, standard library, and module files — everything needed to compile `.srv` files.
+Each archive contains the compiler, LSP, runtime source, standard library, and module files — everything needed to compile `.pnr` files.

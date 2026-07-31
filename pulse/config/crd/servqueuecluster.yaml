@@ -41,6 +41,6 @@ spec:
   names:
     plural: servqueueclusters
     singular: servqueuecluster
-    kind: ServQueueCluster
+    kind: Pranor PulseCluster
     shortNames:
       - sqc

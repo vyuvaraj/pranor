@@ -4,16 +4,16 @@
 
 ### Codebase Scope & Directory Locations
 - Root repository path: `/home/developer/workspace/serv`
-- ServPool package: `/home/developer/workspace/serv/packages/ServPool`
-- ServQueue package: `/home/developer/workspace/serv/packages/ServQueue`
+- Pranor Pool package: `/home/developer/workspace/serv/packages/Pranor Pool`
+- Pranor Pulse package: `/home/developer/workspace/serv/packages/Pranor Pulse`
 - Original Requirements specification: `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (Lines 109-143, Requirements R8, R9, R10).
 
-### Key Observations in ServPool
-1. **Module & Package Setup (`packages/ServPool/go.mod`)**:
-   - Module name: `github.com/vyuvaraj/serv/packages/ServPool`
+### Key Observations in Pranor Pool
+1. **Module & Package Setup (`packages/Pranor Pool/go.mod`)**:
+   - Module name: `github.com/vyuvaraj/pranor/packages/Pranor Pool`
    - Go version: `1.23.0`
-   - Dependencies: `github.com/vyuvaraj/serv/packages/ServShared v0.0.0`
-2. **Pool Interface (`packages/ServPool/pkg/pool/pool.go`, Lines 20-35)**:
+   - Dependencies: `github.com/vyuvaraj/pranor/packages/Pranor Core v0.0.0`
+2. **Pool Interface (`packages/Pranor Pool/pkg/pool/pool.go`, Lines 20-35)**:
    - `DbConn` struct definition:
      ```go
      type DbConn struct {
@@ -33,16 +33,16 @@
          Shutdown(ctx context.Context) error
      }
      ```
-3. **Routing Setup (`packages/ServPool/pkg/routing/routing.go`)**:
+3. **Routing Setup (`packages/Pranor Pool/pkg/routing/routing.go`)**:
    - `Server` struct uses `primaryPool pool.Manager` and `replicaPool pool.Manager`.
    - Currently `pkg/routing/rw_splitter.go` does **not** exist and needs to be created.
    - Currently `pkg/pool/health_checker.go` does **not** exist and needs to be created.
 
-### Key Observations in ServQueue
-1. **Module & Package Setup (`packages/ServQueue/go.mod`)**:
-   - Module name: `github.com/vyuvaraj/serv/packages/ServQueue`
+### Key Observations in Pranor Pulse
+1. **Module & Package Setup (`packages/Pranor Pulse/go.mod`)**:
+   - Module name: `github.com/vyuvaraj/pranor/packages/Pranor Pulse`
    - Go version: `1.25.0`
-2. **Core Log Engine (`packages/ServQueue/pkg/core/engine.go`, Lines 10-27, 42-58, 141-183)**:
+2. **Core Log Engine (`packages/Pranor Pulse/pkg/core/engine.go`, Lines 10-27, 42-58, 141-183)**:
    - `LogEntry` struct definition:
      ```go
      type LogEntry struct {
@@ -67,7 +67,7 @@
      }
      ```
    - `Engine` struct methods: `NewEngine`, `SetEncryptionKey`, `Enqueue`, `Dequeue`, `SeekToTime`, `GetPendingSync`, `AcknowledgeSync`, `Close`.
-   - Missing package: `packages/ServQueue/pkg/tracing` directory does not exist yet. `traceparent.go` needs to be created in `pkg/tracing`.
+   - Missing package: `packages/Pranor Pulse/pkg/tracing` directory does not exist yet. `traceparent.go` needs to be created in `pkg/tracing`.
    - `LogEntry` does not currently store trace context. `LogEntry` needs `Traceparent string \`json:"traceparent,omitempty"\`` field.
    - `Engine` needs an `Append(topic, payload string, metadata ...map[string]string) (LogEntry, error)` method.
 
@@ -105,10 +105,10 @@
 ## 4. Conclusion
 
 The technical design for SP.G1, SP.G2, and SQ.G5 is fully specified and aligned with `ORIGINAL_REQUEST.md`. Implementation can proceed cleanly by creating:
-1. `packages/ServPool/pkg/routing/rw_splitter.go` & `rw_splitter_test.go`
-2. `packages/ServPool/pkg/pool/health_checker.go` & `health_checker_test.go`
-3. `packages/ServQueue/pkg/tracing/traceparent.go` & `traceparent_test.go`
-4. Modifying `packages/ServQueue/pkg/core/engine.go` and `engine_test.go`.
+1. `packages/Pranor Pool/pkg/routing/rw_splitter.go` & `rw_splitter_test.go`
+2. `packages/Pranor Pool/pkg/pool/health_checker.go` & `health_checker_test.go`
+3. `packages/Pranor Pulse/pkg/tracing/traceparent.go` & `traceparent_test.go`
+4. Modifying `packages/Pranor Pulse/pkg/core/engine.go` and `engine_test.go`.
 
 ---
 
@@ -116,13 +116,13 @@ The technical design for SP.G1, SP.G2, and SQ.G5 is fully specified and aligned 
 
 ### Step-by-Step Build & Test Verification
 ```bash
-# 1. Verify ServPool
-cd /home/developer/workspace/serv/packages/ServPool
+# 1. Verify Pranor Pool
+cd /home/developer/workspace/serv/packages/Pranor Pool
 go build ./...
 go test ./... -v
 
-# 2. Verify ServQueue
-cd /home/developer/workspace/serv/packages/ServQueue
+# 2. Verify Pranor Pulse
+cd /home/developer/workspace/serv/packages/Pranor Pulse
 go build ./...
 go test ./... -v
 ```

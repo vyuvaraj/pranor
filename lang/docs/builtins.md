@@ -209,7 +209,7 @@ items.length()                   // 5
 
 ## ai — Artificial Intelligence & LLM Access
 
-First-class AI operations directly available in Serv-lang:
+First-class AI operations directly available in Pranor:
 
 ```serv
 // Complete single prompt
@@ -387,7 +387,7 @@ let list = file.list(".")
 
 - **`dns.lookup(host string) string`**: Resolves domain to its first IP string.
 - **`dns.txt(host string) string`**: Resolves domain TXT records.
-- **`dns.srv(service string) map`**: Resolves SRV record to `{ host, port, priority }` map.
+- **`dns.pnr(service string) map`**: Resolves SRV record to `{ host, port, priority }` map.
 
 ## multipart — Multipart Request Parsing
 

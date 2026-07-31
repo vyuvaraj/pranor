@@ -5,12 +5,12 @@
 - **Compiler written in**: Go (1.26.3+)
 - **Module**: `serv` (see `go.mod`)
 - **Target output**: Native binaries via Go code generation
-- **Source extension**: `.srv`
+- **Source extension**: `.pnr`
 
 ## Architecture
 
-Serv is a transpiler: `.srv` → Go source → native binary. The pipeline is:
-1. Lexer tokenizes `.srv` source
+Serv is a transpiler: `.pnr` → Go source → native binary. The pipeline is:
+1. Lexer tokenizes `.pnr` source
 2. Parser builds an AST (Pratt parser with precedence climbing)
 3. Codegen emits Go source code
 4. `go build` compiles the generated Go into a binary
@@ -36,25 +36,25 @@ Serv is a transpiler: `.srv` → Go source → native binary. The pipeline is:
 
 ```bash
 # Build the Serv compiler
-go build -o serv.exe main.go
+go build -o pranor.exe main.go
 
-# Compile a .srv file to a native binary
-serv build <file.srv> -o <output>
+# Compile a .pnr file to a native binary
+pranor build <file.pnr> -o <output>
 
-# Run a .srv file (compile + execute)
-serv run <file.srv>
+# Run a .pnr file (compile + execute)
+pranor run <file.pnr>
 
-# Run with hot-reload (watches .srv and .py files)
-serv run <file.srv> --watch
+# Run with hot-reload (watches .pnr and .py files)
+pranor run <file.pnr> --watch
 
-# Run tests defined in a .srv file
-serv test <file.srv>
+# Run tests defined in a .pnr file
+serv test <file.pnr>
 
 # Lint/validate syntax
-serv lint <file.srv>
+serv lint <file.pnr>
 
 # Generate a Dockerfile
-serv dockerize <file.srv>
+serv dockerize <file.pnr>
 
 # Cross-compile release packages (Windows + Linux)
 powershell ./release-scripts/build_release.ps1

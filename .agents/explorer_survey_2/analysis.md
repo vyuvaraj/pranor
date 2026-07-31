@@ -1,19 +1,19 @@
-# ServCron Architectural Survey & Technical Analysis
+# Pranor Chrono Architectural Survey & Technical Analysis
 
-**Module Path**: `packages/ServCron`  
-**Package Namespace**: `github.com/vyuvaraj/serv/packages/ServCron`  
+**Module Path**: `packages/Pranor Chrono`  
+**Package Namespace**: `github.com/vyuvaraj/pranor/packages/Pranor Chrono`  
 **Target Requirements**: R5 (CR.G1), R6 (CR.G2), R7 (CR.G4)
 
 ---
 
 ## Executive Summary
 
-This report presents a thorough survey and architectural analysis of `packages/ServCron` for implementing requirements R5 (CR.G1: DAG Job Chain Pipeline), R6 (CR.G2: Per-Job Retry Policy Engine), and R7 (CR.G4: Declarative YAML Cron-as-Code).
+This report presents a thorough survey and architectural analysis of `packages/Pranor Chrono` for implementing requirements R5 (CR.G1: DAG Job Chain Pipeline), R6 (CR.G2: Per-Job Retry Policy Engine), and R7 (CR.G4: Declarative YAML Cron-as-Code).
 
 Key findings:
-1. `packages/ServCron` is currently a functional Go 1.23 service with existing scheduler and leader election components.
+1. `packages/Pranor Chrono` is currently a functional Go 1.23 service with existing scheduler and leader election components.
 2. `go.mod` does **not** contain `gopkg.in/yaml.v3`. Per requirement R7 and monorepo constraints ("zero external dependency additions"), a minimal custom YAML subset parser must be implemented in `pkg/config/jobs_loader.go`.
-3. Existing `go test ./...` in `packages/ServCron` passes.
+3. Existing `go test ./...` in `packages/Pranor Chrono` passes.
 4. Job execution logic in `pkg/cron/cron.go` can be cleanly extended for DAG chaining and retries while preserving existing features (e.g. S3 persistence, syslog emission, queue publishing).
 
 ---
@@ -22,7 +22,7 @@ Key findings:
 
 ### Existing Package Structure
 ```
-packages/ServCron/
+packages/Pranor Chrono/
 ├── main.go                       # Entry point (HTTP server + leader election + scheduler)
 ├── main_test.go                  # Integration tests
 ├── go.mod                        # Go module file
@@ -31,7 +31,7 @@ packages/ServCron/
     ├── cron/                     # Core cron scheduler package
     │   ├── cron.go               # Job struct, Scheduler, HTTP execution, cron expression parser
     │   ├── cron_hardening_test.go# Tests for missed execution, leader election, edge cases
-    │   ├── distributed.go        # Leader election implementations (Standalone, Redis, ServLock)
+    │   ├── distributed.go        # Leader election implementations (Standalone, Redis, Pranor Lock)
     │   ├── smart_schedule.go     # Conflict analyzer
     │   └── smart_schedule_test.go# Tests for smart schedule analysis
     ├── otel/                     # OpenTelemetry setup
@@ -42,7 +42,7 @@ packages/ServCron/
 
 ### Module Dependencies (`go.mod`)
 - `github.com/redis/go-redis/v9 v9.7.0`
-- `github.com/vyuvaraj/serv/packages/ServShared v0.0.0`
+- `github.com/vyuvaraj/pranor/packages/Pranor Core v0.0.0`
 - `gopkg.in/yaml.v3`: **NOT present**.
 
 ---
@@ -121,14 +121,14 @@ type Job struct {
 Parse job definitions from a declarative YAML file into `[]cron.Job`, and support hot-reloading via file polling (`os.Stat` every 5 seconds).
 
 #### File Placement
-Create `packages/ServCron/pkg/config/jobs_loader.go`.
+Create `packages/Pranor Chrono/pkg/config/jobs_loader.go`.
 
 #### Package API
 ```go
 package config
 
 import (
-    "github.com/vyuvaraj/serv/packages/ServCron/pkg/cron"
+    "github.com/vyuvaraj/pranor/packages/Pranor Chrono/pkg/cron"
 )
 
 func LoadJobsFile(path string) ([]cron.Job, error)
@@ -173,8 +173,8 @@ jobs:
 ## Verification Plan
 
 ### Command Verification
-1. `go build ./...` inside `packages/ServCron` must compile cleanly with 0 exit code.
-2. `go test ./...` inside `packages/ServCron` must execute all unit and integration tests with 0 exit code.
+1. `go build ./...` inside `packages/Pranor Chrono` must compile cleanly with 0 exit code.
+2. `go test ./...` inside `packages/Pranor Chrono` must execute all unit and integration tests with 0 exit code.
 3. `git diff go.mod` must produce empty output (no dependency additions).
 
 ### Test Coverage Requirements

@@ -1,4 +1,4 @@
-# -- Number of ServStore storage nodes in the StatefulSet
+# -- Number of Pranor Vault storage nodes in the StatefulSet
 replicaCount: 3
 
 image:
@@ -9,7 +9,7 @@ image:
 # -- Unique node ID prefix; each pod gets <nodeIdPrefix>-<ordinal>
 nodeIdPrefix: "servstore"
 
-# -- Port the ServStore S3 server listens on inside the container
+# -- Port the Pranor Vault S3 server listens on inside the container
 containerPort: 9000
 
 # -- Data directory inside the container
@@ -95,9 +95,9 @@ autoscaling:
   targetCPUUtilizationPercentage: 70
   targetMemoryUtilizationPercentage: 80
 
-# ServStore Operator
+# Pranor Vault Operator
 operator:
-  # -- Deploy the ServStore Kubernetes Operator alongside the cluster
+  # -- Deploy the Pranor Vault Kubernetes Operator alongside the cluster
   enabled: true
   image:
     repository: ghcr.io/vyuvaraj/servstore-operator

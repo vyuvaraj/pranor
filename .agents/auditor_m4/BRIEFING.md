@@ -22,7 +22,7 @@ Audit SP.G1 & SP.G2 implementation (rw_splitter.go & health_checker.go) for inte
 - Updated: 2026-07-26T09:09:27Z
 
 ## Audit Scope
-- **Work product**: packages/ServPool/pkg/routing/rw_splitter.go and packages/ServPool/pkg/pool/health_checker.go
+- **Work product**: packages/Pranor Pool/pkg/routing/rw_splitter.go and packages/Pranor Pool/pkg/pool/health_checker.go
 - **Profile loaded**: General Project / Integrity Forensics
 - **Audit type**: forensic integrity check
 

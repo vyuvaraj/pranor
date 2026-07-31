@@ -49,17 +49,17 @@ dockers:
       - "ghcr.io/vyuvaraj/servauth:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
-      - "--label=org.opencontainers.image.title=ServAuth"
+      - "--label=org.opencontainers.image.title=Pranor Auth"
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/ServAuth"
+      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Auth"
 
 brews:
   - name: servauth
     repository:
       owner: vyuvaraj
       name: homebrew-serv
-    homepage: "https://github.com/vyuvaraj/ServAuth"
+    homepage: "https://github.com/vyuvaraj/Pranor Auth"
     description: "Authentication and authorization service from the ServVerse platform"
     license: "Apache-2.0"
     install: |
@@ -71,7 +71,7 @@ scoops:
   - repository:
       owner: vyuvaraj
       name: scoop-serv
-    homepage: "https://github.com/vyuvaraj/ServAuth"
+    homepage: "https://github.com/vyuvaraj/Pranor Auth"
     description: "Authentication and authorization service from the ServVerse platform"
     license: "Apache-2.0"
 
@@ -81,7 +81,7 @@ nfpms:
     package_name: servauth
     builds: [servauth]
     vendor: Yuvaraj
-    homepage: https://github.com/vyuvaraj/ServAuth
+    homepage: https://github.com/vyuvaraj/Pranor Auth
     maintainer: Yuvaraj <vyuvaraj@github.com>
     description: Authentication and authorization service from the ServVerse platform
     license: Apache-2.0

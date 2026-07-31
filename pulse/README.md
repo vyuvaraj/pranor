@@ -1,10 +1,10 @@
-# ServQueue
+# Pranor Pulse
 
 ```bash
 docker run -p 9090:9090 ghcr.io/vyuvaraj/servqueue:latest
 ```
 
-`ServQueue` is a full-featured, enterprise-grade message broker for the **Servverse** ecosystem. It supports server-side STOMP brokering, browser-local OPFS-backed queueing, multi-protocol adapters (Kafka wire, MQTT v5), and advanced security (FIPS 140-3, post-quantum cryptography, blind E2EE).
+`Pranor Pulse` is a full-featured, enterprise-grade message broker for the **Pranor** ecosystem. It supports server-side STOMP brokering, browser-local OPFS-backed queueing, multi-protocol adapters (Kafka wire, MQTT v5), and advanced security (FIPS 140-3, post-quantum cryptography, blind E2EE).
 
 ---
 
@@ -35,7 +35,7 @@ docker run -p 9090:9090 ghcr.io/vyuvaraj/servqueue:latest
 
 ### 🌐 Browser & OPFS (Local-First)
 - **OPFS Storage Driver** (`pkg/opfs`): Full browser-native persistent queue using Origin Private File System
-- **WASM/JS FFI bindings** (`@servverse/queue-wasm`): Use ServQueue from the browser with a TypeScript SDK
+- **WASM/JS FFI bindings** (`@pranor/queue-wasm`): Use Pranor Pulse from the browser with a TypeScript SDK
 - **SharedWorker multi-tab coordination**: Single broker across all browser tabs via SharedWorker
 - **Multi-tab OPFS leader election**: `navigator.locks`-based lease protocol ensures only one tab acts as queue leader at a time
 - **Client-side AES-256-GCM encryption at rest**: Messages encrypted before writing to OPFS
@@ -69,7 +69,7 @@ docker run -p 9090:9090 ghcr.io/vyuvaraj/servqueue:latest
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                       ServQueue                              │
+│                       Pranor Pulse                              │
 │                                                             │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │
 │  │ STOMP Broker │  │ Kafka Compat │  │  MQTT v5 Gateway │  │
@@ -130,18 +130,18 @@ docker run -p 9090:9090 ghcr.io/vyuvaraj/servqueue:latest
 Install the browser SDK:
 
 ```bash
-npm install @servverse/queue-wasm
+npm install @pranor/queue-wasm
 ```
 
 ```typescript
-import { ServQueue } from '@servverse/queue-wasm';
+import { Pranor Pulse } from '@pranor/queue-wasm';
 
-const queue = new ServQueue({ encryption: 'aes-256-gcm' });
+const queue = new Pranor Pulse({ encryption: 'aes-256-gcm' });
 await queue.publish('orders', { id: 1, item: 'Widget' });
 await queue.subscribe('orders', (msg) => console.log(msg));
 
 // Auto-syncs to server when online; stores locally when offline
-await queue.enableOfflineSync({ serverUrl: 'wss://queue.servverse.net' });
+await queue.enableOfflineSync({ serverUrl: 'wss://queue.pranor.net' });
 ```
 
 ---
@@ -165,7 +165,7 @@ await queue.enableOfflineSync({ serverUrl: 'wss://queue.servverse.net' });
 
 - **Prometheus `/metrics`**: Per-topic message rate, consumer lag, DLQ depth, compaction stats
 - **OTel W3C Trace Context**: `traceparent` header propagated per message through full pipeline
-- **ServConsole Queue Inspector**: Live topic browser, consumer group lag dashboard, DLQ browser with one-click replay, schema registry browser
+- **Pranor Console Queue Inspector**: Live topic browser, consumer group lag dashboard, DLQ browser with one-click replay, schema registry browser
 
 ---
 
@@ -178,7 +178,7 @@ servqueued --port 9090 --storage ./data --tls
 # CLI
 servqueue publish orders '{"id": 1}'
 servqueue consume orders --group my-service
-serv queue publish orders '{"id": 1}'   # Serv-lang integration
+serv queue publish orders '{"id": 1}'   # Pranor integration
 
 # Kubernetes Operator
 kubectl apply -f servqueuecluster.yaml

@@ -1,6 +1,6 @@
-# ServFlow Roadmap
+# Pranor Flow Roadmap
 
-This roadmap outlines the planned development phases for the ServFlow workflow orchestrator.
+This roadmap outlines the planned development phases for the Pranor Flow workflow orchestrator.
 
 ---
 
@@ -8,8 +8,8 @@ This roadmap outlines the planned development phases for the ServFlow workflow o
 - [x] **DAG-based workflow definitions** — Step execution, dependencies, and task runner. [June 29, 2026]
 - [x] **Durable execution** — State checkpointing and mid-run restart survivability. [June 29, 2026]
 - [x] **Compensation / rollback** — Automatic saga failure reversal execution. [June 29, 2026]
-- [x] **Event-triggered workflows** — Trigger execution via ServQueue. [June 29, 2026]
-- [x] **Serv-lang integration** — Native workflow engine syntax support. [June 29, 2026]
+- [x] **Event-triggered workflows** — Trigger execution via Pranor Pulse. [June 29, 2026]
+- [x] **Pranor integration** — Native workflow engine syntax support. [June 29, 2026]
 
 ## Phase 2: Workflow Management
 - [x] **Human approval gates** — Execution pauses pending manual approval. [June 29, 2026]
@@ -24,13 +24,13 @@ This roadmap outlines the planned development phases for the ServFlow workflow o
 - [x] **SIGTERM Graceful Shutdown** — Register listener to shut down HTTP listener cleanly with a 5-second timeout. [June 30, 2026]
 
 ## Phase 4: Architectural Depth (Completed)
-- [x] **Durable Sagas State Machine** — Durable execution rollback engine backed by ServStore (CORE.2) [July 1, 2026]
+- [x] **Durable Sagas State Machine** — Durable execution rollback engine backed by Pranor Vault (CORE.2) [July 1, 2026]
 
 ## Phase 5: Event-Driven Sagas (Completed)
 - [x] **Event-Driven Sagas Orchestration** — Asynchronous compensations triggered on STOMP topic events (CORE.3) [July 1, 2026]
 
 ## Phase 6: Productization & Visual Editing (Pending)
-- [ ] **Interactive Visual Workflow Designer** — Drag-and-drop stateful workflow editor generating native `serv-lang` code (UI.4)
+- [ ] **Interactive Visual Workflow Designer** — Drag-and-drop stateful workflow editor generating native `pranor` code (UI.4)
 - [ ] **Time-Travel Workflow Replay** — Debug complex workflow errors by replaying trace logs step-by-step locally (DX.13)
 
 ## Phase 7: Package Extraction & Reliability (Pending — July 2026)
@@ -48,7 +48,7 @@ This roadmap outlines the planned development phases for the ServFlow workflow o
 | 7.7 | **Sub-workflow invocation** | Medium | Call another workflow as a step. Enables composition and reuse of workflow patterns | [ ] |
 | 7.8 | **Parallel step execution** | Small | Execute independent steps concurrently (fan-out) and join results before dependent steps | [ ] |
 
-> See [UNIFIED_ROADMAP.md](../servverse-repo/UNIFIED_ROADMAP.md) for the full ecosystem priority matrix.
+> See [UNIFIED_ROADMAP.md](../pranor-repo/UNIFIED_ROADMAP.md) for the full ecosystem priority matrix.
 
 
 ---

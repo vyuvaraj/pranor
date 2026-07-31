@@ -1,19 +1,19 @@
-# ServCache
+# Pranor Cache
 
 ```bash
 docker run -p 8084:8084 ghcr.io/vyuvaraj/servcache:latest
 ```
 
-ServCache is the distributed, high-performance caching service for the Servverse ecosystem. It exposes a low-latency REST API backed by pluggable engines (in-memory or Redis) with native support for OpenTelemetry context propagation, read-through/write-behind database synchronisation, key pattern invalidation, and multi-region replication.
+Pranor Cache is the distributed, high-performance caching service for the Pranor ecosystem. It exposes a low-latency REST API backed by pluggable engines (in-memory or Redis) with native support for OpenTelemetry context propagation, read-through/write-behind database synchronisation, key pattern invalidation, and multi-region replication.
 
 ## Features
 
 - **Pluggable Engines**: Swap transparently between thread-safe local in-memory storage and high-throughput Redis/Valkey clusters.
 - **TTL Eviction**: Automatic, background time-based pruning of expired cache keys.
 - **Key Pattern Invalidation**: Delete matching keys dynamically via wildcards and prefix matching.
-- **Read-Through Cache**: Cache misses automatically load data from a backend database (`SERV_CACHE_BACKEND_DB`) and populate the cache.
+- **Read-Through Cache**: Cache misses automatically load data from a backend database (`PRANOR_CACHE_BACKEND_DB`) and populate the cache.
 - **Write-Behind Cache**: Writes asynchronously update the backend database in the background to ensure eventually consistent writes without blocking clients.
-- **Multi-Region Replication**: Forward mutations asynchronously to peer cache nodes (`SERV_CACHE_PEERS`) to maintain global cache consistency.
+- **Multi-Region Replication**: Forward mutations asynchronously to peer cache nodes (`PRANOR_CACHE_PEERS`) to maintain global cache consistency.
 - **OTel Instrumentation**: Standardized hit/miss/latency metrics automatically exported via OTel tracing context.
 
 ---
@@ -62,14 +62,14 @@ ServCache is the distributed, high-performance caching service for the Servverse
 
 ## Configuration (Environment Variables)
 
-Configure ServCache dynamically by setting these parameters at startup:
+Configure Pranor Cache dynamically by setting these parameters at startup:
 
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `PORT` | HTTP Server port | `8088` |
 | `REDIS_URL` | Redis cluster URL (e.g. `redis://localhost:6379`). Uses in-memory engine if unset. | *(In-Memory)* |
-| `SERV_CACHE_BACKEND_DB` | Endpoint URL of the backend database for read-through & write-behind sync. | *(Disabled)* |
-| `SERV_CACHE_PEERS` | Comma-separated URLs of peer ServCache nodes to replicate mutations (e.g. `http://peer1:8088,http://peer2:8088`). | *(Disabled)* |
+| `PRANOR_CACHE_BACKEND_DB` | Endpoint URL of the backend database for read-through & write-behind sync. | *(Disabled)* |
+| `PRANOR_CACHE_PEERS` | Comma-separated URLs of peer Pranor Cache nodes to replicate mutations (e.g. `http://peer1:8088,http://peer2:8088`). | *(Disabled)* |
 
 ---
 
@@ -93,11 +93,11 @@ go test -v ./...
 
 ---
 
-## Use Without Servverse (Standalone Quickstart)
+## Use Without Pranor (Standalone Quickstart)
 
-`ServCache` can be used as a standalone HTTP memory caching microservice (Redis alternative for development):
+`Pranor Cache` can be used as a standalone HTTP memory caching microservice (Redis alternative for development):
 
-1. **Run ServCache** in standalone mode (uses in-memory engine by default):
+1. **Run Pranor Cache** in standalone mode (uses in-memory engine by default):
    ```bash
    go run main.go --standalone --addr :8084
    ```

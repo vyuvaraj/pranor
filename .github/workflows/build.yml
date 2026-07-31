@@ -32,10 +32,10 @@ jobs:
         run: |
           # Build each package dynamically using workspace resolution
           modules=(
-            "Serv-lang" "ServTunnel" "ServStore" "ServTrace" "ServShared"
-            "ServRegistry" "ServQueue" "ServMesh" "ServPool" "ServMail"
-            "ServGate" "ServFlow" "ServLock" "ServConsole" "ServCron"
-            "ServCloud" "ServCache" "ServAuth" "ServSecret"
+            "Pranor-lang" "PranorTunnel" "PranorStore" "PranorTrace" "PranorShared"
+            "PranorRegistry" "PranorQueue" "PranorMesh" "PranorPool" "PranorMail"
+            "PranorGate" "PranorFlow" "PranorLock" "PranorConsole" "PranorCron"
+            "PranorCloud" "PranorCache" "PranorAuth" "PranorSecret"
           )
           for m in "${modules[@]}"; do
             if [ -d "packages/$m" ]; then
@@ -48,10 +48,10 @@ jobs:
         run: |
           # Run tests for each package
           modules=(
-            "Serv-lang" "ServTunnel" "ServStore" "ServTrace" "ServShared"
-            "ServRegistry" "ServQueue" "ServMesh" "ServPool" "ServMail"
-            "ServGate" "ServFlow" "ServLock" "ServConsole" "ServCron"
-            "ServCloud" "ServCache" "ServAuth" "ServSecret"
+            "Pranor-lang" "PranorTunnel" "PranorStore" "PranorTrace" "PranorShared"
+            "PranorRegistry" "PranorQueue" "PranorMesh" "PranorPool" "PranorMail"
+            "PranorGate" "PranorFlow" "PranorLock" "PranorConsole" "PranorCron"
+            "PranorCloud" "PranorCache" "PranorAuth" "PranorSecret"
           )
           for m in "${modules[@]}"; do
             if [ -d "packages/$m" ]; then

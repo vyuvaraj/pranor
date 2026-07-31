@@ -1,4 +1,4 @@
-# ServStore Standalone Daemon & Admin Console
+# Pranor Vault Standalone Daemon & Admin Console
 # Usage: docker compose up -d
 # S3 API:          http://localhost:9000 (access-key: minioadmin, secret-key: minioadmin)
 # Admin Console:   http://localhost:9001/ui/

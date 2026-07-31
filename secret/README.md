@@ -1,12 +1,12 @@
-# ServSecret — Secret & Credential Management
+# Pranor Secret — Secret & Credential Management
 
-`ServSecret` is the centralized secrets, credentials, and configuration protection engine for the **Servverse** ecosystem. It provides tenant-isolated secret storage encrypted at rest using AES-GCM (Galois/Counter Mode).
+`Pranor Secret` is the centralized secrets, credentials, and configuration protection engine for the **Pranor** ecosystem. It provides tenant-isolated secret storage encrypted at rest using AES-GCM (Galois/Counter Mode).
 
 ## Features
 
 - **Centralized Encrypted Storage**: Encrypts all stored secrets using a 32-byte master key.
 - **Tenant Isolation**: Organizes secrets dynamically per tenant context.
-- **Microservice Ready**: Plugs directly into `ServShared` middleware for authentication, tracing, and rate limiting.
+- **Microservice Ready**: Plugs directly into `Pranor Core` middleware for authentication, tracing, and rate limiting.
 - **Graceful Shutdown**: Stops safely without corrupting the encrypted local storage file.
 
 ---
@@ -31,7 +31,7 @@
 
 ## API Documentation
 
-All endpoints support standard header authentication and `X-Tenant-ID` routing (integrated with `ServShared`).
+All endpoints support standard header authentication and `X-Tenant-ID` routing (integrated with `Pranor Core`).
 
 ### 1. Set or Update a Secret
 * **Endpoint**: `POST /api/v1/secrets`

@@ -10,7 +10,7 @@
   "liveNow": false,
   "panels": [
     {
-      "title": "ServQueue Messages Published Total",
+      "title": "Pranor Pulse Messages Published Total",
       "type": "stat",
       "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
       "targets": [
@@ -79,10 +79,10 @@
   "refresh": "5s",
   "schemaVersion": 38,
   "style": "dark",
-  "tags": ["servqueue", "messaging", "servverse"],
+  "tags": ["servqueue", "messaging", "pranor"],
   "time": { "from": "now-1h", "to": "now" },
   "timepicker": {},
   "timezone": "browser",
-  "title": "ServQueue Ecosystem Overview Dashboard",
+  "title": "Pranor Pulse Ecosystem Overview Dashboard",
   "version": 1
 }

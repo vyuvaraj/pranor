@@ -1,14 +1,14 @@
 # BRIEFING — 2026-07-26T09:09:27Z
 
 ## Mission
-Perform forensic integrity verification on ServCron (CR.G1, CR.G2, CR.G4) implementation in packages/ServCron.
+Perform forensic integrity verification on Pranor Chrono (CR.G1, CR.G2, CR.G4) implementation in packages/Pranor Chrono.
 
 ## 🔒 My Identity
 - Archetype: forensic_auditor
 - Roles: critic, specialist, auditor
 - Working directory: /home/developer/workspace/serv/.agents/auditor_m3
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
-- Target: ServCron (CR.G1, CR.G2, CR.G4)
+- Target: Pranor Chrono (CR.G1, CR.G2, CR.G4)
 
 ## 🔒 Key Constraints
 - Audit-only — do NOT modify implementation code
@@ -20,7 +20,7 @@ Perform forensic integrity verification on ServCron (CR.G1, CR.G2, CR.G4) implem
 - Updated: not yet
 
 ## Audit Scope
-- Work product: packages/ServCron (pkg/cron/cron.go, pkg/config/jobs_loader.go, go.mod, tests)
+- Work product: packages/Pranor Chrono (pkg/cron/cron.go, pkg/config/jobs_loader.go, go.mod, tests)
 - Profile loaded: General Project
 - Audit type: forensic integrity check
 

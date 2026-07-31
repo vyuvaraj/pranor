@@ -3,8 +3,8 @@
 Serv ships with 46 reusable modules in `stdlib/`. Import what you need:
 
 ```serv
-import { ok, notFound } from "../stdlib/response.srv"
-import { requireAuth } from "../stdlib/auth.srv"
+import { ok, notFound } from "../stdlib/response.pnr"
+import { requireAuth } from "../stdlib/auth.pnr"
 ```
 
 ## Quick Reference
@@ -12,115 +12,115 @@ import { requireAuth } from "../stdlib/auth.srv"
 ### Security
 | Module | Key Exports |
 |--------|-------------|
-| `auth.srv` | `bearerToken`, `basicAuth`, `requireAuth` |
-| `crypto.srv` | `hashPassword`, `verifyPassword`, `randomToken`, `hmacSign` |
-| `jwt.srv` | `jwtEncode`, `jwtDecode`, `jwtIsExpired` |
-| `sanitize.srv` | `escapeHTML`, `stripTags`, `escapeSQL`, `sanitizeFilename` |
-| `ratelimit.srv` | `createLimiter`, `isAllowed`, `remaining`, `resetLimiter` |
-| `mask.srv` | `maskEmail`, `maskPhone`, `maskCard`, `maskString`, `redact` |
-| `ip.srv` | `extractIP`, `isPrivate`, `isTrustedProxy`, `anonymizeIP` |
+| `auth.pnr` | `bearerToken`, `basicAuth`, `requireAuth` |
+| `crypto.pnr` | `hashPassword`, `verifyPassword`, `randomToken`, `hmacSign` |
+| `jwt.pnr` | `jwtEncode`, `jwtDecode`, `jwtIsExpired` |
+| `sanitize.pnr` | `escapeHTML`, `stripTags`, `escapeSQL`, `sanitizeFilename` |
+| `ratelimit.pnr` | `createLimiter`, `isAllowed`, `remaining`, `resetLimiter` |
+| `mask.pnr` | `maskEmail`, `maskPhone`, `maskCard`, `maskString`, `redact` |
+| `ip.pnr` | `extractIP`, `isPrivate`, `isTrustedProxy`, `anonymizeIP` |
 
 ### HTTP
 | Module | Key Exports |
 |--------|-------------|
-| `response.srv` | `ok`, `created`, `badRequest`, `notFound`, `serverError` |
-| `pagination.srv` | `offset`, `pageResponse`, `parsePageParams` |
-| `pagination_cursor.srv` | `encodeCursor`, `decodeCursor`, `cursorResponse` |
-| `middleware.srv` | `corsHeaders`, `requestId`, `logRequest` |
-| `http_client.srv` | `getJSON`, `postJSON`, `isSuccess`, `isClientError` |
-| `url.srv` | `encodeURI`, `parseQuery`, `buildQuery`, `joinPath` |
-| `cors.srv` | `allowOrigin`, `allowAll`, `preflightResponse` |
+| `response.pnr` | `ok`, `created`, `badRequest`, `notFound`, `serverError` |
+| `pagination.pnr` | `offset`, `pageResponse`, `parsePageParams` |
+| `pagination_cursor.pnr` | `encodeCursor`, `decodeCursor`, `cursorResponse` |
+| `middleware.pnr` | `corsHeaders`, `requestId`, `logRequest` |
+| `http_client.pnr` | `getJSON`, `postJSON`, `isSuccess`, `isClientError` |
+| `url.pnr` | `encodeURI`, `parseQuery`, `buildQuery`, `joinPath` |
+| `cors.pnr` | `allowOrigin`, `allowAll`, `preflightResponse` |
 
 ### Utilities
 | Module | Key Exports |
 |--------|-------------|
-| `datetime.srv` | `now`, `timestamp`, `isExpired`, `formatDuration` |
-| `strings_util.srv` | `slugify`, `truncate`, `capitalize`, `isEmpty` |
-| `math.srv` | `min`, `max`, `clamp`, `abs`, `percent`, `sum`, `average` |
-| `sort.srv` | `reverse`, `minOf`, `maxOf` |
-| `collections.srv` | `unique`, `flatten`, `chunk`, `first`, `last`, `countWhere` |
+| `datetime.pnr` | `now`, `timestamp`, `isExpired`, `formatDuration` |
+| `strings_util.pnr` | `slugify`, `truncate`, `capitalize`, `isEmpty` |
+| `math.pnr` | `min`, `max`, `clamp`, `abs`, `percent`, `sum`, `average` |
+| `sort.pnr` | `reverse`, `minOf`, `maxOf` |
+| `collections.pnr` | `unique`, `flatten`, `chunk`, `first`, `last`, `countWhere` |
 
 ### Data
 | Module | Key Exports |
 |--------|-------------|
-| `csv.srv` | `parseCSV`, `parseRow`, `toCSV` |
-| `base64.srv` | `encode`, `decode`, `isValid` |
-| `diff.srv` | `hasChanged`, `fieldChanged`, `changeRecord` |
+| `csv.pnr` | `parseCSV`, `parseRow`, `toCSV` |
+| `base64.pnr` | `encode`, `decode`, `isValid` |
+| `diff.pnr` | `hasChanged`, `fieldChanged`, `changeRecord` |
 
 ### Config
 | Module | Key Exports |
 |--------|-------------|
-| `env.srv` | `requireEnv`, `envOrDefault`, `envInt`, `envBool` |
-| `config.srv` | `getConfig`, `requireConfig`, `configBool`, `configList` |
-| `feature_flags.srv` | `enableFlag`, `disableFlag`, `isEnabled`, `toggleFlag` |
+| `env.pnr` | `requireEnv`, `envOrDefault`, `envInt`, `envBool` |
+| `config.pnr` | `getConfig`, `requireConfig`, `configBool`, `configList` |
+| `feature_flags.pnr` | `enableFlag`, `disableFlag`, `isEnabled`, `toggleFlag` |
 
 ### Resilience
 | Module | Key Exports |
 |--------|-------------|
-| `retry.srv` | `backoffDelay`, `defaultMaxRetries` |
-| `circuit_breaker.srv` | `createBreaker`, `isOpen`, `recordSuccess`, `recordFailure` |
-| `timeout.srv` | `withDeadline`, `isTimedOut`, `remainingTime`, `elapsed` |
-| `queue.srv` | `createQueue`, `enqueue`, `dequeue`, `queueSize` |
+| `retry.pnr` | `backoffDelay`, `defaultMaxRetries` |
+| `circuit_breaker.pnr` | `createBreaker`, `isOpen`, `recordSuccess`, `recordFailure` |
+| `timeout.pnr` | `withDeadline`, `isTimedOut`, `remainingTime`, `elapsed` |
+| `queue.pnr` | `createQueue`, `enqueue`, `dequeue`, `queueSize` |
 
 ### Concurrency
 | Module | Key Exports |
 |--------|-------------|
-| `semaphore.srv` | `createSemaphore`, `tryAcquire`, `release`, `available` |
-| `batch.srv` | `createBatch`, `addToBatch`, `isBatchFull`, `flushBatch` |
+| `semaphore.pnr` | `createSemaphore`, `tryAcquire`, `release`, `available` |
+| `batch.pnr` | `createBatch`, `addToBatch`, `isBatchFull`, `flushBatch` |
 
 ### Processing
 | Module | Key Exports |
 |--------|-------------|
-| `job.srv` | `createJob`, `startJob`, `completeJob`, `failJob` |
-| `scheduler.srv` | `scheduleAfter`, `isScheduled`, `cancelSchedule` |
+| `job.pnr` | `createJob`, `startJob`, `completeJob`, `failJob` |
+| `scheduler.pnr` | `scheduleAfter`, `isScheduled`, `cancelSchedule` |
 
 ### Reliability
 | Module | Key Exports |
 |--------|-------------|
-| `idempotency.srv` | `checkIdempotency`, `markProcessed`, `isProcessed` |
-| `dlq.srv` | `createDLQ`, `sendToDLQ`, `dlqSize`, `clearDLQ` |
+| `idempotency.pnr` | `checkIdempotency`, `markProcessed`, `isProcessed` |
+| `dlq.pnr` | `createDLQ`, `sendToDLQ`, `dlqSize`, `clearDLQ` |
 
 ### Integration
 | Module | Key Exports |
 |--------|-------------|
-| `webhook.srv` | `buildPayload`, `sendWebhook`, `verifySignature` |
-| `events.srv` | `on`, `emit`, `hasHandler` |
+| `webhook.pnr` | `buildPayload`, `sendWebhook`, `verifySignature` |
+| `events.pnr` | `on`, `emit`, `hasHandler` |
 
 ### Observability
 | Module | Key Exports |
 |--------|-------------|
-| `metrics.srv` | `counter`, `gauge`, `recordLatency`, `trackRequest` |
-| `tracing.srv` | `traceId`, `startSpan`, `endSpan`, `traceContext` |
+| `metrics.pnr` | `counter`, `gauge`, `recordLatency`, `trackRequest` |
+| `tracing.pnr` | `traceId`, `startSpan`, `endSpan`, `traceContext` |
 
 ### Multi-tenancy
 | Module | Key Exports |
 |--------|-------------|
-| `tenant.srv` | `extractTenant`, `tenantConfig`, `isTenantActive`, `tenantFilter` |
+| `tenant.pnr` | `extractTenant`, `tenantConfig`, `isTenantActive`, `tenantFilter` |
 
 ### Compliance
 | Module | Key Exports |
 |--------|-------------|
-| `audit.srv` | `auditLog`, `auditAction`, `auditAccess`, `auditAuth`, `auditDenied` |
+| `audit.pnr` | `auditLog`, `auditAction`, `auditAccess`, `auditAuth`, `auditDenied` |
 
 ### Operations
 | Module | Key Exports |
 |--------|-------------|
-| `health.srv` | `healthy`, `unhealthy`, `degraded`, `buildHealthResponse` |
-| `graceful.srv` | `initShutdown`, `isShuttingDown`, `isDrained` |
-| `cache_patterns.srv` | `cacheKey`, `cacheGet`, `cacheSet`, `invalidate`, `computeIfAbsent` |
+| `health.pnr` | `healthy`, `unhealthy`, `degraded`, `buildHealthResponse` |
+| `graceful.pnr` | `initShutdown`, `isShuttingDown`, `isDrained` |
+| `cache_patterns.pnr` | `cacheKey`, `cacheGet`, `cacheSet`, `invalidate`, `computeIfAbsent` |
 
 ### Testing
 | Module | Key Exports |
 |--------|-------------|
-| `testing_helpers.srv` | `assertEqual`, `assertNotNil`, `assertContains`, `assertTrue` |
+| `testing_helpers.pnr` | `assertEqual`, `assertNotNil`, `assertContains`, `assertTrue` |
 
 ## Usage Example
 
 ```serv
-import { requireAuth, bearerToken } from "../stdlib/auth.srv"
-import { ok, badRequest } from "../stdlib/response.srv"
-import { maskEmail } from "../stdlib/mask.srv"
-import { auditLog } from "../stdlib/audit.srv"
+import { requireAuth, bearerToken } from "../stdlib/auth.pnr"
+import { ok, badRequest } from "../stdlib/response.pnr"
+import { maskEmail } from "../stdlib/mask.pnr"
+import { auditLog } from "../stdlib/audit.pnr"
 
 server "8080"
 
@@ -142,13 +142,13 @@ Full module documentation: see comments at the top of each file in `stdlib/`.
 
 ## Deep-dive Module Examples
 
-### 1. Resilience (`circuit_breaker.srv` & `retry.srv`)
+### 1. Resilience (`circuit_breaker.pnr` & `retry.pnr`)
 
 Implement standard fault tolerance when requesting downstreams:
 
 ```serv
-import { createBreaker, recordSuccess, recordFailure, isOpen } from "../stdlib/circuit_breaker.srv"
-import { backoffDelay } from "../stdlib/retry.srv"
+import { createBreaker, recordSuccess, recordFailure, isOpen } from "../stdlib/circuit_breaker.pnr"
+import { backoffDelay } from "../stdlib/retry.pnr"
 
 let breaker = createBreaker(3, 10s) // 3 failures, 10s timeout window
 
@@ -168,12 +168,12 @@ fn requestExternalAPI(url) {
 }
 ```
 
-### 2. Concurrency (`semaphore.srv`)
+### 2. Concurrency (`semaphore.pnr`)
 
 Guard resources from over-concurrency:
 
 ```serv
-import { createSemaphore, tryAcquire, release } from "../stdlib/semaphore.srv"
+import { createSemaphore, tryAcquire, release } from "../stdlib/semaphore.pnr"
 
 let sem = createSemaphore(5) // Max 5 parallel tasks
 
@@ -189,13 +189,13 @@ fn processTask(taskId) {
 }
 ```
 
-### 3. Masking & Compliance (`mask.srv` & `audit.srv`)
+### 3. Masking & Compliance (`mask.pnr` & `audit.pnr`)
 
 Sanitize user profiles and write logs:
 
 ```serv
-import { maskEmail, maskCard } from "../stdlib/mask.srv"
-import { auditLog } from "../stdlib/audit.srv"
+import { maskEmail, maskCard } from "../stdlib/mask.pnr"
+import { auditLog } from "../stdlib/audit.pnr"
 
 fn getSafeProfile(req) {
     let email = req.body.email

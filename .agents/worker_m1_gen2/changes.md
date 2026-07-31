@@ -1,8 +1,8 @@
-# Changes Report — M1: ServAuth Implementation
+# Changes Report — M1: Pranor Auth Implementation
 
 ## Files Modified & Created
 
-### 1. `packages/ServAuth/pkg/sessions/token_store.go`
+### 1. `packages/Pranor Auth/pkg/sessions/token_store.go`
 - **Purpose**: Implementation of opaque session token store (SA.G1).
 - **Exported Structs & Methods**:
   - `TokenStore` struct
@@ -19,7 +19,7 @@
   - Explicit server-side revocation resulting in `ErrTokenRevoked` on `Validate`.
   - Auto-expiry handling returning `ErrTokenExpired`.
 
-### 2. `packages/ServAuth/pkg/sessions/token_store_test.go`
+### 2. `packages/Pranor Auth/pkg/sessions/token_store_test.go`
 - **Purpose**: Unit test suite for `TokenStore`.
 - **Test Coverage**:
   - Token issuance and 32-byte hex encoding verification.
@@ -29,7 +29,7 @@
   - Validation error handling for empty/non-existent tokens.
   - Concurrent usage safety across multiple goroutines (`go test -race`).
 
-### 3. `packages/ServAuth/pkg/security/velocity_limiter.go`
+### 3. `packages/Pranor Auth/pkg/security/velocity_limiter.go`
 - **Purpose**: Implementation of credential stuffing sliding-window rate limiter (SA.G6).
 - **Exported Structs & Methods**:
   - `VelocityLimiter` struct
@@ -44,7 +44,7 @@
   - Configurable window duration, max attempt threshold, and block duration with safe defaults.
   - Thread safety using `sync.RWMutex`.
 
-### 4. `packages/ServAuth/pkg/security/velocity_limiter_test.go`
+### 4. `packages/Pranor Auth/pkg/security/velocity_limiter_test.go`
 - **Purpose**: Unit test suite for `VelocityLimiter`.
 - **Test Coverage**:
   - Threshold blocking after N failure attempts.

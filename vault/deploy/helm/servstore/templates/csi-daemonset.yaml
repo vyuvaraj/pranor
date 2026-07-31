@@ -1,5 +1,5 @@
 {{- if .Values.csiDriver.enabled }}
-# ServStore CSI Driver DaemonSet — runs the CSI node plugin on every Kubernetes node
+# Pranor Vault CSI Driver DaemonSet — runs the CSI node plugin on every Kubernetes node
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:

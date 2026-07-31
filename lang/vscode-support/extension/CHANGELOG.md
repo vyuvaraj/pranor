@@ -8,7 +8,7 @@
 - **`serv diff` Breaking Change Detector (VS.G3)**: Command `Serv: Check Breaking API Changes (serv diff)` to run schema diffing against git base branch (`main`) with dedicated output logging.
 - **Multi-Target Client Code Generation (VS.G4)**: Commands `Serv: Generate Rust Client Code` (`--lang rust`) and `Serv: Generate Python Client Code` (`--lang python`).
 - **Platform Chaos Control Panel (VS.G5)**: Dedicated Webview panel to trigger/abort network delay, CPU stress, memory pressure, disk throttle, and clock skew faults across cluster nodes (`PL.G3`).
-- **WASM Playground & ServConsole Export (VS.G6)**: Deep-linking command `Serv: Export Current File to WASM Playground` (`playground.servverse.dev`).
+- **WASM Playground & Pranor Console Export (VS.G6)**: Deep-linking command `Serv: Export Current File to WASM Playground` (`playground.pranor.dev`).
 - **`servd` Single-Binary Unified Console Webview (VS.G7)**: Unified multi-tab webview console (`serv.openServdConsole`) with auto-detection for `servd` single-binary status and health rollups.
 
 ## 3.3.0
@@ -19,7 +19,7 @@
 ## 3.2.0
 
 ### Added
-- **Symbol Renaming (CD.114)**: Added workspace-wide rename symbol refactoring support, allowing renaming variables, functions, and structs across all `.srv` files.
+- **Symbol Renaming (CD.114)**: Added workspace-wide rename symbol refactoring support, allowing renaming variables, functions, and structs across all `.pnr` files.
 
 ### Fixed
 - **Light Theme Sidebar Contrast**: Fixed sidebar action button contrast issues in light themes by using standard VS Code secondary state color variables.
@@ -39,15 +39,15 @@
 ## 3.0.7
 
 ### Added
-- **Project Scaffolding** (CD.117) — `Serv: New Project from Template` opens a 3-step flow: (1) Quick Pick from 5 templates (API Service, Worker, Scheduled, Full Stack, Minimal); (2) Input project name with validation; (3) Folder picker. Generates `main.srv`, `tests/`, `serv.toml`, `.gitignore`, and `README.md` ready to run. Opens the new project immediately.
-- **One-Click Deploy** (CD.118) — `Serv: Deploy to ServCloud` opens an environment picker (Production / Staging / Preview), then shows a dark Webview panel with live build log: compile → test → package → upload → provision → health check → deployed URL. Calls ServCloud API at `:8084`; animates a mock flow when offline.
+- **Project Scaffolding** (CD.117) — `Serv: New Project from Template` opens a 3-step flow: (1) Quick Pick from 5 templates (API Service, Worker, Scheduled, Full Stack, Minimal); (2) Input project name with validation; (3) Folder picker. Generates `main.pnr`, `tests/`, `serv.toml`, `.gitignore`, and `README.md` ready to run. Opens the new project immediately.
+- **One-Click Deploy** (CD.118) — `Serv: Deploy to Pranor Deploy` opens an environment picker (Production / Staging / Preview), then shows a dark Webview panel with live build log: compile → test → package → upload → provision → health check → deployed URL. Calls Pranor Deploy API at `:8084`; animates a mock flow when offline.
 - **Coverage Line Highlights** (CD.122) — `Serv: Run Tests with Coverage Highlights` runs `serv test --coverage`, then paints green-tinted lines for covered code and red-highlighted lines with `✗ uncovered` annotations for uncovered code. Results appear in both the editor and the overview ruler. Falls back to realistic mock coverage when the binary isn’t available. `Serv: Clear Coverage Highlights` resets all decorations.
 
 ## 3.0.6
 
 ### Added
-- **ServVerse Activity Bar Panel** (CD.119) — Dedicated sidebar icon in VS Code's Activity Bar showing all 17 services with live 🟢/🔴 health icons, port numbers, and uptime. Polls ServRegistry every 6s. Shows mock data with `offline` badge when registry is unreachable. Refresh button in panel title bar.
-- **ServTunnel Session Viewer** (CD.120) — `serv.viewTunnels` Webview dashboard showing active tunnel sessions with client IP, target host:port, protocol, duration, bytes in/out totals. Completes 17/17 service dashboard coverage.
+- **ServVerse Activity Bar Panel** (CD.119) — Dedicated sidebar icon in VS Code's Activity Bar showing all 17 services with live 🟢/🔴 health icons, port numbers, and uptime. Polls Pranor Hub every 6s. Shows mock data with `offline` badge when registry is unreachable. Refresh button in panel title bar.
+- **Pranor Tunnel Session Viewer** (CD.120) — `serv.viewTunnels` Webview dashboard showing active tunnel sessions with client IP, target host:port, protocol, duration, bytes in/out totals. Completes 17/17 service dashboard coverage.
 - **Import Auto-Organization** (CD.116) — Three-part feature: (1) Completion provider on `use <Tab>` shows all 18 stdlib modules with description and API signature docs; (2) CodeActions quick-fix lightbulb adds missing `use <module>` when `db.`, `cache.`, `http.` etc. are used without import; (3) `Serv: Add Missing Imports` command adds all missing imports at once.
 
 ## 3.0.5
@@ -59,32 +59,32 @@
 ## 3.0.4
 
 ### Added
-- **Serv Test Explorer** — Sidebar panel in Explorer listing all `test "..."` blocks from every `.srv` file, grouped by file with collapse/expand. Refreshes on save.
+- **Serv Test Explorer** — Sidebar panel in Explorer listing all `test "..."` blocks from every `.pnr` file, grouped by file with collapse/expand. Refreshes on save.
 - **serv bench panel** (`serv.runBench`) — Runs `serv bench <file>` in terminal and opens a live p50/p99/throughput results panel per route.
-- **ServCloud Deployments** (`serv.viewDeployments`) — Live table of branch preview deployments with URLs, build status, and auto-refresh.
-- **ServPool Inspector** (`serv.inspectPool`) — DB connection pool dashboard showing active/idle/max connections per named pool, with wait-queue alerts.
-- **ServMail Queue** (`serv.inspectMail`) — Email queue dashboard showing queued/sent/bounced counts and per-item status with template names.
+- **Pranor Deploy Deployments** (`serv.viewDeployments`) — Live table of branch preview deployments with URLs, build status, and auto-refresh.
+- **Pranor Pool Inspector** (`serv.inspectPool`) — DB connection pool dashboard showing active/idle/max connections per named pool, with wait-queue alerts.
+- **Pranor Notify Queue** (`serv.inspectMail`) — Email queue dashboard showing queued/sent/bounced counts and per-item status with template names.
 
 ## 3.0.3
 
 ### Added
-- **ServAuth Progressive Risk Scoring Dashboard** (`serv.inspectAuth`) tracing user devices, countries, and MFA step-ups.
+- **Pranor Auth Progressive Risk Scoring Dashboard** (`serv.inspectAuth`) tracing user devices, countries, and MFA step-ups.
 - **Interactive REPL Launcher** (`serv.openREPL`) — Spawns a `serv repl` terminal inside VS Code for live expression evaluation without a full project build.
-- **ServMesh Topology Viewer** (`serv.viewMesh`) — Renders a live Mermaid.js graph of all mesh service connections, with fallback static topology offline.
-- **ServTrace Request Tracer** (`serv.traceRequests`) — Shows distributed trace spans with filterable trace ID, service, operation, latency, and OK/ERROR status. Auto-refreshes every 5s.
-- **ServRegistry Health Monitor** (`serv.viewRegistry`) — Full table of all registered microservices with live health checks, ports, and uptime. Auto-refreshes every 4s.
+- **Pranor Mesh Topology Viewer** (`serv.viewMesh`) — Renders a live Mermaid.js graph of all mesh service connections, with fallback static topology offline.
+- **Pranor Trace Request Tracer** (`serv.traceRequests`) — Shows distributed trace spans with filterable trace ID, service, operation, latency, and OK/ERROR status. Auto-refreshes every 5s.
+- **Pranor Hub Health Monitor** (`serv.viewRegistry`) — Full table of all registered microservices with live health checks, ports, and uptime. Auto-refreshes every 4s.
 - **Status Bar Health Indicator** — Persistent `$(circuit-board) Serv` item in the editor footer, clicking opens the Registry Monitor. Turns amber with service count when any service is down.
 
 ## 3.0.2
 
 ### Added
 - **Visual DAG Flowchart Designer** (`serv.visualizeWorkflow`) rendering step sequences using Mermaid.js.
-- **ServQueue Broker Explorer** (`serv.exploreQueue`) listing active partitions and consumer groups.
-- **ServStore Bucket Manager** (`serv.exploreStore`) showing S3 directories.
-- **ServLock Contention Dashboard** (`serv.exploreLocks`) tracing active lock waiters.
-- **ServGate Route Simulator** (`serv.simulateRoute`) validating paths against config routes.
-- **ServCron Scheduler Explorer** (`serv.exploreCron`) monitoring schedules and smart analysis warnings.
-- **ServCache Stats Dashboard** (`serv.inspectCache`) displaying cache hit ratios.
+- **Pranor Pulse Broker Explorer** (`serv.exploreQueue`) listing active partitions and consumer groups.
+- **Pranor Vault Bucket Manager** (`serv.exploreStore`) showing S3 directories.
+- **Pranor Lock Contention Dashboard** (`serv.exploreLocks`) tracing active lock waiters.
+- **Pranor Gate Route Simulator** (`serv.simulateRoute`) validating paths against config routes.
+- **Pranor Chrono Scheduler Explorer** (`serv.exploreCron`) monitoring schedules and smart analysis warnings.
+- **Pranor Cache Stats Dashboard** (`serv.inspectCache`) displaying cache hit ratios.
 
 ## 3.0.1
 
@@ -100,7 +100,7 @@
 - 30+ code snippets for common patterns
 - Real-time diagnostics (type errors, unused variables, missing returns)
 - Hover information for all symbols and built-in objects
-- Editor title run button for `.srv` files
+- Editor title run button for `.pnr` files
 
 ### Improved
 - TextMate grammar extended for generics, optional types, union types
@@ -117,6 +117,6 @@
 
 ### Added
 - Initial release
-- TextMate syntax highlighting for `.srv` files
+- TextMate syntax highlighting for `.pnr` files
 - Basic code snippets for routes, functions, and schedulers
 - Extension icon and branding

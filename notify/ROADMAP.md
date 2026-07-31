@@ -1,6 +1,6 @@
-# ServMail Roadmap
+# Pranor Notify Roadmap
 
-This roadmap outlines the planned development phases for the ServMail notification provider service.
+This roadmap outlines the planned development phases for the Pranor Notify notification provider service.
 
 ---
 
@@ -8,7 +8,7 @@ This roadmap outlines the planned development phases for the ServMail notificati
 - [x] **Multi-channel delivery** — SMTP email, Slack webhooks, and SMS. [June 29, 2026]
 - [x] **Template rendering engine** — Go-template parser with context injection. [June 29, 2026]
 - [x] **Opt-out preferences** — Global subscription management. [June 29, 2026]
-- [x] **Serv-lang integration** — `mail.send()` and `notify()` builtins. [June 29, 2026]
+- [x] **Pranor integration** — `mail.send()` and `notify()` builtins. [June 29, 2026]
 
 ## Phase 2: Delivery Control
 - [x] **Dead letter queue retry** — Retry policies on delivery failure. [June 29, 2026]
@@ -38,10 +38,10 @@ This roadmap outlines the planned development phases for the ServMail notificati
 | 5.3 | **Extract `pkg/tracking/`** | Small | Move open/click/bounce tracking into dedicated package with proper analytics pipeline | [ ] |
 | 5.4 | **Delivery receipt webhooks** | Medium | POST delivery status (delivered/bounced/opened/clicked) to configurable callback URLs for external systems | [ ] |
 | 5.5 | **Template inheritance** | Small | Support base templates with blocks that child templates override (like Django template inheritance) | [ ] |
-| 5.6 | **Bulk send API** | Medium | Send to multiple recipients in one API call with per-recipient variable substitution. Queue internally via ServQueue | [ ] |
-| 5.7 | **Scheduled sends** | Small | Accept `send_at` parameter to delay delivery. Integrate with ServCron for precise timing | [ ] |
+| 5.6 | **Bulk send API** | Medium | Send to multiple recipients in one API call with per-recipient variable substitution. Queue internally via Pranor Pulse | [ ] |
+| 5.7 | **Scheduled sends** | Small | Accept `send_at` parameter to delay delivery. Integrate with Pranor Chrono for precise timing | [ ] |
 
-> See [UNIFIED_ROADMAP.md](../servverse-repo/UNIFIED_ROADMAP.md) for the full ecosystem priority matrix.
+> See [UNIFIED_ROADMAP.md](../pranor-repo/UNIFIED_ROADMAP.md) for the full ecosystem priority matrix.
 
 
 ---

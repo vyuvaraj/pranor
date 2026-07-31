@@ -1,5 +1,5 @@
 {
-  "//": "ServGate Gateway Configuration Example",
+  "//": "Pranor Gate Gateway Configuration Example",
   "addr": ":8080",
   "//addr": "Listening address and port for the gateway server",
 

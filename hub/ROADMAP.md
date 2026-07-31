@@ -1,15 +1,15 @@
-# ServRegistry Roadmap
+# Pranor Hub Roadmap
 
-This roadmap outlines the planned development phases for the ServRegistry package manager hub.
+This roadmap outlines the planned development phases for the Pranor Hub package manager hub.
 
 ---
 
-## Differentiating Factors (Why ServRegistry?)
+## Differentiating Factors (Why Pranor Hub?)
 
-* **Integrated with Serv-lang**: Native compiler-level integration using `serv.toml` to install and resolve modules (`serv install`) without third-party tools.
-* **Shared Storage Backend**: Avoids managing separate storage platforms by directly mounting package layers to `ServStore` S3 buckets.
+* **Integrated with Pranor**: Native compiler-level integration using `serv.toml` to install and resolve modules (`serv install`) without third-party tools.
+* **Shared Storage Backend**: Avoids managing separate storage platforms by directly mounting package layers to `Pranor Vault` S3 buckets.
 * **On-the-Fly Dependency Resolution**: Native dependency resolution endpoint using BFS to automatically retrieve, traverse, and output complete dependency trees.
-* **OTel Integration**: Standardised OTel traces track publishing latency, size metrics, and cache-hit ratios directly to `ServTrace` and `ServConsole`.
+* **OTel Integration**: Standardised OTel traces track publishing latency, size metrics, and cache-hit ratios directly to `Pranor Trace` and `Pranor Console`.
 
 ---
 
@@ -30,7 +30,7 @@ This roadmap outlines the planned development phases for the ServRegistry packag
 ## Phase 4: Architectural Depth & DevOps (Pending)
 - [ ] **`serv registry audit`** — CLI command that scans installed packages for known vulnerable versions, outdated dependencies, and deprecated packages, with fix suggestions (Security / DX)
 - [ ] **Private Namespace Support** — Scoped package namespaces (`@org/package`) with access control lists; teams can publish internal packages without exposing to the public index (DevOps)
-- [ ] **Mirror & Offline Cache** — Local proxy mode that caches the public registry to a ServStore bucket; enables air-gapped builds and faster CI pipelines with zero external fetches (DevOps)
+- [ ] **Mirror & Offline Cache** — Local proxy mode that caches the public registry to a Pranor Vault bucket; enables air-gapped builds and faster CI pipelines with zero external fetches (DevOps)
 - [ ] **Provenance Attestation** — Record build provenance (commit SHA, CI run ID, builder identity) alongside the package; verify with `serv verify --attestation` for supply-chain security (Security)
 
 ## Phase 5: Package Extraction & Scale (Pending — July 2026)
@@ -46,7 +46,7 @@ This roadmap outlines the planned development phases for the ServRegistry packag
 | 5.5 | **Webhook notifications** | Small | Notify on new package publish via configurable webhooks. Useful for CI triggers | [ ] |
 | 5.6 | **Package license scanning** | Medium | Detect and surface package license metadata. Warn on incompatible licenses during `serv install` | [ ] |
 
-> See [UNIFIED_ROADMAP.md](../servverse-repo/UNIFIED_ROADMAP.md) for the full ecosystem priority matrix.
+> See [UNIFIED_ROADMAP.md](../pranor-repo/UNIFIED_ROADMAP.md) for the full ecosystem priority matrix.
 
 
 ---

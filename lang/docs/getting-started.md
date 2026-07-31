@@ -7,12 +7,12 @@ Serv is a programming language for building background services, APIs, scheduler
 ### From Source (requires Go 1.22+)
 
 ```bash
-git clone https://github.com/vyuvaraj/Serv-lang.git
-cd Serv-lang
-go build -o serv.exe main.go
+git clone https://github.com/vyuvaraj/Pranor.git
+cd Pranor
+go build -o pranor.exe main.go
 ```
 
-Move `serv.exe` to a directory in your PATH.
+Move `pranor.exe` to a directory in your PATH.
 
 ### Verify Installation
 
@@ -22,7 +22,7 @@ serv --help
 
 ## Hello World
 
-Create `hello.srv`:
+Create `hello.pnr`:
 
 ```serv
 server "8080"
@@ -35,7 +35,7 @@ route "GET" "/hello" (req) {
 Build and run:
 
 ```bash
-serv build hello.srv -o hello.exe
+pranor build hello.pnr -o hello.exe
 ./hello.exe
 ```
 
@@ -47,16 +47,16 @@ Visit `http://localhost:8080/hello` — you'll see:
 ## Quick Run (no build step)
 
 ```bash
-serv run hello.srv
+pranor run hello.pnr
 ```
 
 ## Hot Reload (watch mode)
 
 ```bash
-serv run hello.srv --watch
+pranor run hello.pnr --watch
 ```
 
-Changes to `.srv` files trigger automatic rebuild and restart.
+Changes to `.pnr` files trigger automatic rebuild and restart.
 
 ## Your First Real Service
 
@@ -97,8 +97,8 @@ every 1h {
 Apply the schema before first run:
 
 ```bash
-serv migrate app.srv    # creates the tasks table
-serv run app.srv
+serv migrate app.pnr    # creates the tasks table
+pranor run app.pnr
 ```
 
 

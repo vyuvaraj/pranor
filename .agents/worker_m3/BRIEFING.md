@@ -1,14 +1,14 @@
 # BRIEFING — 2026-07-26T09:04:28Z
 
 ## Mission
-Implementation of Milestone M3: ServCron (CR.G1, CR.G2, CR.G4)
+Implementation of Milestone M3: Pranor Chrono (CR.G1, CR.G2, CR.G4)
 
 ## 🔒 My Identity
 - Archetype: implementer
 - Roles: implementer, qa, specialist
 - Working directory: /home/developer/workspace/serv/.agents/worker_m3
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
-- Milestone: M3 (ServCron)
+- Milestone: M3 (Pranor Chrono)
 
 ## 🔒 Key Constraints
 - Zero external dependency additions to go.mod
@@ -27,10 +27,10 @@ Implementation of Milestone M3: ServCron (CR.G1, CR.G2, CR.G4)
 
 ## Change Tracker
 - **Files modified/created**:
-  - `packages/ServCron/pkg/cron/cron.go` (modified)
-  - `packages/ServCron/pkg/cron/cron_test.go` (created)
-  - `packages/ServCron/pkg/config/jobs_loader.go` (created)
-  - `packages/ServCron/pkg/config/jobs_loader_test.go` (created)
+  - `packages/Pranor Chrono/pkg/cron/cron.go` (modified)
+  - `packages/Pranor Chrono/pkg/cron/cron_test.go` (created)
+  - `packages/Pranor Chrono/pkg/config/jobs_loader.go` (created)
+  - `packages/Pranor Chrono/pkg/config/jobs_loader_test.go` (created)
   - `.agents/worker_m3/DISPATCH.md` (created)
   - `.agents/worker_m3/progress.md` (created)
   - `.agents/worker_m3/changes.md` (created)
@@ -40,7 +40,7 @@ Implementation of Milestone M3: ServCron (CR.G1, CR.G2, CR.G4)
 - **Pending issues**: None
 
 ## Quality Status
-- **Build/test result**: All 14 test cases in `packages/ServCron` pass (100%)
+- **Build/test result**: All 14 test cases in `packages/Pranor Chrono` pass (100%)
 - **Lint status**: Clean
 - **Tests added**: `cron_test.go` (6 test cases), `jobs_loader_test.go` (2 test cases)
 

@@ -1,10 +1,10 @@
-# ServMail
+# Pranor Notify
 
 ```bash
 docker run -p 8091:8091 ghcr.io/vyuvaraj/servmail:latest
 ```
 
-`ServMail` is the transactional email and deliverability management service for the **Servverse** ecosystem. It handles sending, receiving, bounce management, unsubscribe compliance, DMARC enforcement, and provides a rich templating DSL and delivery analytics.
+`Pranor Notify` is the transactional email and deliverability management service for the **Pranor** ecosystem. It handles sending, receiving, bounce management, unsubscribe compliance, DMARC enforcement, and provides a rich templating DSL and delivery analytics.
 
 ---
 
@@ -24,7 +24,7 @@ docker run -p 8091:8091 ghcr.io/vyuvaraj/servmail:latest
 ### 📤 Sending
 - **Transactional email API**: Simple REST API to send emails with HTML/plain text body, attachments, CC/BCC
 - **SMTP relay integration**: Route outgoing mail through your own SMTP relay (Postfix, SendGrid, AWS SES, Mailgun)
-- **Template rendering**: Render emails from reusable templates with the ServMail DSL
+- **Template rendering**: Render emails from reusable templates with the Pranor Notify DSL
 
 ### 📥 Inbound Routing
 - **Inbound email webhook router**: Route inbound emails to HTTP endpoints based on configurable rules (match by `From`, `Subject`, header patterns, or recipient address)
@@ -52,12 +52,12 @@ docker run -p 8091:8091 ghcr.io/vyuvaraj/servmail:latest
 ### ✅ Compliance
 - **One-click unsubscribe (RFC 8058)**: `List-Unsubscribe-Post` header injected on all bulk emails; honor unsubscribe POSTs from email clients (Gmail, Apple Mail)
 - **List management API**: Subscribe, unsubscribe, and manage mailing list membership; segmentation support
-- **Automatic unsubscribe link injection**: ServMail injects a unique unsubscribe link in every outgoing email footer
+- **Automatic unsubscribe link injection**: Pranor Notify injects a unique unsubscribe link in every outgoing email footer
 
 ### 📈 Analytics
 - **Delivery analytics telemetry**: Per-campaign delivery rates, open rates, click rates, bounce rates, complaint rates
 - **Per-recipient event tracking**: Track individual recipient events (delivered, opened, clicked, bounced, unsubscribed)
-- **ServConsole dashboard integration**: Live analytics charts for mail campaigns
+- **Pranor Console dashboard integration**: Live analytics charts for mail campaigns
 
 ---
 
@@ -71,7 +71,7 @@ Inbound Flow:
 Inbound SMTP → DMARC/SPF/DKIM Check → Webhook Router → Your HTTP Endpoint
 
 Event Callbacks:
-Bounce/Complaint Events → Suppression List + Webhook → ServConsole Analytics
+Bounce/Complaint Events → Suppression List + Webhook → Pranor Console Analytics
 ```
 
 ---
@@ -141,14 +141,14 @@ curl -X POST http://servmail:8091/api/v1/dmarc/report \
 
 ## Compliance
 
-ServMail automatically injects unsubscribe headers on bulk sends:
+Pranor Notify automatically injects unsubscribe headers on bulk sends:
 
 ```
 List-Unsubscribe: <https://servmail.yourapp.com/unsubscribe?token=xxx>
 List-Unsubscribe-Post: List-Unsubscribe=One-Click
 ```
 
-When a mail client (Gmail, Apple Mail) sends the one-click unsubscribe POST, ServMail handles it and suppresses the recipient automatically.
+When a mail client (Gmail, Apple Mail) sends the one-click unsubscribe POST, Pranor Notify handles it and suppresses the recipient automatically.
 
 ---
 

@@ -7,7 +7,7 @@ before:
 
 builds:
   - id: servqueue
-    # ServQueue's main package lives in cmd/servqueue/
+    # Pranor Pulse's main package lives in cmd/servqueue/
     main: ./cmd/servqueue
     binary: servqueue
     goos: [linux, darwin, windows]
@@ -50,17 +50,17 @@ dockers:
       - "ghcr.io/vyuvaraj/servqueue:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
-      - "--label=org.opencontainers.image.title=ServQueue"
+      - "--label=org.opencontainers.image.title=Pranor Pulse"
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/ServQueue"
+      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Pulse"
 
 brews:
   - name: servqueue
     repository:
       owner: vyuvaraj
       name: homebrew-serv
-    homepage: "https://github.com/vyuvaraj/ServQueue"
+    homepage: "https://github.com/vyuvaraj/Pranor Pulse"
     description: "Distributed message queue and event streaming service from the ServVerse platform"
     license: "Apache-2.0"
     install: |
@@ -72,7 +72,7 @@ scoops:
   - repository:
       owner: vyuvaraj
       name: scoop-serv
-    homepage: "https://github.com/vyuvaraj/ServQueue"
+    homepage: "https://github.com/vyuvaraj/Pranor Pulse"
     description: "Distributed message queue and event streaming service from the ServVerse platform"
     license: "Apache-2.0"
 
@@ -82,7 +82,7 @@ nfpms:
     package_name: servqueue
     builds: [servqueue]
     vendor: Yuvaraj
-    homepage: https://github.com/vyuvaraj/ServQueue
+    homepage: https://github.com/vyuvaraj/Pranor Pulse
     maintainer: Yuvaraj <vyuvaraj@github.com>
     description: Distributed message queue and event streaming from the ServVerse platform
     license: Apache-2.0

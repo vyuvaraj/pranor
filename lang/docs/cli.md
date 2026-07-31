@@ -1,25 +1,25 @@
 # CLI Reference
 
-## serv build
+## pranor build
 
-Compile a `.srv` file to a native binary.
+Compile a `.pnr` file to a native binary.
 
 ```bash
-serv build <file.srv> [-o <output>]
+pranor build <file.pnr> [-o <output>]
 ```
 
 **Examples:**
 ```bash
-serv build app.srv                    # → service.exe
-serv build app.srv -o myapp.exe       # Custom output name
+pranor build app.pnr                    # → service.exe
+pranor build app.pnr -o myapp.exe       # Custom output name
 ```
 
-## serv run
+## pranor run
 
 Compile and run immediately.
 
 ```bash
-serv run <file.srv> [--watch]
+pranor run <file.pnr> [--watch]
 ```
 
 **Options:**
@@ -27,11 +27,11 @@ serv run <file.srv> [--watch]
 
 ## serv test
 
-Run tests defined in a `.srv` file.
+Run tests defined in a `.pnr` file.
 
 ```bash
-serv test <file.srv>            # Run tests
-serv test --cover <file.srv>    # Run tests with coverage report
+serv test <file.pnr>            # Run tests
+serv test --cover <file.pnr>    # Run tests with coverage report
 ```
 
 Runs all `test "name" { ... }` blocks and reports results.
@@ -43,7 +43,7 @@ Runs all `test "name" { ... }` blocks and reports results.
 Check syntax and perform static analysis without building.
 
 ```bash
-serv lint <file.srv>
+serv lint <file.pnr>
 ```
 
 **Analysis includes:**
@@ -71,11 +71,11 @@ serv lint <file.srv>
 
 ## serv fmt
 
-Format a `.srv` file (4-space indent, consistent style).
+Format a `.pnr` file (4-space indent, consistent style).
 
 ```bash
-serv fmt <file.srv>            # Format in place
-serv fmt --check <file.srv>    # Check only (exit 1 if unformatted)
+serv fmt <file.pnr>            # Format in place
+serv fmt --check <file.pnr>    # Check only (exit 1 if unformatted)
 ```
 
 ## serv repl
@@ -95,7 +95,7 @@ serv repl
 
 ## serv add
 
-Generate a `.srv.d` declaration file for a Go package.
+Generate a `.pnr.d` declaration file for a Go package.
 
 ```bash
 serv add <go-package-path>
@@ -128,7 +128,7 @@ serv remove <package-name>
 
 ## serv install
 
-Install a community package from ServRegistry and resolve its transitive dependencies.
+Install a community package from Pranor Hub and resolve its transitive dependencies.
 
 ```bash
 serv install <package-name>
@@ -144,11 +144,11 @@ serv install pagination@1.2.0
 Downloads the package tarball from the configured registry, extracts it to `packages/<name>/`, then reads its `serv.toml` `[dependencies]` section and recursively installs any missing transitive dependencies.
 
 **Environment variables:**
-- `SERV_REGISTRY` — Override the registry URL (default: `https://registry.serv-lang.org`)
+- `PRANOR_REGISTRY` — Override the registry URL (default: `https://registry.pranor.org`)
 
 **Output example:**
 ```
-Downloading package from https://registry.serv-lang.org/packages/jwt.tar.gz...
+Downloading package from https://registry.pranor.org/packages/jwt.tar.gz...
 ✓ Package 'jwt' installed to packages/jwt/
   Resolving 2 dependencies...
   ↳ Installing dependency: crypto
@@ -159,20 +159,20 @@ Downloading package from https://registry.serv-lang.org/packages/jwt.tar.gz...
 
 ## serv publish
 
-Publish a package directory to ServRegistry.
+Publish a package directory to Pranor Hub.
 
 ```bash
 serv publish <directory>
 ```
 
-Creates a `.tar.gz` archive of the directory (which should contain a `serv.toml`) and uploads it to the configured registry. Requires `SERV_JWT_SECRET` environment variable for authentication.
+Creates a `.tar.gz` archive of the directory (which should contain a `serv.toml`) and uploads it to the configured registry. Requires `PRANOR_JWT_SECRET` environment variable for authentication.
 
 ## serv dockerize
 
 Generate a Dockerfile for deployment.
 
 ```bash
-serv dockerize <file.srv>
+serv dockerize <file.pnr>
 ```
 
 ## serv migrate
@@ -196,7 +196,7 @@ serv migrate [file-or-dir] [--db <connection-string>]
 
 **What it does:**
 
-1. Scans `.srv` files for `table` declarations
+1. Scans `.pnr` files for `table` declarations
 2. Connects to the database
 3. **Creates** tables that don't exist (`CREATE TABLE IF NOT EXISTS`)
 4. **Adds** new columns to existing tables (`ALTER TABLE ADD COLUMN`)
@@ -218,7 +218,7 @@ Migration complete: 2 table(s) created/updated.
 
 ## serv create
 
-AI-scaffold a new `.srv` file from a natural language description.
+AI-scaffold a new `.pnr` file from a natural language description.
 
 ```bash
 serv create "<prompt describing your service>"
@@ -230,30 +230,30 @@ serv create "a REST API for managing blog posts with SQLite"
 serv create "a webhook receiver that processes Stripe payment events"
 ```
 
-Requires `SERV_AI_KEY` environment variable (OpenAI or Gemini API key).
+Requires `PRANOR_AI_KEY` environment variable (OpenAI or Gemini API key).
 
 ## serv dev
 
 Start the full development environment with hot-reload and infrastructure services.
 
 ```bash
-serv dev [file.srv] [--services all]
+serv dev [file.pnr] [--services all]
 ```
 
-Starts ServDB, ServCache, ServQueue, and ServMesh locally, then watches `.srv`
+Starts ServDB, Pranor Cache, Pranor Pulse, and Pranor Mesh locally, then watches `.pnr`
 files for changes and reloads the compiled service automatically.
 
 ## serv deploy
 
-Deploy a `.srv` service to a target environment (e.g. Servverse Cloud).
+Deploy a `.pnr` service to a target environment (e.g. Pranor Cloud).
 
 ```bash
-serv deploy <file.srv> [--env <production|staging>] [--token <jwt>]
+serv deploy <file.pnr> [--env <production|staging>] [--token <jwt>]
 ```
 
 **Options:**
 - `--env` — Target hosting environment (defaults to `staging`)
-- `--token` — Deployment authentication token (falls back to `$SERV_DEPLOY_TOKEN`)
+- `--token` — Deployment authentication token (falls back to `$PRANOR_DEPLOY_TOKEN`)
 
 ## serv doctor
 
@@ -318,5 +318,5 @@ Compiled Serv binaries accept these flags:
 - `OTEL_ENDPOINT=http://localhost:4318` — Enable OpenTelemetry
 - `OTEL_SERVICE_NAME=my-service` — Service name for traces
 - `DATABASE_URL` — Default database connection string
-- `SERV_MESH_ADDR` — ServMesh registry address (default: `http://localhost:8089`)
-- `SERV_SELF_ADDR` — This service's advertised address for mesh registration
+- `PRANOR_MESH_ADDR` — Pranor Mesh registry address (default: `http://localhost:8089`)
+- `PRANOR_SELF_ADDR` — This service's advertised address for mesh registration

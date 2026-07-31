@@ -1,12 +1,12 @@
-# ServQueue Roadmap
+# Pranor Pulse Roadmap
 
-This document outlines the planned evolutionary stages of **ServQueue** to evolve from a lightweight local broker into a distributed, high-performance messaging platform with inline compute capabilities.
+This document outlines the planned evolutionary stages of **Pranor Pulse** to evolve from a lightweight local broker into a distributed, high-performance messaging platform with inline compute capabilities.
 
 ---
 
 ## Phase 1: Core Foundation & WASM Integration (Completed)
 - [x] **Thread-safe Pub/Sub engine**: Core routing structure mapping topics to active subscription channels.
-- [x] **STOMP TCP Server**: Wire protocol parsing (`CONNECT`, `SUBSCRIBE`, `SEND`) for direct compatibility with Serv-lang.
+- [x] **STOMP TCP Server**: Wire protocol parsing (`CONNECT`, `SUBSCRIBE`, `SEND`) for direct compatibility with Pranor.
 - [x] **HTTP Management API**: Control endpoints for manual publishing and WASM filter attachment.
 - [x] **WASM Sandbox Integration**: Wazero-based runner that passes messages through compiled `.wasm` modules.
 
@@ -30,16 +30,16 @@ This document outlines the planned evolutionary stages of **ServQueue** to evolv
 
 ---
 
-## Phase 4: ServStore Tiered Storage (Infinite Backlog Retention)
+## Phase 4: Pranor Vault Tiered Storage (Infinite Backlog Retention)
 - [x] **Write-Ahead Log (WAL)**: Record hot incoming messages to a local disk WAL.
-- [x] **Cold Data Offloading**: Automatically roll WAL segments into structured segment files and upload them to `ServStore` / S3.
+- [x] **Cold Data Offloading**: Automatically roll WAL segments into structured segment files and upload them to `Pranor Vault` / S3.
 - [x] **Log Replay**: Enable client replay requests (e.g., `replay?since=timestamp`), pulling cold segments back from S3.
 
 ---
 
 ## Phase 5: Deep Ecosystem Integration
-- [x] **Serv-lang Dedicated Protocol Driver**: Expand `runtime/broker.go` with a dedicated `servqueue://` driver that supports natively uploading WASM binaries, custom authentication schemas, and advanced queue options directly from `.srv` code.
-- [x] **ServConsole Integration**: Feed broker throughput, active subscriptions, and WASM performance stats directly to the central Serv dashboard.
+- [x] **Pranor Dedicated Protocol Driver**: Expand `runtime/broker.go` with a dedicated `servqueue://` driver that supports natively uploading WASM binaries, custom authentication schemas, and advanced queue options directly from `.pnr` code.
+- [x] **Pranor Console Integration**: Feed broker throughput, active subscriptions, and WASM performance stats directly to the central Serv dashboard.
 - [x] **Auto trace propagation**: Automatically pass trace context seamlessly into the WASM transform runtime environments.
 
 ---
@@ -52,8 +52,8 @@ This document outlines the planned evolutionary stages of **ServQueue** to evolv
 ---
 
 ## Phase 7: Serv-verse Infrastructure Integrations
-- [x] **ServGate API Gateway Webhook Triggers**: Support registering webhooks in `ServGate` that publish directly to `ServQueue` topics on incoming HTTP events.
-- [ ] **ServConsole Unified Control Plane**: Expose complete topic administration, WAL inspection, and WASM performance debug panels directly in the central dashboard.
+- [x] **Pranor Gate API Gateway Webhook Triggers**: Support registering webhooks in `Pranor Gate` that publish directly to `Pranor Pulse` topics on incoming HTTP events.
+- [ ] **Pranor Console Unified Control Plane**: Expose complete topic administration, WAL inspection, and WASM performance debug panels directly in the central dashboard.
 - [x] **Dynamic WASM hot-swap without dropping connections**: Support uploading new WASM transform modules via the console without dropping active subscriber TCP STOMP connections.
 
 ---
@@ -62,13 +62,13 @@ This document outlines the planned evolutionary stages of **ServQueue** to evolv
 
 | # | Item | Effort | Description | Status |
 |---|------|--------|-------------|--------|
-| 8.1 | **Standardized `/healthz` and `/readyz` endpoints** | Small | Health and readiness probes for k8s liveness checks and ServConsole status aggregation. | [x] |
+| 8.1 | **Standardized `/healthz` and `/readyz` endpoints** | Small | Health and readiness probes for k8s liveness checks and Pranor Console status aggregation. | [x] |
 | 8.2 | **Graceful shutdown on SIGTERM** | Small | Drain in-flight STOMP messages, flush WAL, and close connections cleanly before exit. Required for rolling updates. | [x] |
 | 8.3 | **Standardized error response contract** | Small | All HTTP API errors return `{"error": "msg", "code": "ERR_CODE", "trace_id": "..."}` — consistent across ecosystem. | [x] |
 | 8.4 | **API versioning (`/api/v1/`)** | Small | Version the management API before breaking changes accumulate. | [x] |
 | 8.5 | **Rate limiting on publish endpoint** | Small | Protect `POST /api/publish` against flooding — currently unthrottled. | [x] |
 | 8.6 | **CI/CD pipeline (GitHub Actions)** | Small | Automated build, test, and format checks on every PR. Currently missing. | [x] |
-| 8.7 | **WebSocket push for real-time metrics** | Medium | Push live throughput, subscriber counts, and WASM execution stats to ServConsole via WebSocket. | [x] |
+| 8.7 | **WebSocket push for real-time metrics** | Medium | Push live throughput, subscriber counts, and WASM execution stats to Pranor Console via WebSocket. | [x] |
 | 8.8 | **Consumer group support** | Large | Multiple subscribers in a consumer group with partition assignment — enables horizontal scaling of message consumers. | [x] |
 | 8.9 | **Message priority levels** | Medium | Support priority tiers on publish so high-priority messages are delivered ahead of low-priority ones. | [x] |
 
@@ -76,7 +76,7 @@ This document outlines the planned evolutionary stages of **ServQueue** to evolv
 
 ## Phase 9: Next-Level Message Broker (Proposed — Q4 2026+)
 
-These items take ServQueue from a lightweight broker to a **category-defining event streaming platform** — competing with Kafka, Pulsar, and AWS Kinesis while maintaining Serv's simplicity.
+These items take Pranor Pulse from a lightweight broker to a **category-defining event streaming platform** — competing with Kafka, Pulsar, and AWS Kinesis while maintaining Serv's simplicity.
 
 | # | Item | Effort | Description | Status |
 |---|------|--------|-------------|--------|
@@ -84,46 +84,46 @@ These items take ServQueue from a lightweight broker to a **category-defining ev
 | 9.2 | **Schema registry & validation** | Medium | Attach Avro/JSON Schema to topics. Reject non-conforming publishes at the broker. Auto-evolve schemas with compatibility checks. | [x] |
 | 9.3 | **Topic compaction** | Medium | Retain only the latest message per key within a topic — useful for changelog/state topics. Similar to Kafka log compaction. | [x] |
 | 9.4 | **Multi-tenant topic isolation** | Medium | Namespace-scoped topics with independent quotas, rate limits, and RBAC policies per tenant. Enables shared cluster deployment. | [x] |
-| 9.5 | **Stream processing DSL** | Large | Built-in windowed aggregations, joins, and filters expressed in `.srv` syntax: `stream "orders" |> filter(o => o.total > 100) |> window(5m) |> count() |> publish("high-value-orders")`. | [ ] |
+| 9.5 | **Stream processing DSL** | Large | Built-in windowed aggregations, joins, and filters expressed in `.pnr` syntax: `stream "orders" |> filter(o => o.total > 100) |> window(5m) |> count() |> publish("high-value-orders")`. | [ ] |
 | 9.6 | **Message replay with offset management** | Medium | Named consumer offsets with commit/seek semantics. Replay from any point in the WAL by offset or timestamp without re-creating subscriptions. | [x] |
 | 9.7 | **Fan-out patterns (broadcast + routing keys)** | Medium | Support topic routing patterns: `orders.*` (wildcard), `orders.us.#` (multi-level). Enables flexible pub/sub topologies without multiple topics. | [x] |
 | 9.8 | **Backpressure & flow control** | Medium | When consumers are slow, apply configurable backpressure: pause publishes, buffer to disk, or reject with `429`. Prevents unbounded memory growth. | [x] |
-| 9.9 | **Cross-cluster mirroring** | Large | Replicate topics between geographically separate ServQueue clusters for disaster recovery and multi-region active-active setups. | [x] |
-| 9.10 | **Message tracing (end-to-end)** | Medium | Track a message from publish through every WASM transform, DLQ redirect, and consumer ack — visualizable in ServConsole as a message journey timeline. | [ ] |
-| 9.11 | **WASM transform marketplace** | Medium | Install community or private transforms via `servqueue install <name>` resolving from ServRegistry. Pre-built transforms: JSON→Protobuf, PII masking, enrichment. | [ ] |
+| 9.9 | **Cross-cluster mirroring** | Large | Replicate topics between geographically separate Pranor Pulse clusters for disaster recovery and multi-region active-active setups. | [x] |
+| 9.10 | **Message tracing (end-to-end)** | Medium | Track a message from publish through every WASM transform, DLQ redirect, and consumer ack — visualizable in Pranor Console as a message journey timeline. | [ ] |
+| 9.11 | **WASM transform marketplace** | Medium | Install community or private transforms via `servqueue install <name>` resolving from Pranor Hub. Pre-built transforms: JSON→Protobuf, PII masking, enrichment. | [ ] |
 | 9.12 | **Message TTL & expiration** | Small | Per-topic or per-message TTL. Expired messages are automatically moved to DLQ or purged. Essential for time-sensitive event processing. | [x] |
 | 9.13 | **Admin CLI (`servqueue` binary)** | Medium | Terminal client supporting `topics list`, `topics create`, `publish`, `consume`, `offsets`, `transforms list/upload`, and cluster management. | [x] |
-| 9.14 | **Observability dashboard (built-in)** | Medium | Embedded lightweight web UI (like ServStore's console) showing topic throughput, consumer lag, WASM execution stats, and DLQ depth without needing ServConsole. | [ ] |
+| 9.14 | **Observability dashboard (built-in)** | Medium | Embedded lightweight web UI (like Pranor Vault's console) showing topic throughput, consumer lag, WASM execution stats, and DLQ depth without needing Pranor Console. | [ ] |
 
 ---
 
 ## Phase 10: Differentiating Factors — What No Other Broker Offers (Strategic)
 
-These create a **moat** around ServQueue — capabilities that Kafka, RabbitMQ, NATS, and Pulsar cannot replicate without fundamental architecture changes.
+These create a **moat** around Pranor Pulse — capabilities that Kafka, RabbitMQ, NATS, and Pulsar cannot replicate without fundamental architecture changes.
 
 | # | Item | Effort | Description | Why Nobody Else Can Do This |
 |---|------|--------|-------------|----------------------------|
 | 10.1 | **Compute-in-queue (WASM transforms)** | Already Done | Messages pass through sandboxed WASM functions INSIDE the broker — no external stream processors needed. Filter, enrich, transform, or route messages at broker speed. | No other broker runs arbitrary user code inside the message path. Kafka needs Kafka Streams (separate JVM). RabbitMQ needs a Shovel or external consumer. |
-| 10.2 | **Language-native protocol driver** | Already Done | Serv-lang's `broker "servqueue://host"` compiles to a zero-config STOMP client with auto-auth, trace propagation, and typed message schemas — all generated by the compiler. | Tight compiler→broker integration. Other brokers need SDK libraries manually imported and configured. |
+| 10.2 | **Language-native protocol driver** | Already Done | Pranor's `broker "servqueue://host"` compiles to a zero-config STOMP client with auto-auth, trace propagation, and typed message schemas — all generated by the compiler. | Tight compiler→broker integration. Other brokers need SDK libraries manually imported and configured. |
 | 10.3 | **AI-powered message routing** | Large | Route messages to different consumers based on semantic content: `subscribe "support-tickets" where ai.classify(msg) == "urgent"`. The broker evaluates an embedding model on each message to make routing decisions. | WASM sandbox can run ONNX inference models. No other broker has an embedded ML runtime. |
 | 10.4 | **Schema-on-write with WASM validation** | Medium | Attach a WASM validator to a topic — invalid messages are rejected at publish time with a structured error. Zero-latency schema enforcement without a separate schema registry service. | WASM execution at the ingestion point. Kafka's schema registry is a separate service that only validates producers, not at the broker level. |
-| 10.5 | **Tiered storage with ServStore (infinite retention)** | Already Done | Cold messages automatically offload to ServStore (S3-compatible) and transparently replay on request. Infinite retention at object-storage cost, not SSD cost. | Integrated with the ecosystem's storage engine. Kafka Tiered Storage requires separate S3 config; Pulsar needs BookKeeper. ServQueue uses its own storage engine natively. |
+| 10.5 | **Tiered storage with Pranor Vault (infinite retention)** | Already Done | Cold messages automatically offload to Pranor Vault (S3-compatible) and transparently replay on request. Infinite retention at object-storage cost, not SSD cost. | Integrated with the ecosystem's storage engine. Kafka Tiered Storage requires separate S3 config; Pulsar needs BookKeeper. Pranor Pulse uses its own storage engine natively. |
 | 10.6 | **Transform pipeline chaining** | Medium | Chain multiple WASM transforms sequentially: `topic "raw" → validate.wasm → enrich.wasm → route.wasm → topic "processed"`. Declarative pipeline without external orchestration. | Multi-stage WASM pipeline inside the broker. No other broker supports composable transform chains. |
-| 10.7 | **Gateway-integrated event sourcing** | Already Done | ServGate routes can publish to ServQueue topics on every request — the gateway becomes an event sourcing entry point. HTTP → Event in one hop, one config line. | Tight ServGate↔ServQueue integration. Requires separate webhook relay services with Kafka/RabbitMQ. |
-| 10.8 | **Single-binary deployment** | Already Done | The entire broker (STOMP server + HTTP API + WASM runtime + WAL + clustering) compiles to a single Go binary. No JVM, no Erlang VM, no external dependencies. Deploy by copying one file. | Pure Go. Kafka = JVM + ZooKeeper. RabbitMQ = Erlang. Pulsar = JVM + BookKeeper. ServQueue = one file. |
-| 10.9 | **Trace context propagation through transforms** | Already Done | OTel trace context flows from publisher → through every WASM transform → to subscriber. The full message journey is a single distributed trace. | Most brokers lose trace context between producer and consumer. ServQueue maintains it through arbitrary transform stages. |
+| 10.7 | **Gateway-integrated event sourcing** | Already Done | Pranor Gate routes can publish to Pranor Pulse topics on every request — the gateway becomes an event sourcing entry point. HTTP → Event in one hop, one config line. | Tight Pranor Gate↔Pranor Pulse integration. Requires separate webhook relay services with Kafka/RabbitMQ. |
+| 10.8 | **Single-binary deployment** | Already Done | The entire broker (STOMP server + HTTP API + WASM runtime + WAL + clustering) compiles to a single Go binary. No JVM, no Erlang VM, no external dependencies. Deploy by copying one file. | Pure Go. Kafka = JVM + ZooKeeper. RabbitMQ = Erlang. Pulsar = JVM + BookKeeper. Pranor Pulse = one file. |
+| 10.9 | **Trace context propagation through transforms** | Already Done | OTel trace context flows from publisher → through every WASM transform → to subscriber. The full message journey is a single distributed trace. | Most brokers lose trace context between producer and consumer. Pranor Pulse maintains it through arbitrary transform stages. |
 | 10.10 | **Real-time WASM hot-swap** | Already Done | Swap transform modules without disconnecting subscribers or dropping messages. Active connections continue with the new logic on the next message. | Atomic module replacement at the message boundary. Kafka Streams requires rebalancing; Flink requires savepoint + restart. |
 
 ---
 
 ## Phase 11: New Component Integrations (Proposed — 2027)
 
-ServQueue acts as the event backbone for proposed new components.
+Pranor Pulse acts as the event backbone for proposed new components.
 
-| 11.1 | **ServMail delivery channel** | Small | ServMail publishes failed notification deliveries to a DLQ topic for retry. Success/bounce events published for tracking. | [x] |
-| 11.2 | **ServFlow step triggers** | Medium | ServFlow publishes step completion events to topics. Subscribe to workflow events for downstream reactions. | [x] |
-| 11.3 | **ServFlow workflow triggers** | Medium | Publish to a topic to start a ServFlow workflow. Event-driven workflow initiation without direct API calls. | [x] |
-| 11.4 | **ServAuth event stream** | Small | User registration, login, password reset events published to `auth.events` topic for audit and downstream processing. | [x] |
+| 11.1 | **Pranor Notify delivery channel** | Small | Pranor Notify publishes failed notification deliveries to a DLQ topic for retry. Success/bounce events published for tracking. | [x] |
+| 11.2 | **Pranor Flow step triggers** | Medium | Pranor Flow publishes step completion events to topics. Subscribe to workflow events for downstream reactions. | [x] |
+| 11.3 | **Pranor Flow workflow triggers** | Medium | Publish to a topic to start a Pranor Flow workflow. Event-driven workflow initiation without direct API calls. | [x] |
+| 11.4 | **Pranor Auth event stream** | Small | User registration, login, password reset events published to `auth.events` topic for audit and downstream processing. | [x] |
 
 > See [UNIFIED_ROADMAP.md](../UNIFIED_ROADMAP.md) for the full ecosystem priority matrix and architectural recommendations.
 

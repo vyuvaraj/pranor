@@ -1,11 +1,11 @@
-# dev.ps1 — Developer utility script for Serv-lang
+# dev.ps1 — Developer utility script for Pranor
 # Usage:
-#   .\dev.ps1 build          — Build serv.exe + serv-lsp.exe
+#   .\dev.ps1 build          — Build pranor.exe + pranor-lsp.exe
 #   .\dev.ps1 vsix           — Package VS Code extension (.vsix)
 #   .\dev.ps1 install        — Build + copy to PATH location
 #   .\dev.ps1 test           — Run regression tests
 #   .\dev.ps1 test-unit      — Run unit tests (Phase 2)
-#   .\dev.ps1 fmt            — Format all .srv files
+#   .\dev.ps1 fmt            — Format all .pnr files
 #   .\dev.ps1 lint           — Lint all examples
 #   .\dev.ps1 clean          — Remove build artifacts
 #   .\dev.ps1 release [ver]  — Full release build
@@ -30,13 +30,13 @@ switch ($Command) {
 
     "build" {
         Write-Host "Building Serv..." -ForegroundColor White
-        Write-Step "serv.exe"
-        go build -o serv.exe .
+        Write-Step "pranor.exe"
+        go build -o pranor.exe .
         if ($LASTEXITCODE -ne 0) { Write-Err "Failed"; exit 1 }
-        Write-Step "serv-lsp.exe"
-        go build -o serv-lsp.exe ./lsp/
+        Write-Step "pranor-lsp.exe"
+        go build -o pranor-lsp.exe ./lsp/
         if ($LASTEXITCODE -ne 0) { Write-Err "Failed"; exit 1 }
-        Write-Ok "Built: serv.exe + serv-lsp.exe"
+        Write-Ok "Built: pranor.exe + pranor-lsp.exe"
     }
 
     "vsix" {
@@ -58,16 +58,16 @@ switch ($Command) {
 
     "install" {
         Write-Host "Building and installing..." -ForegroundColor White
-        go build -o serv.exe .
+        go build -o pranor.exe .
         if ($LASTEXITCODE -ne 0) { Write-Err "Build failed"; exit 1 }
-        go build -o serv-lsp.exe ./lsp/
+        go build -o pranor-lsp.exe ./lsp/
         if ($LASTEXITCODE -ne 0) { Write-Err "LSP build failed"; exit 1 }
-        $installDir = "C:\software\Serv-lang"
+        $installDir = "C:\software\Pranor"
         if (-not (Test-Path $installDir)) {
             New-Item -ItemType Directory -Force -Path $installDir | Out-Null
         }
-        Copy-Item -Force serv.exe $installDir\
-        Copy-Item -Force serv-lsp.exe $installDir\
+        Copy-Item -Force pranor.exe $installDir\
+        Copy-Item -Force pranor-lsp.exe $installDir\
         Copy-Item -Recurse -Force runtime $installDir\runtime
         Copy-Item -Recurse -Force stdlib $installDir\stdlib
         Copy-Item -Force go.mod $installDir\
@@ -83,31 +83,31 @@ switch ($Command) {
 
     "test-unit" {
         Write-Host "Running unit tests..." -ForegroundColor White
-        $testFiles = @("test_sample.srv", "examples\50_new_features.srv")
+        $testFiles = @("test_sample.pnr", "examples\50_new_features.pnr")
         foreach ($f in $testFiles) {
             if (Test-Path $f) {
                 Write-Step $f
-                & .\serv.exe test $f 2>&1 | Out-Null
+                & .\pranor.exe test $f 2>&1 | Out-Null
                 if ($LASTEXITCODE -eq 0) { Write-Ok "PASS" } else { Write-Err "FAIL" }
             }
         }
     }
 
     "fmt" {
-        Write-Host "Formatting all .srv files..." -ForegroundColor White
-        $files = Get-ChildItem -Recurse -Filter "*.srv" | Where-Object { $_.FullName -notlike "*.build*" }
+        Write-Host "Formatting all .pnr files..." -ForegroundColor White
+        $files = Get-ChildItem -Recurse -Filter "*.pnr" | Where-Object { $_.FullName -notlike "*.build*" }
         foreach ($f in $files) {
-            & .\serv.exe fmt $f.FullName 2>&1 | Out-Null
+            & .\pranor.exe fmt $f.FullName 2>&1 | Out-Null
         }
         Write-Ok "Formatted $($files.Count) files"
     }
 
     "lint" {
         Write-Host "Linting examples..." -ForegroundColor White
-        $files = Get-ChildItem examples\*.srv
+        $files = Get-ChildItem examples\*.pnr
         $pass = 0; $fail = 0
         foreach ($f in $files) {
-            & .\serv.exe lint $f.FullName 2>&1 | Out-Null
+            & .\pranor.exe lint $f.FullName 2>&1 | Out-Null
             if ($LASTEXITCODE -eq 0) { $pass++ } else { $fail++; Write-Err $f.Name }
         }
         Write-Ok "Lint: $pass passed, $fail failed"
@@ -115,8 +115,8 @@ switch ($Command) {
 
     "clean" {
         Write-Host "Cleaning..." -ForegroundColor White
-        Remove-Item -Force serv.exe -ErrorAction SilentlyContinue
-        Remove-Item -Force serv-lsp.exe -ErrorAction SilentlyContinue
+        Remove-Item -Force pranor.exe -ErrorAction SilentlyContinue
+        Remove-Item -Force pranor-lsp.exe -ErrorAction SilentlyContinue
         Remove-Item -Recurse -Force .build -ErrorAction SilentlyContinue
         Remove-Item -Recurse -Force dist -ErrorAction SilentlyContinue
         Remove-Item -Recurse -Force examples\.build -ErrorAction SilentlyContinue
@@ -132,17 +132,17 @@ switch ($Command) {
     "all" {
         Write-Host "=== Full Check ===" -ForegroundColor White
         Write-Host ""
-        go build -o serv.exe .
+        go build -o pranor.exe .
 
         if ($LASTEXITCODE -ne 0) { Write-Err "Build failed"; exit 1 }
-        go build -o serv-lsp.exe ./lsp/
+        go build -o pranor-lsp.exe ./lsp/
         if ($LASTEXITCODE -ne 0) { Write-Err "LSP build failed"; exit 1 }
         Write-Ok "Build"
         Write-Host ""
-        $testFiles = @("test_sample.srv", "examples\50_new_features.srv")
+        $testFiles = @("test_sample.pnr", "examples\50_new_features.pnr")
         foreach ($f in $testFiles) {
             if (Test-Path $f) {
-                & .\serv.exe test $f 2>&1 | Out-Null
+                & .\pranor.exe test $f 2>&1 | Out-Null
                 if ($LASTEXITCODE -eq 0) { Write-Ok "Test: $f" } else { Write-Err "Test: $f" }
             }
         }
@@ -153,12 +153,12 @@ switch ($Command) {
     default {
         Write-Host "Serv Developer Utilities" -ForegroundColor Cyan
         Write-Host ""
-        Write-Host "  .\dev.ps1 build        Build serv.exe + serv-lsp.exe"
+        Write-Host "  .\dev.ps1 build        Build pranor.exe + pranor-lsp.exe"
         Write-Host "  .\dev.ps1 vsix         Package VS Code extension"
-        Write-Host "  .\dev.ps1 install      Build + install to C:\software\Serv-lang"
+        Write-Host "  .\dev.ps1 install      Build + install to C:\software\Pranor"
         Write-Host "  .\dev.ps1 test         Run full regression suite"
         Write-Host "  .\dev.ps1 test-unit    Run unit tests only"
-        Write-Host "  .\dev.ps1 fmt          Format all .srv files"
+        Write-Host "  .\dev.ps1 fmt          Format all .pnr files"
         Write-Host "  .\dev.ps1 lint         Lint all examples"
         Write-Host "  .\dev.ps1 clean        Remove build artifacts"
         Write-Host "  .\dev.ps1 release v1.0 Build release archives"

@@ -1,14 +1,14 @@
-# ServRegistry
+# Pranor Hub
 
 ```bash
 docker run -p 8090:8090 ghcr.io/vyuvaraj/servregistry:latest
 ```
 
-ServRegistry is the lightweight, S3-backed community package hub and registry server for the Servverse ecosystem. It allows sharing, versioning, and resolving packages written for `serv-lang` microservices.
+Pranor Hub is the lightweight, S3-backed community package hub and registry server for the Pranor ecosystem. It allows sharing, versioning, and resolving packages written for `pranor` microservices.
 
 ## Features
 
-- **S3 / ServStore Backend**: Packages are stored as tarballs in a dedicated S3 bucket (or `ServStore`).
+- **S3 / Pranor Vault Backend**: Packages are stored as tarballs in a dedicated S3 bucket (or `Pranor Vault`).
 - **Dependency Resolution**: Exposes APIs to resolve package dependency trees dynamically.
 - **Token Authorization**: Supports JWT signature verification to protect package publication.
 - **Ecosystem Landing Dashboard**: Built-in web dashboard displaying active packages, sizes, and versions.
@@ -23,7 +23,7 @@ ServRegistry is the lightweight, S3-backed community package hub and registry se
 - `POST /publish` or `POST /api/v1/publish`
   - Uploads a package tarball (`.tar.gz`).
   - Expects a `serv.toml` manifest file in the root of the archive to parse the package name, version, and dependencies.
-  - If `SERV_JWT_SECRET` is enabled, requires a valid token via the `Authorization: Bearer <token>` header.
+  - If `PRANOR_JWT_SECRET` is enabled, requires a valid token via the `Authorization: Bearer <token>` header.
 
 ### 3. Fetch Package Tarball
 - `GET /packages/{name}.tar.gz` or `GET /api/v1/packages/{name}.tar.gz`
@@ -50,10 +50,10 @@ ServRegistry is the lightweight, S3-backed community package hub and registry se
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `PORT` | Local server port | `8088` |
-| `SERV_STORE_ENDPOINT` | ServStore or external S3 URL | `http://localhost:9000` |
-| `SERV_STORE_ACCESS_KEY` | Access key for S3 bucket | `admin` |
-| `SERV_STORE_SECRET_KEY` | Secret key for S3 bucket | `admin123` |
-| `SERV_JWT_SECRET` | Secret key to validate signature for publishing | *(Disabled)* |
+| `PRANOR_STORE_ENDPOINT` | Pranor Vault or external S3 URL | `http://localhost:9000` |
+| `PRANOR_STORE_ACCESS_KEY` | Access key for S3 bucket | `admin` |
+| `PRANOR_STORE_SECRET_KEY` | Secret key for S3 bucket | `admin123` |
+| `PRANOR_JWT_SECRET` | Secret key to validate signature for publishing | *(Disabled)* |
 
 ## Running Locally
 

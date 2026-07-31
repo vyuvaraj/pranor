@@ -3,7 +3,7 @@
 #
 # Prerequisites:
 #   npm install -g @vscode/vsce
-#   vsce login serv-lang  (one-time setup with Personal Access Token)
+#   vsce login pranor  (one-time setup with Personal Access Token)
 #
 # Usage: ./release-scripts/publish-vscode.sh
 
@@ -20,4 +20,4 @@ vsce publish
 
 echo ""
 echo "Done! Extension published."
-echo "Users can now install via: ext install serv-lang.serv-vscode"
+echo "Users can now install via: ext install pranor.serv-vscode"

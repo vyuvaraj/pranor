@@ -1,6 +1,6 @@
-# ServAuth Roadmap
+# Pranor Auth Roadmap
 
-This roadmap outlines the planned development phases for the ServAuth identity provider service.
+This roadmap outlines the planned development phases for the Pranor Auth identity provider service.
 
 ---
 
@@ -8,7 +8,7 @@ This roadmap outlines the planned development phases for the ServAuth identity p
 - [x] **User registration & login** â€” Email/password signup and login endpoints. [June 29, 2026]
 - [x] **OAuth2/OIDC provider** â€” Authorization code flow and client credential token issuance. [June 29, 2026]
 - [x] **Password reset & account lockout** â€” Recovery flows and lockout gates. [June 29, 2026]
-- [x] **Serv-lang integration** â€” `auth.*` builtin helpers. [June 29, 2026]
+- [x] **Pranor integration** â€” `auth.*` builtin helpers. [June 29, 2026]
 
 ## Phase 2: Advanced Directory Capabilities
 - [x] **Multi-tenant directories** â€” Isolated pools. [June 29, 2026]
@@ -29,8 +29,8 @@ This roadmap outlines the planned development phases for the ServAuth identity p
 - [x] **Secrets Envelope Key Rotation** â€” Secret KMS rotation schedule & API key hashing (SEC.8)
 
 ## Phase 5: Production Security & Contract Hardening (Pending)
-- [ ] **JWT Key Rotation via JWKS** — Replace single shared SERV_JWT_SECRET with a JWKS endpoint; all services verify tokens by fetching the public key, enabling rotation without restarts (SEC.9)
-- [ ] **Secret Redaction in Logs** — ServShared.SanitizeLog() strips tokens/keys/passwords before emission (SEC.10)
+- [ ] **JWT Key Rotation via JWKS** — Replace single shared PRANOR_JWT_SECRET with a JWKS endpoint; all services verify tokens by fetching the public key, enabling rotation without restarts (SEC.9)
+- [ ] **Secret Redaction in Logs** — Pranor Core.SanitizeLog() strips tokens/keys/passwords before emission (SEC.10)
 - [ ] **Secret Versioning** — KMS stores key versions; encryption always uses latest; decryption accepts any active version (SEC.11)
 - [x] **Tenant JWT Claim Enforcement** — Middleware verifies X-Tenant-ID header matches JWT tenant_id claim before any handler runs (SEC.12) [June 30, 2026]
 - [ ] **Audit Event Coverage** — Every privileged action (login, key issuance, MFA change) calls EmitAuditEvent; enforced by CI linter (TEST.7)
@@ -54,7 +54,7 @@ This roadmap outlines the planned development phases for the ServAuth identity p
 - [ ] **User Federation** — Connect to external LDAP/AD directories as read-only user sources alongside local storage
 - [ ] **Self-Service Account Portal** — User-facing UI for password change, MFA enrollment, session listing, and OAuth consent management
 
-> See [UNIFIED_ROADMAP.md](../servverse-repo/UNIFIED_ROADMAP.md) for the full ecosystem priority matrix.
+> See [UNIFIED_ROADMAP.md](../pranor-repo/UNIFIED_ROADMAP.md) for the full ecosystem priority matrix.
 
 
 ---

@@ -1,4 +1,4 @@
-// ServStore Console Application Logic
+// Pranor Vault Console Application Logic
 // Wrap global fetch to automatically inject Bearer tokens and handle 401/403 redirects
 const originalFetch = window.fetch;
 window.fetch = async function (resource, options = {}) {

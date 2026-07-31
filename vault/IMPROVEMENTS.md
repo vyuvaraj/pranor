@@ -1,4 +1,4 @@
-# Serv-lang: Critical Analysis & Improvement Plan
+# Pranor: Critical Analysis & Improvement Plan
 
 ## What Works Well
 
@@ -72,7 +72,7 @@ Only 3 test files run in CI. With 42+ examples and 49 stdlib modules, there's no
 
 ### 8. Package Registry Assumes Non-Existent Infrastructure
 
-`serv install` and `serv publish` hit `https://registry.serv-lang.org` which almost certainly 404s. Without a fallback to Git-based dependencies, this feature is a dead end.
+`serv install` and `serv publish` hit `https://registry.pranor.org` which almost certainly 404s. Without a fallback to Git-based dependencies, this feature is a dead end.
 
 ---
 
@@ -84,7 +84,7 @@ Every `let` generates `var x interface{} = ...\n_ = x\n`. A liveness analysis pa
 
 ### 10. No Source-Level Debugging
 
-Generated Go has `// .srv line N` comments but no DWARF mapping or source maps. When services panic, users get Go stack traces pointing to generated code they can't read.
+Generated Go has `// .pnr line N` comments but no DWARF mapping or source maps. When services panic, users get Go stack traces pointing to generated code they can't read.
 
 ---
 
@@ -128,7 +128,7 @@ Generated Go has `// .srv line N` comments but no DWARF mapping or source maps. 
 
 1. **`async/await` with proper goroutine management** — currently `spawn` is fire-and-forget with no structured concurrency
 2. **Dependency lockfile** — `serv.lock` for reproducible builds
-3. **Multi-file projects** — currently everything is a single `.srv` file or flat imports
+3. **Multi-file projects** — currently everything is a single `.pnr` file or flat imports
 4. **Compiler error recovery** — parser stops at first error; could continue and report multiple
 5. **Dead code elimination** — generated Go includes unreachable paths from unused branches
 6. **Hot module replacement** — watch mode rebuilds everything; incremental compilation would be faster

@@ -1,5 +1,5 @@
 # Serv Installer for Windows
-# Usage: irm https://raw.githubusercontent.com/vyuvaraj/Serv-lang/main/release-scripts/install.ps1 | iex
+# Usage: irm https://raw.githubusercontent.com/vyuvaraj/Pranor/main/release-scripts/install.ps1 | iex
 # Or:    powershell -ExecutionPolicy Bypass -File install.ps1
 
 param(
@@ -12,7 +12,7 @@ $ErrorActionPreference = "Stop"
 Write-Host "Installing Serv..." -ForegroundColor Cyan
 
 # Determine download URL
-$repo = "vyuvaraj/Serv-lang"
+$repo = "vyuvaraj/Pranor"
 if ($Version -eq "latest") {
     $releaseUrl = "https://api.github.com/repos/$repo/releases/latest"
     try {
@@ -45,18 +45,18 @@ if ($currentPath -notlike "*$InstallDir*") {
     Write-Host "  Added $InstallDir to PATH" -ForegroundColor Green
 }
 
-# Set SERV_HOME
-[Environment]::SetEnvironmentVariable("SERV_HOME", $InstallDir, "User")
+# Set PRANOR_HOME
+[Environment]::SetEnvironmentVariable("PRANOR_HOME", $InstallDir, "User")
 
 Write-Host ""
 Write-Host "Serv v$Version installed successfully!" -ForegroundColor Green
 Write-Host ""
 Write-Host "  Location:  $InstallDir" -ForegroundColor White
-Write-Host "  SERV_HOME: $InstallDir" -ForegroundColor White
+Write-Host "  PRANOR_HOME: $InstallDir" -ForegroundColor White
 Write-Host ""
 Write-Host "  Restart your terminal, then:" -ForegroundColor Yellow
 Write-Host "    serv init myapp" -ForegroundColor White
 Write-Host "    cd myapp" -ForegroundColor White
-Write-Host "    serv run main.srv --watch" -ForegroundColor White
+Write-Host "    pranor run main.pnr --watch" -ForegroundColor White
 Write-Host ""
 Write-Host "  Prerequisite: Go 1.18+ must be installed (https://go.dev/dl/)" -ForegroundColor DarkGray

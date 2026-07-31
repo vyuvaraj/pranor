@@ -1,6 +1,6 @@
-# ServPlatform
+# Pranor Platform
 
-`ServPlatform` is the unified platform layer for the **Servverse** ecosystem — providing a single-binary embedded monolith runtime (`servd`), platform-wide chaos injection, a cluster administration CLI (`servctl`), unified health/readiness APIs, and production deployment manifest generation (Docker Compose & Helm).
+`Pranor Platform` is the unified platform layer for the **Pranor** ecosystem — providing a single-binary embedded monolith runtime (`servd`), platform-wide chaos injection, a cluster administration CLI (`servctl`), unified health/readiness APIs, and production deployment manifest generation (Docker Compose & Helm).
 
 ---
 
@@ -19,7 +19,7 @@
 
 ## Key Features
 
-- **Single-binary `servd` runtime**: Embed all Servverse components into one unified process for local development and small deployments
+- **Single-binary `servd` runtime**: Embed all Pranor components into one unified process for local development and small deployments
 - **Unified chaos engine**: Inject faults (network, CPU, memory, disk, clock skew) platform-wide from a single API
 - **`servctl` CLI**: Cluster-wide administration — list services/nodes, restart services, apply config
 - **Unified health API**: `/health`, `/ready`, and `/api/v1/platform/health/rollup` endpoints aggregating all component health
@@ -30,7 +30,7 @@
 ## Architecture
 
 ```
-ServPlatform
+Pranor Platform
 ├── pkg/platform/     → servd unified runtime (component registry, start/stop/shutdown)
 ├── pkg/chaos/        → Unified chaos injection engine (network/CPU/memory/disk/clock)
 ├── pkg/cli/          → servctl cluster administration CLI
@@ -44,7 +44,7 @@ ServPlatform
 
 ### servd — Single-Binary Unified Runtime
 
-`servd` allows running the entire Servverse stack as a single embedded binary — ideal for local development, CI/CD pipelines, and small self-hosted deployments.
+`servd` allows running the entire Pranor stack as a single embedded binary — ideal for local development, CI/CD pipelines, and small self-hosted deployments.
 
 **API: `GET /api/v1/servd/components`**
 
@@ -113,7 +113,7 @@ curl http://servplatform:8096/api/v1/platform/chaos/faults
 
 ### servctl — Cluster Administration CLI
 
-`servctl` is the Servverse cluster-wide administration CLI. It communicates with ServPlatform to manage the entire stack.
+`servctl` is the Pranor cluster-wide administration CLI. It communicates with Pranor Platform to manage the entire stack.
 
 ```bash
 # List all services
@@ -222,7 +222,7 @@ compose := gen.GenerateDockerCompose(components)
 ```go
 helm := gen.GenerateHelmValues(components)
 // helm.Content:
-// # Servverse Production Helm Values
+// # Pranor Production Helm Values
 // global:
 //   imageTag: latest
 // services:
@@ -238,15 +238,15 @@ helm := gen.GenerateHelmValues(components)
 
 ## Getting Started
 
-ServPlatform is used as a Go library embedded within the Servverse monorepo.
+Pranor Platform is used as a Go library embedded within the Pranor monorepo.
 
 ```go
 import (
-    "github.com/vyuvaraj/serv/packages/ServPlatform/pkg/platform"
-    "github.com/vyuvaraj/serv/packages/ServPlatform/pkg/health"
-    "github.com/vyuvaraj/serv/packages/ServPlatform/pkg/chaos"
-    "github.com/vyuvaraj/serv/packages/ServPlatform/pkg/cli"
-    "github.com/vyuvaraj/serv/packages/ServPlatform/pkg/distribution"
+    "github.com/vyuvaraj/pranor/Pranor Platform/pkg/platform"
+    "github.com/vyuvaraj/pranor/Pranor Platform/pkg/health"
+    "github.com/vyuvaraj/pranor/Pranor Platform/pkg/chaos"
+    "github.com/vyuvaraj/pranor/Pranor Platform/pkg/cli"
+    "github.com/vyuvaraj/pranor/Pranor Platform/pkg/distribution"
 )
 ```
 

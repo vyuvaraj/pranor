@@ -1,6 +1,6 @@
 # servsecretctl
 
-`servsecretctl` is the standalone, open-source command-line interface (CLI) administration client for **ServSecret** (Secret & Credential Manager).
+`servsecretctl` is the standalone, open-source command-line interface (CLI) administration client for **Pranor Secret** (Secret & Credential Manager).
 
 It provides terminal controls to set, get, delete, rollback, and list secrets, as well as running child commands with secrets injected directly into their environment.
 
@@ -16,7 +16,7 @@ You can configure the client using flags or environment variables:
 
 | Flag | Env Variable | Description | Default |
 |---|---|---|---|
-| `--url` | `SERVSECRET_URL` | ServSecret server URL | `http://localhost:8091` |
+| `--url` | `SERVSECRET_URL` | Pranor Secret server URL | `http://localhost:8091` |
 | `--api-key` | `SERVSECRET_API_KEY` | API Key for authentication | (None) |
 | `--tenant` | - | Tenant ID for request isolation | `default` |
 

@@ -55,7 +55,7 @@ nfpms:
     package_name: serv
     builds: [serv]
     vendor: Yuvaraj
-    homepage: https://github.com/vyuvaraj/Serv-lang
+    homepage: https://github.com/vyuvaraj/Pranor
     maintainer: Yuvaraj <vyuvaraj@github.com>
     description: Serv programming language compiler and runtime
     license: Apache-2.0

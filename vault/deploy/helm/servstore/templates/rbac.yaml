@@ -1,5 +1,5 @@
 ---
-# ClusterRole — Operator needs full access to ServStore CRDs and core resources
+# ClusterRole — Operator needs full access to Pranor Vault CRDs and core resources
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -7,7 +7,7 @@ metadata:
   labels:
     {{- include "servstore.labels" . | nindent 4 }}
 rules:
-# ServStore CRDs
+# Pranor Vault CRDs
 - apiGroups: ["storage.servstore.io"]
   resources:
   - servstoreclusters

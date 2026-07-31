@@ -9,7 +9,7 @@ Issues and gaps discovered while porting the regulatory-cron-service (Java/Sprin
 | ⬜ | `match` fails with member access | Can't dispatch by `task.jobClass` | Parser expects simple expressions in match cases |
 | ⬜ | Typed `let` + arithmetic with function returns | `let x: int = 0; x = x + fn()` fails | Type mismatch: interface{} vs int |
 | ⬜ | `cron` keyword conflicts with object access | Had to rename `cron.next()` to `schedule.next()` | Keyword takes precedence over identifier |
-| ✅ | `-o` flag position sensitivity | `serv build file.srv -o out` didn't work | Fixed: manual arg parsing |
+| ✅ | `-o` flag position sensitivity | `pranor build file.pnr -o out` didn't work | Fixed: manual arg parsing |
 | ✅ | Variable scoping in nested blocks | Variables invisible outside if/for | Fixed: scope per block |
 | ✅ | Top-level `spawn` outside function body | Generated Go code outside func | Fixed: wrap in init() |
 

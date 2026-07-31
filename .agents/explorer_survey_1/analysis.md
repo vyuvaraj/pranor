@@ -1,21 +1,21 @@
-# Technical Survey & Design Analysis: ServAuth & ServCache
+# Technical Survey & Design Analysis: Pranor Auth & Pranor Cache
 
 **Author:** Explorer 1 (Survey Phase)  
 **Date:** 2026-07-26  
 **Target Repository:** `/home/developer/workspace/serv`  
-**Scope:** `packages/ServAuth` and `packages/ServCache` (Requirements R1, R2, R3, R4)
+**Scope:** `packages/Pranor Auth` and `packages/Pranor Cache` (Requirements R1, R2, R3, R4)
 
 ---
 
 ## 1. Overview of Codebase & Environment
 
-### 1.1 `packages/ServAuth` Status
+### 1.1 `packages/Pranor Auth` Status
 * **Go Version:** `go 1.25.0` (as specified in `go.mod`)
-* **Module Path:** `github.com/vyuvaraj/serv/packages/ServAuth`
-* **Dependencies:** `github.com/golang-jwt/jwt/v5`, `golang.org/x/crypto`, `github.com/vyuvaraj/serv/packages/ServShared`
+* **Module Path:** `github.com/vyuvaraj/pranor/packages/Pranor Auth`
+* **Dependencies:** `github.com/golang-jwt/jwt/v5`, `golang.org/x/crypto`, `github.com/vyuvaraj/pranor/packages/Pranor Core`
 * **Existing Structure:**
   ```text
-  packages/ServAuth/
+  packages/Pranor Auth/
   ├── go.mod
   ├── main.go
   ├── main_test.go
@@ -36,13 +36,13 @@
 
 ---
 
-### 1.2 `packages/ServCache` Status
+### 1.2 `packages/Pranor Cache` Status
 * **Go Version:** `go 1.23.0` (as specified in `go.mod`)
-* **Module Path:** `github.com/vyuvaraj/serv/packages/ServCache`
-* **Dependencies:** `github.com/redis/go-redis/v9`, `github.com/cespare/xxhash/v2` (indirect), `github.com/vyuvaraj/serv/packages/ServShared`
+* **Module Path:** `github.com/vyuvaraj/pranor/packages/Pranor Cache`
+* **Dependencies:** `github.com/redis/go-redis/v9`, `github.com/cespare/xxhash/v2` (indirect), `github.com/vyuvaraj/pranor/packages/Pranor Core`
 * **Existing Structure:**
   ```text
-  packages/ServCache/
+  packages/Pranor Cache/
   ├── go.mod
   ├── main.go
   ├── main_test.go
@@ -66,7 +66,7 @@
 
 ### 2.1 SA.G1: Opaque Session Token Store
 * **Requirement:** R1 (ORIGINAL_REQUEST.md lines 34-43)
-* **File Path:** `packages/ServAuth/pkg/sessions/token_store.go`
+* **File Path:** `packages/Pranor Auth/pkg/sessions/token_store.go`
 * **Package Name:** `sessions`
 
 #### Design Specifications
@@ -122,7 +122,7 @@
 
 ### 2.2 SA.G6: Credential Stuffing Velocity Limiter
 * **Requirement:** R2 (ORIGINAL_REQUEST.md lines 44-52)
-* **File Path:** `packages/ServAuth/pkg/security/velocity_limiter.go`
+* **File Path:** `packages/Pranor Auth/pkg/security/velocity_limiter.go`
 * **Package Name:** `security`
 
 #### Design Specifications
@@ -178,7 +178,7 @@
 
 ### 2.3 SC.G3: Probabilistic Bloom Filter
 * **Requirement:** R3 (ORIGINAL_REQUEST.md lines 53-60)
-* **File Path:** `packages/ServCache/pkg/bloom/bloom.go`
+* **File Path:** `packages/Pranor Cache/pkg/bloom/bloom.go`
 * **Package Name:** `bloom`
 
 #### Design Specifications
@@ -216,7 +216,7 @@
 
 ### 2.4 SC.G4: Tiered TTL Policy Engine
 * **Requirement:** R4 (ORIGINAL_REQUEST.md lines 61-68)
-* **File Path:** `packages/ServCache/pkg/tieredttl/policy.go`
+* **File Path:** `packages/Pranor Cache/pkg/tieredttl/policy.go`
 * **Package Name:** `tieredttl`
 
 #### Design Specifications
@@ -290,15 +290,15 @@
 
 ## 3. Recommended Implementation Plan & Verification
 
-1. **ServAuth**:
-   * Implement `packages/ServAuth/pkg/sessions/token_store.go` and `token_store_test.go`.
-   * Create directory `packages/ServAuth/pkg/security/` and implement `velocity_limiter.go` and `velocity_limiter_test.go`.
-   * Verification: Run `go test -v ./...` inside `packages/ServAuth`.
+1. **Pranor Auth**:
+   * Implement `packages/Pranor Auth/pkg/sessions/token_store.go` and `token_store_test.go`.
+   * Create directory `packages/Pranor Auth/pkg/security/` and implement `velocity_limiter.go` and `velocity_limiter_test.go`.
+   * Verification: Run `go test -v ./...` inside `packages/Pranor Auth`.
 
-2. **ServCache**:
-   * Create directory `packages/ServCache/pkg/bloom/` and implement `bloom.go` and `bloom_test.go`.
-   * Create directory `packages/ServCache/pkg/tieredttl/` and implement `policy.go` and `policy_test.go`.
-   * Verification: Run `go test -v ./...` inside `packages/ServCache`.
+2. **Pranor Cache**:
+   * Create directory `packages/Pranor Cache/pkg/bloom/` and implement `bloom.go` and `bloom_test.go`.
+   * Create directory `packages/Pranor Cache/pkg/tieredttl/` and implement `policy.go` and `policy_test.go`.
+   * Verification: Run `go test -v ./...` inside `packages/Pranor Cache`.
 
 3. **Global Acceptance Checks**:
    * `go build ./...` passes in both packages.

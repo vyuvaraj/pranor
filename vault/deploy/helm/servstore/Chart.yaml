@@ -2,8 +2,8 @@ apiVersion: v2
 name: servstore
 description: |
   A cloud-native, distributed, AI-native, S3-compatible object storage engine.
-  Deploys a ServStore cluster as a Kubernetes StatefulSet with optional TLS,
-  authentication, erasure coding, and the ServStore Operator.
+  Deploys a Pranor Vault cluster as a Kubernetes StatefulSet with optional TLS,
+  authentication, erasure coding, and the Pranor Vault Operator.
 type: application
 version: 1.0.0
 appVersion: "phase5"
@@ -13,11 +13,11 @@ keywords:
   - object-storage
   - distributed
   - ai-native
-home: https://github.com/vyuvaraj/ServStore
+home: https://github.com/vyuvaraj/Pranor Vault
 sources:
-  - https://github.com/vyuvaraj/ServStore
+  - https://github.com/vyuvaraj/Pranor Vault
 maintainers:
-  - name: ServStore Authors
-    url: https://github.com/vyuvaraj/ServStore
+  - name: Pranor Vault Authors
+    url: https://github.com/vyuvaraj/Pranor Vault
 annotations:
   category: Storage

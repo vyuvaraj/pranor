@@ -1,7 +1,7 @@
 # BRIEFING — 2026-07-26T09:00:46Z
 
 ## Mission
-Design and write comprehensive, requirement-driven E2E unit/integration tests for all 10 roadmap features across 5 Servverse modules, write TEST_INFRA.md, run and pass tests, and publish TEST_READY.md.
+Design and write comprehensive, requirement-driven E2E unit/integration tests for all 10 roadmap features across 5 Pranor modules, write TEST_INFRA.md, run and pass tests, and publish TEST_READY.md.
 
 ## 🔒 My Identity
 - Archetype: test_writer
@@ -11,7 +11,7 @@ Design and write comprehensive, requirement-driven E2E unit/integration tests fo
 - Milestone: E2E Test Suite Creation
 
 ## 🔒 Key Constraints
-- Scope: Write tests for 10 roadmap features in `packages/ServAuth/e2e_test.go`, `packages/ServCache/e2e_test.go`, `packages/ServCron/e2e_test.go`, `packages/ServPool/e2e_test.go`, `packages/ServQueue/e2e_test.go`.
+- Scope: Write tests for 10 roadmap features in `packages/Pranor Auth/e2e_test.go`, `packages/Pranor Cache/e2e_test.go`, `packages/Pranor Chrono/e2e_test.go`, `packages/Pranor Pool/e2e_test.go`, `packages/Pranor Pulse/e2e_test.go`.
 - Test Case Methodology (4 Tiers):
   - Tier 1: Feature Coverage (>=5 test cases per feature for 10 features, total >= 50)
   - Tier 2: Boundary & Corner Cases (>=5 test cases per feature, total >= 50)

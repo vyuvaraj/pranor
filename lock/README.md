@@ -1,6 +1,6 @@
-# ServLock — Distributed Lock Manager
+# Pranor Lock — Distributed Lock Manager
 
-`ServLock` is a high-performance distributed locking manager for the Servverse ecosystem, providing cross-service mutual exclusion with lease-based locks, fencing tokens, reentrant locking, deadlock cycle detection, and metrics observability.
+`Pranor Lock` is a high-performance distributed locking manager for the Pranor ecosystem, providing cross-service mutual exclusion with lease-based locks, fencing tokens, reentrant locking, deadlock cycle detection, and metrics observability.
 
 ## Features
 

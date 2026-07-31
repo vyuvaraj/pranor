@@ -1,7 +1,7 @@
 # BRIEFING — 2026-07-26T09:09:27Z
 
 ## Mission
-Review ServQueue M5 implementation (W3C traceparent propagation in tracing and engine), verify tests and spec compliance, check integrity and dependency diffs, and issue verdict.
+Review Pranor Pulse M5 implementation (W3C traceparent propagation in tracing and engine), verify tests and spec compliance, check integrity and dependency diffs, and issue verdict.
 
 ## 🔒 My Identity
 - Archetype: reviewer / critic
@@ -20,7 +20,7 @@ Review ServQueue M5 implementation (W3C traceparent propagation in tracing and e
 - Updated: 2026-07-26T09:09:27Z
 
 ## Review Scope
-- **Files to review**: `packages/ServQueue/pkg/tracing/traceparent.go`, `packages/ServQueue/pkg/core/engine.go`, tests in `packages/ServQueue`
+- **Files to review**: `packages/Pranor Pulse/pkg/tracing/traceparent.go`, `packages/Pranor Pulse/pkg/core/engine.go`, tests in `packages/Pranor Pulse`
 - **Interface contracts**: `/home/developer/workspace/serv/PROJECT.md`, `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md`
 - **Review criteria**: W3C Trace Context spec compliance (`Inject`, `Extract`, `NewTraceID`, `NewSpanID`), header case-insensitivity, LogEntry traceparent propagation, build/test pass, zero dependency changes in go.mod, no integrity violations
 

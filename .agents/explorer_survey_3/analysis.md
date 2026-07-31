@@ -1,10 +1,10 @@
 # Survey & Analysis: SP.G1, SP.G2, and SQ.G5
 
 ## Executive Summary
-This document provides a comprehensive survey and architectural analysis of three OSS roadmap features for the Servverse monorepo (`/home/developer/workspace/serv`):
-1. **SP.G1**: Read/Write split router in `packages/ServPool/pkg/routing/rw_splitter.go` (Requirement R8).
-2. **SP.G2**: Pre-checkout connection health validator in `packages/ServPool/pkg/pool/health_checker.go` (Requirement R9).
-3. **SQ.G5**: W3C trace context propagation in `packages/ServQueue/pkg/tracing/traceparent.go` and engine integration in `packages/ServQueue/pkg/core/engine.go` (Requirement R10).
+This document provides a comprehensive survey and architectural analysis of three OSS roadmap features for the Pranor monorepo (`/home/developer/workspace/serv`):
+1. **SP.G1**: Read/Write split router in `packages/Pranor Pool/pkg/routing/rw_splitter.go` (Requirement R8).
+2. **SP.G2**: Pre-checkout connection health validator in `packages/Pranor Pool/pkg/pool/health_checker.go` (Requirement R9).
+3. **SQ.G5**: W3C trace context propagation in `packages/Pranor Pulse/pkg/tracing/traceparent.go` and engine integration in `packages/Pranor Pulse/pkg/core/engine.go` (Requirement R10).
 
 All three features require **zero external dependencies**, relying strictly on Go's standard library (`strings`, `sync`, `time`, `crypto/rand`, `encoding/hex`, `fmt`, `errors`).
 
@@ -12,8 +12,8 @@ All three features require **zero external dependencies**, relying strictly on G
 
 ## 1. Existing Monorepo & Package Structure
 
-### 1.1 ServPool Architecture (`packages/ServPool`)
-- **`go.mod`**: Module `github.com/vyuvaraj/serv/packages/ServPool` (Go 1.23.0). Depends on `packages/ServShared`.
+### 1.1 Pranor Pool Architecture (`packages/Pranor Pool`)
+- **`go.mod`**: Module `github.com/vyuvaraj/pranor/packages/Pranor Pool` (Go 1.23.0). Depends on `packages/Pranor Core`.
 - **Existing Packages**:
   - `pkg/pool`: Defines `DbConn`, `PoolStats`, `Manager` interface, and `ConnectionPool` struct (`pkg/pool/pool.go`).
   - `pkg/routing`: Defines HTTP handler `Server`, `QueryRequest`, `QueryResponse`, and `QueryOptimizer` interface (`pkg/routing/routing.go`).
@@ -23,8 +23,8 @@ All three features require **zero external dependencies**, relying strictly on G
   - `pkg/routing/rw_splitter.go` & `rw_splitter_test.go`
   - `pkg/pool/health_checker.go` & `health_checker_test.go`
 
-### 1.2 ServQueue Architecture (`packages/ServQueue`)
-- **`go.mod`**: Module `github.com/vyuvaraj/serv/packages/ServQueue` (Go 1.25.0).
+### 1.2 Pranor Pulse Architecture (`packages/Pranor Pulse`)
+- **`go.mod`**: Module `github.com/vyuvaraj/pranor/packages/Pranor Pulse` (Go 1.25.0).
 - **Existing Packages**:
   - `pkg/core`: Defines `LogEntry`, `StorageDriver` interface, `MemoryDriver`, `Engine`, `Enqueue`, `Dequeue` (`pkg/core/engine.go`).
   - `pkg/broker`, `pkg/analytics`, `pkg/auth`, `pkg/cdc`, `pkg/opfs`, `pkg/storage`, etc.
@@ -36,7 +36,7 @@ All three features require **zero external dependencies**, relying strictly on G
 
 ## 2. Requirement Specifications & Technical Designs
 
-### 2.1 SP.G1 — Read/Write Split Router (`packages/ServPool/pkg/routing/rw_splitter.go`)
+### 2.1 SP.G1 — Read/Write Split Router (`packages/Pranor Pool/pkg/routing/rw_splitter.go`)
 
 #### Purpose
 Classify SQL query statements into Read vs Write operations and route them to either a Primary database pool or a set of Replica database pools.
@@ -49,7 +49,7 @@ import (
 	"strings"
 	"sync/atomic"
 
-	"github.com/vyuvaraj/serv/packages/ServPool/pkg/pool"
+	"github.com/vyuvaraj/pranor/packages/Pranor Pool/pkg/pool"
 )
 
 type QueryType string
@@ -131,7 +131,7 @@ func (s *RWSplitter) Route(sql string, primary pool.Manager, replicas []pool.Man
 
 ---
 
-### 2.2 SP.G2 — Connection Health Validation (`packages/ServPool/pkg/pool/health_checker.go`)
+### 2.2 SP.G2 — Connection Health Validation (`packages/Pranor Pool/pkg/pool/health_checker.go`)
 
 #### Purpose
 Wrap a `pool.Manager` to perform a pre-checkout validation check on every connection before returning it from `Acquire()`.
@@ -224,7 +224,7 @@ func (h *HealthChecker) Shutdown(ctx context.Context) error {
 
 ---
 
-### 2.3 SQ.G5 — W3C Trace Context Propagation (`packages/ServQueue/pkg/tracing/traceparent.go` & `pkg/core/engine.go`)
+### 2.3 SQ.G5 — W3C Trace Context Propagation (`packages/Pranor Pulse/pkg/tracing/traceparent.go` & `pkg/core/engine.go`)
 
 #### Purpose
 Format, parse, inject, and extract W3C Trace Context (`traceparent` header per W3C Recommendation) and record tracing info on `LogEntry` upon log append.
@@ -382,22 +382,22 @@ func (e *Engine) Append(topic, payload string, metadata ...map[string]string) (L
 
 | Requirement | Target File Path | Action | Key Dependencies |
 |-------------|------------------|--------|------------------|
-| **SP.G1** | `packages/ServPool/pkg/routing/rw_splitter.go` | Create | Standard lib (`strings`, `sync/atomic`), `pkg/pool` |
-| **SP.G1** | `packages/ServPool/pkg/routing/rw_splitter_test.go` | Create | `testing`, `pkg/pool` |
-| **SP.G2** | `packages/ServPool/pkg/pool/health_checker.go` | Create | Standard lib (`sync/atomic`, `errors`, `fmt`, `context`), `pkg/pool` |
-| **SP.G2** | `packages/ServPool/pkg/pool/health_checker_test.go` | Create | `testing`, `pkg/pool` |
-| **SQ.G5** | `packages/ServQueue/pkg/tracing/traceparent.go` | Create | Standard lib (`crypto/rand`, `encoding/hex`, `fmt`, `strings`) |
-| **SQ.G5** | `packages/ServQueue/pkg/tracing/traceparent_test.go` | Create | `testing` |
-| **SQ.G5** | `packages/ServQueue/pkg/core/engine.go` | Modify | Update `LogEntry`, add `Append(...)` to `Engine` |
-| **SQ.G5** | `packages/ServQueue/pkg/core/engine_test.go` | Modify / Extend | Add trace context integration tests |
+| **SP.G1** | `packages/Pranor Pool/pkg/routing/rw_splitter.go` | Create | Standard lib (`strings`, `sync/atomic`), `pkg/pool` |
+| **SP.G1** | `packages/Pranor Pool/pkg/routing/rw_splitter_test.go` | Create | `testing`, `pkg/pool` |
+| **SP.G2** | `packages/Pranor Pool/pkg/pool/health_checker.go` | Create | Standard lib (`sync/atomic`, `errors`, `fmt`, `context`), `pkg/pool` |
+| **SP.G2** | `packages/Pranor Pool/pkg/pool/health_checker_test.go` | Create | `testing`, `pkg/pool` |
+| **SQ.G5** | `packages/Pranor Pulse/pkg/tracing/traceparent.go` | Create | Standard lib (`crypto/rand`, `encoding/hex`, `fmt`, `strings`) |
+| **SQ.G5** | `packages/Pranor Pulse/pkg/tracing/traceparent_test.go` | Create | `testing` |
+| **SQ.G5** | `packages/Pranor Pulse/pkg/core/engine.go` | Modify | Update `LogEntry`, add `Append(...)` to `Engine` |
+| **SQ.G5** | `packages/Pranor Pulse/pkg/core/engine_test.go` | Modify / Extend | Add trace context integration tests |
 
 ---
 
 ## 4. Test Suite Setup & Verification Plan
 
 ### Test Command Targets
-- ServPool: `cd /home/developer/workspace/serv/packages/ServPool && go test ./...`
-- ServQueue: `cd /home/developer/workspace/serv/packages/ServQueue && go test ./...`
+- Pranor Pool: `cd /home/developer/workspace/serv/packages/Pranor Pool && go test ./...`
+- Pranor Pulse: `cd /home/developer/workspace/serv/packages/Pranor Pulse && go test ./...`
 - Build Check: `go build ./...` in both package directories.
 
 ### Verification Conditions

@@ -1,7 +1,7 @@
 # BRIEFING — 2026-07-26T09:09:26Z
 
 ## Mission
-Empirically verify `TokenStore` and `VelocityLimiter` in `packages/ServAuth` for SA.G1 & SA.G6. Perform stress tests, concurrency tests, entropy checks, revocation tests, TTL expiry checks, and velocity limiter threshold/window reset checks using `go test -race ./...`.
+Empirically verify `TokenStore` and `VelocityLimiter` in `packages/Pranor Auth` for SA.G1 & SA.G6. Perform stress tests, concurrency tests, entropy checks, revocation tests, TTL expiry checks, and velocity limiter threshold/window reset checks using `go test -race ./...`.
 
 ## 🔒 My Identity
 - Archetype: empirical challenger
@@ -12,7 +12,7 @@ Empirically verify `TokenStore` and `VelocityLimiter` in `packages/ServAuth` for
 - Instance: 1 of 1
 
 ## 🔒 Key Constraints
-- Review-only — do NOT modify implementation code in packages/ServAuth.
+- Review-only — do NOT modify implementation code in packages/Pranor Auth.
 - Verification code / stress tests written must be run and verified empirically.
 
 ## Current Parent
@@ -20,7 +20,7 @@ Empirically verify `TokenStore` and `VelocityLimiter` in `packages/ServAuth` for
 - Updated: 2026-07-26T09:09:26Z
 
 ## Review Scope
-- **Files to review**: `packages/ServAuth/...`
+- **Files to review**: `packages/Pranor Auth/...`
 - **Interface contracts**: `/home/developer/workspace/serv/PROJECT.md` & `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md`
 - **Review criteria**: Correctness, concurrency safety (`-race`), token entropy (32-byte hex), revocation correctness, TTL expiry under rapid access, velocity limiter window reset, blocking thresholds.
 

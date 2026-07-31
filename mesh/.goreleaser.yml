@@ -49,17 +49,17 @@ dockers:
       - "ghcr.io/vyuvaraj/servmesh:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
-      - "--label=org.opencontainers.image.title=ServMesh"
+      - "--label=org.opencontainers.image.title=Pranor Mesh"
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/ServMesh"
+      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Mesh"
 
 brews:
   - name: servmesh
     repository:
       owner: vyuvaraj
       name: homebrew-serv
-    homepage: "https://github.com/vyuvaraj/ServMesh"
+    homepage: "https://github.com/vyuvaraj/Pranor Mesh"
     description: "Service mesh and sidecar proxy from the ServVerse platform"
     license: "Apache-2.0"
     install: |
@@ -71,7 +71,7 @@ scoops:
   - repository:
       owner: vyuvaraj
       name: scoop-serv
-    homepage: "https://github.com/vyuvaraj/ServMesh"
+    homepage: "https://github.com/vyuvaraj/Pranor Mesh"
     description: "Service mesh and sidecar proxy from the ServVerse platform"
     license: "Apache-2.0"
 
@@ -81,7 +81,7 @@ nfpms:
     package_name: servmesh
     builds: [servmesh]
     vendor: Yuvaraj
-    homepage: https://github.com/vyuvaraj/ServMesh
+    homepage: https://github.com/vyuvaraj/Pranor Mesh
     maintainer: Yuvaraj <vyuvaraj@github.com>
     description: Service mesh and traffic management from the ServVerse platform
     license: Apache-2.0

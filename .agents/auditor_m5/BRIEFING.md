@@ -1,14 +1,14 @@
 # BRIEFING — 2026-07-26T09:09:35Z
 
 ## Mission
-Perform forensic integrity verification for ServQueue (SQ.G5) milestone M5 on `packages/ServQueue/pkg/tracing/traceparent.go` and `packages/ServQueue/pkg/core/engine.go`.
+Perform forensic integrity verification for Pranor Pulse (SQ.G5) milestone M5 on `packages/Pranor Pulse/pkg/tracing/traceparent.go` and `packages/Pranor Pulse/pkg/core/engine.go`.
 
 ## 🔒 My Identity
 - Archetype: forensic_auditor
 - Roles: critic, specialist, auditor
 - Working directory: /home/developer/workspace/serv/.agents/auditor_m5
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
-- Target: ServQueue M5 (SQ.G5)
+- Target: Pranor Pulse M5 (SQ.G5)
 
 ## 🔒 Key Constraints
 - Audit-only — do NOT modify implementation code
@@ -22,7 +22,7 @@ Perform forensic integrity verification for ServQueue (SQ.G5) milestone M5 on `p
 - Updated: 2026-07-26T09:09:35Z
 
 ## Audit Scope
-- **Work product**: packages/ServQueue/pkg/tracing/traceparent.go, packages/ServQueue/pkg/core/engine.go, go.mod
+- **Work product**: packages/Pranor Pulse/pkg/tracing/traceparent.go, packages/Pranor Pulse/pkg/core/engine.go, go.mod
 - **Profile loaded**: General Project / Forensic Integrity Audit
 - **Audit type**: forensic integrity check
 

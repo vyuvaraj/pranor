@@ -1,6 +1,6 @@
 # Serv Language Support for VS Code
 
-Full IDE support for the [Serv programming language](https://github.com/vyuvaraj/Serv-lang) — build background services, APIs, and schedulers with a clean, expressive syntax that compiles to native binaries.
+Full IDE support for the [Serv programming language](https://github.com/vyuvaraj/Pranor) — build background services, APIs, and schedulers with a clean, expressive syntax that compiles to native binaries.
 
 ## Features
 
@@ -37,7 +37,7 @@ Automatic code formatting with 4-space indentation and consistent style — same
 
 ## ServVerse Activity Bar Panel _(v3.0.6+)_
 
-A dedicated **ServVerse** icon in the Activity Bar opens a live sidebar showing all 17 services with health status, port numbers, and uptime — polled from ServRegistry every 6 seconds. Falls back to mock data with an `offline` badge when the registry is unreachable. Use the ↺ refresh button in the panel title bar to force an update.
+A dedicated **ServVerse** icon in the Activity Bar opens a live sidebar showing all 17 services with health status, port numbers, and uptime — polled from Pranor Hub every 6 seconds. Falls back to mock data with an `offline` badge when the registry is unreachable. Use the ↺ refresh button in the panel title bar to force an update.
 
 ---
 
@@ -48,29 +48,29 @@ Visual Webviews integrated directly into the workspace to observe and simulate l
 | Command | Dashboard | Description |
 |---------|-----------|-------------|
 | `serv.visualizeWorkflow` | **Workflow DAG** | Live Mermaid.js flowchart of step sequences and compensating tasks |
-| `serv.exploreQueue` | **ServQueue Broker** | Active topics, partition counts, and consumer group registrations |
-| `serv.exploreStore` | **ServStore Bucket** | Object storage folders and file listings |
-| `serv.exploreLocks` | **ServLock Contention** | Distributed locks, active leases, and FIFO waiter queues |
-| `serv.simulateRoute` | **ServGate Router Simulator** | Simulates Gateway path-routing matches locally against the active config |
-| `serv.exploreCron` | **ServCron Scheduler** | Scheduled cron jobs with overlap warnings |
-| `serv.inspectCache` | **ServCache Inspector** | Real-time hit/miss metrics and active connection pool status |
-| `serv.inspectAuth` | **ServAuth Risk Scoring** | Progressive auth sessions, device fingerprints, geo context, and MFA risk scores |
+| `serv.exploreQueue` | **Pranor Pulse Broker** | Active topics, partition counts, and consumer group registrations |
+| `serv.exploreStore` | **Pranor Vault Bucket** | Object storage folders and file listings |
+| `serv.exploreLocks` | **Pranor Lock Contention** | Distributed locks, active leases, and FIFO waiter queues |
+| `serv.simulateRoute` | **Pranor Gate Router Simulator** | Simulates Gateway path-routing matches locally against the active config |
+| `serv.exploreCron` | **Pranor Chrono Scheduler** | Scheduled cron jobs with overlap warnings |
+| `serv.inspectCache` | **Pranor Cache Inspector** | Real-time hit/miss metrics and active connection pool status |
+| `serv.inspectAuth` | **Pranor Auth Risk Scoring** | Progressive auth sessions, device fingerprints, geo context, and MFA risk scores |
 | `serv.openREPL` | **Interactive REPL** | Spawns a `serv repl` terminal for live expression evaluation |
-| `serv.viewMesh` | **ServMesh Topology** | Live Mermaid.js graph of all mesh service connections |
-| `serv.traceRequests` | **ServTrace Span Tracer** | Distributed trace spans with trace ID, service, latency, and OK/ERROR status. Auto-refreshes every 5s |
-| `serv.viewRegistry` | **ServRegistry Monitor** | All registered microservices with live health checks, ports, and uptime. Auto-refreshes every 4s |
+| `serv.viewMesh` | **Pranor Mesh Topology** | Live Mermaid.js graph of all mesh service connections |
+| `serv.traceRequests` | **Pranor Trace Span Tracer** | Distributed trace spans with trace ID, service, latency, and OK/ERROR status. Auto-refreshes every 5s |
+| `serv.viewRegistry` | **Pranor Hub Monitor** | All registered microservices with live health checks, ports, and uptime. Auto-refreshes every 4s |
 | `serv.runBench` | **Benchmark Panel** | Runs `serv bench` and shows p50/p99/throughput results per route |
 | `serv.viewDeployments` | **Cloud Deployments** | Branch preview deployments with URLs and build status |
-| `serv.inspectPool` | **ServPool Inspector** | DB connection pool stats (active/idle/max) with wait-queue alerts |
-| `serv.inspectMail` | **ServMail Queue** | Email queue with queued/sent/bounced counts and per-item status |
-| `serv.viewTunnels` | **ServTunnel Sessions** | Active tunnel sessions with client IP, target, protocol, duration, bytes in/out |
-| `serv.deploy` | **One-Click Deploy** | Deploy the current service to ServCloud with live build log (compile → test → package → provision → URL) |
+| `serv.inspectPool` | **Pranor Pool Inspector** | DB connection pool stats (active/idle/max) with wait-queue alerts |
+| `serv.inspectMail` | **Pranor Notify Queue** | Email queue with queued/sent/bounced counts and per-item status |
+| `serv.viewTunnels` | **Pranor Tunnel Sessions** | Active tunnel sessions with client IP, target, protocol, duration, bytes in/out |
+| `serv.deploy` | **One-Click Deploy** | Deploy the current service to Pranor Deploy with live build log (compile → test → package → provision → URL) |
 | `serv.servctl` | **servctl CLI** | Cluster administration tool (`get services`, `get nodes`, `restart service`, `apply config`) |
 | `serv.checkBreakingChanges` | **serv diff** | Breaking change detector against git base branch (`main`) |
 | `serv.generateRust` | **Rust Codegen** | Generate Rust client code (`serv generate --lang rust`) |
 | `serv.generatePython` | **Python Codegen** | Generate Python client code (`serv generate --lang python`) |
 | `serv.controlChaos` | **Platform Chaos Control** | Platform fault injection engine panel (network, CPU, memory, disk, clock skew) |
-| `serv.exportToPlayground` | **WASM Playground** | Export current `.srv` file directly to `playground.servverse.dev` |
+| `serv.exportToPlayground` | **WASM Playground** | Export current `.pnr` file directly to `playground.pranor.dev` |
 | `serv.openServdConsole` | **servd Platform Console** | Single-binary embedded monolith console with component monitoring & health rollups |
 
 ---
@@ -78,7 +78,7 @@ Visual Webviews integrated directly into the workspace to observe and simulate l
 ## Test Integration
 
 ### Serv Test Explorer _(v3.0.4+)_
-A sidebar tree under the Explorer panel lists every `test "..."` block from all `.srv` files in the workspace, grouped by file. Refreshes automatically on save.
+A sidebar tree under the Explorer panel lists every `test "..."` block from all `.pnr` files in the workspace, grouped by file. Refreshes automatically on save.
 
 ### Test Gutter Decorations _(v3.0.5+)_
 Run `Serv: Run Tests (with Gutter Decorations)` to paint:
@@ -89,7 +89,7 @@ Run `Serv: Run Tests (with Gutter Decorations)` to paint:
 Results persist when switching between tabs. The overview ruler is also colored per test. Use `Serv: Clear Test Gutter Markers` to reset.
 
 ### Coverage Line Highlights _(v3.0.7+)_
-Run `Serv: Run Tests with Coverage Highlights` to shade the active `.srv` file:
+Run `Serv: Run Tests with Coverage Highlights` to shade the active `.pnr` file:
 - 🟢 **Subtle green tint** on every covered line + green overview ruler bar
 - 🔴 **Red background + `✗ uncovered`** annotation on every uncovered line + red overview ruler bar
 
@@ -110,7 +110,7 @@ A coverage percentage is shown in the Output channel and a toast notification. U
 | `Serv: Add Missing Imports` | — | Auto-add all missing `use` statements |
 | `Serv: Refresh Services Panel` | — | Force-refresh the Activity Bar services panel |
 | `Serv: New Project from Template` | — | Scaffold a new Serv project with template picker |
-| `Serv: Deploy to ServCloud` | — | Deploy current service to ServCloud (Production / Staging / Preview) |
+| `Serv: Deploy to Pranor Deploy` | — | Deploy current service to Pranor Deploy (Production / Staging / Preview) |
 | `Serv: Run Tests with Coverage Highlights` | — | Run tests and shade covered/uncovered lines in the editor |
 | `Serv: Clear Coverage Highlights` | — | Remove all coverage highlight decorations |
 
@@ -118,15 +118,15 @@ A coverage percentage is shown in the Output channel and a toast notification. U
 
 ## Quick Start
 
-1. Install the [Serv compiler](https://github.com/vyuvaraj/Serv-lang)
+1. Install the [Serv compiler](https://github.com/vyuvaraj/Pranor)
 2. Install this extension
 3. **Scaffold a new project from inside VS Code** — open the Command Palette (`Ctrl+Shift+P`) and run `Serv: New Project from Template`. Choose a template, name your project, and pick a folder. The project opens automatically.
 
    Or use the CLI:
    ```bash
-   serv init my-api
+   pranor init my-api
    cd my-api
-   serv run main.srv --watch
+   pranor run main.pnr --watch
    ```
 4. Open the folder in VS Code — you'll get full IDE support immediately
 
@@ -204,7 +204,7 @@ test "user greeting" {
 
 ## Requirements
 
-- [Serv compiler](https://github.com/vyuvaraj/Serv-lang) installed and in PATH
+- [Serv compiler](https://github.com/vyuvaraj/Pranor) installed and in PATH
 - Go 1.18+ (used by the compiler for code generation)
 
 ---
@@ -213,7 +213,7 @@ test "user greeting" {
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `serv.lspPath` | `""` | Path to `serv-lsp` binary (auto-detected from PATH) |
+| `serv.lspPath` | `""` | Path to `pranor-lsp` binary (auto-detected from PATH) |
 | `serv.compilerPath` | `""` | Path to `serv` binary (auto-detected from PATH) |
 | `serv.enableInlayHints` | `true` | Show inferred return type and variable type hints inline in the editor |
 
@@ -221,9 +221,9 @@ test "user greeting" {
 
 ## Links
 
-- [Language Reference](https://github.com/vyuvaraj/Serv-lang/blob/main/docs/language-reference.md)
-- [Getting Started Guide](https://github.com/vyuvaraj/Serv-lang/blob/main/docs/getting-started.md)
-- [Standard Library](https://github.com/vyuvaraj/Serv-lang/blob/main/docs/stdlib.md)
-- [Examples](https://github.com/vyuvaraj/Serv-lang/tree/main/examples)
-- [Report Issues](https://github.com/vyuvaraj/Serv-lang/issues)
-- [Changelog](https://github.com/vyuvaraj/Serv-lang/blob/main/vscode-support/extension/CHANGELOG.md)
+- [Language Reference](https://github.com/vyuvaraj/Pranor/blob/main/docs/language-reference.md)
+- [Getting Started Guide](https://github.com/vyuvaraj/Pranor/blob/main/docs/getting-started.md)
+- [Standard Library](https://github.com/vyuvaraj/Pranor/blob/main/docs/stdlib.md)
+- [Examples](https://github.com/vyuvaraj/Pranor/tree/main/examples)
+- [Report Issues](https://github.com/vyuvaraj/Pranor/issues)
+- [Changelog](https://github.com/vyuvaraj/Pranor/blob/main/vscode-support/extension/CHANGELOG.md)

@@ -1,10 +1,10 @@
-# ServCron
+# Pranor Chrono
 
 ```bash
 docker run -p 8085:8085 ghcr.io/vyuvaraj/servcron:latest
 ```
 
-`ServCron` is the distributed, fault-tolerant job scheduling service for the **Servverse** ecosystem. It supports interval and cron scheduling, exactly-once semantics, DAG job chaining, Serv-lang cron-as-code declarations, persistent S3 job registries, and full OTel tracing.
+`Pranor Chrono` is the distributed, fault-tolerant job scheduling service for the **Pranor** ecosystem. It supports interval and cron scheduling, exactly-once semantics, DAG job chaining, Pranor cron-as-code declarations, persistent S3 job registries, and full OTel tracing.
 
 ---
 
@@ -14,7 +14,7 @@ docker run -p 8085:8085 ghcr.io/vyuvaraj/servcron:latest
 - [API Endpoints](#api-endpoints)
 - [Scheduling Expressions](#scheduling-expressions)
 - [DAG Job Chaining](#dag-job-chaining)
-- [Cron-as-Code (Serv-lang)](#cron-as-code-serv-lang)
+- [Cron-as-Code (Pranor)](#cron-as-code-pranor)
 - [Getting Started](#getting-started)
 
 ---
@@ -37,13 +37,13 @@ docker run -p 8085:8085 ghcr.io/vyuvaraj/servcron:latest
 - **Jitter**: Randomized jitter on backoff to prevent thundering herds
 - **Dead-letter after exhaustion**: After all retries fail, job moves to a dead-letter audit record
 
-### 📋 Cron-as-Code (Serv-lang)
-- **Define jobs in `.serv` files**: Declare scheduled jobs using Serv-lang `cron` and `every` syntax
+### 📋 Cron-as-Code (Pranor)
+- **Define jobs in `.serv` files**: Declare scheduled jobs using Pranor `cron` and `every` syntax
 - **Version control your schedules**: Job definitions live alongside application code
-- **Hot-reload**: ServCron watches `.serv` files for changes and automatically re-registers modified jobs
+- **Hot-reload**: Pranor Chrono watches `.serv` files for changes and automatically re-registers modified jobs
 
 ### 💾 Persistence
-- **Persistent job registry to ServStore S3**: Job definitions serialized to `jobs.json` in a ServStore bucket — survive node restarts
+- **Persistent job registry to Pranor Vault S3**: Job definitions serialized to `jobs.json` in a Pranor Vault bucket — survive node restarts
 - **Execution audit history**: Every job execution is logged to `audit/<jobID>_<timestamp>.json` (execution time, duration, response status, response body)
 - **Automatic restore on startup**: Reloads all job definitions from S3 on node boot
 
@@ -58,7 +58,7 @@ docker run -p 8085:8085 ghcr.io/vyuvaraj/servcron:latest
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                      ServCron                            │
+│                      Pranor Chrono                            │
 │                                                         │
 │  ┌───────────────────────────────────────────────────┐  │
 │  │  Scheduler (interval + cron expression evaluator) │  │
@@ -78,7 +78,7 @@ docker run -p 8085:8085 ghcr.io/vyuvaraj/servcron:latest
 │  └────────────────────┬──────────────────────────────┘  │
 │                       │                                 │
 │  ┌────────────────────▼──────────────────────────────┐  │
-│  │  Retry Engine + Audit Log (→ ServStore S3)        │  │
+│  │  Retry Engine + Audit Log (→ Pranor Vault S3)        │  │
 │  └───────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -142,7 +142,7 @@ This runs `extract` → `transform` → `load-a` and `load-b` in parallel → `n
 
 ---
 
-## Cron-as-Code (Serv-lang)
+## Cron-as-Code (Pranor)
 
 Define jobs in a `.serv` file alongside your application code:
 
@@ -158,7 +158,7 @@ every 30s "health-check" {
 }
 ```
 
-ServCron auto-reloads job definitions when `.serv` files change.
+Pranor Chrono auto-reloads job definitions when `.serv` files change.
 
 ---
 
@@ -179,7 +179,7 @@ docker run -p 8085:8085 \
 |----------|---------|-------------|
 | `SERVCRON_PORT` | `8085` | HTTP listener port |
 | `SERVCRON_REDIS_URL` | — | Redis URL for distributed leader election |
-| `SERVCRON_SERVSTORE_URL` | — | ServStore URL for job persistence |
+| `SERVCRON_SERVSTORE_URL` | — | Pranor Vault URL for job persistence |
 | `SERVCRON_SERVSTORE_BUCKET` | `servcron-jobs` | S3 bucket name for job registry |
 | `SERVCRON_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
-| `SERVCRON_SERV_FILES_DIR` | — | Directory to watch for `.serv` job definitions |
+| `SERVCRON_PRANOR_FILES_DIR` | — | Directory to watch for `.serv` job definitions |

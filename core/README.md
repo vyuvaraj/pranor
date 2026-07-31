@@ -1,6 +1,6 @@
-# ServShared Library
+# Pranor Core Library
 
-ServShared is the shared utility and middleware library powering core functions across the Servverse ecosystem: ServGate, ServStore, ServQueue, ServConsole, and more.
+Pranor Core is the shared utility and middleware library powering core functions across the Pranor ecosystem: Pranor Gate, Pranor Vault, Pranor Pulse, Pranor Console, and more.
 
 ## Features
 
@@ -29,7 +29,7 @@ ServShared is the shared utility and middleware library powering core functions 
 
 ### 🔒 Distributed Lock Manager Client (`lock_client.go`)
 - `DistributedLocker` interface decoupling the registry implementation.
-- `HTTPLockClient` talking to ServMesh's lock APIs.
+- `HTTPLockClient` talking to Pranor Mesh's lock APIs.
 - Mutual exclusion utility helpers (`WithLock`, `WithLockRetry`).
 - Mock/test-friendly `NoOpLocker`.
 

@@ -10,7 +10,7 @@
     },
     "authentication": {
       "provider": "jwt",
-      "secret_env_var": "SERV_JWT_SECRET"
+      "secret_env_var": "PRANOR_JWT_SECRET"
     },
     "routes": [
       {

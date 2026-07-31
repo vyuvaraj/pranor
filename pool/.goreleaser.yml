@@ -81,7 +81,7 @@ nfpms:
     package_name: servpool
     builds: [servdb]
     vendor: Yuvaraj
-    homepage: https://github.com/vyuvaraj/ServPool
+    homepage: https://github.com/vyuvaraj/Pranor Pool
     maintainer: Yuvaraj <vyuvaraj@github.com>
     description: Database connection pool manager from the ServVerse platform
     license: Apache-2.0

@@ -19,8 +19,8 @@ A complete REST API built with Serv — demonstrates the language's key features
 ## Quick Start
 
 ```bash
-# From the Serv-lang directory:
-serv run showcase/task-api/main.srv --watch
+# From the Pranor directory:
+pranor run showcase/task-api/main.pnr --watch
 ```
 
 The API starts on http://localhost:3000
@@ -65,7 +65,7 @@ curl -X DELETE http://localhost:3000/api/tasks/1
 
 ```
 task-api/
-├── main.srv       — Routes, database, scheduler (everything in one file)
+├── main.pnr       — Routes, database, scheduler (everything in one file)
 ├── config.yml     — Runtime configuration
 ├── tasks.db       — SQLite database (auto-created on first run)
 └── README.md      — This file

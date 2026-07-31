@@ -1,7 +1,7 @@
 # BRIEFING — 2026-07-26T09:09:26Z
 
 ## Mission
-Empirically verify ServCache Bloom filter (SC.G3) and Tiered TTL cache (SC.G4) implementation and tests.
+Empirically verify Pranor Cache Bloom filter (SC.G3) and Tiered TTL cache (SC.G4) implementation and tests.
 
 ## 🔒 My Identity
 - Archetype: Empirical Challenger
@@ -21,12 +21,12 @@ Empirically verify ServCache Bloom filter (SC.G3) and Tiered TTL cache (SC.G4) i
 - Updated: 2026-07-26T09:09:26Z
 
 ## Review Scope
-- **Files to review**: `packages/ServCache/...`
+- **Files to review**: `packages/Pranor Cache/...`
 - **Interface contracts**: `/home/developer/workspace/serv/PROJECT.md` & `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md` (R3, R4)
 - **Review criteria**: 0 false negatives for Bloom filter, false positive rate <= configured target, concurrent safety, TTL accuracy, stats accuracy under race detector (`go test -race ./...`)
 
 ## Key Decisions Made
-- Starting empirical investigation of ServCache codebase and existing unit tests.
+- Starting empirical investigation of Pranor Cache codebase and existing unit tests.
 
 ## Artifact Index
 - `/home/developer/workspace/serv/.agents/challenger_m2_1/DISPATCH.md` — Dispatch log

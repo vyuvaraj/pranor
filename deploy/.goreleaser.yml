@@ -49,17 +49,17 @@ dockers:
       - "ghcr.io/vyuvaraj/servcloud:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
-      - "--label=org.opencontainers.image.title=ServCloud"
+      - "--label=org.opencontainers.image.title=Pranor Deploy"
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/ServCloud"
+      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Deploy"
 
 brews:
   - name: servcloud
     repository:
       owner: vyuvaraj
       name: homebrew-serv
-    homepage: "https://github.com/vyuvaraj/ServCloud"
+    homepage: "https://github.com/vyuvaraj/Pranor Deploy"
     description: "Cloud infrastructure orchestration service from the ServVerse platform"
     license: "Apache-2.0"
     install: |
@@ -71,7 +71,7 @@ scoops:
   - repository:
       owner: vyuvaraj
       name: scoop-serv
-    homepage: "https://github.com/vyuvaraj/ServCloud"
+    homepage: "https://github.com/vyuvaraj/Pranor Deploy"
     description: "Cloud infrastructure orchestration service from the ServVerse platform"
     license: "Apache-2.0"
 
@@ -81,7 +81,7 @@ nfpms:
     package_name: servcloud
     builds: [servcloud]
     vendor: Yuvaraj
-    homepage: https://github.com/vyuvaraj/ServCloud
+    homepage: https://github.com/vyuvaraj/Pranor Deploy
     maintainer: Yuvaraj <vyuvaraj@github.com>
     description: Branch preview deployments and cloud orchestration from the ServVerse platform
     license: Apache-2.0

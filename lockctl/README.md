@@ -1,6 +1,6 @@
 # servlockctl
 
-`servlockctl` is the standalone, open-source command-line interface (CLI) administration client for **ServLock** (Distributed Lock Manager).
+`servlockctl` is the standalone, open-source command-line interface (CLI) administration client for **Pranor Lock** (Distributed Lock Manager).
 
 It allows you to acquire, release, renew, and query lock leases directly from your terminal.
 
@@ -16,7 +16,7 @@ You can configure the client using flags or environment variables:
 
 | Flag | Env Variable | Description | Default |
 |---|---|---|---|
-| `--url` | `SERVLOCK_URL` | ServLock server URL | `http://localhost:8089` |
+| `--url` | `SERVLOCK_URL` | Pranor Lock server URL | `http://localhost:8089` |
 | `--api-key` | `SERVLOCK_API_KEY` | API Key for authorization | (None) |
 | `--tenant` | - | Tenant ID for request isolation | `default` |
 

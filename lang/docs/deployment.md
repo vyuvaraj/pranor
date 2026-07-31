@@ -3,7 +3,7 @@
 ## Building for Production
 
 ```bash
-serv build app.srv -o myservice.exe
+pranor build app.pnr -o myservice.exe
 ```
 
 The output is a single static binary — no runtime dependencies.
@@ -13,7 +13,7 @@ The output is a single static binary — no runtime dependencies.
 Generate a Dockerfile:
 
 ```bash
-serv dockerize app.srv
+serv dockerize app.pnr
 ```
 
 Or manually:
@@ -23,7 +23,7 @@ FROM golang:1.23-alpine AS builder
 WORKDIR /app
 COPY . .
 RUN go build -o serv main.go
-RUN ./serv build app.srv -o service
+RUN ./pranor build app.pnr -o service
 
 FROM alpine:latest
 COPY --from=builder /app/service /service
@@ -141,7 +141,7 @@ Build for different platforms:
 
 ```bash
 GOOS=linux GOARCH=amd64 go build -o serv-linux main.go
-./serv-linux build app.srv -o service-linux
+./serv-linux build app.pnr -o service-linux
 ```
 
 ## CI/CD
@@ -172,7 +172,7 @@ release/
 └── serv-windows-amd64.zip
 ```
 
-Each archive contains `serv` (or `serv.exe`) and `serv-lsp` (or `serv-lsp.exe`).
+Each archive contains `serv` (or `pranor.exe`) and `pranor-lsp` (or `pranor-lsp.exe`).
 
 ### GitHub Release
 
@@ -234,7 +234,7 @@ npm install -g @vscode/vsce
 
 **First-time setup:**
 1. Get a Personal Access Token from https://dev.azure.com (Marketplace scope)
-2. Run: `vsce login serv-lang`
+2. Run: `vsce login pranor`
 
 **Publishing:**
 ```bash
@@ -250,7 +250,7 @@ Or use the script:
 
 **User install (after publishing):**
 - VS Code: Search "Serv Language Support" in Extensions
-- CLI: `code --install-extension serv-lang.serv-vscode`
+- CLI: `code --install-extension pranor.serv-vscode`
 
 ### Docker Base Image
 
@@ -267,8 +267,8 @@ docker push ghcr.io/user/serv:latest
 ```dockerfile
 FROM ghcr.io/user/serv:latest
 WORKDIR /app
-COPY myservice.srv .
-RUN serv build myservice.srv -o service
+COPY myservice.pnr .
+RUN pranor build myservice.pnr -o service
 CMD ["./service"]
 ```
 

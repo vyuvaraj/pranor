@@ -49,17 +49,17 @@ dockers:
       - "ghcr.io/vyuvaraj/servtunnel:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
-      - "--label=org.opencontainers.image.title=ServTunnel"
+      - "--label=org.opencontainers.image.title=Pranor Tunnel"
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/ServTunnel"
+      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Tunnel"
 
 brews:
   - name: servtunnel
     repository:
       owner: vyuvaraj
       name: homebrew-serv
-    homepage: "https://github.com/vyuvaraj/ServTunnel"
+    homepage: "https://github.com/vyuvaraj/Pranor Tunnel"
     description: "Secure tunneling and port-forwarding service from the ServVerse platform"
     license: "Apache-2.0"
     install: |
@@ -71,7 +71,7 @@ scoops:
   - repository:
       owner: vyuvaraj
       name: scoop-serv
-    homepage: "https://github.com/vyuvaraj/ServTunnel"
+    homepage: "https://github.com/vyuvaraj/Pranor Tunnel"
     description: "Secure tunneling and port-forwarding service from the ServVerse platform"
     license: "Apache-2.0"
 
@@ -81,7 +81,7 @@ nfpms:
     package_name: servtunnel
     builds: [servtunnel]
     vendor: Yuvaraj
-    homepage: https://github.com/vyuvaraj/ServTunnel
+    homepage: https://github.com/vyuvaraj/Pranor Tunnel
     maintainer: Yuvaraj <vyuvaraj@github.com>
     description: Secure tunnel and proxy service from the ServVerse platform
     license: Apache-2.0

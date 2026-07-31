@@ -1,19 +1,19 @@
 ---
-name: serv-lang
+name: pranor
 description: Developer guidelines and specifications for the Serv programming language compiler and runtime.
 ---
 
 # Serv Development Skill
 
-This skill steers development on the **Serv-lang** repository, which includes the compiler, the runtime, example code, and developer scripts.
+This skill steers development on the **Pranor** repository, which includes the compiler, the runtime, example code, and developer scripts.
 
 ---
 
 ## 1. Product Overview
 
-Serv is a domain-specific programming language (DSL) for building background services, schedulers, event-driven applications, and API microservices. Source files use the `.srv` extension.
+Serv is a domain-specific programming language (DSL) for building background services, schedulers, event-driven applications, and API microservices. Source files use the `.pnr` extension.
 
-- **Compilation Model**: Transpiles `.srv` source files into native Go code, then compiles them into standalone binaries.
+- **Compilation Model**: Transpiles `.pnr` source files into native Go code, then compiles them into standalone binaries.
 - **Key Features**:
   - Declarative syntax for HTTP routes, cron/interval schedulers, pub/sub messaging, database queries, caching, and concurrency.
   - Optional static typing (`int`, `string`, `bool`) that maps directly to Go primitives.
@@ -32,7 +32,7 @@ Serv is a domain-specific programming language (DSL) for building background ser
   - `codegen.go`: Code generator (AST to Go).
 - **`runtime/`**:
   - `runtime.go`: Single-file runtime library linked into generated binaries (HTTP, DB, cache, broker, scheduler, Python bridge).
-- **`examples/`**: Numbered example `.srv` programs demonstrating features.
+- **`examples/`**: Numbered example `.pnr` programs demonstrating features.
 - **`vscode-support/extension/`**: VS Code extension syntax highlighting and configuration.
 
 ### Conventions:

@@ -51,17 +51,17 @@ dockers:
     extra_files:
       - web/
     build_flag_templates:
-      - "--label=org.opencontainers.image.title=ServConsole"
+      - "--label=org.opencontainers.image.title=Pranor Console"
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/ServConsole"
+      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Console"
 
 brews:
   - name: servconsole
     repository:
       owner: vyuvaraj
       name: homebrew-serv
-    homepage: "https://github.com/vyuvaraj/ServConsole"
+    homepage: "https://github.com/vyuvaraj/Pranor Console"
     description: "Management console and dashboard for the ServVerse platform"
     license: "Apache-2.0"
     install: |
@@ -73,7 +73,7 @@ scoops:
   - repository:
       owner: vyuvaraj
       name: scoop-serv
-    homepage: "https://github.com/vyuvaraj/ServConsole"
+    homepage: "https://github.com/vyuvaraj/Pranor Console"
     description: "Management console and dashboard for the ServVerse platform"
     license: "Apache-2.0"
 
@@ -83,7 +83,7 @@ nfpms:
     package_name: servconsole
     builds: [servconsole]
     vendor: Yuvaraj
-    homepage: https://github.com/vyuvaraj/ServConsole
+    homepage: https://github.com/vyuvaraj/Pranor Console
     maintainer: Yuvaraj <vyuvaraj@github.com>
     description: Admin console and observability dashboard from the ServVerse platform
     license: Apache-2.0

@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test.describe('ServConsole Dashboard E2E Tests', () => {
+test.describe('Pranor Console Dashboard E2E Tests', () => {
   test('should load landing page and display main dashboard layout elements', async ({ page }) => {
     // Navigate to local console URL (mocking/simulating standard page server)
     await page.goto('http://localhost:8080');

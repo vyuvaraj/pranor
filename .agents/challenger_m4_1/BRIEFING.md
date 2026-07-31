@@ -1,7 +1,7 @@
 # BRIEFING — 2026-07-26T09:09:27Z
 
 ## Mission
-Empirically verify RWSplitter and HealthChecker in ServPool (SP.G1 & SP.G2), stress testing SQL routing and connection health retries.
+Empirically verify RWSplitter and HealthChecker in Pranor Pool (SP.G1 & SP.G2), stress testing SQL routing and connection health retries.
 
 ## 🔒 My Identity
 - Archetype: EMPIRICAL CHALLENGER
@@ -12,9 +12,9 @@ Empirically verify RWSplitter and HealthChecker in ServPool (SP.G1 & SP.G2), str
 - Instance: 1 of 1
 
 ## 🔒 Key Constraints
-- Review-only — do NOT modify implementation code in packages/ServPool
+- Review-only — do NOT modify implementation code in packages/Pranor Pool
 - Must write test code/harness to empirically challenge implementation
-- Execute tests with `go test -race ./...` in packages/ServPool
+- Execute tests with `go test -race ./...` in packages/Pranor Pool
 - Produce handoff report with verdict (APPROVE or REQUEST_CHANGES)
 - Send message to orchestrator upon completion
 
@@ -23,7 +23,7 @@ Empirically verify RWSplitter and HealthChecker in ServPool (SP.G1 & SP.G2), str
 - Updated: 2026-07-26T09:09:27Z
 
 ## Review Scope
-- **Files to review**: `packages/ServPool/...`
+- **Files to review**: `packages/Pranor Pool/...`
 - **Interface contracts**: `PROJECT.md`, `ORIGINAL_REQUEST.md` (R8, R9)
 - **Review criteria**: Empirical correctness, edge case handling, race conditions, compliance with R8 & R9.
 

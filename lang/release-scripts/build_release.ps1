@@ -1,8 +1,8 @@
 # build_release.ps1 - Builds fat release archives for all platforms
 # Usage: powershell -File release-scripts\build_release.ps1 v1.0.0
-# Run from the Serv-lang root directory.
+# Run from the Pranor root directory.
 #
-# Each archive includes: serv binary, serv-lsp, runtime/, stdlib/, declarations/, go.mod, go.sum
+# Each archive includes: serv binary, pranor-lsp, runtime/, stdlib/, declarations/, go.mod, go.sum
 
 param(
     [string]$Version = "dev"
@@ -46,8 +46,8 @@ foreach ($platform in $platforms) {
     if ($LASTEXITCODE -ne 0) { Write-Host "  FAILED: serv" -ForegroundColor Red; continue }
 
     # Build LSP
-    & go build -ldflags="-s -w" -o (Join-Path $stageDir "serv-lsp$ext") ./lsp/
-    if ($LASTEXITCODE -ne 0) { Write-Host "  FAILED: serv-lsp" -ForegroundColor Red; continue }
+    & go build -ldflags="-s -w" -o (Join-Path $stageDir "pranor-lsp$ext") ./lsp/
+    if ($LASTEXITCODE -ne 0) { Write-Host "  FAILED: pranor-lsp" -ForegroundColor Red; continue }
 
     # Reset env
     $env:GOOS = ""

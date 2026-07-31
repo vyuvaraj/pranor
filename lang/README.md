@@ -43,7 +43,7 @@ Serv is a modern, high-level DSL (Domain-Specific Language) designed specificall
 - **`async` Task & `concurrent {}` Primitives**: First-class language support for async task execution and parallel concurrent blocks.
 - **Multi-Target Code Generation**: Generate Rust (`serv generate --lang rust`) or Python (`serv generate --lang python`) client code from `.serv` service definitions.
 - **Breaking Change Detector**: `serv diff old.serv new.serv` detects field removals, type changes, and new required fields — safe to use in CI pipelines.
-- **Zero-Install WASM Playground**: Try Serv in the browser at [playground.servverse.dev](https://playground.servverse.dev) — runs the full compiler in WebAssembly, no install required.
+- **Zero-Install WASM Playground**: Try Serv in the browser at [playground.pranor.dev](https://playground.pranor.dev) — runs the full compiler in WebAssembly, no install required.
 
 ---
 
@@ -67,14 +67,14 @@ brew install serv
 
 ### Install via Script (Windows)
 ```powershell
-irm https://raw.githubusercontent.com/vyuvaraj/Serv-lang/main/release-scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/vyuvaraj/Pranor/main/release-scripts/install.ps1 | iex
 ```
 
 ### Build from Source
 ```bash
-git clone https://github.com/vyuvaraj/Serv-lang.git
-cd Serv-lang
-go build -o serv.exe .
+git clone https://github.com/vyuvaraj/Pranor.git
+cd Pranor
+go build -o pranor.exe .
 ```
 
 Add the binary to your system PATH for global access.
@@ -85,7 +85,7 @@ Add the binary to your system PATH for global access.
 
 ### VS Code Extension
 Install **Serv Language Support** from the VS Code Marketplace (or from `.vsix` in the repo):
-- Syntax highlighting for `.srv` files
+- Syntax highlighting for `.pnr` files
 - Real-time diagnostics (type errors, unused variables, missing returns)
 - Autocomplete and hover information
 - Go-to-definition across files
@@ -99,20 +99,20 @@ Install **Serv Language Support** from the VS Code Marketplace (or from `.vsix` 
 
 | Command | Description |
 |---------|-------------|
-| `serv build <file.srv> [-o output]` | Compile to native binary |
-| `serv run <file.srv> [--watch]` | Compile and run (with optional hot-reload) |
-| `serv test <file.srv> [--cover] [--filter name]` | Run test blocks |
-| `serv lint <file.srv>` | Check syntax and static analysis |
-| `serv fmt <file.srv> [--check]` | Format code (4-space indent) |
+| `pranor build <file.pnr> [-o output]` | Compile to native binary |
+| `pranor run <file.pnr> [--watch]` | Compile and run (with optional hot-reload) |
+| `serv test <file.pnr> [--cover] [--filter name]` | Run test blocks |
+| `serv lint <file.pnr>` | Check syntax and static analysis |
+| `serv fmt <file.pnr> [--check]` | Format code (4-space indent) |
 | `serv repl` | Interactive shell |
-| `serv add <go-package>` | Generate `.srv.d` declaration for a Go package |
+| `serv add <go-package>` | Generate `.pnr.d` declaration for a Go package |
 | `serv packages` | List installed package declarations |
 | `serv remove <package>` | Remove a package declaration |
 | `serv install <name>` | Install a community package |
 | `serv publish <dir>` | Publish a package to the registry |
-| `serv init [name]` | Create a new Serv project |
-| `serv dockerize <file.srv>` | Generate a production Dockerfile |
-| `serv debug <file.srv>` | Debug with Delve |
+| `pranor init [name]` | Create a new Serv project |
+| `serv dockerize <file.pnr>` | Generate a production Dockerfile |
+| `serv debug <file.pnr>` | Debug with Delve |
 | `serv audit` | Audit Go dependencies for vulnerabilities |
 
 ---
@@ -292,12 +292,12 @@ log.info("Active Session: ", session)
 
 ---
 
-### S3 & ServStore Client Operations (`s3`)
+### S3 & Pranor Vault Client Operations (`s3`)
 
-Interact with S3-compatible endpoints or a ServStore gateway using the native `s3` runtime functions. You can also import the helper wrapper from the standard library:
+Interact with S3-compatible endpoints or a Pranor Vault gateway using the native `s3` runtime functions. You can also import the helper wrapper from the standard library:
 
 ```serv
-import { newClient, put, get, deleteObject, list, at, search } from "stdlib/s3.srv"
+import { newClient, put, get, deleteObject, list, at, search } from "stdlib/s3.pnr"
 
 // Initialize client
 let client = newClient("http://localhost:8080", "admin", "adminsecret")
@@ -311,10 +311,10 @@ client.put("my-bucket", "config.json", "{\"status\": \"active\"}")
 let content = client.get("my-bucket", "config.json")
 log.info("Content: ", content)
 
-// Time-travel to retrieve previous versions of an object (ServStore only)
+// Time-travel to retrieve previous versions of an object (Pranor Vault only)
 let historicalContent = client.at("my-bucket", "config.json", "2026-06-15T09:00:00Z")
 
-// Perform semantic search queries (ServStore only)
+// Perform semantic search queries (Pranor Vault only)
 let searchResults = client.search("my-bucket", "find active config files", 5)
 ```
 
@@ -429,7 +429,7 @@ serv install <package-name>
 ```serv
 import { Helper, helperFunc } from "mypkg"
 ```
-Resolves to `packages/mypkg/index.srv` or `packages/mypkg/main.srv`. Only `export`-marked declarations are accessible.
+Resolves to `packages/mypkg/index.pnr` or `packages/mypkg/main.pnr`. Only `export`-marked declarations are accessible.
 
 ---
 
@@ -458,12 +458,12 @@ test "check string comparison" {
 ### Running Tests
 Execute:
 ```bash
-serv test test_sample.srv
+serv test test_sample.pnr
 ```
 
 *Output:*
 ```
-Running tests from test_sample.srv...
+Running tests from test_sample.pnr...
 === RUN   Test_DoublingMathVerification
 --- PASS: Test_DoublingMathVerification (0.00s)
 === RUN   Test_CheckStringComparison
@@ -476,7 +476,7 @@ ok  	serv/.build	1.518s
 
 ## Compilation & Deployment
 
-When `serv build` or `serv test` is executed, the compiler compiles the input `.srv` code into a temporary directory called `.build`.
+When `pranor build` or `serv test` is executed, the compiler compiles the input `.pnr` code into a temporary directory called `.build`.
 
 Inside `.build`:
 1. `service.go`: Synthesizes code for all declarations, routes, and background routines.
@@ -652,7 +652,7 @@ Apache 2.0 — see [LICENSE](LICENSE)
 
 ## Links
 
-- **GitHub**: [github.com/vyuvaraj/Serv-lang](https://github.com/vyuvaraj/Serv-lang)
-- **Playground**: [playground.servverse.dev](https://playground.servverse.dev) — zero-install WASM browser playground
+- **GitHub**: [github.com/vyuvaraj/Pranor](https://github.com/vyuvaraj/Pranor)
+- **Playground**: [playground.pranor.dev](https://playground.pranor.dev) — zero-install WASM browser playground
 - **VS Code Extension**: Search "Serv Language Support" in Extensions
-- **Issues**: [github.com/vyuvaraj/Serv-lang/issues](https://github.com/vyuvaraj/Serv-lang/issues)
+- **Issues**: [github.com/vyuvaraj/Pranor/issues](https://github.com/vyuvaraj/Pranor/issues)

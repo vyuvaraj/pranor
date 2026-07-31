@@ -1,5 +1,5 @@
 ## 2026-07-26T09:09:27Z
-You are Reviewer M5 for ServQueue (SQ.G5).
+You are Reviewer M5 for Pranor Pulse (SQ.G5).
 Working directory: /home/developer/workspace/serv/.agents/reviewer_m5_1
 
 Required Reading:
@@ -8,9 +8,9 @@ Required Reading:
 - `/home/developer/workspace/serv/.agents/worker_m5/handoff.md`
 
 Tasks:
-1. Examine code in `packages/ServQueue/pkg/tracing/traceparent.go` and `packages/ServQueue/pkg/core/engine.go`.
+1. Examine code in `packages/Pranor Pulse/pkg/tracing/traceparent.go` and `packages/Pranor Pulse/pkg/core/engine.go`.
 2. Check W3C Trace Context spec compliance (`Inject`, `Extract`, `NewTraceID`, `NewSpanID`), header case-insensitivity, and LogEntry traceparent propagation.
-3. Run `go build ./...` and `go test -v -count=1 ./...` in `packages/ServQueue`.
+3. Run `go build ./...` and `go test -v -count=1 ./...` in `packages/Pranor Pulse`.
 4. Verify `git diff go.mod` shows zero dependency changes.
 5. Write handoff report with verdict: APPROVE or REQUEST_CHANGES.
 6. Send message to orchestrator upon completion.

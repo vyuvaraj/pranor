@@ -1,12 +1,12 @@
-// ServConsole Frontend Controller
+// Pranor Console Frontend Controller
 
 const STATE = {
   activeTab: 'gateways',
   components: {
-    ServGate: { online: false, latency: 0, details: null },
-    ServQueue: { online: false, latency: 0, details: null },
-    ServStore: { online: false, latency: 0, details: null },
-    ServTunnel: { online: false, latency: 0, details: null }
+    Pranor Gate: { online: false, latency: 0, details: null },
+    Pranor Pulse: { online: false, latency: 0, details: null },
+    Pranor Vault: { online: false, latency: 0, details: null },
+    Pranor Tunnel: { online: false, latency: 0, details: null }
   },
   routes: [],
   buckets: [],
@@ -60,11 +60,11 @@ function initTheme() {
 
 // --- Tab Switching ---
 function initTabs() {
-  console.log('[ServConsole] initTabs: binding', document.querySelectorAll('.tab-btn').length, 'tab buttons');
+  console.log('[Pranor Console] initTabs: binding', document.querySelectorAll('.tab-btn').length, 'tab buttons');
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const tabId = btn.getAttribute('data-tab');
-      console.log('[ServConsole] Tab clicked:', tabId);
+      console.log('[Pranor Console] Tab clicked:', tabId);
       
       // Update UI active states
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -209,8 +209,8 @@ function updateSummaryUI() {
     statusText.textContent = 'Ecosystem Offline';
   }
   
-  // ServGate Card
-  const gate = STATE.components.ServGate;
+  // Pranor Gate Card
+  const gate = STATE.components.Pranor Gate;
   const gateCard = document.getElementById('gate-summary-card');
   const gateLatency = document.getElementById('gate-latency');
   if (gate.online) {
@@ -223,8 +223,8 @@ function updateSummaryUI() {
     gateLatency.textContent = '— ms';
   }
   
-  // ServQueue Card
-  const queue = STATE.components.ServQueue;
+  // Pranor Pulse Card
+  const queue = STATE.components.Pranor Pulse;
   const queueCard = document.getElementById('queue-summary-card');
   const queueMsgs = document.getElementById('queue-messages');
   if (queue.online) {
@@ -238,8 +238,8 @@ function updateSummaryUI() {
     queueMsgs.textContent = '— msg';
   }
   
-  // ServStore Card
-  const store = STATE.components.ServStore;
+  // Pranor Vault Card
+  const store = STATE.components.Pranor Vault;
   const storeCard = document.getElementById('store-summary-card');
   const storeBuckets = document.getElementById('store-buckets');
   if (store.online) {
@@ -253,8 +253,8 @@ function updateSummaryUI() {
     storeBuckets.textContent = '— bkts';
   }
 
-  // ServTunnel Card
-  const tunnel = STATE.components.ServTunnel;
+  // Pranor Tunnel Card
+  const tunnel = STATE.components.Pranor Tunnel;
   const tunnelCard = document.getElementById('tunnel-summary-card');
   const tunnelActive = document.getElementById('tunnel-active');
   if (tunnelCard && tunnelActive) {
@@ -310,12 +310,12 @@ async function refreshRoutesList() {
 
 // --- Queues Tab: Transforms & Messaging ---
 function refreshQueuesList() {
-  const queue = STATE.components.ServQueue;
+  const queue = STATE.components.Pranor Pulse;
   const tbody = document.querySelector('#queues-table tbody');
   tbody.innerHTML = '';
   
   if (!queue.online || !queue.details) {
-    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">ServQueue is offline</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">Pranor Pulse is offline</td></tr>`;
     return;
   }
   
@@ -471,11 +471,11 @@ async function fetchBuckets() {
       bucketsCount = metrics.BucketsCount || 0;
     }
     
-    // Render bucket list from ServStore
+    // Render bucket list from Pranor Vault
     const containers = document.getElementById('buckets-container');
     containers.innerHTML = '';
     
-    // Fetch actual bucket list from ServStore (returns S3 XML)
+    // Fetch actual bucket list from Pranor Vault (returns S3 XML)
     const provRes = await fetch('/api/proxy/store/');
     let bucketList = [];
     if (provRes.ok) {
@@ -1074,7 +1074,7 @@ function renderClusterNodes(data) {
 
   const nodes = data.nodes || [];
   if (nodes.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">No cluster nodes detected — ServStore may be running in single-node mode</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">No cluster nodes detected — Pranor Vault may be running in single-node mode</td></tr>`;
     return;
   }
 
@@ -1383,8 +1383,8 @@ async function fetchDatabaseSchemas() {
       noSchema.style.display = 'block';
       noSchema.innerHTML = `
         <p style="font-size:2rem; margin-bottom:1rem;">⚠️</p>
-        <p>Could not reach ServStore schema endpoint.</p>
-        <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">Make sure ServStore is online and the schema API is available.</p>
+        <p>Could not reach Pranor Vault schema endpoint.</p>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">Make sure Pranor Vault is online and the schema API is available.</p>
       `;
       schemaVisual.style.display = 'none';
       return;
@@ -1410,7 +1410,7 @@ async function fetchDatabaseSchemas() {
       noSchema.innerHTML = `
         <p style="font-size:2rem; margin-bottom:1rem;">📂</p>
         <p>No database schemas registered yet.</p>
-        <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">Deploy a Serv-lang service with ORM tables to see them here.</p>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">Deploy a Pranor service with ORM tables to see them here.</p>
       `;
       schemaVisual.style.display = 'none';
     } else if (serviceNames.length === 1) {
@@ -1985,9 +1985,9 @@ async function fetchDependencyGraph() {
       }
       let x = 400;
       let y = 250;
-      if (node.id === 'ServGate') { x = 150; y = 250; }
-      else if (node.id === 'ServStore') { x = 650; y = 150; }
-      else if (node.id === 'ServQueue') { x = 650; y = 350; }
+      if (node.id === 'Pranor Gate') { x = 150; y = 250; }
+      else if (node.id === 'Pranor Vault') { x = 650; y = 150; }
+      else if (node.id === 'Pranor Pulse') { x = 650; y = 350; }
       else {
         x = 400;
         y = 150 + (index * 90);
@@ -2026,7 +2026,7 @@ async function fetchTraces() {
     tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">Loading traces...</td></tr>`;
     const res = await fetch('/api/proxy/trace/api/traces');
     if (!res.ok) {
-      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">Failed to load traces from ServTrace</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">Failed to load traces from Pranor Trace</td></tr>`;
       return;
     }
     loadedTraces = await res.json();
@@ -2046,7 +2046,7 @@ function renderTraceList(traces) {
   tbody.innerHTML = '';
   
   if (traces.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">No traces found in ServTrace</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">No traces found in Pranor Trace</td></tr>`;
     return;
   }
   
@@ -2094,7 +2094,7 @@ function filterTraces() {
 }
 
 async function clearTraces() {
-  if (!confirm('Are you sure you want to clear all trace records from ServTrace memory?')) return;
+  if (!confirm('Are you sure you want to clear all trace records from Pranor Trace memory?')) return;
   try {
     const res = await fetch('/api/proxy/trace/api/traces/', { method: 'DELETE' });
     if (res.ok) {
@@ -2323,18 +2323,18 @@ window.switchToTracesTab = switchToTracesTab;
 
 function loadMockGraphData() {
   graphNodes = [
-    { id: 'ServGate', label: 'ServGate', x: 150, y: 250, color: '#06b6d4' },
+    { id: 'Pranor Gate', label: 'Pranor Gate', x: 150, y: 250, color: '#06b6d4' },
     { id: 'OrderService', label: 'OrderService', x: 400, y: 150, color: '#a855f7' },
     { id: 'BillingService', label: 'BillingService', x: 400, y: 350, color: '#a855f7' },
-    { id: 'ServStore', label: 'ServStore', x: 650, y: 150, color: '#10b981' },
-    { id: 'ServQueue', label: 'ServQueue', x: 650, y: 350, color: '#f59e0b' }
+    { id: 'Pranor Vault', label: 'Pranor Vault', x: 650, y: 150, color: '#10b981' },
+    { id: 'Pranor Pulse', label: 'Pranor Pulse', x: 650, y: 350, color: '#f59e0b' }
   ];
   
   graphEdges = [
-    { from: 'ServGate', to: 'OrderService', label: 'HTTP' },
-    { from: 'ServGate', to: 'BillingService', label: 'HTTP' },
-    { from: 'OrderService', to: 'ServStore', label: 'PUT' },
-    { from: 'BillingService', to: 'ServQueue', label: 'STOMP' }
+    { from: 'Pranor Gate', to: 'OrderService', label: 'HTTP' },
+    { from: 'Pranor Gate', to: 'BillingService', label: 'HTTP' },
+    { from: 'OrderService', to: 'Pranor Vault', label: 'PUT' },
+    { from: 'BillingService', to: 'Pranor Pulse', label: 'STOMP' }
   ];
 }
 
@@ -3776,7 +3776,7 @@ async function executeTerminalCommand(cmd) {
 
   if (cmd === 'help') {
     const helpDiv = document.createElement('div');
-    helpDiv.innerHTML = `Welcome to the Servverse Diagnostic Shell.<br>Available commands: ps aux, free -m, df -h, serv status, ping [target]`;
+    helpDiv.innerHTML = `Welcome to the Pranor Diagnostic Shell.<br>Available commands: ps aux, free -m, df -h, serv status, ping [target]`;
     historyLog.appendChild(helpDiv);
     termBody.scrollTop = termBody.scrollHeight;
     return;
@@ -3831,7 +3831,7 @@ async function executeTerminalCommand(cmd) {
 
 
 // --- Custom Dashboards ---
-let dashboards = JSON.parse(localStorage.getItem('servverse-dashboards') || '[]');
+let dashboards = JSON.parse(localStorage.getItem('pranor-dashboards') || '[]');
 let editingDashboard = null;
 
 function initDashboards() {
@@ -3905,10 +3905,10 @@ function renderWidgets() {
     let valueHTML = '';
     switch (widget.source) {
       case 'gate-latency':
-        valueHTML = `<div style="font-size:2rem; font-weight:700; color:var(--primary);">${STATE.components.ServGate?.latency || 0} ms</div>`;
+        valueHTML = `<div style="font-size:2rem; font-weight:700; color:var(--primary);">${STATE.components.Pranor Gate?.latency || 0} ms</div>`;
         break;
       case 'queue-messages':
-        valueHTML = `<div style="font-size:2rem; font-weight:700; color:var(--warning);">${STATE.components.ServQueue?.details?.metrics?.messages_published_total || 0}</div>`;
+        valueHTML = `<div style="font-size:2rem; font-weight:700; color:var(--warning);">${STATE.components.Pranor Pulse?.details?.metrics?.messages_published_total || 0}</div>`;
         break;
       case 'store-buckets':
         valueHTML = `<div style="font-size:2rem; font-weight:700; color:var(--success);">—</div>`;
@@ -3946,7 +3946,7 @@ function saveDashboard() {
     dashboards.push(editingDashboard);
   }
   
-  localStorage.setItem('servverse-dashboards', JSON.stringify(dashboards));
+  localStorage.setItem('pranor-dashboards', JSON.stringify(dashboards));
   editingDashboard = null;
   document.getElementById('dashboard-editor').style.display = 'none';
   renderDashboardList();
@@ -4002,7 +4002,7 @@ function viewDashboard(id) {
 function deleteDashboard(id) {
   if (!confirm('Delete this dashboard?')) return;
   dashboards = dashboards.filter(d => d.id !== id);
-  localStorage.setItem('servverse-dashboards', JSON.stringify(dashboards));
+  localStorage.setItem('pranor-dashboards', JSON.stringify(dashboards));
   renderDashboardList();
 }
 window.deleteDashboard = deleteDashboard;
@@ -4053,7 +4053,7 @@ async function fetchDbHealth() {
 }
 window.fetchDbHealth = fetchDbHealth;
 
-// --- Identity (ServAuth) ---
+// --- Identity (Pranor Auth) ---
 async function fetchAuthUsers() {
   try {
     const res = await fetch('/api/proxy/auth/api/auth/users');
@@ -4140,7 +4140,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// --- Notifications (ServMail) ---
+// --- Notifications (Pranor Notify) ---
 async function fetchMailDashboard() {
   try {
     const res = await fetch('/api/proxy/mail/api/mail/dashboard');
@@ -4222,7 +4222,7 @@ async function fetchMailPreferences() {
 }
 window.fetchMailPreferences = fetchMailPreferences;
 
-// --- ServCloud Console Client Integrations (UC.6 / 13.6) ---
+// --- Pranor Deploy Console Client Integrations (UC.6 / 13.6) ---
 async function fetchCloudServices() {
   const list = document.getElementById('cloud-services-list');
   if (!list) return;
@@ -4234,7 +4234,7 @@ async function fetchCloudServices() {
 
     list.innerHTML = '';
     if (!services || services.length === 0) {
-      list.innerHTML = `<tr><td colspan="6" class="text-center text-muted" style="padding: 2rem;">No services deployed in ServCloud.</td></tr>`;
+      list.innerHTML = `<tr><td colspan="6" class="text-center text-muted" style="padding: 2rem;">No services deployed in Pranor Deploy.</td></tr>`;
       return;
     }
 
@@ -4591,13 +4591,13 @@ async function fetchUpgradeDashboard() {
     }
 
     const latestCatalog = {
-      "ServGate": "v1.5.0",
-      "ServStore": "v1.4.2",
-      "ServQueue": "v1.4.0",
-      "ServAuth": "v1.3.1",
+      "Pranor Gate": "v1.5.0",
+      "Pranor Vault": "v1.4.2",
+      "Pranor Pulse": "v1.4.0",
+      "Pranor Auth": "v1.3.1",
       "ServDB": "v1.2.0",
-      "ServCron": "v1.1.0",
-      "ServMesh": "v1.1.2",
+      "Pranor Chrono": "v1.1.0",
+      "Pranor Mesh": "v1.1.2",
       "ServDocs": "v1.0.0"
     };
 
@@ -4650,7 +4650,7 @@ async function fetchUpgradeDashboard() {
 window.fetchUpgradeDashboard = fetchUpgradeDashboard;
 
 async function triggerServiceUpgrade(name, targetVersion) {
-  if (!confirm(`Trigger automatic package upgrade for ${name} to version ${targetVersion} via ServCloud?`)) {
+  if (!confirm(`Trigger automatic package upgrade for ${name} to version ${targetVersion} via Pranor Deploy?`)) {
     return;
   }
 
@@ -4710,15 +4710,15 @@ async function fetchMeshStatus() {
       const res = await fetch('/api/proxy/mesh/api/instances');
       if (res.ok) instances = await res.json();
     } catch (e) {
-      console.warn('ServMesh is offline, using mock instances');
+      console.warn('Pranor Mesh is offline, using mock instances');
     }
 
     if (!instances || instances.length === 0) {
       instances = [
-        { service: "ServGate", endpoint: "10.0.1.10:8080", weight: 100, canary: "0%" },
-        { service: "ServStore", endpoint: "10.0.1.11:8081", weight: 100, canary: "0%" },
-        { service: "ServQueue", endpoint: "10.0.1.12:8082", weight: 80, canary: "20% (v2.0-canary)" },
-        { service: "ServQueue-Canary", endpoint: "10.0.1.15:8082", weight: 20, canary: "20% (v2.0-canary)" },
+        { service: "Pranor Gate", endpoint: "10.0.1.10:8080", weight: 100, canary: "0%" },
+        { service: "Pranor Vault", endpoint: "10.0.1.11:8081", weight: 100, canary: "0%" },
+        { service: "Pranor Pulse", endpoint: "10.0.1.12:8082", weight: 80, canary: "20% (v2.0-canary)" },
+        { service: "Pranor Pulse-Canary", endpoint: "10.0.1.15:8082", weight: 20, canary: "20% (v2.0-canary)" },
         { service: "ServDB", endpoint: "10.0.1.13:5432", weight: 100, canary: "0%" }
       ];
     }
@@ -4746,7 +4746,7 @@ async function fetchMeshStatus() {
       </div>
       <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:1rem; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
         <div>
-          <span style="font-weight:600; color:#fff;">ServStore S3 Proxy</span>
+          <span style="font-weight:600; color:#fff;">Pranor Vault S3 Proxy</span>
           <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:0.25rem;">Circuit Breaker: CLOSED (Healthy)</div>
         </div>
         <span class="badge online">CLOSED</span>
@@ -4776,13 +4776,13 @@ async function fetchCronJobs() {
       const res = await fetch('/api/proxy/cron/api/jobs');
       if (res.ok) jobs = await res.json();
     } catch (e) {
-      console.warn('ServCron is offline, using mock jobs list');
+      console.warn('Pranor Chrono is offline, using mock jobs list');
     }
 
     if (!jobs || jobs.length === 0) {
       jobs = [
         { id: "cleanup-db", name: "Database Audit Logs Purge", schedule: "0 0 * * *", last_run: "12 hours ago", runs: 124 },
-        { id: "sync-store", name: "ServStore Replica Sync", schedule: "*/30 * * * *", last_run: "12 mins ago", runs: 2841 },
+        { id: "sync-store", name: "Pranor Vault Replica Sync", schedule: "*/30 * * * *", last_run: "12 mins ago", runs: 2841 },
         { id: "collect-metrics", name: "Telemetry Metrics Aggregation", schedule: "*/5 * * * *", last_run: "2 mins ago", runs: 18290 },
         { id: "user-billings", name: "Calculate User Billing Estimates", schedule: "0 1 1 * *", last_run: "7 days ago", runs: 6 }
       ];
@@ -4868,7 +4868,7 @@ async function fetchCacheMetrics() {
       const res = await fetch('/api/proxy/cache/api/cache/metrics');
       if (res.ok) metrics = await res.json();
     } catch (e) {
-      console.warn('ServCache is offline, using mock cache metrics');
+      console.warn('Pranor Cache is offline, using mock cache metrics');
     }
 
     if (!metrics) {
@@ -4932,15 +4932,15 @@ async function fetchRegistryCatalog() {
       const res = await fetch('/api/registry/packages');
       if (res.ok) packages = await res.json();
     } catch (e) {
-      console.warn('ServRegistry is offline, using mock package catalog');
+      console.warn('Pranor Hub is offline, using mock package catalog');
     }
 
     if (!packages || packages.length === 0) {
       packages = [
-        { name: "ServGate", version: "v1.5.0", license: "Apache-2.0", downloads: 12459, status: "stable" },
-        { name: "ServStore", version: "v1.4.2", license: "Apache-2.0", downloads: 8490, status: "stable" },
-        { name: "ServQueue", version: "v1.4.0", license: "Apache-2.0", downloads: 20140, status: "stable" },
-        { name: "ServAuth", version: "v1.3.1", license: "Proprietary (EE)", downloads: 5410, status: "stable" },
+        { name: "Pranor Gate", version: "v1.5.0", license: "Apache-2.0", downloads: 12459, status: "stable" },
+        { name: "Pranor Vault", version: "v1.4.2", license: "Apache-2.0", downloads: 8490, status: "stable" },
+        { name: "Pranor Pulse", version: "v1.4.0", license: "Apache-2.0", downloads: 20140, status: "stable" },
+        { name: "Pranor Auth", version: "v1.3.1", license: "Proprietary (EE)", downloads: 5410, status: "stable" },
         { name: "ServDB", version: "v1.2.0", license: "Apache-2.0", downloads: 1420, status: "deprecated" }
       ];
     }
@@ -5010,7 +5010,7 @@ function renderSequencePipeline(rootNode) {
 
   services.forEach((svc, index) => {
     const isLast = index === services.length - 1;
-    const color = svc === 'ServGate' ? '#06b6d4' : svc === 'ServStore' ? '#10b981' : svc === 'ServQueue' ? '#f59e0b' : '#6366f1';
+    const color = svc === 'Pranor Gate' ? '#06b6d4' : svc === 'Pranor Vault' ? '#10b981' : svc === 'Pranor Pulse' ? '#f59e0b' : '#6366f1';
     html += `
       <div style="background:rgba(255,255,255,0.02); border:1px solid ${color}; color:${color}; padding:0.25rem 0.5rem; border-radius:4px; font-weight:600;">
         ${escapeHtml(svc)}
@@ -5247,7 +5247,7 @@ function initWorkflowDesigner() {
   const workspace = document.getElementById('workflow-designer-workspace');
   if (!container || !workspace) return;
 
-  console.log('[ServConsole] Initializing Workflow Designer...');
+  console.log('[Pranor Console] Initializing Workflow Designer...');
 
   // 1. Tool addition buttons
   document.querySelectorAll('.tool-add-node').forEach(btn => {
@@ -5470,7 +5470,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- Locks & Secrets Management Views (EI.3) ---
 
 function fetchLocks() {
-  console.log('[ServConsole] Fetching active locks...');
+  console.log('[Pranor Console] Fetching active locks...');
   const tbody = document.getElementById('locks-table-body');
   if (!tbody) return;
 
@@ -5527,7 +5527,7 @@ function forceReleaseLock(key) {
 }
 
 function fetchSecrets() {
-  console.log('[ServConsole] Fetching secure credentials...');
+  console.log('[Pranor Console] Fetching secure credentials...');
   const tbody = document.getElementById('secrets-table-body');
   if (!tbody) return;
 

@@ -1,4 +1,4 @@
-# ServStore
+# Pranor Vault
 
 [![S3 Conformance](https://img.shields.io/badge/S3_Conformance-96%2F96_Operations_Pass-10b981?style=for-the-badge&logo=amazons3)](pkg/s3/s3_compliance_test.go)
 [![Go Version](https://img.shields.io/badge/Go-1.24%2B-00ADD8?style=for-the-badge&logo=go)](go.mod)
@@ -7,13 +7,13 @@
 docker compose up -d
 ```
 
-`ServStore` is a high-performance, S3-compatible distributed object storage system for the **Servverse** ecosystem. It combines classical cloud storage (erasure coding, multi-region replication) with advanced capabilities: AI-native semantic vector search, browser-local OPFS sync, P2P chunk seeding, and Git-like bucket branching.
+`Pranor Vault` is a high-performance, S3-compatible distributed object storage system for the **Pranor** ecosystem. It combines classical cloud storage (erasure coding, multi-region replication) with advanced capabilities: AI-native semantic vector search, browser-local OPFS sync, P2P chunk seeding, and Git-like bucket branching.
 
 ---
 
 ## Quickstart (S3 & AI Vector Search in 30 Seconds)
 
-### 1. Launch ServStore Standalone Daemon & Admin Console
+### 1. Launch Pranor Vault Standalone Daemon & Admin Console
 ```bash
 docker compose up -d
 # S3 API listening at http://localhost:9000
@@ -36,7 +36,7 @@ servstore ls knowledge
 ```
 
 ### 3. AI-Native Semantic Vector Search (End-to-End)
-Text uploaded to ServStore is automatically indexed and vectorized on `PUT`. Query semantically without external vector databases:
+Text uploaded to Pranor Vault is automatically indexed and vectorized on `PUT`. Query semantically without external vector databases:
 
 ```bash
 curl -X POST http://localhost:9000/api/v1/search/hybrid \
@@ -95,7 +95,7 @@ curl -X POST http://localhost:9000/api/v1/search/hybrid \
 - **CLI**: `servstore branch create`, `servstore branch diff`, `servstore branch merge`
 
 ### 🌐 Browser & P2P
-- **OPFS local sync** (`@servverse/store-wasm`): Browser-local object storage using Origin Private File System; syncs to server when online
+- **OPFS local sync** (`@pranor/store-wasm`): Browser-local object storage using Origin Private File System; syncs to server when online
 - **WebTorrent P2P chunk seeder**: Seed object chunks via WebTorrent — reduce CDN egress costs
 - **WebRTC peer signaling relay**: Broker WebRTC connections between peers for direct chunk transfer
 - **P2P SHA-256 integrity verification**: All chunks verified cryptographically before acceptance
@@ -109,7 +109,7 @@ curl -X POST http://localhost:9000/api/v1/search/hybrid \
 
 ```
 ┌────────────────────────────────────────────────────────────┐
-│                        ServStore                            │
+│                        Pranor Vault                            │
 │                                                            │
 │  ┌─────────────────────────────────────────────────────┐  │
 │  │              S3 Wire Protocol Router                 │  │
@@ -145,7 +145,7 @@ curl -X POST http://localhost:9000/api/v1/search/hybrid \
 | `GET` | `/{bucket}?list-type=2` | List objects in bucket |
 | `POST` | `/{bucket}/{key}?select` | S3 Select query (CSV/JSON/Parquet) |
 
-### ServStore-Specific APIs
+### Pranor Vault-Specific APIs
 | Method | Path | Description |
 |--------|------|-------------|
 | `POST` | `/api/v1/buckets` | Create bucket |
@@ -163,7 +163,7 @@ curl -X POST http://localhost:9000/api/v1/search/hybrid \
 
 ## Unified CLI Reference (`servstore`)
 
-ServStore ships a single, unified CLI tool (`servstore`) that connects to both the S3 API endpoint and the Admin management API:
+Pranor Vault ships a single, unified CLI tool (`servstore`) that connects to both the S3 API endpoint and the Admin management API:
 
 ```bash
 # Global flags
@@ -241,20 +241,20 @@ servstore branch merge my-bucket --source feature-x --into main
 ## Browser / P2P
 
 ```bash
-npm install @servverse/store-wasm
+npm install @pranor/store-wasm
 ```
 
 ```typescript
-import { ServStore } from '@servverse/store-wasm';
+import { Pranor Vault } from '@pranor/store-wasm';
 
-const store = new ServStore({ bucket: 'my-bucket', syncUrl: 'https://store.servverse.net' });
+const store = new Pranor Vault({ bucket: 'my-bucket', syncUrl: 'https://store.pranor.net' });
 
 // Works offline via OPFS
 await store.put('key', new Uint8Array([1, 2, 3]));
 const data = await store.get('key');
 
 // P2P chunk seeding (reduces server egress)
-await store.enableP2PSeed({ torrentTracker: 'wss://tracker.servverse.net' });
+await store.enableP2PSeed({ torrentTracker: 'wss://tracker.pranor.net' });
 ```
 
 ---
@@ -275,7 +275,7 @@ await store.enableP2PSeed({ torrentTracker: 'wss://tracker.servverse.net' });
 
 - **Prometheus `/metrics`**: Object throughput, IOPS, cache hit rates, vector index query latency, tiering migration stats
 - **OTel tracing**: Per-request spans for upload, download, search, and compaction operations
-- **ServConsole Inspector**: Bucket browser, vector index namespace management, tiering policy editor
+- **Pranor Console Inspector**: Bucket browser, vector index namespace management, tiering policy editor
 
 ---
 

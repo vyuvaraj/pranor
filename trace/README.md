@@ -1,10 +1,10 @@
-# ServTrace
+# Pranor Trace
 
 ```bash
 docker run -p 8090:8090 ghcr.io/vyuvaraj/servtrace:latest
 ```
 
-`ServTrace` is the distributed tracing and continuous profiling service for the **Servverse** ecosystem. It ingests OTLP-format traces, assembles waterfall hierarchies, provides SLO burn rate alerting, and delivers eBPF-powered flamegraph profiling with automatic OTel correlation.
+`Pranor Trace` is the distributed tracing and continuous profiling service for the **Pranor** ecosystem. It ingests OTLP-format traces, assembles waterfall hierarchies, provides SLO burn rate alerting, and delivers eBPF-powered flamegraph profiling with automatic OTel correlation.
 
 ---
 
@@ -29,21 +29,21 @@ docker run -p 8090:8090 ghcr.io/vyuvaraj/servtrace:latest
 ### 🔥 eBPF Flamegraph Profiling
 - **Continuous eBPF CPU & memory profiler**: Kernel-level profiling via eBPF — no code instrumentation required
 - **OTel trace-to-flamegraph correlator**: Automatically correlates a slow trace span to the flamegraph profile captured during that span's execution window
-- **In-browser flamegraph visualization**: Interactive flamegraph rendered in ServConsole — click to zoom, search symbol names
+- **In-browser flamegraph visualization**: Interactive flamegraph rendered in Pranor Console — click to zoom, search symbol names
 
 ### 📊 SLO & Error Budget
 - **SLO burn rate alert engine**: Configurable SLO targets (e.g. 99.9% availability) with dual burn rate windows
   - **Fast burn window** (1h): Catches sudden spikes consuming error budget rapidly
   - **Slow burn window** (6h/24h): Catches gradual degradation
 - **Error budget tracking**: Real-time remaining error budget per service per SLO definition
-- **ServConsole integration**: Live SLO burn rate dashboard with alert status
+- **Pranor Console integration**: Live SLO burn rate dashboard with alert status
 
 ### 📈 Prometheus Exemplars
 - **Exemplar-linked OpenMetrics generator**: Produces Prometheus-compatible OpenMetrics text with `# TYPE` / `# UNIT` annotations and trace exemplar links embedded in histogram observations
 
 ### 🗺️ Distributed Dependency Analysis
 - **Critical path analyzer**: Identifies the longest-latency path across a distributed trace — pinpoints bottleneck services
-- **Distributed dependency map**: Builds a service-call graph from observed trace data; visualized in ServConsole topology view
+- **Distributed dependency map**: Builds a service-call graph from observed trace data; visualized in Pranor Console topology view
 
 ---
 
@@ -54,7 +54,7 @@ OTLP SDK (Go/Python/JS/...)
      │ POST /v1/traces
      ▼
 ┌──────────────────────────────────────────┐
-│               ServTrace                   │
+│               Pranor Trace                   │
 │                                          │
 │  ┌────────────────────────────────────┐  │
 │  │   Span Ingestion & Reassembly      │  │

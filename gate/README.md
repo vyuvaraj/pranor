@@ -1,19 +1,19 @@
-# ServGate
+# Pranor Gate
 
-[![CI Pass Rate](https://img.shields.io/badge/CI_Tests-100%25_Passing-10b981?style=for-the-badge&logo=githubactions)](https://github.com/vyuvaraj/serv)
+[![CI Pass Rate](https://img.shields.io/badge/CI_Tests-100%25_Passing-10b981?style=for-the-badge&logo=githubactions)](https://github.com/vyuvaraj/pranor)
 [![Performance](https://img.shields.io/badge/Performance-50k_req%2Fs_%7C_sub--millisecond_p99-blue?style=for-the-badge&logo=fastapi)](pkg/proxy/performance_test.go)
 
 ```bash
 docker compose up -d
 ```
 
-`ServGate` is a high-performance, AI-native programmable API Gateway and reverse proxy for the **Servverse** ecosystem. It combines classical gateway capabilities (routing, auth, rate limiting) with cutting-edge AI middleware (prompt guard, semantic cache, MCP tool registry) and enterprise-grade reliability (circuit breaker, canary, WASM inline processing).
+`Pranor Gate` is a high-performance, AI-native programmable API Gateway and reverse proxy for the **Pranor** ecosystem. It combines classical gateway capabilities (routing, auth, rate limiting) with cutting-edge AI middleware (prompt guard, semantic cache, MCP tool registry) and enterprise-grade reliability (circuit breaker, canary, WASM inline processing).
 
 ---
 
 ## Performance & Benchmarks
 
-ServGate is engineered in Go for extreme throughput and low latency:
+Pranor Gate is engineered in Go for extreme throughput and low latency:
 
 | Benchmark Metric | Result | Benchmark File |
 |------------------|--------|----------------|
@@ -27,7 +27,7 @@ ServGate is engineered in Go for extreme throughput and low latency:
 ## Quickstart & Docker Compose
 
 ### 1. Minimal Standalone Setup
-Copy `config.example.json` to `config.json` and launch ServGate:
+Copy `config.example.json` to `config.json` and launch Pranor Gate:
 
 ```bash
 cp config.example.json config.json
@@ -35,7 +35,7 @@ docker run -p 8080:8080 -v ./config.json:/config.json ghcr.io/vyuvaraj/servgate:
 ```
 
 ### 2. End-to-End AI Gateway + Ollama Setup
-Run ServGate connected to a local Ollama LLM endpoint with automatic prompt guard & semantic cache:
+Run Pranor Gate connected to a local Ollama LLM endpoint with automatic prompt guard & semantic cache:
 
 ```bash
 docker compose up -d
@@ -84,7 +84,7 @@ curl -X POST http://localhost:8080/ai/v1/chat \
 
 ## Configuration & `config.example.json`
 
-ServGate uses a simple JSON configuration. A minimal `config.example.json` is included in the repository:
+Pranor Gate uses a simple JSON configuration. A minimal `config.example.json` is included in the repository:
 
 ```json
 {
@@ -111,7 +111,7 @@ ServGate uses a simple JSON configuration. A minimal `config.example.json` is in
 
 ## Command Line & Subcommands
 
-ServGate includes CLI subcommands for shadow traffic testing and policy compilation:
+Pranor Gate includes CLI subcommands for shadow traffic testing and policy compilation:
 
 ### 1. Traffic Replay Engine (`servgate replay`)
 Replay historical production traffic logs (`.jsonl`) against a WASM middleware module to evaluate performance and correctness before deploying:
@@ -145,7 +145,7 @@ servgate policy compile rules.policy -o security_rules.wasm
 
 - **OpenTelemetry**: `traceparent` propagation on all proxied requests; span per route, per WASM execution
 - **Prometheus `/metrics`**: request rate, latency histograms, error rates, circuit breaker state, cache hit rates, AI cost counters
-- **ServConsole Inspector**: Live route table, WASM module management, Swagger UI, AI cost dashboard, prompt guard violation log
+- **Pranor Console Inspector**: Live route table, WASM module management, Swagger UI, AI cost dashboard, prompt guard violation log
 
 ---
 

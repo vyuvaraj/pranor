@@ -1,10 +1,10 @@
-﻿# ServMesh Roadmap
+# Pranor Mesh Roadmap
 
-This roadmap outlines the planned development phases for the ServMesh library-level service mesh.
+This roadmap outlines the planned development phases for the Pranor Mesh library-level service mesh.
 
 ---
 
-## Differentiating Factors (Why ServMesh vs. Istio/Linkerd?)
+## Differentiating Factors (Why Pranor Mesh vs. Istio/Linkerd?)
 * **Library-Level (No Sidecars)**: Runs directly within the client binary via custom transport, bypassing the CPU/Memory overhead and network latency of sidecar proxies (like Envoy).
 * **Native Language Integration**: Directly resolves `serv://` schemas in code, bringing service discovery semantics directly into the application layer.
 * **Out-of-the-Box Resilience**: Seamlessly bundles retries, round-robin load-balancing, OTel trace context, and circuit breakers with zero external yaml configuration.
@@ -21,15 +21,15 @@ This roadmap outlines the planned development phases for the ServMesh library-le
 - [x] **Round-Robin Load Balancing**: Balances client requests evenly across all healthy service replicas.
 - [x] **Circuit Breaker**: Tracks failures, managing states (`Closed`, `Open`, `Half-Open`) to prevent cascades.
 - [x] **Automatic Retries**: Implements exponential backoff retries on request timeouts.
-- [x] **OTel Context Propagation**: Transparent trace header injection via ServShared.
+- [x] **OTel Context Propagation**: Transparent trace header injection via Pranor Core.
 
 ## Phase 3: Security & Network Controls (Completed)
 - [x] **Dynamic mTLS**: Auto-provisioned client/server certificates for zero-trust inter-service encryption.
-- [x] **Registry JWT Protection**: Secure API registration with shared `SERV_JWT_SECRET` verification.
+- [x] **Registry JWT Protection**: Secure API registration with shared `PRANOR_JWT_SECRET` verification.
 - [x] **Canary Traffic Splitting**: Route percentage of traffic to new versions at client-side.
 
 ## Phase 4: Console & Observability (Planned)
-- [x] **Topology Map**: Real-time dependency graph visualization in ServConsole. [June 29, 2026]
+- [x] **Topology Map**: Real-time dependency graph visualization in Pranor Console. [June 29, 2026]
 - [x] **Breaker Alerting**: Sends telemetry signals to alert on circuit-breaker trips. [June 29, 2026]
 - [x] **Dynamic Routing Rules**: Update client-side routing and retries dynamically via registry config. [June 29, 2026]
 
@@ -40,7 +40,7 @@ This roadmap outlines the planned development phases for the ServMesh library-le
 - [x] **Service Versioning & Header Routing**: Route requests to specific versions via `X-Service-Version` header with graceful fallback. Blue/green at service mesh level. [July 9, 2026]
 - [x] **Health-Aware Load Balancing**: OTel-feedback weighted routing + `POST /api/health-metrics` push endpoint + `GET /api/topology` aggregate view for live observability. [July 9, 2026]
 - [x] **Sidecar-less mTLS Rotation**: Automated cert rotation with zero-downtime using background goroutine (SEC.7)
-- [x] **Service Dependency Graph API**: Expose real-time dependency topology data from heartbeat metadata for ServConsole.
+- [x] **Service Dependency Graph API**: Expose real-time dependency topology data from heartbeat metadata for Pranor Console.
 - [x] **gRPC Support**: Extend the resolver and circuit breaker to handle gRPC connections natively.
 
 ## Phase 6: Architectural Depth & DevOps (Pending)

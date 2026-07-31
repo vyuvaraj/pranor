@@ -2,8 +2,8 @@
 
 ## Initial Request — 2026-07-26T08:56:38Z
 
-Implement 10 pending OSS roadmap items across 5 Servverse modules
-(ServAuth, ServCache, ServCron, ServPool, ServQueue) in the Go monorepo
+Implement 10 pending OSS roadmap items across 5 Pranor modules
+(Pranor Auth, Pranor Cache, Pranor Chrono, Pranor Pool, Pranor Pulse) in the Go monorepo
 at `/home/developer/workspace/serv`. Each item is a self-contained
 package-level feature with zero external dependency additions.
 
@@ -16,23 +16,23 @@ Integrity mode: development
 
 | ID | Module | Feature |
 |----|--------|---------|
-| SA.G1 | ServAuth | Opaque session token store with server-side revocation |
-| SA.G6 | ServAuth | Credential stuffing detection & velocity rate limiter |
-| SC.G3 | ServCache | Probabilistic Bloom filter for absent-key elimination |
-| SC.G4 | ServCache | Tiered TTL policy engine (Hot / Warm / Cold) |
-| CR.G1 | ServCron | DAG job chain pipeline (Job-A → Job-B on success/failure) |
-| CR.G2 | ServCron | Per-job retry policy engine (exponential backoff + jitter) |
-| CR.G4 | ServCron | Declarative YAML cron-as-code definitions with hot-reload |
-| SP.G1 | ServPool | Read/Write split router (primary for writes, replica for reads) |
-| SP.G2 | ServPool | Pre-checkout connection health validation (ping + validation query) |
-| SQ.G5 | ServQueue | Per-message W3C trace context propagation (OTel traceparent) |
+| SA.G1 | Pranor Auth | Opaque session token store with server-side revocation |
+| SA.G6 | Pranor Auth | Credential stuffing detection & velocity rate limiter |
+| SC.G3 | Pranor Cache | Probabilistic Bloom filter for absent-key elimination |
+| SC.G4 | Pranor Cache | Tiered TTL policy engine (Hot / Warm / Cold) |
+| CR.G1 | Pranor Chrono | DAG job chain pipeline (Job-A → Job-B on success/failure) |
+| CR.G2 | Pranor Chrono | Per-job retry policy engine (exponential backoff + jitter) |
+| CR.G4 | Pranor Chrono | Declarative YAML cron-as-code definitions with hot-reload |
+| SP.G1 | Pranor Pool | Read/Write split router (primary for writes, replica for reads) |
+| SP.G2 | Pranor Pool | Pre-checkout connection health validation (ping + validation query) |
+| SQ.G5 | Pranor Pulse | Per-message W3C trace context propagation (OTel traceparent) |
 
 ---
 
 ## Requirements
 
-### R1. ServAuth — Opaque Session Token Store (SA.G1)
-Create `packages/ServAuth/pkg/sessions/token_store.go`.
+### R1. Pranor Auth — Opaque Session Token Store (SA.G1)
+Create `packages/Pranor Auth/pkg/sessions/token_store.go`.
 Implement an opaque refresh token store: `TokenStore` struct with
 `Issue(userID string) (token string, err error)`,
 `Validate(token string) (userID string, err error)`, and
@@ -41,8 +41,8 @@ Implement an opaque refresh token store: `TokenStore` struct with
 automatically. Thread-safe. Include tests covering issue, validate,
 revoke, and TTL expiry.
 
-### R2. ServAuth — Credential Stuffing Velocity Limiter (SA.G6)
-Create `packages/ServAuth/pkg/security/velocity_limiter.go`.
+### R2. Pranor Auth — Credential Stuffing Velocity Limiter (SA.G6)
+Create `packages/Pranor Auth/pkg/security/velocity_limiter.go`.
 Implement a sliding-window rate limiter tracking failed login attempts
 per IP and per username using in-memory counters. Expose:
 `RecordFailure(key string)`, `IsBlocked(key string) bool`, and
@@ -50,16 +50,16 @@ per IP and per username using in-memory counters. Expose:
 block, block duration. Thread-safe. Include tests covering blocking
 after threshold, reset, and window expiry.
 
-### R3. ServCache — Probabilistic Bloom Filter (SC.G3)
-Create `packages/ServCache/pkg/bloom/bloom.go`.
+### R3. Pranor Cache — Probabilistic Bloom Filter (SC.G3)
+Create `packages/Pranor Cache/pkg/bloom/bloom.go`.
 Implement a Bloom filter with zero external dependencies: bit array +
 k hash functions (FNV-based). Expose `NewBloom(capacity int, falsePositiveRate float64) *Bloom`,
 `Add(key string)`, `MayContain(key string) bool`. Include tests
 verifying: all added keys return MayContain=true, false positive rate
 stays below configured threshold for 1000 items, and zero false negatives.
 
-### R4. ServCache — Tiered TTL Policy Engine (SC.G4)
-Create `packages/ServCache/pkg/tieredttl/policy.go`.
+### R4. Pranor Cache — Tiered TTL Policy Engine (SC.G4)
+Create `packages/Pranor Cache/pkg/tieredttl/policy.go`.
 Implement a three-tier TTL policy engine: Hot (≤1s TTL), Warm (≤5m TTL),
 Cold (>5m TTL). Expose `TierPolicy` struct with `Classify(ttl time.Duration) Tier`
 and `TierName(t Tier) string`. Wrap the existing `InMemoryCache` with a
@@ -67,8 +67,8 @@ and `TierName(t Tier) string`. Wrap the existing `InMemoryCache` with a
 hit/miss counters via `Stats() TierStats`. Include tests verifying correct
 tier classification and counter increments.
 
-### R5. ServCron — DAG Job Chain Pipeline (CR.G1)
-Extend `packages/ServCron/pkg/cron/cron.go`.
+### R5. Pranor Chrono — DAG Job Chain Pipeline (CR.G1)
+Extend `packages/Pranor Chrono/pkg/cron/cron.go`.
 Add `OnSuccess string` and `OnFailure string` fields to the `Job` struct
 (referencing another job ID to trigger on success/failure). After each
 job HTTP callback completes, if `OnSuccess`/`OnFailure` is set and the
@@ -77,8 +77,8 @@ Guard against infinite loops with a max chain depth of 10. Include tests
 covering: linear chain (A→B→C), failure branch (A-fail→B), and cycle
 guard.
 
-### R6. ServCron — Per-Job Retry Policy (CR.G2)
-Extend `packages/ServCron/pkg/cron/cron.go`.
+### R6. Pranor Chrono — Per-Job Retry Policy (CR.G2)
+Extend `packages/Pranor Chrono/pkg/cron/cron.go`.
 Add `MaxRetries int`, `RetryDelayMs int`, and `RetryBackoffMult float4`
 fields to the `Job` struct. On HTTP callback failure, retry up to
 `MaxRetries` times with delay = `RetryDelayMs * BackoffMult^attempt` + random jitter
@@ -86,8 +86,8 @@ fields to the `Job` struct. On HTTP callback failure, retry up to
 Include tests covering: successful retry on 2nd attempt, exhausted retries
 increment FailureCount, jitter produces non-deterministic delays.
 
-### R7. ServCron — YAML Cron-as-Code (CR.G4)
-Create `packages/ServCron/pkg/config/jobs_loader.go`.
+### R7. Pranor Chrono — YAML Cron-as-Code (CR.G4)
+Create `packages/Pranor Chrono/pkg/config/jobs_loader.go`.
 Parse a YAML file into []cron.Job. YAML schema:
 ```yaml
 jobs:
@@ -106,8 +106,8 @@ converting with `gopkg.in/yaml.v3` **only if already in go.mod**,
 otherwise implement a minimal YAML subset parser for the schema above.
 Check `go.mod` first. Include tests covering file load and field mapping.
 
-### R8. ServPool — Read/Write Split Router (SP.G1)
-Create `packages/ServPool/pkg/routing/rw_splitter.go`.
+### R8. Pranor Pool — Read/Write Split Router (SP.G1)
+Create `packages/Pranor Pool/pkg/routing/rw_splitter.go`.
 Implement `RWSplitter` that classifies a query string as read or write:
 `ClassifyQuery(sql string) QueryType` returns `QueryTypeRead` or
 `QueryTypeWrite` based on the leading SQL keyword (SELECT, WITH → read;
@@ -116,8 +116,8 @@ Expose `Route(sql string, primary Manager, replicas []Manager) Manager`
 returning the appropriate pool. Include tests for all major SQL verbs,
 case-insensitivity, and whitespace-leading queries.
 
-### R9. ServPool — Connection Health Validation (SP.G2)
-Create `packages/ServPool/pkg/pool/health_checker.go`.
+### R9. Pranor Pool — Connection Health Validation (SP.G2)
+Create `packages/Pranor Pool/pkg/pool/health_checker.go`.
 Implement `HealthChecker` that wraps a `Manager`: before `Acquire()`,
 run a configurable validation function `ValidateFn func(*DbConn) bool`
 (default: always true — callers inject a real ping). Track
@@ -126,8 +126,8 @@ validation failure, discard the connection (call `Release` then try
 again, up to 3 attempts). Include tests covering: healthy conn passes,
 unhealthy conn discarded and retried, all-unhealthy returns error.
 
-### R10. ServQueue — W3C Trace Context Propagation (SQ.G5)
-Create `packages/ServQueue/pkg/tracing/traceparent.go`.
+### R10. Pranor Pulse — W3C Trace Context Propagation (SQ.G5)
+Create `packages/Pranor Pulse/pkg/tracing/traceparent.go`.
 Implement W3C Trace Context (RFC-compliant):
 `Inject(headers map[string]string, traceID, spanID string)` — writes
 `traceparent: 00-{traceID}-{spanID}-01` header.
@@ -135,7 +135,7 @@ Implement W3C Trace Context (RFC-compliant):
 `traceparent` header and returns components.
 `NewTraceID() string` and `NewSpanID() string` — generate random
 hex-encoded IDs (16 bytes for traceID, 8 bytes for spanID).
-Integrate into `packages/ServQueue/pkg/core/engine.go`'s `Append`
+Integrate into `packages/Pranor Pulse/pkg/core/engine.go`'s `Append`
 method: if a `traceparent` header is present in an optional
 `map[string]string` metadata arg, store it on `LogEntry`.
 Include tests covering inject/extract round-trip, invalid header rejection,
@@ -165,7 +165,7 @@ and new ID generation uniqueness.
 
 When all items are complete and all acceptance criteria pass, commit everything to the `serv` repo with:
 ```
-git add packages/ServAuth/pkg/sessions/ packages/ServAuth/pkg/security/ packages/ServCache/pkg/bloom/ packages/ServCache/pkg/tieredttl/ packages/ServCron/pkg/cron/ packages/ServCron/pkg/config/ packages/ServPool/pkg/routing/ packages/ServPool/pkg/pool/health_checker.go packages/ServQueue/pkg/tracing/ packages/ServQueue/pkg/core/
+git add packages/Pranor Auth/pkg/sessions/ packages/Pranor Auth/pkg/security/ packages/Pranor Cache/pkg/bloom/ packages/Pranor Cache/pkg/tieredttl/ packages/Pranor Chrono/pkg/cron/ packages/Pranor Chrono/pkg/config/ packages/Pranor Pool/pkg/routing/ packages/Pranor Pool/pkg/pool/health_checker.go packages/Pranor Pulse/pkg/tracing/ packages/Pranor Pulse/pkg/core/
 git commit -m "feat: implement 10 OSS roadmap items (SA.G1, SA.G6, SC.G3, SC.G4, CR.G1, CR.G2, CR.G4, SP.G1, SP.G2, SQ.G5)"
 git push origin main
 ```

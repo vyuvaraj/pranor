@@ -1,19 +1,19 @@
-# Forensic Audit Handoff Report — ServCache (SC.G3 & SC.G4)
+# Forensic Audit Handoff Report — Pranor Cache (SC.G3 & SC.G4)
 
-**Work Product**: `packages/ServCache/pkg/bloom/bloom.go`, `packages/ServCache/pkg/tieredttl/policy.go`, `packages/ServCache/go.mod`
+**Work Product**: `packages/Pranor Cache/pkg/bloom/bloom.go`, `packages/Pranor Cache/pkg/tieredttl/policy.go`, `packages/Pranor Cache/go.mod`
 **Profile**: Forensic Integrity Auditor (Development Mode)
 **Verdict**: CLEAN
 
 ---
 
 ## 1. Observation
-- `packages/ServCache/pkg/bloom/bloom.go`: Implements `Bloom` struct with bitset slice `[]uint64`, thread-safety via `sync.RWMutex`, capacity and false positive rate math calculations (`m` total bits, `k` hash functions), FNV-1a double-hashing (`hashFNV` producing `h1` and `h2`), bit indexing in `getIndices`, `Add` bit-setting, and `MayContain` bit checking. Zero hardcoded return values or facade stubs found.
-- `packages/ServCache/pkg/tieredttl/policy.go`: Implements `TierPolicy` with `Classify(ttl)` categorizing TTLs into `TierHot` (≤1s), `TierWarm` (≤5m), or `TierCold` (>5m) and `TierName(t)`. Implements `TieredCache` wrapping `cache.Cache`, maintaining `keyTiers` mapping under `sync.RWMutex`, and recording per-tier hit/miss statistics (`HotHits`, `WarmHits`, `ColdHits`, `HotMisses`, `WarmMisses`, `ColdMisses`) via `Stats()`.
-- `packages/ServCache/go.mod`: `git diff packages/ServCache/go.mod` shows 0 lines modified. No external dependencies were added.
-- `go test -count=1 ./...` in `packages/ServCache`:
-  - `ok github.com/vyuvaraj/serv/packages/ServCache/pkg/bloom 0.007s`
-  - `ok github.com/vyuvaraj/serv/packages/ServCache/pkg/tieredttl 0.058s`
-  - Total 40+ tests across `packages/ServCache` passed with zero skips (`t.Skip()`).
+- `packages/Pranor Cache/pkg/bloom/bloom.go`: Implements `Bloom` struct with bitset slice `[]uint64`, thread-safety via `sync.RWMutex`, capacity and false positive rate math calculations (`m` total bits, `k` hash functions), FNV-1a double-hashing (`hashFNV` producing `h1` and `h2`), bit indexing in `getIndices`, `Add` bit-setting, and `MayContain` bit checking. Zero hardcoded return values or facade stubs found.
+- `packages/Pranor Cache/pkg/tieredttl/policy.go`: Implements `TierPolicy` with `Classify(ttl)` categorizing TTLs into `TierHot` (≤1s), `TierWarm` (≤5m), or `TierCold` (>5m) and `TierName(t)`. Implements `TieredCache` wrapping `cache.Cache`, maintaining `keyTiers` mapping under `sync.RWMutex`, and recording per-tier hit/miss statistics (`HotHits`, `WarmHits`, `ColdHits`, `HotMisses`, `WarmMisses`, `ColdMisses`) via `Stats()`.
+- `packages/Pranor Cache/go.mod`: `git diff packages/Pranor Cache/go.mod` shows 0 lines modified. No external dependencies were added.
+- `go test -count=1 ./...` in `packages/Pranor Cache`:
+  - `ok github.com/vyuvaraj/pranor/packages/Pranor Cache/pkg/bloom 0.007s`
+  - `ok github.com/vyuvaraj/pranor/packages/Pranor Cache/pkg/tieredttl 0.058s`
+  - Total 40+ tests across `packages/Pranor Cache` passed with zero skips (`t.Skip()`).
 
 ---
 
@@ -40,12 +40,12 @@
 ---
 
 ## 4. Conclusion
-The implementation of ServCache features SC.G3 (Bloom filter) and SC.G4 (Tiered TTL engine) is clean, genuine, fully functional, thread-safe, and completely compliant with user requirements and integrity standards. Final Verdict: **CLEAN**.
+The implementation of Pranor Cache features SC.G3 (Bloom filter) and SC.G4 (Tiered TTL engine) is clean, genuine, fully functional, thread-safe, and completely compliant with user requirements and integrity standards. Final Verdict: **CLEAN**.
 
 ---
 
 ## 5. Verification Method
 To independently verify this audit:
-1. Run `go test -v -count=1 ./pkg/bloom ./pkg/tieredttl` in `packages/ServCache`.
-2. Run `git diff packages/ServCache/go.mod` to verify no external dependencies were added.
-3. Inspect `packages/ServCache/pkg/bloom/bloom.go` and `packages/ServCache/pkg/tieredttl/policy.go` to confirm dynamic logic and zero hardcoded returns.
+1. Run `go test -v -count=1 ./pkg/bloom ./pkg/tieredttl` in `packages/Pranor Cache`.
+2. Run `git diff packages/Pranor Cache/go.mod` to verify no external dependencies were added.
+3. Inspect `packages/Pranor Cache/pkg/bloom/bloom.go` and `packages/Pranor Cache/pkg/tieredttl/policy.go` to confirm dynamic logic and zero hardcoded returns.

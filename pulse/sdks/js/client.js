@@ -1,8 +1,8 @@
 /**
- * ServQueue JavaScript / Node.js & Browser Client SDK
+ * Pranor Pulse JavaScript / Node.js & Browser Client SDK
  */
 
-class ServQueueClient {
+class Pranor PulseClient {
   constructor(baseUrl = "http://localhost:8082", authToken = "") {
     this.baseUrl = baseUrl.replace(/\/$/, "");
     this.authToken = authToken;
@@ -32,7 +32,7 @@ class ServQueueClient {
     const res = await fetch(`${this.baseUrl}${path}`, opts);
     if (!res.ok) {
       const errText = await res.text();
-      throw new Error(`ServQueue API Error (${res.status}): ${errText}`);
+      throw new Error(`Pranor Pulse API Error (${res.status}): ${errText}`);
     }
 
     return await res.json();
@@ -52,5 +52,5 @@ class ServQueueClient {
 }
 
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { ServQueueClient };
+  module.exports = { Pranor PulseClient };
 }

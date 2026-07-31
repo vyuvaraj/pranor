@@ -1,14 +1,14 @@
 # BRIEFING — 2026-07-26T09:09:26Z
 
 ## Mission
-Audit ServAuth (SA.G1 token store & SA.G6 velocity limiter) for forensic integrity, zero external deps, and correctness.
+Audit Pranor Auth (SA.G1 token store & SA.G6 velocity limiter) for forensic integrity, zero external deps, and correctness.
 
 ## 🔒 My Identity
 - Archetype: forensic_auditor
 - Roles: critic, specialist, auditor
 - Working directory: /home/developer/workspace/serv/.agents/auditor_m1
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
-- Target: Milestone M1 (ServAuth: SA.G1 & SA.G6)
+- Target: Milestone M1 (Pranor Auth: SA.G1 & SA.G6)
 
 ## 🔒 Key Constraints
 - Audit-only — do NOT modify implementation code
@@ -21,7 +21,7 @@ Audit ServAuth (SA.G1 token store & SA.G6 velocity limiter) for forensic integri
 - Updated: 2026-07-26T09:09:26Z
 
 ## Audit Scope
-- **Work product**: `packages/ServAuth` (`pkg/sessions/token_store.go`, `pkg/security/velocity_limiter.go`, tests, go.mod)
+- **Work product**: `packages/Pranor Auth` (`pkg/sessions/token_store.go`, `pkg/security/velocity_limiter.go`, tests, go.mod)
 - **Profile loaded**: General Project / Forensic Audit
 - **Audit type**: Forensic integrity check & test verification
 

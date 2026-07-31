@@ -1,8 +1,8 @@
-# Handoff Report — Reviewer M2 (ServCache Review)
+# Handoff Report — Reviewer M2 (Pranor Cache Review)
 
 **Author:** Reviewer M2  
 **Date:** 2026-07-26  
-**Target Module:** `packages/ServCache` (SC.G3 & SC.G4)  
+**Target Module:** `packages/Pranor Cache` (SC.G3 & SC.G4)  
 **Working Directory:** `/home/developer/workspace/serv/.agents/reviewer_m2_1`  
 **Verdict:** **APPROVE**
 
@@ -11,26 +11,26 @@
 ## 1. Observation
 
 1. **Code Files Inspected:**
-   - `packages/ServCache/pkg/bloom/bloom.go` (133 lines): Real bitset implementation using `[]uint64`, Kirsch-Mitzenmacher double hashing via `hash/fnv` (FNV-1a with secondary seed `{0x01}`), dynamic $m$ and $k$ math calculation, and thread safety via `sync.RWMutex`.
-   - `packages/ServCache/pkg/bloom/bloom_test.go` (132 lines): Unit tests for zero false negatives (1000 items), false positive rate threshold check (10,000 queries), fallback defaults on edge values, empty/long keys, and multi-goroutine concurrency.
-   - `packages/ServCache/pkg/tieredttl/policy.go` (200 lines): `TierPolicy` class with `Classify(ttl time.Duration)` (Hot $\le 1\text{s}$, Warm $\le 5\text{m}$, Cold $> 5\text{m}$) and `TierName(t Tier) string`. `TieredCache` wrapping `cache.Cache` tracking `keyTiers map[string]Tier` and `TierStats` (`HotHits`, `HotMisses`, `WarmHits`, `WarmMisses`, `ColdHits`, `ColdMisses`).
-   - `packages/ServCache/pkg/tieredttl/policy_test.go` (222 lines): Unit tests verifying classification, naming, hit/miss tracking across tiers, TTL expiration miss tracking, `Delete`, `Clear`, `DeletePattern`, and concurrent access.
+   - `packages/Pranor Cache/pkg/bloom/bloom.go` (133 lines): Real bitset implementation using `[]uint64`, Kirsch-Mitzenmacher double hashing via `hash/fnv` (FNV-1a with secondary seed `{0x01}`), dynamic $m$ and $k$ math calculation, and thread safety via `sync.RWMutex`.
+   - `packages/Pranor Cache/pkg/bloom/bloom_test.go` (132 lines): Unit tests for zero false negatives (1000 items), false positive rate threshold check (10,000 queries), fallback defaults on edge values, empty/long keys, and multi-goroutine concurrency.
+   - `packages/Pranor Cache/pkg/tieredttl/policy.go` (200 lines): `TierPolicy` class with `Classify(ttl time.Duration)` (Hot $\le 1\text{s}$, Warm $\le 5\text{m}$, Cold $> 5\text{m}$) and `TierName(t Tier) string`. `TieredCache` wrapping `cache.Cache` tracking `keyTiers map[string]Tier` and `TierStats` (`HotHits`, `HotMisses`, `WarmHits`, `WarmMisses`, `ColdHits`, `ColdMisses`).
+   - `packages/Pranor Cache/pkg/tieredttl/policy_test.go` (222 lines): Unit tests verifying classification, naming, hit/miss tracking across tiers, TTL expiration miss tracking, `Delete`, `Clear`, `DeletePattern`, and concurrent access.
 
 2. **Build Execution:**
-   - Command: `go build ./...` in `/home/developer/workspace/serv/packages/ServCache`
+   - Command: `go build ./...` in `/home/developer/workspace/serv/packages/Pranor Cache`
    - Result: Exited with code 0 (success, zero compile errors).
 
 3. **Test Execution:**
-   - Command: `go test -v -count=1 ./...` in `/home/developer/workspace/serv/packages/ServCache`
+   - Command: `go test -v -count=1 ./...` in `/home/developer/workspace/serv/packages/Pranor Cache`
    - Result: All test suites passed cleanly with exit code 0. Output summary:
      - `pkg/bloom`: PASS (4 test functions, 0.007s)
      - `pkg/tieredttl`: PASS (6 test functions, 0.057s)
      - `pkg/cache`: PASS (20 test functions, 0.214s)
      - `pkg/server`: PASS (19 test functions, 0.006s)
-     - root `packages/ServCache`: PASS (32 E2E tests, 1.000s)
+     - root `packages/Pranor Cache`: PASS (32 E2E tests, 1.000s)
 
 4. **Dependency Check:**
-   - Command: `git diff go.mod` in `/home/developer/workspace/serv/packages/ServCache`
+   - Command: `git diff go.mod` in `/home/developer/workspace/serv/packages/Pranor Cache`
    - Result: Exited with code 0 (completely empty output — zero external dependencies added).
 
 ---
@@ -69,7 +69,7 @@
 
 **Verdict**: **APPROVE**
 
-The implementations of SC.G3 (Bloom filter) and SC.G4 (Tiered TTL Policy Engine) in `packages/ServCache` meet all functional, interface, performance, and integrity requirements set forth in `ORIGINAL_REQUEST.md` (R3, R4) and `PROJECT.md`. Zero external dependencies were introduced, and all package unit tests and root package tests pass without skips.
+The implementations of SC.G3 (Bloom filter) and SC.G4 (Tiered TTL Policy Engine) in `packages/Pranor Cache` meet all functional, interface, performance, and integrity requirements set forth in `ORIGINAL_REQUEST.md` (R3, R4) and `PROJECT.md`. Zero external dependencies were introduced, and all package unit tests and root package tests pass without skips.
 
 ---
 
@@ -79,15 +79,15 @@ To independently re-verify:
 
 1. **Run Build & Test Commands:**
    ```bash
-   cd /home/developer/workspace/serv/packages/ServCache
+   cd /home/developer/workspace/serv/packages/Pranor Cache
    go build ./...
    go test -v -count=1 ./...
    ```
 2. **Verify Dependencies:**
    ```bash
-   cd /home/developer/workspace/serv/packages/ServCache
+   cd /home/developer/workspace/serv/packages/Pranor Cache
    git diff go.mod
    ```
 3. **Inspect Source Files:**
-   - `/home/developer/workspace/serv/packages/ServCache/pkg/bloom/bloom.go`
-   - `/home/developer/workspace/serv/packages/ServCache/pkg/tieredttl/policy.go`
+   - `/home/developer/workspace/serv/packages/Pranor Cache/pkg/bloom/bloom.go`
+   - `/home/developer/workspace/serv/packages/Pranor Cache/pkg/tieredttl/policy.go`

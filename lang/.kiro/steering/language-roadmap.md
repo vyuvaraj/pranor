@@ -44,7 +44,7 @@ fn fetchUser(id: int) -> User | error {
 
 ```srv
 export struct User { ... }
-import { User } from "./models/user.srv"
+import { User } from "./models/user.pnr"
 ```
 
 ## Phase 4: Interfaces ✅
@@ -76,7 +76,7 @@ let active = users.filter(u => u.active).map(u => u.name)
 ## Phase 7: Go Package Declarations ✅
 
 ```srv
-// uuid.srv.d
+// uuid.pnr.d
 declare module "github.com/google/uuid" {
     fn New() -> string
 }

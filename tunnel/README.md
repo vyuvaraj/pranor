@@ -1,15 +1,15 @@
-# ServTunnel
+# Pranor Tunnel
 
 ```bash
-servtunnel client --port 3000 --server tunnel.servverse.net
-# → Exposes local port 3000 at https://abc123.tunnel.servverse.net
+servtunnel client --port 3000 --server tunnel.pranor.net
+# → Exposes local port 3000 at https://abc123.tunnel.pranor.net
 ```
 
 ```bash
 docker run -p 8092:8092 ghcr.io/vyuvaraj/servtunnel:latest
 ```
 
-`ServTunnel` is a secure, instant tunneling service for exposing local Servverse services to the internet during development and testing. One command creates a public URL that forwards requests to your local machine — ideal for webhook testing, OAuth callbacks, mobile app dev, and sharing work in progress.
+`Pranor Tunnel` is a secure, instant tunneling service for exposing local Pranor services to the internet during development and testing. One command creates a public URL that forwards requests to your local machine — ideal for webhook testing, OAuth callbacks, mobile app dev, and sharing work in progress.
 
 ---
 
@@ -28,7 +28,7 @@ docker run -p 8092:8092 ghcr.io/vyuvaraj/servtunnel:latest
 ## Key Features
 
 ### 🌐 Core Tunneling
-- **Subdomain-based routing**: Each tunnel gets a unique subdomain (e.g., `myapp.servverse.net`)
+- **Subdomain-based routing**: Each tunnel gets a unique subdomain (e.g., `myapp.pranor.net`)
 - **WebSocket transport**: Firewall-friendly tunneling over WebSocket — no special network configuration required
 - **WebSocket connection multiplexing**: Binary-framed multiplexed streams (`4-byte StreamID + 1-byte Type + 4-byte PayloadLen`) allow multiple simultaneous requests over a single WebSocket connection
 - **OTel traceparent propagation**: `traceparent` and `tracestate` headers forwarded natively through the tunnel for distributed tracing continuity
@@ -55,10 +55,10 @@ docker run -p 8092:8092 ghcr.io/vyuvaraj/servtunnel:latest
 
 ```
 Browser / Webhook Sender
-         │ HTTPS request to myapp.servverse.net
+         │ HTTPS request to myapp.pranor.net
          ▼
 ┌─────────────────────────┐
-│      ServTunnel Server   │
+│      Pranor Tunnel Server   │
 │                         │
 │  Subdomain Router        │
 │    myapp → Conn#1        │
@@ -67,7 +67,7 @@ Browser / Webhook Sender
 └──────────┬──────────────┘
            │ WebSocket (multiplexed)
            ▼
-ServTunnel Client (local machine)
+Pranor Tunnel Client (local machine)
            │
            ▼
 Local Service (http://localhost:3000)
@@ -96,7 +96,7 @@ Local Service (http://localhost:3000)
 
 ```bash
 docker run -p 8092:8092 \
-  -e SERVTUNNEL_DOMAIN=servverse.net \
+  -e SERVTUNNEL_DOMAIN=pranor.net \
   -e SERVTUNNEL_JWT_SECRET=my-secret \
   -e SERVTUNNEL_OTEL_ENDPOINT=http://servtrace:4318 \
   ghcr.io/vyuvaraj/servtunnel:latest
@@ -106,14 +106,14 @@ docker run -p 8092:8092 \
 
 ```bash
 # Install client
-go install github.com/vyuvaraj/serv/packages/ServTunnel/cmd/servtunnel@latest
+go install github.com/vyuvaraj/pranor/Pranor Tunnel/cmd/servtunnel@latest
 
 # Expose local port 3000 to a public URL
-servtunnel --server wss://tunnel.servverse.net --local http://localhost:3000
+servtunnel --server wss://tunnel.pranor.net --local http://localhost:3000
 
 # Output:
-# ✓ Tunnel active: https://abc123.servverse.net
-# Forwarding: https://abc123.servverse.net → http://localhost:3000
+# ✓ Tunnel active: https://abc123.pranor.net
+# Forwarding: https://abc123.pranor.net → http://localhost:3000
 # Press Ctrl+C to close tunnel
 ```
 
@@ -145,7 +145,7 @@ The terminal client shows real-time request logs:
 
 ```bash
 # Create a tunnel with JWT auth requirement
-servtunnel --server wss://tunnel.servverse.net \
+servtunnel --server wss://tunnel.pranor.net \
   --local http://localhost:3000 \
   --auth jwt \
   --jwt-token eyJhbGciOi...
@@ -153,7 +153,7 @@ servtunnel --server wss://tunnel.servverse.net \
 # Generate a shareable URL (expires in 1 hour)
 curl -X POST http://localhost:8092/api/v1/tunnels/tun-abc/share \
   -d '{"expires_in": "1h", "one_time": false}'
-# → { "url": "https://abc123.servverse.net?token=xyz789", "expires_at": "..." }
+# → { "url": "https://abc123.pranor.net?token=xyz789", "expires_at": "..." }
 ```
 
 ---
@@ -164,7 +164,7 @@ Configure reconnect behavior in the client:
 
 ```bash
 servtunnel \
-  --server wss://tunnel.servverse.net \
+  --server wss://tunnel.pranor.net \
   --local http://localhost:3000 \
   --reconnect-max-retries 10 \
   --reconnect-initial-delay 500ms \
@@ -181,7 +181,7 @@ servtunnel \
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `SERVTUNNEL_PORT` | `8092` | HTTP/WebSocket listener port |
-| `SERVTUNNEL_DOMAIN` | — | Base domain for subdomains (e.g. `servverse.net`) |
+| `SERVTUNNEL_DOMAIN` | — | Base domain for subdomains (e.g. `pranor.net`) |
 | `SERVTUNNEL_JWT_SECRET` | — | JWT signing secret for auth gating |
 | `SERVTUNNEL_MAX_RING_BUFFER` | `100` | Max captured requests per tunnel |
 | `SERVTUNNEL_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
@@ -189,4 +189,4 @@ servtunnel \
 | `SERVTUNNEL_TLS_KEY` | — | TLS key path |
 
 ### Wildcard DNS
-Configure your DNS provider to point `*.servverse.net` to the ServTunnel server IP. See [docs/wildcard_dns.md](docs/wildcard_dns.md) for detailed setup.
+Configure your DNS provider to point `*.pranor.net` to the Pranor Tunnel server IP. See [docs/wildcard_dns.md](docs/wildcard_dns.md) for detailed setup.

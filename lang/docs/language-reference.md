@@ -448,9 +448,9 @@ let sub = text[0:5]          // "hello"
 ## Imports & Modules
 
 ```serv
-// Import a local .srv module (relative path)
-import "models/user.srv"
-import { User, Role } from "models/user.srv"
+// Import a local .pnr module (relative path)
+import "models/user.pnr"
+import { User, Role } from "models/user.pnr"
 
 // Import from stdlib (no relative path needed)
 import { ok, notFound } from "stdlib/response"
@@ -461,8 +461,8 @@ import { hashPassword } from "stdlib/crypto"
 import uuid from "github.com/google/uuid"
 let id = uuid.New()
 
-// .srv extension is optional for stdlib imports
-import { maskEmail } from "stdlib/mask.srv"   // also works
+// .pnr extension is optional for stdlib imports
+import { maskEmail } from "stdlib/mask.pnr"   // also works
 ```
 
 **Import resolution order:**
@@ -527,7 +527,7 @@ let errors = validate(req.body, {
 
 ## Declarative Schema Migrations (`table`)
 
-Declare your database schema natively in `.srv` files. The compiler generates
+Declare your database schema natively in `.pnr` files. The compiler generates
 the SQL automatically; `serv migrate` applies it to the live database.
 
 ```serv
@@ -649,7 +649,7 @@ tool "lookup_order" "Look up an order by ID" (args) {
 ## Native Infrastructure & Component Keywords
 
 ### 1. Storage Buckets (`bucket`)
-Bind and interact with ServStore S3 storage natively:
+Bind and interact with Pranor Vault S3 storage natively:
 ```serv
 bucket media {
     path "servstore://media-bucket"
@@ -675,7 +675,7 @@ let reply = ai.chat(context)
 ```
 
 ### 3. Distributed Mutual Exclusion (`lock` block)
-Scope-level locking backed by the ServLock coordinator:
+Scope-level locking backed by the Pranor Lock coordinator:
 ```serv
 lock "billing:invoice:42" {
     // Critical Section: Only one instance runs this at a time
@@ -684,7 +684,7 @@ lock "billing:invoice:42" {
 ```
 
 ### 4. Event Handler (`on` block)
-Subscribe to event queues via NATS / ServQueue brokers:
+Subscribe to event queues via NATS / Pranor Pulse brokers:
 ```serv
 on "user.signup" (event) {
     log.info("New signup recorded: ", event.email)
@@ -702,7 +702,7 @@ let dbPassword = env.secret("DB_PASS")  // Safe retrieval from configured secret
 
 ## Inline Go Integration (`@inline go`)
 
-Write raw Go functions directly inside `.srv` source files. This provides an escape hatch for raw performance or utilizing package features that aren't fully wrapped by the compiler yet:
+Write raw Go functions directly inside `.pnr` source files. This provides an escape hatch for raw performance or utilizing package features that aren't fully wrapped by the compiler yet:
 
 ```serv
 @inline go fn sha256sum(input string) string {
@@ -742,7 +742,7 @@ Enables reading and writing files directly from the filesystem without registeri
 
 ```serv
 let tempFile = "./log.txt"
-file.write(tempFile, "Servverse success")
+file.write(tempFile, "Pranor success")
 
 if file.exists(tempFile) {
     let contents = file.read(tempFile)
@@ -949,7 +949,7 @@ Exposes basic network lookup functions:
 
 - **`dns.lookup(host string) string`**: Resolves domain to its first IP string.
 - **`dns.txt(host string) string`**: Returns resolved TXT strings joined by spaces.
-- **`dns.srv(service string) map`**: Resolves SRV record to `{ host, port, priority }` map.
+- **`dns.pnr(service string) map`**: Resolves SRV record to `{ host, port, priority }` map.
 
 ```serv
 let ip = dns.lookup("example.com")

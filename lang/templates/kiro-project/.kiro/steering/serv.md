@@ -8,17 +8,17 @@ inclusion: always
 Serv is a compiled language for building services, APIs, schedulers, and event-driven apps. It compiles to native binaries via Go code generation.
 
 ## File Extension
-- Source files: `.srv`
+- Source files: `.pnr`
 
 ## Commands
 ```bash
-serv build app.srv -o app.exe    # Compile to binary
-serv run app.srv                 # Compile & run
-serv run app.srv --watch         # Hot-reload on changes
-serv test app.srv                # Run tests
-serv test --cover app.srv        # Run tests with coverage
-serv lint app.srv                # Check for errors/warnings
-serv fmt app.srv                 # Format code (4-space indent)
+pranor build app.pnr -o app.exe    # Compile to binary
+pranor run app.pnr                 # Compile & run
+pranor run app.pnr --watch         # Hot-reload on changes
+serv test app.pnr                # Run tests
+serv test --cover app.pnr        # Run tests with coverage
+serv lint app.pnr                # Check for errors/warnings
+serv fmt app.pnr                 # Format code (4-space indent)
 ```
 
 ## Syntax Quick Reference

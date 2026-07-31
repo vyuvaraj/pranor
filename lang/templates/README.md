@@ -16,17 +16,17 @@ To create a new Serv project with Kiro support:
 
 3. Start building:
    ```bash
-   serv run main.srv --watch
+   pranor run main.pnr --watch
    ```
 
 ## What the Steering Files Provide
 
 When Kiro sees these files, it automatically:
-- Writes valid `.srv` syntax (not Go, not TypeScript)
+- Writes valid `.pnr` syntax (not Go, not TypeScript)
 - Uses the correct built-in objects (`log`, `db`, `cache`, `http`, etc.)
 - Follows the `?` operator pattern for error handling
 - Imports from `stdlib/` correctly
-- Runs `serv build` / `serv test` / `serv lint` for verification
+- Runs `pranor build` / `serv test` / `serv lint` for verification
 - Uses 4-space indentation and `serv fmt` conventions
 
 ## Without Kiro

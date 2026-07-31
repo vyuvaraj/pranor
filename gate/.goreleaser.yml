@@ -54,17 +54,17 @@ dockers:
     extra_files:
       - config.json
     build_flag_templates:
-      - "--label=org.opencontainers.image.title=ServGate"
+      - "--label=org.opencontainers.image.title=Pranor Gate"
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/ServGate"
+      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Gate"
 
 brews:
   - name: servgate
     repository:
       owner: vyuvaraj
       name: homebrew-serv
-    homepage: "https://github.com/vyuvaraj/ServGate"
+    homepage: "https://github.com/vyuvaraj/Pranor Gate"
     description: "High-performance API gateway and reverse proxy from the ServVerse platform"
     license: "Apache-2.0"
     install: |
@@ -76,7 +76,7 @@ scoops:
   - repository:
       owner: vyuvaraj
       name: scoop-serv
-    homepage: "https://github.com/vyuvaraj/ServGate"
+    homepage: "https://github.com/vyuvaraj/Pranor Gate"
     description: "High-performance API gateway and reverse proxy from the ServVerse platform"
     license: "Apache-2.0"
 
@@ -86,7 +86,7 @@ nfpms:
     package_name: servgate
     builds: [servgate]
     vendor: Yuvaraj
-    homepage: https://github.com/vyuvaraj/ServGate
+    homepage: https://github.com/vyuvaraj/Pranor Gate
     maintainer: Yuvaraj <vyuvaraj@github.com>
     description: High-performance API gateway and reverse proxy from the ServVerse platform
     license: Apache-2.0

@@ -1,6 +1,6 @@
-# ServGate + Ollama AI Gateway
+# Pranor Gate + Ollama AI Gateway
 # Usage: docker compose up -d
-# ServGate: http://localhost:8080
+# Pranor Gate: http://localhost:8080
 # Ollama:   http://localhost:11434
 
 services:

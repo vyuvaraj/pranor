@@ -6,8 +6,8 @@
 # Outputs: release/ directory with platform-specific archives
 #
 # Each archive contains:
-#   serv (or serv.exe)       — the compiler
-#   serv-lsp (or serv-lsp.exe) — language server
+#   serv (or pranor.exe)       — the compiler
+#   pranor-lsp (or pranor-lsp.exe) — language server
 #   runtime/                 — Go runtime source (needed for compilation)
 #   stdlib/                  — Serv standard library modules
 #   declarations/            — Go package declarations
@@ -53,7 +53,7 @@ for PLATFORM in "${PLATFORMS[@]}"; do
     GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="-s -w -X main.version=$VERSION" -o "$STAGE_DIR/serv${EXT}" main.go
     
     # Build LSP
-    GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="-s -w" -o "$STAGE_DIR/serv-lsp${EXT}" ./lsp/
+    GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="-s -w" -o "$STAGE_DIR/pranor-lsp${EXT}" ./lsp/
 
     # Copy runtime source (needed for go build to work)
     cp -r runtime "$STAGE_DIR/runtime"

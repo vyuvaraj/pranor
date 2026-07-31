@@ -1,7 +1,7 @@
 # BRIEFING — 2026-07-26T09:11:00Z
 
 ## Mission
-Review ServPool (SP.G1 & SP.G2) implementation by worker_m4_gen2.
+Review Pranor Pool (SP.G1 & SP.G2) implementation by worker_m4_gen2.
 
 ## 🔒 My Identity
 - Archetype: Reviewer & Adversarial Critic
@@ -19,12 +19,12 @@ Review ServPool (SP.G1 & SP.G2) implementation by worker_m4_gen2.
 - Updated: 2026-07-26T09:11:00Z
 
 ## Review Scope
-- **Files to review**: `packages/ServPool/pkg/routing/rw_splitter.go`, `packages/ServPool/pkg/pool/health_checker.go`
+- **Files to review**: `packages/Pranor Pool/pkg/routing/rw_splitter.go`, `packages/Pranor Pool/pkg/pool/health_checker.go`
 - **Interface contracts**: `/home/developer/workspace/serv/PROJECT.md`, `/home/developer/workspace/serv/.agents/ORIGINAL_REQUEST.md`
 - **Review criteria**: SQL verb classification (case-insensitivity, comments/whitespace stripping), round-robin replica load balancing, health validation retry (up to 3 times), stats tracking, tests pass, zero dependency changes in go.mod.
 
 ## Review Checklist
-- **Items reviewed**: `packages/ServPool/pkg/routing/rw_splitter.go`, `packages/ServPool/pkg/pool/health_checker.go`, and test suites
+- **Items reviewed**: `packages/Pranor Pool/pkg/routing/rw_splitter.go`, `packages/Pranor Pool/pkg/pool/health_checker.go`, and test suites
 - **Verdict**: APPROVE
 - **Unverified claims**: none remaining
 

@@ -6,36 +6,36 @@ inclusion: always
 
 ## Build & Run
 ```bash
-serv build main.srv -o service.exe
-serv run main.srv --watch
+pranor build main.pnr -o service.exe
+pranor run main.pnr --watch
 ```
 
 ## Testing
 ```bash
-serv test main.srv
-serv test --cover main.srv
+serv test main.pnr
+serv test --cover main.pnr
 ```
 
 ## Linting & Formatting
 ```bash
-serv lint main.srv     # errors + warnings
-serv fmt main.srv      # auto-format
+serv lint main.pnr     # errors + warnings
+serv fmt main.pnr      # auto-format
 serv fmt --check .     # CI check
 ```
 
 ## Project Structure
 ```
 myapp/
-├── main.srv           # Entry point (server, routes)
+├── main.pnr           # Entry point (server, routes)
 ├── models/            # Struct definitions
-│   └── user.srv
+│   └── user.pnr
 ├── handlers/          # Route handler functions
-│   └── auth.srv
+│   └── auth.pnr
 ├── jobs/              # Scheduled tasks
-│   └── cleanup.srv
+│   └── cleanup.pnr
 ├── config.yml         # Runtime configuration
 └── tests/             # Test files
-    └── user_test.srv
+    └── user_test.pnr
 ```
 
 ## Configuration

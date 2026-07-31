@@ -106,10 +106,10 @@ dockers:
     ids: [servstore]
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
-      - "--label=org.opencontainers.image.title=ServStore"
+      - "--label=org.opencontainers.image.title=Pranor Vault"
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/ServStore"
+      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Vault"
 
 brews:
   # Publish the CLI to Homebrew (most useful for developers)
@@ -118,7 +118,7 @@ brews:
     repository:
       owner: vyuvaraj
       name: homebrew-serv
-    homepage: "https://github.com/vyuvaraj/ServStore"
+    homepage: "https://github.com/vyuvaraj/Pranor Vault"
     description: "Distributed object and block storage service from the ServVerse platform"
     license: "Apache-2.0"
     install: |
@@ -131,7 +131,7 @@ scoops:
     repository:
       owner: vyuvaraj
       name: scoop-serv
-    homepage: "https://github.com/vyuvaraj/ServStore"
+    homepage: "https://github.com/vyuvaraj/Pranor Vault"
     description: "Distributed object and block storage service from the ServVerse platform"
     license: "Apache-2.0"
 
@@ -141,7 +141,7 @@ nfpms:
     package_name: servstore
     builds: [servstore]
     vendor: Yuvaraj
-    homepage: https://github.com/vyuvaraj/ServStore
+    homepage: https://github.com/vyuvaraj/Pranor Vault
     maintainer: Yuvaraj <vyuvaraj@github.com>
     description: Object storage service from the ServVerse platform
     license: Apache-2.0

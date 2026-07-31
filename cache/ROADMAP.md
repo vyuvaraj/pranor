@@ -1,13 +1,13 @@
-# ServCache Roadmap
+# Pranor Cache Roadmap
 
-This roadmap outlines the planned development phases for the ServCache distributed caching service.
+This roadmap outlines the planned development phases for the Pranor Cache distributed caching service.
 
 ---
 
-## Differentiating Factors (Why ServCache vs. Redis/Memcached?)
-* **Language-Native Abstractions**: Declare cache policies directly in `.srv` syntax (e.g. `cached fn` or `cache.set`) without writing Redis client boilerplate.
+## Differentiating Factors (Why Pranor Cache vs. Redis/Memcached?)
+* **Language-Native Abstractions**: Declare cache policies directly in `.pnr` syntax (e.g. `cached fn` or `cache.set`) without writing Redis client boilerplate.
 * **Service Namespacing**: Automatic namespacing keeps keys isolated between services even if sharing a single backend cache instance.
-* **Integrated OTel Telemetry**: Zero-config tracing exports hit/miss/latency metrics automatically to `ServTrace` and `ServConsole`.
+* **Integrated OTel Telemetry**: Zero-config tracing exports hit/miss/latency metrics automatically to `Pranor Trace` and `Pranor Console`.
 * **Dynamic Swap-ability**: Change cache engines from in-memory to Redis, Dragonfly, or Valkey in one line of config.
 
 ---
@@ -25,18 +25,18 @@ This roadmap outlines the planned development phases for the ServCache distribut
 
 ## Phase 3: Cluster Replications & Cache Patterns (Completed)
 - [x] **Multi-Region Replication**: Cache replication across geo-distributed nodes.
-- [x] **Read-Through/Write-Behind Cache**: Automatic synchronization wrappers between ServCache and ServDB.
+- [x] **Read-Through/Write-Behind Cache**: Automatic synchronization wrappers between Pranor Cache and ServDB.
 - [x] **Key Pattern Invalidations**: Flush caches dynamically using wildcard prefix matches.
 
 
 ## Phase 4: Intelligent Caching & Ecosystem (Next Level)
 - [ ] **Predictive Pre-warming**: Analyze access patterns via OTel traces to pre-load hot keys before they're requested. ML-based hit-rate optimization.
-- [ ] **Cache-Aside Codegen in Serv-lang**: Compile `cached fn getData()` syntax directly to ServCache GET/SET calls with automatic invalidation.
+- [ ] **Cache-Aside Codegen in Pranor**: Compile `cached fn getData()` syntax directly to Pranor Cache GET/SET calls with automatic invalidation.
 - [ ] **Distributed Cache Coherence (Gossip)**: Multi-node cache with gossip-based invalidation protocol. No single point of failure.
 - [ ] **Write-Coalescing**: Batch rapid writes to the same key into a single backend write (debounce pattern).
-- [ ] **Cache Analytics Dashboard**: Hit/miss ratios, latency percentiles, eviction rates, and memory pressure per namespace in ServConsole.
+- [ ] **Cache Analytics Dashboard**: Hit/miss ratios, latency percentiles, eviction rates, and memory pressure per namespace in Pranor Console.
 - [ ] **Tag-based Invalidation**: Assign tags to keys (`user:123`, `product:*`), then invalidate by tag group in one call.
-- [ ] **Tiered Storage**: Hot keys in memory → warm keys in Redis → cold keys in ServStore. Automatic promotion/demotion.
+- [ ] **Tiered Storage**: Hot keys in memory → warm keys in Redis → cold keys in Pranor Vault. Automatic promotion/demotion.
 
 ## Phase 5: Architectural Depth & Developer Experience (Pending)
 - [x] **Adaptive Pool Invalidation** — Automatically invalidate cache entries tied to ServDB writes using a change-data-capture hook (PS.1)
@@ -45,7 +45,7 @@ This roadmap outlines the planned development phases for the ServCache distribut
 - [ ] **Cache Stampede Protection** — Implement singleflight-style coalescing for concurrent cache misses on the same key; only one goroutine computes the value (Reliability)
 - [ ] **LRU/LFU Eviction Strategy Choice** — Allow configuring eviction policy per namespace (LRU, LFU, or random). Currently only TTL-based (Performance)
 
-> See [UNIFIED_ROADMAP.md](../servverse-repo/UNIFIED_ROADMAP.md) for the full ecosystem priority matrix.
+> See [UNIFIED_ROADMAP.md](../pranor-repo/UNIFIED_ROADMAP.md) for the full ecosystem priority matrix.
 
 
 ---

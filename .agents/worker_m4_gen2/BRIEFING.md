@@ -1,21 +1,21 @@
 # BRIEFING — 2026-07-26T09:06:45Z
 
 ## Mission
-Implement read-write query routing (rw_splitter) and health checking wrapper (health_checker) in ServPool package with thorough testing.
+Implement read-write query routing (rw_splitter) and health checking wrapper (health_checker) in Pranor Pool package with thorough testing.
 
 ## 🔒 My Identity
 - Archetype: worker_m4_gen2
 - Roles: implementer, qa, specialist
 - Working directory: /home/developer/workspace/serv/.agents/worker_m4_gen2
 - Original parent: 3c3be357-fb61-4d2b-9ed3-40099ef64f03
-- Milestone: M4: ServPool Gen 2
+- Milestone: M4: Pranor Pool Gen 2
 
 ## 🔒 Key Constraints
 - File Ownership:
-  - `packages/ServPool/pkg/routing/rw_splitter.go`
-  - `packages/ServPool/pkg/routing/rw_splitter_test.go`
-  - `packages/ServPool/pkg/pool/health_checker.go`
-  - `packages/ServPool/pkg/pool/health_checker_test.go`
+  - `packages/Pranor Pool/pkg/routing/rw_splitter.go`
+  - `packages/Pranor Pool/pkg/routing/rw_splitter_test.go`
+  - `packages/Pranor Pool/pkg/pool/health_checker.go`
+  - `packages/Pranor Pool/pkg/pool/health_checker_test.go`
 - Do not introduce external dependency changes in go.mod
 - Genuine implementation with thorough test coverage
 - Standard Go conventions and layout compliance
@@ -25,17 +25,17 @@ Implement read-write query routing (rw_splitter) and health checking wrapper (he
 - Updated: 2026-07-26T09:06:45Z
 
 ## Task Summary
-- **What to build**: Read-write query splitter (`rw_splitter.go`) and health checker wrapper (`health_checker.go`) for ServPool.
+- **What to build**: Read-write query splitter (`rw_splitter.go`) and health checker wrapper (`health_checker.go`) for Pranor Pool.
 - **Success criteria**: All tests pass (`go test ./...`), `go build ./...` succeeds, no extra deps in `go.mod`, genuine implementation.
-- **Interface contracts**: PROJECT.md and existing ServPool packages.
-- **Code layout**: packages/ServPool/pkg/...
+- **Interface contracts**: PROJECT.md and existing Pranor Pool packages.
+- **Code layout**: packages/Pranor Pool/pkg/...
 
 ## Change Tracker
 - **Files modified**:
-  - `packages/ServPool/pkg/routing/rw_splitter.go`
-  - `packages/ServPool/pkg/routing/rw_splitter_test.go`
-  - `packages/ServPool/pkg/pool/health_checker.go`
-  - `packages/ServPool/pkg/pool/health_checker_test.go`
+  - `packages/Pranor Pool/pkg/routing/rw_splitter.go`
+  - `packages/Pranor Pool/pkg/routing/rw_splitter_test.go`
+  - `packages/Pranor Pool/pkg/pool/health_checker.go`
+  - `packages/Pranor Pool/pkg/pool/health_checker_test.go`
 - **Build status**: Pass (`go build ./...` exit code 0)
 - **Pending issues**: None
 

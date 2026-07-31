@@ -13,7 +13,7 @@ Tracking remaining work to make Serv production-ready and competitive.
 
 | Status | Item | Description | Priority |
 |--------|------|-------------|----------|
-| ✅ | Package manager | `serv add <pkg>` — auto-generates `.srv.d` declarations from Go packages | High |
+| ✅ | Package manager | `serv add <pkg>` — auto-generates `.pnr.d` declarations from Go packages | High |
 | ✅ | REPL | `serv repl` — interactive shell for quick experiments | Medium |
 | ✅ | Formatter | `serv fmt` — opinionated auto-formatter | Medium |
 | ⬜ | Playground | Web-based editor (like Go Playground) | Low |
@@ -76,11 +76,11 @@ Tracking remaining work to make Serv production-ready and competitive.
 
 | Status | Item | Description | Priority |
 |--------|------|-------------|----------|
-| ✅ | Documentation site | Auto-generated docs from `.srv` source | Medium |
+| ✅ | Documentation site | Auto-generated docs from `.pnr` source | Medium |
 | ✅ | CI/CD templates | GitHub Actions, GitLab CI configs | Low |
 | ⬜ | Docker base image | `FROM serv:latest` for easy containerization | Low |
 | ✅ | Homebrew/Scoop | `brew install serv` / `scoop install serv` | Medium |
-| ✅ | Standard library | Importable `.srv` modules (auth, validation, pagination) | Medium |
+| ✅ | Standard library | Importable `.pnr` modules (auth, validation, pagination) | Medium |
 | ⬜ | VS Code Marketplace | Publish extension publicly (prepped, pending account) | Medium |
 | ✅ | Deploy targets | `serv deploy --target fly/railway/render/docker` | Medium |
 | ✅ | AI integration | `ai "openai://..."` keyword with complete/chat/embed | High |

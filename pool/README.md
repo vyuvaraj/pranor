@@ -1,10 +1,10 @@
-# ServPool
+# Pranor Pool
 
 ```bash
 docker run -p 8094:8094 ghcr.io/vyuvaraj/servpool:latest
 ```
 
-`ServPool` is an intelligent, observable database connection pool manager for the **Servverse** ecosystem. It provides read/write splitting, connection health validation, leak detection, query telemetry, prepared statement caching, and pool saturation alerting.
+`Pranor Pool` is an intelligent, observable database connection pool manager for the **Pranor** ecosystem. It provides read/write splitting, connection health validation, leak detection, query telemetry, prepared statement caching, and pool saturation alerting.
 
 ---
 
@@ -29,7 +29,7 @@ docker run -p 8094:8094 ghcr.io/vyuvaraj/servpool:latest
 - **Replica lag awareness**: Skip replicas with lag > configurable threshold (uses `SHOW SLAVE STATUS` or Postgres `pg_stat_replication`)
 
 ### ✅ Connection Health Validation
-- **Pre-checkout validation**: Before handing a connection to a caller, ServPool pings it and runs a configurable validation query (e.g., `SELECT 1`) — eliminates "stale connection" errors
+- **Pre-checkout validation**: Before handing a connection to a caller, Pranor Pool pings it and runs a configurable validation query (e.g., `SELECT 1`) — eliminates "stale connection" errors
 - **Unhealthy connection eviction**: Connections that fail validation are immediately evicted and replaced with fresh ones
 - **Background health sweeps**: Periodic background sweeps validate idle connections in the pool
 
@@ -44,18 +44,18 @@ docker run -p 8094:8094 ghcr.io/vyuvaraj/servpool:latest
 - **Slow query logger**: Queries exceeding configurable `slow_query_threshold` are logged with full context (query, args, duration, caller)
 - **Query normalization**: Normalizes queries by replacing literal values for accurate aggregation
 - **Prometheus metrics**: Exposes per-query latency histograms via `/metrics`
-- **ServConsole integration**: Pool saturation and query analytics visible in ServConsole dashboard
+- **Pranor Console integration**: Pool saturation and query analytics visible in Pranor Console dashboard
 
 ### 💾 Prepared Statement Cache
 - **Multi-dialect support**: Caches prepared statements for PostgreSQL, MySQL, and SQLite
 - **Automatic cache invalidation**: Detects schema changes and invalidates affected prepared statements
-- **Connection-local cache**: Each connection maintains its own prepared statement cache; ServPool manages the lifecycle
+- **Connection-local cache**: Each connection maintains its own prepared statement cache; Pranor Pool manages the lifecycle
 - **Cache hit rate metrics**: Track cache hits vs. prepared statement re-preparations
 
 ### 🚨 Saturation Alerting
 - **Pool utilization monitoring**: Tracks checked-out vs. total connections as a utilization percentage
 - **Wait queue depth**: Monitors how many callers are waiting for a connection — leading indicator of saturation
-- **ServConsole alert**: Pushes saturation alerts to ServConsole when utilization exceeds configurable thresholds (e.g., >80%, >95%)
+- **Pranor Console alert**: Pushes saturation alerts to Pranor Console when utilization exceeds configurable thresholds (e.g., >80%, >95%)
 - **Prometheus alerting rules**: Pre-built alert rules for pool saturation and wait queue depth
 
 ---
@@ -67,7 +67,7 @@ Application Caller
       │ checkout connection
       ▼
 ┌──────────────────────────────────────────────────┐
-│                   ServPool                        │
+│                   Pranor Pool                        │
 │                                                  │
 │  ┌─────────────────────────────────────────────┐ │
 │  │  Read/Write Router                          │ │
@@ -167,13 +167,13 @@ curl http://servpool:8094/api/v1/pools/orders-db/slow-queries
 
 ## Prepared Statement Cache
 
-ServPool automatically caches prepared statements per connection:
+Pranor Pool automatically caches prepared statements per connection:
 
 ```go
-// Application uses ServPool client — no special code needed
+// Application uses Pranor Pool client — no special code needed
 db := servpool.Open("orders-db", "http://servpool:8094")
 rows, err := db.Query("SELECT id, total FROM orders WHERE user_id = $1", userID)
-// ServPool automatically uses cached prepared statement on subsequent calls
+// Pranor Pool automatically uses cached prepared statement on subsequent calls
 ```
 
 ---
@@ -193,6 +193,6 @@ docker run -p 8094:8094 \
 |----------|---------|-------------|
 | `SERVPOOL_PORT` | `8094` | HTTP listener port |
 | `SERVPOOL_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
-| `SERVPOOL_SERVCONSOLE_URL` | — | ServConsole URL for saturation alerts |
+| `SERVPOOL_SERVCONSOLE_URL` | — | Pranor Console URL for saturation alerts |
 | `SERVPOOL_DEFAULT_MAX_CONN` | `25` | Default max connections per pool |
 | `SERVPOOL_LEAK_CHECK_INTERVAL` | `30s` | How often to run leak detection sweep |

@@ -49,17 +49,17 @@ dockers:
       - "ghcr.io/vyuvaraj/servflow:latest"
     dockerfile: Dockerfile.goreleaser
     build_flag_templates:
-      - "--label=org.opencontainers.image.title=ServFlow"
+      - "--label=org.opencontainers.image.title=Pranor Flow"
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/ServFlow"
+      - "--label=org.opencontainers.image.source=https://github.com/vyuvaraj/Pranor Flow"
 
 brews:
   - name: servflow
     repository:
       owner: vyuvaraj
       name: homebrew-serv
-    homepage: "https://github.com/vyuvaraj/ServFlow"
+    homepage: "https://github.com/vyuvaraj/Pranor Flow"
     description: "Workflow orchestration and pipeline service from the ServVerse platform"
     license: "Apache-2.0"
     install: |
@@ -71,7 +71,7 @@ scoops:
   - repository:
       owner: vyuvaraj
       name: scoop-serv
-    homepage: "https://github.com/vyuvaraj/ServFlow"
+    homepage: "https://github.com/vyuvaraj/Pranor Flow"
     description: "Workflow orchestration and pipeline service from the ServVerse platform"
     license: "Apache-2.0"
 
@@ -81,7 +81,7 @@ nfpms:
     package_name: servflow
     builds: [servflow]
     vendor: Yuvaraj
-    homepage: https://github.com/vyuvaraj/ServFlow
+    homepage: https://github.com/vyuvaraj/Pranor Flow
     maintainer: Yuvaraj <vyuvaraj@github.com>
     description: Workflow orchestration engine from the ServVerse platform
     license: Apache-2.0

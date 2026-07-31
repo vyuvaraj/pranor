@@ -251,11 +251,11 @@ func Config(key string) string {
 	return os.Getenv(key)
 }
 
-func resolveServgateAddr(port string) (string, string) {
-	if !strings.HasPrefix(port, "Pranor Gate://") {
+func resolvePranorGateAddr(port string) (string, string) {
+	if !strings.HasPrefix(port, "pranor://") {
 		return port, ""
 	}
-	urlStr := strings.TrimPrefix(port, "Pranor Gate://")
+	urlStr := strings.TrimPrefix(port, "pranor://")
 	localPort := "8085"
 	if idx := strings.Index(urlStr, "?"); idx != -1 {
 		params := urlStr[idx+1:]
@@ -279,13 +279,13 @@ func resolveServgateAddr(port string) (string, string) {
 
 // REST HTTP Server
 func InitServer(port string) {
-	p, gate := resolveServgateAddr(port)
+	p, gate := resolvePranorGateAddr(port)
 	serverPort = p
 	pranorGateURL = gate
 }
 
 func InitServerTLS(port, certFile, keyFile string) {
-	p, gate := resolveServgateAddr(port)
+	p, gate := resolvePranorGateAddr(port)
 	serverPort = p
 	pranorGateURL = gate
 	tlsCertFile = certFile

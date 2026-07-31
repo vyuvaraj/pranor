@@ -1331,8 +1331,8 @@ func (h *GatewayHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Webhook bridge check
-	if strings.HasPrefix(selectedTarget, "Pranor Pulse://") {
-		topic := strings.TrimPrefix(selectedTarget, "Pranor Pulse://")
+	if strings.HasPrefix(selectedTarget, "pranor://") {
+		topic := strings.TrimPrefix(selectedTarget, "pranor://")
 		// Read body
 		bodyBytes, err := io.ReadAll(r.Body)
 		if err != nil {

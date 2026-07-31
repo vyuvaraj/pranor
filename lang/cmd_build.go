@@ -1224,15 +1224,15 @@ func runServHot(pnrFile string, env string) {
 	}
 
 	// Normalize port (ensure it has colon prefix)
-	if !strings.HasPrefix(targetPort, ":") && !strings.Contains(targetPort, "Pranor Gate://") {
+	if !strings.HasPrefix(targetPort, ":") && !strings.Contains(targetPort, "pranor://") {
 		if _, err := strconv.Atoi(targetPort); err == nil {
 			targetPort = ":" + targetPort
 		}
 	}
 	
 	listenAddr := targetPort
-	if strings.HasPrefix(targetPort, "Pranor Gate://") {
-		urlStr := strings.TrimPrefix(targetPort, "Pranor Gate://")
+	if strings.HasPrefix(targetPort, "pranor://") {
+		urlStr := strings.TrimPrefix(targetPort, "pranor://")
 		localPort := "8085"
 		if idx := strings.Index(urlStr, "?"); idx != -1 {
 			params := urlStr[idx+1:]

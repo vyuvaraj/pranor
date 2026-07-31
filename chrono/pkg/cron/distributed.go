@@ -48,7 +48,7 @@ type LeaderElector struct {
 
 type PranorLockElector struct {
 	mu            sync.Mutex
-	servLockURL   string
+	pranorLockURL   string
 	lockKey       string
 	nodeID        string
 	leaseDuration time.Duration
@@ -67,7 +67,7 @@ func NewLeaderElector(redisURL string, lockKey string, leaseDuration time.Durati
 		_, _ = rand.Read(b)
 		nodeID := hex.EncodeToString(b)
 		return &PranorLockElector{
-			servLockURL:   os.Getenv("PRANOR_LOCK_URL"),
+			pranorLockURL:   os.Getenv("PRANOR_LOCK_URL"),
 			lockKey:       lockKey,
 			nodeID:        nodeID,
 			leaseDuration: leaseDuration,
@@ -163,7 +163,7 @@ func (sle *PranorLockElector) tryAcquireOrRenew() {
 }
 
 func (sle *PranorLockElector) acquireLock(key string, duration time.Duration) bool {
-	url := sle.servLockURL + "/api/locks/acquire"
+	url := sle.pranorLockURL + "/api/locks/acquire"
 	payload := map[string]interface{}{
 		"key":         key,
 		"owner":       sle.nodeID,
@@ -184,7 +184,7 @@ func (sle *PranorLockElector) acquireLock(key string, duration time.Duration) bo
 }
 
 func (sle *PranorLockElector) releaseLock(key string) bool {
-	url := sle.servLockURL + "/api/locks/release"
+	url := sle.pranorLockURL + "/api/locks/release"
 	payload := map[string]string{
 		"key":   key,
 		"owner": sle.nodeID,

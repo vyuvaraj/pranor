@@ -36,7 +36,7 @@ var (
 
 func parseStoreConnString(conn string) {
 	activeStore = parsedStore{}
-	if !strings.HasPrefix(conn, "s3://") && !strings.HasPrefix(conn, "Pranor Vault://") {
+	if !strings.HasPrefix(conn, "s3://") && !strings.HasPrefix(conn, "pranor://") {
 		return
 	}
 	activeStore.isS3 = true
@@ -46,7 +46,7 @@ func parseStoreConnString(conn string) {
 	if strings.HasPrefix(raw, "s3://") {
 		raw = strings.TrimPrefix(raw, "s3://")
 	} else {
-		raw = strings.TrimPrefix(raw, "Pranor Vault://")
+		raw = strings.TrimPrefix(raw, "pranor://")
 	}
 
 	// Check if it contains '@' (credentials)

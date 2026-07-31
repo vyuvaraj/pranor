@@ -133,12 +133,12 @@ func InitBroker(url string) {
 	} else if strings.HasPrefix(url, "kafka://") {
 		kafkaBrokerAddr = strings.TrimPrefix(url, "kafka://")
 		LogInfo("Targeting Kafka Broker Address: ", kafkaBrokerAddr)
-	} else if strings.HasPrefix(url, "activemq://") || strings.HasPrefix(url, "stomp://") || strings.HasPrefix(url, "Pranor Pulse://") {
+	} else if strings.HasPrefix(url, "activemq://") || strings.HasPrefix(url, "stomp://") || strings.HasPrefix(url, "pranor://") {
 		addr := url
 		var login, passcode string
 
-		if strings.HasPrefix(url, "Pranor Pulse://") {
-			addr = strings.TrimPrefix(url, "Pranor Pulse://")
+		if strings.HasPrefix(url, "pranor://") {
+			addr = strings.TrimPrefix(url, "pranor://")
 			// Parse username:password if present
 			if strings.Contains(addr, "@") {
 				parts := strings.SplitN(addr, "@", 2)
@@ -275,7 +275,7 @@ func Subscribe(topic string, callback func(string)) {
 	}
 
 	if stompConn != nil {
-		if strings.HasPrefix(brokerURL, "Pranor Pulse://") {
+		if strings.HasPrefix(brokerURL, "pranor://") {
 			go RegisterPranorPulseDLQ(topic, topic+".dlq")
 		}
 
@@ -351,8 +351,8 @@ func RegisterPranorPulseDLQ(topic string, dlqTopic string) {
 		}
 	} else {
 		addr := brokerURL
-		if strings.HasPrefix(addr, "Pranor Pulse://") {
-			addr = strings.TrimPrefix(addr, "Pranor Pulse://")
+		if strings.HasPrefix(addr, "pranor://") {
+			addr = strings.TrimPrefix(addr, "pranor://")
 			if strings.Contains(addr, "@") {
 				parts := strings.SplitN(addr, "@", 2)
 				addr = parts[1]

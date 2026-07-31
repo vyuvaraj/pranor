@@ -350,17 +350,4 @@ func (mm *MembershipManager) checkTimeouts() {
 		if peer.Status == "online" && !peer.LastSeen.IsZero() && now.Sub(peer.LastSeen) > timeout {
 			peer.Status = "offline"
 			mm.ring.RemoveNode(peer.NodeID)
-			slog.Warn("Node went offline (heartbeat timeout)", "node_id", peer.NodeID, "address", peer.Address)
-			GlobalHub.Publish(ClusterEvent{
-				Type:   "node_status_change",
-				NodeID: peer.NodeID,
-				Status: "offline",
-				Details: map[string]interface{}{
-					"old_status": "online",
-					"address":    peer.Address,
-					"reason":     "heartbeat_timeout",
-				},
-			})
-		}
-	}
-}
+			slog.Warn("Node went offline (he

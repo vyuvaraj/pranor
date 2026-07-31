@@ -142,14 +142,4 @@ func extractHeader(headers []byte, name string) string {
 
 		if headerType == 7 { // Type string
 			valLen := int(binary.BigEndian.Uint16(headers[idx : idx+2]))
-			idx += 2
-			val := string(headers[idx : idx+valLen])
-			idx += valLen
-
-			if headerName == name {
-				return val
-			}
-		}
-	}
-	return ""
-}
+			

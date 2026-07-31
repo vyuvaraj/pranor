@@ -311,20 +311,4 @@ func (h *HNSWIndex) deleteNodeNoLock(key string) {
 			var updated []string
 			for _, k := range nb.Neighbors[level] {
 				if k != key {
-					updated = append(updated, k)
-				}
-			}
-			nb.Neighbors[level] = updated
-		}
-	}
-	delete(h.Nodes, key)
-	if h.EnterNode != nil && h.EnterNode.Key == key {
-		h.EnterNode = nil
-		h.MaxLevel = 0
-		for _, anyNode := range h.Nodes {
-			h.EnterNode = anyNode
-			h.MaxLevel = len(anyNode.Neighbors) - 1
-			break
-		}
-	}
-}
+					updat

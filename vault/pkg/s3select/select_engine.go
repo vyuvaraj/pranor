@@ -43,6 +43,4 @@ func (s *S3SelectEngine) ParseJSONRecords(payload []byte) ([]map[string]interfac
 	if len(payload) == 0 {
 		return records, nil
 	}
-	err := json.Unmarshal(payload, &records)
-	return records, err
-}
+	err := json.Unmarshal(pay

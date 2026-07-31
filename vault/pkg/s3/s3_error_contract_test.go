@@ -67,6 +67,4 @@ func TestStandardizedErrors(t *testing.T) {
 		t.Errorf("expected JSON code AccessDenied, got %s", jsonErr["code"])
 	}
 	if jsonErr["trace_id"] != "4bf92f3577b34da6a3ce929d0e0e4736" {
-		t.Errorf("expected trace_id %q in JSON, got %q", "4bf92f3577b34da6a3ce929d0e0e4736", jsonErr["trace_id"])
-	}
-}
+		t.Errorf("expected trace_id %q in JSON, got %q",

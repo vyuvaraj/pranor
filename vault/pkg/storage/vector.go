@@ -156,8 +156,4 @@ func CosineDistance(v1, v2 []float64) float64 {
 // InitializeONNX initializes the ONNX runtime shared library and model.
 // If CGO is disabled or registration hooks are missing, it returns a descriptive error.
 func InitializeONNX(sharedLibPath, modelPath, vocabPath string) error {
-	if onnxInitFunc == nil {
-		return fmt.Errorf("ONNX embeddings not supported in this build (requires CGO)")
-	}
-	return onnxInitFunc(sharedLibPath, modelPath, vocabPath)
-}
+	if onnxInitFunc ==

@@ -177,9 +177,4 @@ func TestGatewayFailureInjectionNetworkPartition(t *testing.T) {
 	}
 	resp3.Body.Close()
 
-	time.Sleep(50 * time.Millisecond)
-	_, _, err = store2.GetObject(ctx, "partition-bucket", "item3", "")
-	if err != nil {
-		t.Fatalf("Replication failed to resume after partition recovery: %v", err)
-	}
-}
+	time.Sleep(50 * time.Millise

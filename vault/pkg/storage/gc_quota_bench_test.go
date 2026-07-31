@@ -373,12 +373,4 @@ func TestQuotaExactBoundary(t *testing.T) {
 		}
 	}
 
-	// One byte over quota — must be rejected
-	tinyOver := bytes.NewReader([]byte("x"))
-	_, overErr := store.PutObject(ctx, bucket, "over-quota", tinyOver, 1, "text/plain")
-	if overErr == nil {
-		t.Error("expected write exceeding quota to be rejected, but it succeeded")
-	} else if !strings.Contains(overErr.Error(), "quota") {
-		t.Logf("write-over-quota rejected (error: %v)", overErr)
-	}
-}
+	// One byte over quot

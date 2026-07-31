@@ -148,11 +148,4 @@ func TestMintS3Conformance(t *testing.T) {
 	passRate := float64(passedStderr) / float64(totalTests) * 100.0
 	t.Logf("Mint S3 Conformance Pass Rate: %.1f%% (%d/%d tests passed)", passRate, passedStderr, totalTests)
 	if passRate < 90.0 {
-		t.Errorf("Mint S3 Conformance pass rate %.1f%% is below target 90.0%%", passRate)
-	}
-}
-
-// Suppress unused imports
-var _ = storage.NewLocalStore
-var _ = auth.NewAuthProvider
-var _ = fmt.Printf
+		t.Errorf("Mint S3 Conformance pass rate %.1f%% is

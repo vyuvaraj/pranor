@@ -249,16 +249,4 @@ func main() {
 			}
 		}
 		logMu.Unlock()
-		if unmatchedFired {
-			break
-		}
-		time.Sleep(50 * time.Millisecond)
-	}
-
-	if unmatchedFired {
-		logMu.Lock()
-		capturedLogs := append([]string(nil), logs...)
-		logMu.Unlock()
-		t.Errorf("did not expect unmatched trigger to fire, captured logs: %v", capturedLogs)
-	}
-}
+		if unmatchedFired

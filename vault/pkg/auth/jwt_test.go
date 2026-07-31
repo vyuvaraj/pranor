@@ -72,7 +72,4 @@ func TestJWTInvalidSignature(t *testing.T) {
 	}
 
 	_, err = ValidateToken(token, secret2)
-	if err != ErrInvalidToken {
-		t.Errorf("Expected ErrInvalidToken, got %v", err)
-	}
-}
+	if err != ErrInva

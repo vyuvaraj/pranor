@@ -29,6 +29,4 @@ func (s *LocalStore) GetColdTierConfig() (ColdTierConfig, bool) {
 }
 
 // SetColdTier is a no-op in OSS (cold storage tiering requires Enterprise Edition).
-func (s *LocalStore) SetColdTier(_ ColdTierConfig) error {
-	return nil
-}
+func (s *LocalStore) SetColdTier(_ ColdT

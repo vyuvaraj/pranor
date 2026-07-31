@@ -85,6 +85,4 @@ func TestContentAddressedStorage(t *testing.T) {
 	}
 
 	if _, err := os.Stat(path2); !os.IsNotExist(err) {
-		t.Error("expected data file to be permanently deleted from disk since all references are gone, but it still exists")
-	}
-}
+		t.Error("expected data file to be permane

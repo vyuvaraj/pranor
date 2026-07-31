@@ -61,9 +61,4 @@ func (a *AutoPurgeEngine) EvaluatePurge(ctx context.Context, bucket, key string,
 
 	for _, rule := range rulesList {
 		if ageDays >= rule.ExpirationDays {
-			a.purgedCount++
-			return true, nil
-		}
-	}
-	return false, nil
-}
+			a.purge

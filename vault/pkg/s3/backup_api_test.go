@@ -81,7 +81,4 @@ func TestBackupRestoreAPI(t *testing.T) {
 	}
 	d2, _ := io.ReadAll(rc2)
 	rc2.Close()
-	if string(d2) != "original-content" {
-		t.Errorf("Expected original-content, got %q", string(d2))
-	}
-}
+	if string(d2) != "original

@@ -134,7 +134,4 @@ func TestS3GeoAndConsole(t *testing.T) {
 		t.Fatalf("GET invalid session failed: %v", err)
 	}
 	sessResp2.Body.Close()
-	if sessResp2.StatusCode != http.StatusUnauthorized {
-		t.Fatalf("expected GET invalid session 401, got %d", sessResp2.StatusCode)
-	}
-}
+	if se

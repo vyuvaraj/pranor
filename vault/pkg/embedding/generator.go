@@ -44,9 +44,4 @@ func (aeg *AutoEmbeddingGenerator) GenerateEmbedding(text string) []float32 {
 	norm = math.Sqrt(norm)
 	if norm > 0 {
 		for i := range vec {
-			vec[i] = float32(float64(vec[i]) / norm)
-		}
-	}
-
-	return vec
-}
+			vec[i] = float32(float6

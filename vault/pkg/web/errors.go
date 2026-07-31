@@ -26,6 +26,4 @@ func WriteJSONError(w http.ResponseWriter, r *http.Request, msg string, code str
 	json.NewEncoder(w).Encode(APIError{
 		Error:   msg,
 		Code:    code,
-		TraceID: traceID,
-	})
-}
+		Tr

@@ -27,6 +27,4 @@ func TestBrowserP2PMesh(t *testing.T) {
 
 	offload, _, ratio := mesh.GetOffloadStats()
 	if offload == 0 || ratio != 100.0 {
-		t.Errorf("expected 100%% offload ratio, got %.2f%%", ratio)
-	}
-}
+		t.Errorf("expected 100%% offload ratio, go

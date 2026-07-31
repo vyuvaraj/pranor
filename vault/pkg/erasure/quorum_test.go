@@ -42,6 +42,4 @@ func TestQuorumWriteConfirmation(t *testing.T) {
 		return nil
 	})
 	if err == nil || status.QuorumSatisfied || status.VerifiedShards != 3 {
-		t.Fatalf("Expected quorum failure when verified shards < minQuorum, got status: %+v, err: %v", status, err)
-	}
-}
+		t.Fatalf("Expected quorum failure when verified shards < minQuorum, got sta

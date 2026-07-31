@@ -19,6 +19,4 @@ func TestAutoEmbeddingGenerator_GenerateEmbedding(t *testing.T) {
 	}
 
 	if sum < 0.99 || sum > 1.01 {
-		t.Errorf("expected L2 normalized vector, got sum of squares %f", sum)
-	}
-}
+		t.Errorf("expected L2 normalized vector, got sum of squares 

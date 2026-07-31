@@ -93,9 +93,4 @@ func TestDelete(t *testing.T) {
 
 func BenchmarkAllow(b *testing.B) {
 	l := NewLimiter(1_000_000, 1_000_000)
-	b.RunParallel(func(pb *testing.PB) {
-		for pb.Next() {
-			l.Allow("bench-tenant")
-		}
-	})
-}
+	b.R

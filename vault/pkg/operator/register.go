@@ -33,6 +33,4 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 		&PranorVaultCredential{},
 		&PranorVaultCredentialList{},
 	)
-	metav1.AddToGroupVersion(scheme, GroupVersion)
-	return nil
-}
+	metav1.AddToGroupVersion(scheme,

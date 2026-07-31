@@ -423,23 +423,4 @@ func (r *PranorVaultClusterReconciler) newStatefulSet(c *operv1.PranorVaultClust
 									ContainerPort: 9000,
 									Protocol:      corev1.ProtocolTCP,
 								},
-							},
-							VolumeMounts: volumeMounts,
-						},
-					},
-					Volumes: volumes,
-				},
-			},
-			VolumeClaimTemplates: volumeClaims,
-		},
-	}
-}
-
-func (r *PranorVaultClusterReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	return ctrl.NewControllerManagedBy(mgr).
-		For(&operv1.PranorVaultCluster{}).
-		Owns(&appsv1.StatefulSet{}).
-		Owns(&corev1.Service{}).
-		Owns(&policyv1.PodDisruptionBudget{}).
-		Complete(r)
-}
+					

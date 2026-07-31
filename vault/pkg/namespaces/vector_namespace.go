@@ -72,8 +72,4 @@ func (vnm *VectorNamespaceManager) DeleteNamespace(bucketName string) bool {
 	vnm.mu.Lock()
 	defer vnm.mu.Unlock()
 	_, exists := vnm.namespaces[bucketName]
-	if exists {
-		delete(vnm.namespaces, bucketName)
-	}
-	return exists
-}
+	i

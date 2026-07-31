@@ -113,8 +113,3 @@ func TestGatewayNotifications(t *testing.T) {
 	}
 	if delEvent["bucket"] != "test-bucket" {
 		t.Errorf("expected bucket test-bucket, got %v", delEvent["bucket"])
-	}
-	if delEvent["key"] != "hello.txt" {
-		t.Errorf("expected key hello.txt, got %v", delEvent["key"])
-	}
-}

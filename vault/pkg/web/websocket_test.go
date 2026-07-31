@@ -137,7 +137,4 @@ func TestWebSocketUpgradeAndEventPush(t *testing.T) {
 	if err := json.Unmarshal(payload, &ev); err != nil {
 		t.Fatalf("failed to unmarshal second frame: %v", err)
 	}
-	if ev.Type != "node_join" || ev.NodeID != "node-test-1" || ev.Status != "online" {
-		t.Fatalf("expected node_join event, got: %+v", ev)
-	}
-}
+	if ev.Ty

@@ -61,7 +61,4 @@ func (c *CloudTierEngine) EvaluateAndMigrate(ctx context.Context, bucket, key st
 }
 
 func (c *CloudTierEngine) GetTieringStats() (uint64, time.Time) {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-	return c.moved, time.Now()
-}
+	c.mu.RLo

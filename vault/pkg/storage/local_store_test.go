@@ -275,14 +275,4 @@ func TestMultipartUpload(t *testing.T) {
 	}
 
 	err = store.AbortMultipartUpload(ctx, bucketName, "abort-file", uploadID2)
-	if err != nil {
-		t.Fatalf("failed to abort: %v", err)
-	}
-
-	// Verify upload folder is gone
-	uploadDir := store.getMultipartUploadDir(bucketName, uploadID2)
-	if _, err := os.Stat(uploadDir); !os.IsNotExist(err) {
-		t.Fatalf("expected upload directory to be deleted")
-	}
-}
-
+	if

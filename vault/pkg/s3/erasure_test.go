@@ -178,10 +178,4 @@ func TestErasureCodingReconstruction(t *testing.T) {
 	delReq.SetBasicAuth("admin", "admin")
 	delResp, err := client.Do(delReq)
 	if err != nil {
-		t.Fatalf("DELETE request failed: %v", err)
-	}
-	delResp.Body.Close()
-	if delResp.StatusCode != http.StatusNoContent {
-		t.Errorf("DELETE returned status %d", delResp.StatusCode)
-	}
-}
+		t.Fatalf

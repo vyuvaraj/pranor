@@ -122,8 +122,4 @@ func TestS3ActiveActiveConflictResolution(t *testing.T) {
 		t.Fatalf("failed to get object: %v", err)
 	}
 	defer r.Close()
-	data, _ := io.ReadAll(r)
-	if string(data) != "local newer data" {
-		t.Errorf("Expected 'local newer data' (LWW), got %q", string(data))
-	}
-}
+	data, _ := io.ReadAll(r

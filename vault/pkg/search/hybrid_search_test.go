@@ -23,6 +23,4 @@ func TestHybridSearchEngine_RRF(t *testing.T) {
 
 	// doc2 is #1 in vector and #2 in keyword -> high combined score
 	if results[0].ObjectID != "doc2" && results[0].ObjectID != "doc1" {
-		t.Errorf("unexpected top result: %+v", results[0])
-	}
-}
+		t.Errorf("unexpected top result: %+v"

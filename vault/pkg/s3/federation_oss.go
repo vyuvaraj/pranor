@@ -13,6 +13,4 @@ func (g *Gateway) handleRegisterFederation(w http.ResponseWriter, r *http.Reques
 }
 
 // initFederationRules in OSS: no-op.
-func initFederationRules() []FederationRule {
-	return nil
-}
+func initFederationRules() []FederationRule

@@ -74,6 +74,4 @@ func TestPhase53_CRDTVectorClockReplication(t *testing.T) {
 
 	updated := nodeA.MergeVectorClocks("eu-west-1", remoteClock)
 	if !updated || nodeA.SyncedItems != 1 {
-		t.Errorf("vector clock merge failed: updated=%v, synced=%d", updated, nodeA.SyncedItems)
-	}
-}
+		t.Errorf("vector clock m

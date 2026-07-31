@@ -53,6 +53,4 @@ func TestClusterReconciler_Basic(t *testing.T) {
 
 	mainSvc := r.newMainService(cluster)
 	if mainSvc.Name != "test-cluster" {
-		t.Errorf("expected service name to be test-cluster, got %s", mainSvc.Name)
-	}
-}
+		t.Errorf("expected service name

@@ -22,6 +22,4 @@ func TestVectorNamespaceManager_CreateAndGet(t *testing.T) {
 
 	retrieved, found := vnm.GetNamespace("ai-knowledge-base")
 	if !found || retrieved.Dimension != 1536 {
-		t.Errorf("failed to retrieve namespace: %+v", retrieved)
-	}
-}
+		t.Errorf("failed to retrieve namespace: %+v"

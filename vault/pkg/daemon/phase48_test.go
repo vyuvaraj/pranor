@@ -67,7 +67,4 @@ func TestPhase48_ErasureCoding(t *testing.T) {
 func TestPhase48_InlineAnalyticsEngine(t *testing.T) {
 	engine := analytics.NewInlineQueryEngine("json")
 	res, err := engine.QueryToJSON(context.Background(), "SELECT * FROM dataset", []byte(`[{"id":1}]`))
-	if err != nil || len(res) == 0 {
-		t.Errorf("inline analytics query failed: %v", err)
-	}
-}
+	if err != nil || len(res) ==

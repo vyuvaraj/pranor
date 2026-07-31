@@ -77,6 +77,3 @@ func TestDataIntegrityValidation(t *testing.T) {
 		t.Fatalf("expected read to fail with integrity corruption error, but read succeeded")
 	}
 	if !strings.Contains(readErr.Error(), "integrity corruption detected") {
-		t.Fatalf("expected integrity corruption error, got: %v", readErr)
-	}
-}

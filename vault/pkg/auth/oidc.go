@@ -179,13 +179,4 @@ func (oc *OIDCClient) GetUserInfo(accessToken string) (map[string]interface{}, e
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("userinfo request returned status %d", resp.StatusCode)
-	}
-
-	var info map[string]interface{}
-	if err := json.NewDecoder(resp.Body).Decode(&info); err != nil {
-		return nil, err
-	}
-
-	return info, nil
-}
+		return nil, fmt.Errorf("userinfo request returned

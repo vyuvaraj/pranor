@@ -69,6 +69,4 @@ func TestBucketConversationalQuery(t *testing.T) {
 		t.Errorf("expected synthesized answer in response, got: %v", resp)
 	}
 	if !strings.Contains(strings.ToLower(answer), "token") {
-		t.Errorf("expected answer to refer to 'token' based on seeded doc, got: %s", answer)
-	}
-}
+		t.Errorf("expected answer

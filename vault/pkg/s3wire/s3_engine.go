@@ -79,7 +79,4 @@ func CalculateS3HMACSHA256(key []byte, data string) []byte {
 	return h.Sum(nil)
 }
 
-func CalculateSHA256Hex(data []byte) string {
-	h := sha256.Sum256(data)
-	return hex.EncodeToString(h[:])
-}
+func CalculateSHA256Hex(data []b

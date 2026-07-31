@@ -18,6 +18,4 @@ func TestCoWBranchEngine(t *testing.T) {
 
 	merged, err := engine.MergeBranch(context.Background(), "prod-data", "dev-test-branch")
 	if err != nil || merged != 1 {
-		t.Errorf("merge failed: got %d merged keys", merged)
-	}
-}
+		t.Errorf("merge failed: got %d merged keys",

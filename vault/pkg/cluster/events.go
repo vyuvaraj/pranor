@@ -51,7 +51,4 @@ func (h *EventHub) Publish(event ClusterEvent) {
 		select {
 		case ch <- event:
 		default:
-			// Listener queue full, skip to avoid blocking
-		}
-	}
-}
+			// Listen

@@ -106,11 +106,4 @@ func SimpleKeywordMatch(text, query string) float64 {
 	matches := 0
 	for _, t := range terms {
 		for _, w := range words {
-			if strings.Contains(w, t) {
-				matches++
-				break
-			}
-		}
-	}
-	return float64(matches) / float64(len(terms))
-}
+			if strings.

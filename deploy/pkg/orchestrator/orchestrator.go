@@ -134,8 +134,8 @@ func (o *Orchestrator) DeployWithEnv(name string, srvCode string, customEnv map[
 	if err := os.MkdirAll(srvDir, 0755); err != nil {
 		return nil, fmt.Errorf("failed to create service directory: %w", err)
 	}
-	srvFile := filepath.Join(srvDir, "main.pnr")
-	if err := os.WriteFile(srvFile, []byte(srvCode), 0644); err != nil {
+	pnrFile := filepath.Join(srvDir, "main.pnr")
+	if err := os.WriteFile(pnrFile, []byte(srvCode), 0644); err != nil {
 		return nil, fmt.Errorf("failed to write service file: %w", err)
 	}
 
@@ -185,7 +185,7 @@ func (o *Orchestrator) DeployWithEnv(name string, srvCode string, customEnv map[
 	case "docker":
 		go o.buildAndRunDocker(newProc, srvDir)
 	default:
-		go o.buildAndRun(newProc, srvDir, srvFile)
+		go o.buildAndRun(newProc, srvDir, pnrFile)
 	}
 
 	// Wait/poll for the new process to become healthy
@@ -240,13 +240,13 @@ func (o *Orchestrator) DeployWithEnv(name string, srvCode string, customEnv map[
 	return newProc, nil
 }
 
-func (o *Orchestrator) buildAndRun(proc *ServiceProcess, srvDir, srvFile string) {
+func (o *Orchestrator) buildAndRun(proc *ServiceProcess, srvDir, pnrFile string) {
 	proc.logMutex.Lock()
 	proc.logs = append(proc.logs, fmt.Sprintf("[%s] Deploying service...", time.Now().Format(time.RFC3339)))
 	proc.logMutex.Unlock()
 
 	// Check for simulated compilation failure
-	if content, err := os.ReadFile(srvFile); err == nil {
+	if content, err := os.ReadFile(pnrFile); err == nil {
 		if strings.Contains(string(content), "error") || strings.Contains(string(content), "syntax") {
 			proc.Status = "failed"
 			proc.Error = "Simulated compilation error: syntax error in main.pnr"
@@ -270,7 +270,7 @@ func (o *Orchestrator) buildAndRun(proc *ServiceProcess, srvDir, srvFile string)
 
 	// Check if pranor compiler is usable
 	if _, err := exec.LookPath(o.servPath); err == nil || filepath.IsAbs(o.servPath) {
-		buildCmd = exec.Command(o.servPath, "build", srvFile, "-o", binaryPath)
+		buildCmd = exec.Command(o.servPath, "build", pnrFile, "-o", binaryPath)
 		buildCmd.Dir = srvDir
 		if err := buildCmd.Run(); err == nil {
 			useGoMock = false

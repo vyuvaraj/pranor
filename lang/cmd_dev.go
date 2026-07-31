@@ -49,9 +49,9 @@ func runDevCmd() {
 	}
 
 	args := devCmd.Args()
-	srvFile := "."
+	pnrFile := "."
 	if len(args) > 0 {
-		srvFile = args[0]
+		pnrFile = args[0]
 	}
 
 	fmt.Println()
@@ -66,7 +66,7 @@ func runDevCmd() {
 	requestedServices := parseServiceList(*servicesFlag)
 
 	// Auto-detect services referenced in the .pnr files
-	for _, s := range detectRequiredServices(srvFile) {
+	for _, s := range detectRequiredServices(pnrFile) {
 		switch s {
 		case "auth":
 			requestedServices["github.com/vyuvaraj/pranor/auth"] = true
@@ -117,7 +117,7 @@ func runDevCmd() {
 	fmt.Println()
 
 	// Start the user's .pnr file with hot reload
-	fmt.Printf("  ▶  Starting %s with hot-reload on :%s\n", srvFile, *portFlag)
+	fmt.Printf("  ▶  Starting %s with hot-reload on :%s\n", pnrFile, *portFlag)
 	fmt.Println()
 
 	// Set environment for the user service to discover infra
@@ -146,7 +146,7 @@ func runDevCmd() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		runServHot(srvFile, "")
+		runServHot(pnrFile, "")
 	}()
 
 	// Handle shutdown
@@ -434,23 +434,23 @@ func startDevDashboard(procs []*devProcess) {
 	}
 }
 
-func detectRequiredServices(srvFile string) []string {
+func detectRequiredServices(pnrFile string) []string {
 	var detected []string
 	
 	var files []string
-	info, err := os.Stat(srvFile)
+	info, err := os.Stat(pnrFile)
 	if err != nil {
 		return nil
 	}
 	if info.IsDir() {
-		filepath.Walk(srvFile, func(path string, fileInfo os.FileInfo, walkErr error) error {
+		filepath.Walk(pnrFile, func(path string, fileInfo os.FileInfo, walkErr error) error {
 			if fileInfo != nil && !fileInfo.IsDir() && strings.HasSuffix(path, ".pnr") {
 				files = append(files, path)
 			}
 			return nil
 		})
 	} else {
-		files = append(files, srvFile)
+		files = append(files, pnrFile)
 	}
 
 	for _, f := range files {

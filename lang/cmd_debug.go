@@ -13,15 +13,15 @@ import (
 	"github.com/vyuvaraj/pranor/lang/dap"
 )
 
-// debugServ compiles <srvFile> with debug flags, extracts the source map from
+// debugServ compiles <pnrFile> with debug flags, extracts the source map from
 // the generated Go code, starts Delve in DAP mode, and runs a DAP proxy on
 // stdio so that VS Code can debug .pnr files with full source-level support.
 //
 // Prerequisites: 'dlv' (Delve) must be installed and on PATH.
 //
 //	go install github.com/go-delve/delve/cmd/dlv@latest
-func debugServ(srvFile string) {
-	absPath, program, err := parseProject(srvFile)
+func debugServ(pnrFile string) {
+	absPath, program, err := parseProject(pnrFile)
 	if err != nil {
 		fmt.Printf("debug: resolve project: %v\n", err)
 		os.Exit(1)

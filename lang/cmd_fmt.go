@@ -7,8 +7,8 @@ import (
 )
 
 // formatFile formats a .pnr file with consistent indentation and spacing.
-func formatFile(srvFile string, checkOnly bool) {
-	content, err := os.ReadFile(srvFile)
+func formatFile(pnrFile string, checkOnly bool) {
+	content, err := os.ReadFile(pnrFile)
 	if err != nil {
 		fmt.Printf("Error reading file: %v\n", err)
 		os.Exit(1)
@@ -96,17 +96,17 @@ func formatFile(srvFile string, checkOnly bool) {
 		normalizedOutput := strings.ReplaceAll(output, "\r\n", "\n")
 		normalizedContent := strings.ReplaceAll(string(content), "\r\n", "\n")
 		if normalizedOutput != normalizedContent {
-			fmt.Printf("%s: not formatted\n", srvFile)
+			fmt.Printf("%s: not formatted\n", pnrFile)
 			os.Exit(1)
 		}
 		return
 	}
 
-	if err := os.WriteFile(srvFile, []byte(output), 0644); err != nil {
+	if err := os.WriteFile(pnrFile, []byte(output), 0644); err != nil {
 		fmt.Printf("Error writing file: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("Formatted: %s\n", srvFile)
+	fmt.Printf("Formatted: %s\n", pnrFile)
 }
 
 // countNetBraces counts opening minus closing braces/brackets in a line,

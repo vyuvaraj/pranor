@@ -28,18 +28,18 @@ func runMigrate(target string, dbConn string, rollback bool, dryRun bool) {
 	}
 
 	// Resolve .pnr source files
-	srvFiles, err := findSrvFiles(target)
+	pnrFiles, err := findPnrFiles(target)
 	if err != nil {
 		fmt.Printf("Error finding .pnr files: %v\n", err)
 		os.Exit(1)
 	}
-	if len(srvFiles) == 0 {
+	if len(pnrFiles) == 0 {
 		fmt.Println("No .pnr files found.")
 		return
 	}
 
 	// Parse all files and collect TableDecl nodes
-	tables := collectTableDecls(srvFiles)
+	tables := collectTableDecls(pnrFiles)
 	if len(tables) == 0 {
 		fmt.Println("No declarative table schemas found. Use `table <name> { ... }` to define schemas.")
 		return
@@ -371,8 +371,8 @@ func collectTableDecls(files []string) []*compiler.TableDecl {
 	return tables
 }
 
-// findSrvFiles returns all .pnr files under the given path (file or directory).
-func findSrvFiles(target string) ([]string, error) {
+// findPnrFiles returns all .pnr files under the given path (file or directory).
+func findPnrFiles(target string) ([]string, error) {
 	info, err := os.Stat(target)
 	if err != nil {
 		return nil, err

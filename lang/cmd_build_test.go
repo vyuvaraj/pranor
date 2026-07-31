@@ -16,12 +16,12 @@ func TestBuildReachabilityCheck(t *testing.T) {
 	defer os.RemoveAll(tempDir)
 
 	// 2. Write a .pnr file with an unreachable postgres database connection
-	srvPath := filepath.Join(tempDir, "service.pnr")
+	pnrPath := filepath.Join(tempDir, "service.pnr")
 	srvContent := `
 	database "postgres://localhost:59999/testdb"
 	server "8080"
 	`
-	if err := os.WriteFile(srvPath, []byte(srvContent), 0644); err != nil {
+	if err := os.WriteFile(pnrPath, []byte(srvContent), 0644); err != nil {
 		t.Fatalf("failed to write srv file: %v", err)
 	}
 
@@ -30,7 +30,7 @@ func TestBuildReachabilityCheck(t *testing.T) {
 	BuildSkipCICheck = true
 	defer func() { BuildSkipCICheck = false }()
 	BuildOffline = false
-	_, err = buildServNoExit(srvPath, "test_service.exe", "", "", "", "")
+	_, err = buildServNoExit(pnrPath, "test_service.exe", "", "", "", "")
 	if err == nil {
 		t.Error("expected build to fail due to unreachable database connection")
 	} else if !strings.Contains(err.Error(), "infrastructure reachability check failed") {
@@ -39,7 +39,7 @@ func TestBuildReachabilityCheck(t *testing.T) {
 
 	// 4. Compile WITH offline flag (should succeed and skip reachability check)
 	BuildOffline = true
-	_, err = buildServNoExit(srvPath, "test_service.exe", "", "", "", "")
+	_, err = buildServNoExit(pnrPath, "test_service.exe", "", "", "", "")
 	if err != nil {
 		t.Errorf("expected build to succeed when BuildOffline is true, got error: %v", err)
 	}

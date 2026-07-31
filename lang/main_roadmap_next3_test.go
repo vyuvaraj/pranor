@@ -358,7 +358,7 @@ func TestScaffoldingCLI(t *testing.T) {
 }
 
 func TestSandboxConfigGeneration(t *testing.T) {
-	srvFile := "mock_service.pnr"
+	pnrFile := "mock_service.pnr"
 	code := `
 database CustomerDb {
     engine: "postgres"
@@ -369,19 +369,19 @@ queue MyQueue {
 }
 store MyStore {}
 `
-	if err := os.WriteFile(srvFile, []byte(code), 0644); err != nil {
+	if err := os.WriteFile(pnrFile, []byte(code), 0644); err != nil {
 		t.Fatalf("failed to write mock service file: %v", err)
 	}
-	defer os.Remove(srvFile)
+	defer os.Remove(pnrFile)
 
 	sandboxFile := "sandbox_test_config.json"
 	defer os.Remove(sandboxFile)
 
 	origArgs := os.Args
 	defer func() { os.Args = origArgs }()
-	os.Args = []string{"github.com/vyuvaraj/pranor/lang", "generate", "sandbox", srvFile, "-o", sandboxFile}
+	os.Args = []string{"github.com/vyuvaraj/pranor/lang", "generate", "sandbox", pnrFile, "-o", sandboxFile}
 
-	runGenerateSandbox(srvFile)
+	runGenerateSandbox(pnrFile)
 
 	content, err := os.ReadFile(sandboxFile)
 	if err != nil {

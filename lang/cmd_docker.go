@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 )
 
-func dockerizeServ(srvFile string) {
-	fi, err := os.Stat(srvFile)
+func dockerizeServ(pnrFile string) {
+	fi, err := os.Stat(pnrFile)
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
 		os.Exit(1)
@@ -18,7 +18,7 @@ func dockerizeServ(srvFile string) {
 	var buildArg string
 
 	if fi.IsDir() {
-		absPath, err = filepath.Abs(srvFile)
+		absPath, err = filepath.Abs(pnrFile)
 		if err != nil {
 			fmt.Printf("Error: %v\n", err)
 			os.Exit(1)
@@ -26,13 +26,13 @@ func dockerizeServ(srvFile string) {
 		targetPath = absPath
 		buildArg = "."
 	} else {
-		absPath, err = filepath.Abs(srvFile)
+		absPath, err = filepath.Abs(pnrFile)
 		if err != nil {
 			fmt.Printf("Error: %v\n", err)
 			os.Exit(1)
 		}
 		targetPath = filepath.Dir(absPath)
-		buildArg = filepath.Base(srvFile)
+		buildArg = filepath.Base(pnrFile)
 	}
 
 	dockerfileContent := fmt.Sprintf(`# Stage 1: Build the Serv executable

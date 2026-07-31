@@ -14,14 +14,14 @@ import (
 var stackLineRegex = regexp.MustCompile(`^(\s+)(.*?(?:main|service|PRANOR_test)\.go):(\d+)(.*)$`)
 
 type StackTraceRewriter struct {
-	srvFile string
+	pnrFile string
 	smCache map[string]*dap.SourceMap
 	mu      sync.Mutex
 }
 
-func NewStackTraceRewriter(srvFile string) *StackTraceRewriter {
+func NewStackTraceRewriter(pnrFile string) *StackTraceRewriter {
 	return &StackTraceRewriter{
-		srvFile: srvFile,
+		pnrFile: pnrFile,
 		smCache: make(map[string]*dap.SourceMap),
 	}
 }
@@ -34,7 +34,7 @@ func (r *StackTraceRewriter) getSourceMap(goFile string) *dap.SourceMap {
 		return sm
 	}
 
-	sm, err := dap.ParseSourceMap(goFile, r.srvFile)
+	sm, err := dap.ParseSourceMap(goFile, r.pnrFile)
 	if err != nil {
 		r.smCache[goFile] = nil
 		return nil
@@ -58,9 +58,9 @@ func (r *StackTraceRewriter) Rewrite(src io.Reader, dst io.Writer) {
 			if err == nil {
 				sm := r.getSourceMap(goFile)
 				if sm != nil {
-					srvLine, ok := sm.GoToSrvApprox(goLine)
+					pnrLine, ok := sm.GoToPnrApprox(goLine)
 					if ok {
-						line = fmt.Sprintf("%s%s:%d%s", indent, r.srvFile, srvLine, suffix)
+						line = fmt.Sprintf("%s%s:%d%s", indent, r.pnrFile, pnrLine, suffix)
 					}
 				}
 			}

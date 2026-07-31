@@ -116,17 +116,17 @@ func isGeneratedCodeUnchanged(cache *BuildCache, generatedCode string) bool {
 
 // collectSourceFiles finds all .pnr files in a project directory
 // (or returns a single file for single-file builds).
-func collectSourceFiles(srvFile string) ([]string, error) {
-	fi, err := os.Stat(srvFile)
+func collectSourceFiles(pnrFile string) ([]string, error) {
+	fi, err := os.Stat(pnrFile)
 	if err != nil {
 		return nil, err
 	}
 	if !fi.IsDir() {
-		abs, _ := filepath.Abs(srvFile)
+		abs, _ := filepath.Abs(pnrFile)
 		return []string{abs}, nil
 	}
 	var files []string
-	err = filepath.Walk(srvFile, func(path string, info os.FileInfo, err error) error {
+	err = filepath.Walk(pnrFile, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}

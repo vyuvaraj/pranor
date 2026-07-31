@@ -20,7 +20,7 @@ func TestHotReload(t *testing.T) {
 	}
 	defer os.RemoveAll(tmpDir)
 
-	srvFile := filepath.Join(tmpDir, "service.pnr")
+	pnrFile := filepath.Join(tmpDir, "service.pnr")
 
 	// Version 1 of the service
 	v1Content := `
@@ -30,7 +30,7 @@ route "GET" "/hello" (req) {
 	return "hello v1"
 }
 `
-	if err := os.WriteFile(srvFile, []byte(v1Content), 0644); err != nil {
+	if err := os.WriteFile(pnrFile, []byte(v1Content), 0644); err != nil {
 		t.Fatalf("failed to write version 1: %v", err)
 	}
 
@@ -47,7 +47,7 @@ route "GET" "/hello" (req) {
 	}
 
 	// Start the service in hot watch mode
-	cmd := exec.Command(servBin, "run", "--hot", srvFile)
+	cmd := exec.Command(servBin, "run", "--hot", pnrFile)
 	cmd.Env = append(os.Environ(), "TESTING=true", "PRANOR_ENV=test")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -104,7 +104,7 @@ route "GET" "/hello" (req) {
 	return "hello v2"
 }
 `
-	if err := os.WriteFile(srvFile, []byte(v2Content), 0644); err != nil {
+	if err := os.WriteFile(pnrFile, []byte(v2Content), 0644); err != nil {
 		t.Fatalf("failed to write version 2: %v", err)
 	}
 

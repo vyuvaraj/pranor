@@ -19,7 +19,7 @@ type integrationService struct {
 }
 
 // runIntegrationTests starts real infrastructure services, runs tests, then stops them.
-func runIntegrationTests(srvFile string, withCoverage bool, filter string) bool {
+func runIntegrationTests(pnrFile string, withCoverage bool, filter string) bool {
 	fmt.Println()
 	fmt.Println("  ▲ Integration Test Mode")
 	fmt.Println("  ━━━━━━━━━━━━━━━━━━━━━━━")
@@ -99,7 +99,7 @@ func runIntegrationTests(srvFile string, withCoverage bool, filter string) bool 
 	fmt.Println("  ━━━━━━━━━━━━━━━━━━━━━━━")
 	fmt.Println()
 
-	success := runTests(srvFile, withCoverage, filter)
+	success := runTests(pnrFile, withCoverage, filter)
 
 	// Cleanup
 	fmt.Println()

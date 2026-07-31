@@ -176,7 +176,7 @@ func TestTopicSchemaLinting(t *testing.T) {
 	}
 
 	// 1. Test matching payload
-	srvFileContent := `
+	pnrFileContent := `
 	struct User {
 		id: int,
 		name: string
@@ -185,7 +185,7 @@ func TestTopicSchemaLinting(t *testing.T) {
 		publish "user-created" User{id: 123, name: "Alice"}
 	}
 	`
-	_, program, err := parseProjectString(srvFileContent)
+	_, program, err := parseProjectString(pnrFileContent)
 	if err != nil {
 		t.Fatalf("failed to parse: %v", err)
 	}
@@ -198,7 +198,7 @@ func TestTopicSchemaLinting(t *testing.T) {
 	}
 
 	// 2. Test mismatching payload (missing required field)
-	srvFileContent2 := `
+	pnrFileContent2 := `
 	struct UserBad {
 		name: string
 	}
@@ -206,7 +206,7 @@ func TestTopicSchemaLinting(t *testing.T) {
 		publish "user-created" UserBad{name: "Alice"}
 	}
 	`
-	_, program2, err := parseProjectString(srvFileContent2)
+	_, program2, err := parseProjectString(pnrFileContent2)
 	if err != nil {
 		t.Fatalf("failed to parse: %v", err)
 	}
@@ -222,7 +222,7 @@ func TestTopicSchemaLinting(t *testing.T) {
 	}
 
 	// 3. Test type mismatch
-	srvFileContent3 := `
+	pnrFileContent3 := `
 	struct UserWrongType {
 		id: string,
 		name: string
@@ -231,7 +231,7 @@ func TestTopicSchemaLinting(t *testing.T) {
 		publish "user-created" UserWrongType{id: "not-an-int", name: "Alice"}
 	}
 	`
-	_, program3, err := parseProjectString(srvFileContent3)
+	_, program3, err := parseProjectString(pnrFileContent3)
 	if err != nil {
 		t.Fatalf("failed to parse: %v", err)
 	}

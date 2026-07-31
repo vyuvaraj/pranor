@@ -68,8 +68,8 @@ func TestParseSourceMap(t *testing.T) {
 	}
 }
 
-// TestGoToSrv verifies that known Go lines map to the correct .pnr lines.
-func TestGoToSrv(t *testing.T) {
+// TestGoToPnr verifies that known Go lines map to the correct .pnr lines.
+func TestGoToPnr(t *testing.T) {
 	goFile := writeTemp(t, sampleGenGo)
 	sm, err := dap.ParseSourceMap(goFile, "test.pnr")
 	if err != nil {
@@ -77,7 +77,7 @@ func TestGoToSrv(t *testing.T) {
 	}
 
 	// Line 11 is "// .pnr line 3", line 12 is the func declaration.
-	// We expect goLine 12 → srvLine 3.
+	// We expect goLine 12 → pnrLine 3.
 	cases := []struct {
 		goLine  int
 		wantSrv int
@@ -93,13 +93,13 @@ func TestGoToSrv(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		srvLine, ok := sm.GoToSrv(tc.goLine)
+		pnrLine, ok := sm.GoToPnr(tc.goLine)
 		if !ok {
-			t.Errorf("GoToSrv(%d): no mapping found, want srvLine %d", tc.goLine, tc.wantSrv)
+			t.Errorf("GoToPnr(%d): no mapping found, want pnrLine %d", tc.goLine, tc.wantSrv)
 			continue
 		}
-		if srvLine != tc.wantSrv {
-			t.Errorf("GoToSrv(%d) = %d, want %d", tc.goLine, srvLine, tc.wantSrv)
+		if pnrLine != tc.wantSrv {
+			t.Errorf("GoToPnr(%d) = %d, want %d", tc.goLine, pnrLine, tc.wantSrv)
 		}
 	}
 }
@@ -112,24 +112,24 @@ func TestSrvToGo(t *testing.T) {
 		t.Fatalf("ParseSourceMap: %v", err)
 	}
 
-	srvLines := []int{3, 4, 7, 8, 9, 12, 13, 14}
-	for _, srvLine := range srvLines {
-		goLine, ok := sm.SrvToGo(srvLine)
+	pnrLines := []int{3, 4, 7, 8, 9, 12, 13, 14}
+	for _, pnrLine := range pnrLines {
+		goLine, ok := sm.PnrToGo(pnrLine)
 		if !ok {
-			t.Errorf("SrvToGo(%d): no mapping found", srvLine)
+			t.Errorf("SrvToGo(%d): no mapping found", pnrLine)
 			continue
 		}
 		if goLine <= 0 {
-			t.Errorf("SrvToGo(%d) = %d, want positive line number", srvLine, goLine)
+			t.Errorf("SrvToGo(%d) = %d, want positive line number", pnrLine, goLine)
 		}
-		// Round-trip: GoToSrv(SrvToGo(N)) should return N (or nearest).
-		roundTrip, rtOk := sm.GoToSrv(goLine)
+		// Round-trip: GoToPnr(SrvToGo(N)) should return N (or nearest).
+		roundTrip, rtOk := sm.GoToPnr(goLine)
 		if !rtOk {
-			t.Errorf("round-trip: GoToSrv(SrvToGo(%d)=%d): not found", srvLine, goLine)
+			t.Errorf("round-trip: GoToPnr(SrvToGo(%d)=%d): not found", pnrLine, goLine)
 			continue
 		}
-		if roundTrip != srvLine {
-			t.Errorf("round-trip srv %d → go %d → srv %d (mismatch)", srvLine, goLine, roundTrip)
+		if roundTrip != pnrLine {
+			t.Errorf("round-trip srv %d → go %d → srv %d (mismatch)", pnrLine, goLine, roundTrip)
 		}
 	}
 }
@@ -145,7 +145,7 @@ func TestNearestGoLine(t *testing.T) {
 
 	// srv line 5 and 6 have no direct mapping in the sample (they are blank
 	// lines / closing braces between functions). The nearest should be 4 or 7.
-	goLine, ok := sm.SrvToGo(5)
+	goLine, ok := sm.PnrToGo(5)
 	if !ok {
 		t.Fatal("SrvToGo(5) returned not-found; expected nearest fallback")
 	}
@@ -167,7 +167,7 @@ func TestEmptyFile(t *testing.T) {
 		t.Errorf("expected 0 entries for file with no srv comments, got %d", sm.Len())
 	}
 	// SrvToGo on empty map should still return false without panicking.
-	_, ok := sm.SrvToGo(1)
+	_, ok := sm.PnrToGo(1)
 	if ok {
 		t.Error("SrvToGo(1) on empty map should return ok=false")
 	}

@@ -24,8 +24,8 @@ var BuildOffline bool
 // Set this to true in tests that specifically verify the reachability check fires.
 var BuildSkipCICheck bool
 
-func buildServ(srvFile, outputBinary, target, goos, goarch, tags string) string {
-	absPath, err := buildServNoExit(srvFile, outputBinary, target, goos, goarch, tags)
+func buildServ(pnrFile, outputBinary, target, goos, goarch, tags string) string {
+	absPath, err := buildServNoExit(pnrFile, outputBinary, target, goos, goarch, tags)
 	if err != nil {
 		fmt.Printf("Build failed: %v\n", err)
 		os.Exit(1)
@@ -126,11 +126,11 @@ func pingInfrastructure(kind string, expr compiler.Expression) error {
 	return nil
 }
 
-func buildServNoExit(srvFile, outputBinary, target, goos, goarch, tags string) (string, error) {
+func buildServNoExit(pnrFile, outputBinary, target, goos, goarch, tags string) (string, error) {
 	// Clear the parser cache before compilation
 	parsedFilesCache = make(map[string]*compiler.Program)
 
-	absPath, program, err := parseProject(srvFile)
+	absPath, program, err := parseProject(pnrFile)
 	if err != nil {
 		return "", err
 	}
@@ -147,7 +147,7 @@ func buildServNoExit(srvFile, outputBinary, target, goos, goarch, tags string) (
 	}
 
 	cache := loadBuildCache(buildDir)
-	sourceFiles, _ := collectSourceFiles(srvFile)
+	sourceFiles, _ := collectSourceFiles(pnrFile)
 
 	var targetOutPath string
 	if filepath.IsAbs(outputBinary) {
@@ -284,17 +284,17 @@ func buildServNoExit(srvFile, outputBinary, target, goos, goarch, tags string) (
 			trimmed := strings.TrimSpace(lineContent)
 			if strings.HasPrefix(trimmed, "// .pnr line ") {
 				rest := strings.TrimPrefix(trimmed, "// .pnr line ")
-				srvLine, err := strconv.Atoi(strings.TrimSpace(rest))
+				pnrLine, err := strconv.Atoi(strings.TrimSpace(rest))
 				if err == nil {
 					key1 := fmt.Sprintf("%s:%d", outName, goLine)
 					if !seen[key1] {
 						seen[key1] = true
-						mappings = append(mappings, fmt.Sprintf("%q: %d", key1, srvLine))
+						mappings = append(mappings, fmt.Sprintf("%q: %d", key1, pnrLine))
 					}
 					key2 := fmt.Sprintf("%s:%d", outName, goLine+1)
 					if !seen[key2] {
 						seen[key2] = true
-						mappings = append(mappings, fmt.Sprintf("%q: %d", key2, srvLine))
+						mappings = append(mappings, fmt.Sprintf("%q: %d", key2, pnrLine))
 					}
 				}
 			}
@@ -466,8 +466,8 @@ func init() {
 	return filepath.Join(filepath.Dir(absPath), outputBinary), nil
 }
 
-func runServ(srvFile string, extraArgs []string, profile bool, env string) {
-	binPath, err := buildServNoExit(srvFile, "temp_service.exe", "", "", "", "")
+func runServ(pnrFile string, extraArgs []string, profile bool, env string) {
+	binPath, err := buildServNoExit(pnrFile, "temp_service.exe", "", "", "", "")
 	if err != nil {
 		fmt.Printf("Build failed: %v\n", err)
 		os.Exit(1)
@@ -502,7 +502,7 @@ func runServ(srvFile string, extraArgs []string, profile bool, env string) {
 		os.Exit(1)
 	}
 
-	rewriter := NewStackTraceRewriter(srvFile)
+	rewriter := NewStackTraceRewriter(pnrFile)
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -523,8 +523,8 @@ func runServ(srvFile string, extraArgs []string, profile bool, env string) {
 	}
 }
 
-func runServWatch(srvFile string, env string) {
-	fmt.Printf("Starting Serv in Watch Mode: %s...\n", srvFile)
+func runServWatch(pnrFile string, env string) {
+	fmt.Printf("Starting Serv in Watch Mode: %s...\n", pnrFile)
 
 	var cmd *exec.Cmd
 
@@ -535,7 +535,7 @@ func runServWatch(srvFile string, env string) {
 			cmd.Wait()
 		}
 
-		binPath, err := buildServNoExit(srvFile, "watch_service.exe", "", "", "", "")
+		binPath, err := buildServNoExit(pnrFile, "watch_service.exe", "", "", "", "")
 		if err != nil {
 			fmt.Printf("[WATCH] Rebuild failed:\n%v\n", err)
 			return
@@ -565,7 +565,7 @@ func runServWatch(srvFile string, env string) {
 			return
 		}
 
-		rewriter := NewStackTraceRewriter(srvFile)
+		rewriter := NewStackTraceRewriter(pnrFile)
 		go rewriter.Rewrite(stdoutPipe, os.Stdout)
 		go rewriter.Rewrite(stderrPipe, os.Stderr)
 	}
@@ -577,7 +577,7 @@ func runServWatch(srvFile string, env string) {
 		}
 	}()
 
-	watchDir := filepath.Dir(srvFile)
+	watchDir := filepath.Dir(pnrFile)
 	lastMods := getFileModTimes(watchDir)
 
 	for {
@@ -1035,8 +1035,8 @@ func copyFileIfExists(src, dst string) {
 	}
 }
 
-func parseProject(srvFile string) (string, *compiler.Program, error) {
-	fi, err := os.Stat(srvFile)
+func parseProject(pnrFile string) (string, *compiler.Program, error) {
+	fi, err := os.Stat(pnrFile)
 	if err != nil {
 		return "", nil, err
 	}
@@ -1046,7 +1046,7 @@ func parseProject(srvFile string) (string, *compiler.Program, error) {
 	visited := make(map[string]int)
 
 	if fi.IsDir() {
-		absDir, err := filepath.Abs(srvFile)
+		absDir, err := filepath.Abs(pnrFile)
 		if err != nil {
 			return "", nil, err
 		}
@@ -1071,19 +1071,19 @@ func parseProject(srvFile string) (string, *compiler.Program, error) {
 			if err != nil {
 				return "", nil, err
 			}
-			var srvFiles []string
+			var pnrFiles []string
 			for _, file := range files {
 				if !file.IsDir() && strings.HasSuffix(file.Name(), ".pnr") {
-					srvFiles = append(srvFiles, filepath.Join(absDir, file.Name()))
+					pnrFiles = append(pnrFiles, filepath.Join(absDir, file.Name()))
 				}
 			}
-			if len(srvFiles) == 0 {
-				return "", nil, fmt.Errorf("no .pnr files found in directory %s", srvFile)
+			if len(pnrFiles) == 0 {
+				return "", nil, fmt.Errorf("no .pnr files found in directory %s", pnrFile)
 			}
 
-			absPath = srvFiles[0]
+			absPath = pnrFiles[0]
 			var mergedProgram *compiler.Program
-			for _, file := range srvFiles {
+			for _, file := range pnrFiles {
 				prog, err := parseWithDependencies(file, visited)
 				if err != nil {
 					return "", nil, err
@@ -1098,7 +1098,7 @@ func parseProject(srvFile string) (string, *compiler.Program, error) {
 		}
 	} else {
 		var err error
-		absPath, err = filepath.Abs(srvFile)
+		absPath, err = filepath.Abs(pnrFile)
 		if err != nil {
 			return "", nil, err
 		}
@@ -1185,11 +1185,11 @@ func getFreePort() (int, error) {
 	return l.Addr().(*net.TCPAddr).Port, nil
 }
 
-func runServHot(srvFile string, env string) {
-	fmt.Printf("Starting Serv in Zero-Downtime Hot-Reload Mode: %s...\n", srvFile)
+func runServHot(pnrFile string, env string) {
+	fmt.Printf("Starting Serv in Zero-Downtime Hot-Reload Mode: %s...\n", pnrFile)
 
 	// 1. Parse the project to check if it has a server statement
-	_, program, err := parseProject(srvFile)
+	_, program, err := parseProject(pnrFile)
 	if err != nil {
 		fmt.Printf("Parsing failed: %v\n", err)
 		os.Exit(1)
@@ -1260,7 +1260,7 @@ func runServHot(srvFile string, env string) {
 
 	startNewInstance := func() (*exec.Cmd, string, error) {
 		binName := fmt.Sprintf("hot_service_%d.exe", time.Now().UnixNano())
-		binPath, err := buildServNoExit(srvFile, binName, "", "", "", "")
+		binPath, err := buildServNoExit(pnrFile, binName, "", "", "", "")
 		if err != nil {
 			return nil, "", err
 		}
@@ -1293,7 +1293,7 @@ func runServHot(srvFile string, env string) {
 			return nil, "", err
 		}
 
-		rewriter := NewStackTraceRewriter(srvFile)
+		rewriter := NewStackTraceRewriter(pnrFile)
 		go rewriter.Rewrite(stdoutPipe, os.Stdout)
 		go rewriter.Rewrite(stderrPipe, os.Stderr)
 
@@ -1345,7 +1345,7 @@ func runServHot(srvFile string, env string) {
 		}
 	}()
 
-	watchDir := filepath.Dir(srvFile)
+	watchDir := filepath.Dir(pnrFile)
 	lastMods := getFileModTimes(watchDir)
 
 	for {

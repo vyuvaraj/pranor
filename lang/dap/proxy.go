@@ -92,7 +92,7 @@ type StackFrame struct {
 // coordinates ↔ Go coordinates using the provided SourceMap.
 type Proxy struct {
 	sm      *SourceMap
-	srvFile string // absolute path to the .pnr source file
+	pnrFile string // absolute path to the .pnr source file
 	goFile  string // absolute path to the generated main.go
 	dlvAddr string // "localhost:<port>"
 }
@@ -101,7 +101,7 @@ type Proxy struct {
 func NewProxy(sm *SourceMap, dlvAddr string) *Proxy {
 	return &Proxy{
 		sm:      sm,
-		srvFile: sm.SrvFile(),
+		pnrFile: sm.PnrFile(),
 		goFile:  sm.GoFile(),
 		dlvAddr: dlvAddr,
 	}
@@ -191,7 +191,7 @@ func (p *Proxy) translateClientMessage(raw []byte) ([]byte, error) {
 	}
 
 	// Only translate if the source is our .pnr file.
-	if !isSrvFile(args.Source.Path, p.srvFile) {
+	if !isPnrFile(args.Source.Path, p.pnrFile) {
 		return raw, nil
 	}
 
@@ -201,13 +201,13 @@ func (p *Proxy) translateClientMessage(raw []byte) ([]byte, error) {
 
 	// Translate each breakpoint line.
 	for i, bp := range args.Breakpoints {
-		if goLine, ok := p.sm.SrvToGo(bp.Line); ok {
+		if goLine, ok := p.sm.PnrToGo(bp.Line); ok {
 			args.Breakpoints[i].Line = goLine
 		}
 	}
 	// Also translate the legacy "lines" array if present.
-	for i, srvLine := range args.Lines {
-		if goLine, ok := p.sm.SrvToGo(srvLine); ok {
+	for i, pnrLine := range args.Lines {
+		if goLine, ok := p.sm.PnrToGo(pnrLine); ok {
 			args.Lines[i] = goLine
 		}
 	}
@@ -246,11 +246,11 @@ func (p *Proxy) translateDlvMessage(raw []byte) ([]byte, error) {
 		if !isGoFile(frame.Source.Path, p.goFile) {
 			continue
 		}
-		if srvLine, ok := p.sm.GoToSrv(frame.Line); ok {
-			body.StackFrames[i].Line = srvLine
+		if pnrLine, ok := p.sm.GoToPnr(frame.Line); ok {
+			body.StackFrames[i].Line = pnrLine
 			body.StackFrames[i].Source = &SourceSpec{
-				Path: p.srvFile,
-				Name: filepath.Base(p.srvFile),
+				Path: p.pnrFile,
+				Name: filepath.Base(p.pnrFile),
 			}
 			modified = true
 		}
@@ -334,13 +334,13 @@ func writeDAPMessage(w io.Writer, body []byte) error {
 
 // ── Path helpers ──────────────────────────────────────────────────────────────
 
-func isSrvFile(path, srvFile string) bool {
+func isPnrFile(path, pnrFile string) bool {
 	if path == "" {
 		return false
 	}
 	// Compare clean absolute paths, case-insensitively on Windows.
 	a := filepath.Clean(strings.ToLower(path))
-	b := filepath.Clean(strings.ToLower(srvFile))
+	b := filepath.Clean(strings.ToLower(pnrFile))
 	return a == b || strings.HasSuffix(a, filepath.Base(b))
 }
 

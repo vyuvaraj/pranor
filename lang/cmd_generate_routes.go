@@ -176,7 +176,7 @@ func generateSrvFromSpec(spec *openAPISpec, serverURL, dbURL string) string {
 
 func generateRoute(b *strings.Builder, method, path string, op *openAPIOperation) {
 	// Convert OpenAPI path params {id} → Pranor :id
-	srvPath := convertPath(path)
+	pnrPath := convertPath(path)
 	httpMethod := strings.ToUpper(method)
 
 	// Comment with summary
@@ -188,7 +188,7 @@ func generateRoute(b *strings.Builder, method, path string, op *openAPIOperation
 	}
 
 	// Route declaration
-	b.WriteString(fmt.Sprintf("route \"%s\" \"%s\" (req) {\n", httpMethod, srvPath))
+	b.WriteString(fmt.Sprintf("route \"%s\" \"%s\" (req) {\n", httpMethod, pnrPath))
 
 	// Extract path params
 	for _, param := range op.Parameters {

@@ -19,13 +19,13 @@ func TestMigrateDryRun(t *testing.T) {
 	defer os.RemoveAll(tempDir)
 
 	// 2. Create a test .pnr file defining a table
-	srvPath := filepath.Join(tempDir, "schema.pnr")
+	pnrPath := filepath.Join(tempDir, "schema.pnr")
 	srvContent := `table users {
 		id int @primary @autoincrement
 		name string @required
 		age int
 	}`
-	if err := os.WriteFile(srvPath, []byte(srvContent), 0644); err != nil {
+	if err := os.WriteFile(pnrPath, []byte(srvContent), 0644); err != nil {
 		t.Fatalf("failed to write srv file: %v", err)
 	}
 
@@ -51,7 +51,7 @@ func TestMigrateDryRun(t *testing.T) {
 
 	// 5. Run runMigrate with dryRun = true (Creation check)
 	stdout := captureStdout(func() {
-		runMigrate(srvPath, dbConn, false, true)
+		runMigrate(pnrPath, dbConn, false, true)
 	})
 
 	// Verify stdout contains the SQL preview
@@ -80,7 +80,7 @@ func TestMigrateDryRun(t *testing.T) {
 
 	// 6. Apply migration for real (dryRun = false)
 	stdout = captureStdout(func() {
-		runMigrate(srvPath, dbConn, false, false)
+		runMigrate(pnrPath, dbConn, false, false)
 	})
 	if !strings.Contains(stdout, "schema applied") {
 		t.Errorf("expected stdout to confirm schema applied, got:\n%s", stdout)
@@ -99,13 +99,13 @@ func TestMigrateDryRun(t *testing.T) {
 		age int
 		email string
 	}`
-	if err := os.WriteFile(srvPath, []byte(srvContentUpdated), 0644); err != nil {
+	if err := os.WriteFile(pnrPath, []byte(srvContentUpdated), 0644); err != nil {
 		t.Fatalf("failed to update srv file: %v", err)
 	}
 
 	// 8. Run runMigrate with dryRun = true (Altering check)
 	stdout = captureStdout(func() {
-		runMigrate(srvPath, dbConn, false, true)
+		runMigrate(pnrPath, dbConn, false, true)
 	})
 
 	// Verify stdout contains the ALTER TABLE preview
@@ -141,7 +141,7 @@ func TestMigrateDryRun(t *testing.T) {
 
 	// 9. Run rollback with dryRun = true (Rollback check)
 	// We restore srv content back to original (without 'email')
-	if err := os.WriteFile(srvPath, []byte(srvContent), 0644); err != nil {
+	if err := os.WriteFile(pnrPath, []byte(srvContent), 0644); err != nil {
 		t.Fatalf("failed to restore srv file: %v", err)
 	}
 	// Add the 'email' column to the database manually so there is a diff to rollback
@@ -150,7 +150,7 @@ func TestMigrateDryRun(t *testing.T) {
 	}
 
 	stdout = captureStdout(func() {
-		runMigrate(srvPath, dbConn, true, true)
+		runMigrate(pnrPath, dbConn, true, true)
 	})
 
 	// Verify stdout contains the DROP COLUMN preview

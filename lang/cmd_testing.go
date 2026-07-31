@@ -13,12 +13,12 @@ import (
 	"github.com/vyuvaraj/pranor/lang/compiler"
 )
 
-func runTests(srvFile string, withCoverage bool, filter string) bool {
-	return runTestsWithWriter(srvFile, withCoverage, filter, os.Stdout, os.Stderr)
+func runTests(pnrFile string, withCoverage bool, filter string) bool {
+	return runTestsWithWriter(pnrFile, withCoverage, filter, os.Stdout, os.Stderr)
 }
 
-func runTestsWithWriter(srvFile string, withCoverage bool, filter string, stdoutWriter io.Writer, stderrWriter io.Writer) bool {
-	absPath, program, err := parseProject(srvFile)
+func runTestsWithWriter(pnrFile string, withCoverage bool, filter string, stdoutWriter io.Writer, stderrWriter io.Writer) bool {
+	absPath, program, err := parseProject(pnrFile)
 	if err != nil {
 		fmt.Fprintf(stderrWriter, "Parse error: %v\n", err)
 		return false
@@ -32,7 +32,7 @@ func runTestsWithWriter(srvFile string, withCoverage bool, filter string, stdout
 	}
 
 	if !cg.HasTests() {
-		fmt.Fprintln(stdoutWriter, "No tests found in", srvFile)
+		fmt.Fprintln(stdoutWriter, "No tests found in", pnrFile)
 		return true
 	}
 
@@ -87,7 +87,7 @@ func runTestsWithWriter(srvFile string, withCoverage bool, filter string, stdout
 		}
 	}
 
-	fmt.Fprintf(stdoutWriter, "Running tests from %s...\n", srvFile)
+	fmt.Fprintf(stdoutWriter, "Running tests from %s...\n", pnrFile)
 	goPath, err := resolveGoPath()
 	if err != nil {
 		fmt.Fprintf(stderrWriter, "Cannot find Go compiler: %v\n", err)
@@ -132,7 +132,7 @@ func runTestsWithWriter(srvFile string, withCoverage bool, filter string, stdout
 		return false
 	}
 
-	rewriter := NewStackTraceRewriter(srvFile)
+	rewriter := NewStackTraceRewriter(pnrFile)
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {

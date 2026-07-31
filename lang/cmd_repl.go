@@ -162,9 +162,9 @@ func runREPL(attachHost string) {
 }
 
 // compileAndRunREPL compiles a temporary .pnr file and runs it briefly to capture output.
-func compileAndRunREPL(goPath, srvFile, workDir string, printExpr string) (string, error) {
+func compileAndRunREPL(goPath, pnrFile, workDir string, printExpr string) (string, error) {
 	// Parse and generate
-	program, err := parseWithDependencies(srvFile, make(map[string]int))
+	program, err := parseWithDependencies(pnrFile, make(map[string]int))
 	if err != nil {
 		return "", err
 	}

@@ -7,8 +7,8 @@ import (
 	"github.com/vyuvaraj/pranor/lang/compiler"
 )
 
-func runLint(srvFile string) {
-	absPath, program, err := parseProject(srvFile)
+func runLint(pnrFile string) {
+	absPath, program, err := parseProject(pnrFile)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

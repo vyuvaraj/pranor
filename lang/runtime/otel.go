@@ -176,8 +176,8 @@ func getSrvCallerLine() int {
 		}
 		baseFile := filepath.Base(file)
 		key := fmt.Sprintf("%s:%d", baseFile, line)
-		if srvLine, exists := SrvSourceMap[key]; exists {
-			return srvLine
+		if pnrLine, exists := SrvSourceMap[key]; exists {
+			return pnrLine
 		}
 	}
 	return 0
@@ -204,7 +204,7 @@ func TraceRequest(method, path string, parentTrace string) *RequestTrace {
 	}
 
 	spanID := generateSpanID()
-	srvLine := getSrvCallerLine()
+	pnrLine := getSrvCallerLine()
 
 	return &RequestTrace{
 		TraceID:   traceID,
@@ -213,7 +213,7 @@ func TraceRequest(method, path string, parentTrace string) *RequestTrace {
 		Method:    method,
 		Path:      path,
 		StartTime: time.Now(),
-		SrvLine:   srvLine,
+		PnrLine:   pnrLine,
 	}
 }
 
@@ -239,8 +239,8 @@ func EndTrace(rt *RequestTrace, statusCode int) {
 		},
 		Status: 1, // OK
 	}
-	if rt.SrvLine > 0 {
-		span.Attributes["srv.source_line"] = rt.SrvLine
+	if rt.PnrLine > 0 {
+		span.Attributes["srv.source_line"] = rt.PnrLine
 	}
 
 	if statusCode >= 400 {
@@ -275,7 +275,7 @@ type RequestTrace struct {
 	Method    string
 	Path      string
 	StartTime time.Time
-	SrvLine   int
+	PnrLine   int
 }
 
 // --- Internal helpers ---
@@ -401,7 +401,7 @@ func TraceDB(operation, query string) func() {
 		return func() {}
 	}
 	traceID, parentID := getInheritedTraceContext()
-	srvLine := getSrvCallerLine()
+	pnrLine := getSrvCallerLine()
 	span := otelSpan{
 		TraceID:   traceID,
 		SpanID:    generateSpanID(),
@@ -415,8 +415,8 @@ func TraceDB(operation, query string) func() {
 			"db.statement": truncateQuery(query),
 		},
 	}
-	if srvLine > 0 {
-		span.Attributes["srv.source_line"] = srvLine
+	if pnrLine > 0 {
+		span.Attributes["srv.source_line"] = pnrLine
 	}
 	return func() {
 		span.EndTime = time.Now().UnixNano()
@@ -431,7 +431,7 @@ func TraceCache(operation, key string) func() {
 		return func() {}
 	}
 	traceID, parentID := getInheritedTraceContext()
-	srvLine := getSrvCallerLine()
+	pnrLine := getSrvCallerLine()
 	span := otelSpan{
 		TraceID:   traceID,
 		SpanID:    generateSpanID(),
@@ -444,8 +444,8 @@ func TraceCache(operation, key string) func() {
 			"cache.key":       key,
 		},
 	}
-	if srvLine > 0 {
-		span.Attributes["srv.source_line"] = srvLine
+	if pnrLine > 0 {
+		span.Attributes["srv.source_line"] = pnrLine
 	}
 	return func() {
 		span.EndTime = time.Now().UnixNano()
@@ -460,7 +460,7 @@ func TraceHTTPClient(method, url string) func(statusCode int) {
 		return func(int) {}
 	}
 	traceID, parentID := getInheritedTraceContext()
-	srvLine := getSrvCallerLine()
+	pnrLine := getSrvCallerLine()
 	span := otelSpan{
 		TraceID:   traceID,
 		SpanID:    generateSpanID(),
@@ -473,8 +473,8 @@ func TraceHTTPClient(method, url string) func(statusCode int) {
 			"http.url":    url,
 		},
 	}
-	if srvLine > 0 {
-		span.Attributes["srv.source_line"] = srvLine
+	if pnrLine > 0 {
+		span.Attributes["srv.source_line"] = pnrLine
 	}
 	return func(statusCode int) {
 		span.EndTime = time.Now().UnixNano()

@@ -1,0 +1,456 @@
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"io"
+	"net/http"
+	"net/url"
+	"os"
+	"strings"
+	"time"
+
+	"github.com/gorilla/websocket"
+)
+
+type TopicInfo struct {
+	Name         string `json:"name"`
+	Subscribers  int    `json:"subscribers"`
+	Partitions   int    `json:"partitions"`
+	HasTransform bool   `json:"has_transform"`
+}
+
+func main() {
+	serverAddr := flag.String("server", "http://localhost:8080", "Pranor Pulse server URL")
+	token := flag.String("token", "", "Bearer token for authorization")
+	tenant := flag.String("tenant", "", "Tenant ID (X-Tenant-ID)")
+	flag.Parse()
+
+	args := flag.Args()
+	if len(args) == 0 {
+		printUsage()
+		os.Exit(0)
+	}
+
+	cmd := args[0]
+	switch cmd {
+	case "status":
+		resp, err := http.Get(*serverAddr + "/health")
+		if err != nil {
+			fmt.Printf("Error connecting to Pranor Pulse server at %s: %v\n", *serverAddr, err)
+			os.Exit(1)
+		}
+		defer resp.Body.Close()
+		body, _ := io.ReadAll(resp.Body)
+		fmt.Printf("Pranor Pulse Node Status: %s\n", string(body))
+
+	case "topics":
+		if len(args) < 2 {
+			fmt.Println("Error: topics requires a subcommand (list | create)")
+			os.Exit(1)
+		}
+		subCmd := args[1]
+		if subCmd == "list" {
+			listTopics(*serverAddr, *token, *tenant)
+		} else if subCmd == "create" {
+			if len(args) < 3 {
+				fmt.Println("Error: topics create requires a topic name")
+				os.Exit(1)
+			}
+			createTopic(*serverAddr, *token, *tenant, args[2])
+		} else {
+			fmt.Printf("Unknown topics subcommand: %s\n", subCmd)
+			os.Exit(1)
+		}
+
+	case "publish":
+		if len(args) < 3 {
+			fmt.Println("Error: publish requires a topic and payload")
+			os.Exit(1)
+		}
+		topic := args[1]
+		payload := args[2]
+
+		keyFlag := flag.NewFlagSet("publish", flag.ExitOnError)
+		key := keyFlag.String("key", "", "Deduplication/Compaction key")
+		priority := keyFlag.Int("priority", 0, "Priority level (higher first)")
+		ttl := keyFlag.Duration("ttl", 0, "Time-to-live duration (e.g. 5s, 1m)")
+		_ = keyFlag.Parse(args[3:])
+
+		publishMessage(*serverAddr, *token, *tenant, topic, payload, *key, *priority, *ttl)
+
+	case "consume":
+		if len(args) < 2 {
+			fmt.Println("Error: consume requires a topic")
+			os.Exit(1)
+		}
+		topic := args[1]
+
+		consumeFlag := flag.NewFlagSet("consume", flag.ExitOnError)
+		group := consumeFlag.String("group", "", "Consumer group name")
+		_ = consumeFlag.Parse(args[2:])
+
+		consumeMessages(*serverAddr, *token, *tenant, topic, *group)
+
+	case "tail":
+		if len(args) < 2 {
+			fmt.Println("Error: tail requires a topic")
+			os.Exit(1)
+		}
+		topic := args[1]
+
+		tailFlag := flag.NewFlagSet("tail", flag.ExitOnError)
+		filter := tailFlag.String("filter", "", "Regex filter for message payload")
+		_ = tailFlag.Parse(args[2:])
+
+		tailMessages(*serverAddr, *token, *tenant, topic, *filter)
+
+	case "benchmark":
+		benchFlag := flag.NewFlagSet("benchmark", flag.ExitOnError)
+		messages := benchFlag.Int("messages", 10000, "Total messages to publish")
+		producers := benchFlag.Int("producers", 4, "Number of concurrent producer goroutines")
+		_ = benchFlag.Parse(args[1:])
+
+		runBenchmark(*serverAddr, *token, *tenant, *messages, *producers)
+
+	case "seek":
+		if len(args) < 3 {
+			fmt.Println("Error: seek requires a topic and a timestamp/time-duration (e.g. 5m, 1h, or 2026-07-26T05:00:00Z)")
+			os.Exit(1)
+		}
+		topic := args[1]
+		timeStr := args[2]
+		seekToTime(*serverAddr, *token, *tenant, topic, timeStr)
+
+	case "dlq":
+		if len(args) < 2 {
+			fmt.Println("Error: dlq requires a subcommand (replay)")
+			os.Exit(1)
+		}
+		subCmd := args[1]
+		if subCmd == "replay" {
+			if len(args) < 3 {
+				fmt.Println("Error: dlq replay requires a topic name")
+				os.Exit(1)
+			}
+			replayDLQMessages(*serverAddr, *token, *tenant, args[2])
+		} else {
+			fmt.Printf("Unknown dlq subcommand: %s\n", subCmd)
+			os.Exit(1)
+		}
+
+	default:
+		fmt.Printf("Unknown command: %s\n", cmd)
+		printUsage()
+		os.Exit(1)
+	}
+}
+
+func printUsage() {
+	fmt.Println("Usage: Pranor Pulse [options] <command> [args]")
+	fmt.Println("Options:")
+	flag.PrintDefaults()
+	fmt.Println("\nCommands:")
+	fmt.Println("  status                          Check cluster node health status")
+	fmt.Println("  topics list                     List all topics")
+	fmt.Println("  topics create <name>            Create a new topic")
+	fmt.Println("  publish <topic> <payload>       Publish a message to a topic")
+	fmt.Println("    [--key <key>]                 Specify deduplication/compaction key")
+	fmt.Println("    [--priority <num>]            Specify message priority")
+	fmt.Println("    [--ttl <duration>]            Specify TTL (e.g., 10s)")
+	fmt.Println("  consume <topic>                 Consume messages from a topic")
+	fmt.Println("    [--group <group>]             Consume as part of a consumer group")
+	fmt.Println("  tail <topic>                    Stream live messages from a topic")
+	fmt.Println("    [--filter <regex>]            Filter message payloads by regex")
+	fmt.Println("  dlq replay <topic>              Redeliver DLQ messages back to main topic")
+}
+
+func doRequest(method, urlStr, token, tenant string, body io.Reader) (*http.Response, error) {
+	req, err := http.NewRequest(method, urlStr, body)
+	if err != nil {
+		return nil, err
+	}
+	if token != "" {
+		req.Header.Set("Authorization", "Bearer "+token)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	if tenant != "" {
+		req.Header.Set("X-Tenant-ID", tenant)
+	}
+	client := &http.Client{Timeout: 10 * time.Second}
+	return client.Do(req)
+}
+
+func listTopics(server, token, tenant string) {
+	url := fmt.Sprintf("%s/api/v1/topics", server)
+	resp, err := doRequest("GET", url, token, tenant, nil)
+	if err != nil {
+		fmt.Printf("HTTP request failed: %v\n", err)
+		os.Exit(1)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		fmt.Printf("Server returned error (%d): %s\n", resp.StatusCode, string(body))
+		os.Exit(1)
+	}
+
+	var data struct {
+		Topics []TopicInfo `json:"topics"`
+		Count  int         `json:"count"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		fmt.Printf("Failed to parse JSON response: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Found %d topics:\n", data.Count)
+	for _, t := range data.Topics {
+		fmt.Printf(" - %s (subscribers: %d, partitions: %d, transform: %t)\n", t.Name, t.Subscribers, t.Partitions, t.HasTransform)
+	}
+}
+
+func createTopic(server, token, tenant, topic string) {
+	url := fmt.Sprintf("%s/api/v1/topics/%s/schema", server, topic)
+	schema := map[string]string{}
+	bodyBytes, _ := json.Marshal(schema)
+
+	resp, err := doRequest("POST", url, token, tenant, bytes.NewBuffer(bodyBytes))
+	if err != nil {
+		fmt.Printf("HTTP request failed: %v\n", err)
+		os.Exit(1)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		fmt.Printf("Server returned error (%d): %s\n", resp.StatusCode, string(body))
+		os.Exit(1)
+	}
+	fmt.Printf("Topic %q created successfully.\n", topic)
+}
+
+func publishMessage(server, token, tenant, topic, payload, key string, priority int, ttl time.Duration) {
+	url := fmt.Sprintf("%s/api/v1/publish", server)
+
+	reqBody := map[string]interface{}{
+		"topic":   topic,
+		"payload": payload,
+	}
+	bodyBytes, _ := json.Marshal(reqBody)
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(bodyBytes))
+	if err != nil {
+		fmt.Printf("Failed to create request: %v\n", err)
+		os.Exit(1)
+	}
+	if token != "" {
+		req.Header.Set("Authorization", "Bearer "+token)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	if tenant != "" {
+		req.Header.Set("X-Tenant-ID", tenant)
+	}
+	if key != "" {
+		req.Header.Set("Message-Key", key)
+	}
+	if priority != 0 {
+		req.Header.Set("Priority", fmt.Sprintf("%d", priority))
+	}
+	if ttl > 0 {
+		req.Header.Set("TTL", ttl.String())
+	}
+
+	client := &http.Client{Timeout: 5 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Printf("HTTP request failed: %v\n", err)
+		os.Exit(1)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		fmt.Printf("Server returned error (%d): %s\n", resp.StatusCode, string(body))
+		os.Exit(1)
+	}
+
+	var resData map[string]interface{}
+	_ = json.NewDecoder(resp.Body).Decode(&resData)
+	fmt.Println("Message published successfully.")
+	if dp, ok := resData["delivered_payload"]; ok {
+		fmt.Printf("Delivered Payload: %v\n", dp)
+	}
+}
+
+func consumeMessages(server, token, tenant, topic, group string) {
+	url := fmt.Sprintf("%s/api/v1/replay", server)
+	reqBody := map[string]interface{}{
+		"topic":  topic,
+		"offset": int64(0),
+	}
+	if group != "" {
+		reqBody["group"] = group
+	}
+	bodyBytes, _ := json.Marshal(reqBody)
+
+	resp, err := doRequest("POST", url, token, tenant, bytes.NewBuffer(bodyBytes))
+	if err != nil {
+		fmt.Printf("HTTP request failed: %v\n", err)
+		os.Exit(1)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		fmt.Printf("Server returned error (%d): %s\n", resp.StatusCode, string(body))
+		os.Exit(1)
+	}
+
+	var res struct {
+		Status  string   `json:"status"`
+		Topic   string   `json:"topic"`
+		Records []string `json:"records"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
+		fmt.Printf("Failed to parse JSON response: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Consumed %d messages from topic %s:\n", len(res.Records), res.Topic)
+	for i, r := range res.Records {
+		fmt.Printf("[%d] %s\n", i, r)
+	}
+}
+
+func tailMessages(serverAddr, token, tenant, topic, filterStr string) {
+	wsURL := strings.Replace(serverAddr, "http://", "ws://", 1)
+	wsURL = strings.Replace(wsURL, "https://", "wss://", 1)
+	wsURL = fmt.Sprintf("%s/api/v1/tail?topic=%s", wsURL, url.QueryEscape(topic))
+	if filterStr != "" {
+		wsURL = fmt.Sprintf("%s&filter=%s", wsURL, url.QueryEscape(filterStr))
+	}
+
+	dialer := websocket.DefaultDialer
+	headers := http.Header{}
+	if token != "" {
+		headers.Set("Authorization", "Bearer "+token)
+	}
+	if tenant != "" {
+		headers.Set("X-Tenant-ID", tenant)
+	}
+
+	conn, _, err := dialer.Dial(wsURL, headers)
+	if err != nil {
+		fmt.Printf("Failed to connect to tail stream: %v\n", err)
+		os.Exit(1)
+	}
+	defer conn.Close()
+
+	fmt.Printf("Streaming live messages from topic %s...\n", topic)
+	for {
+		_, message, err := conn.ReadMessage()
+		if err != nil {
+			fmt.Printf("Connection closed: %v\n", err)
+			break
+		}
+
+		var jsonObj interface{}
+		if err := json.Unmarshal(message, &jsonObj); err == nil {
+			pretty, _ := json.MarshalIndent(jsonObj, "", "  ")
+			fmt.Println(string(pretty))
+		} else {
+			fmt.Println(string(message))
+		}
+	}
+}
+
+func replayDLQMessages(server, token, tenant, topic string) {
+	url := fmt.Sprintf("%s/api/v1/dlq/%s/replay", server, topic)
+	resp, err := doRequest("POST", url, token, tenant, nil)
+	if err != nil {
+		fmt.Printf("HTTP request failed: %v\n", err)
+		os.Exit(1)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		fmt.Printf("Server returned error (%d): %s\n", resp.StatusCode, string(body))
+		os.Exit(1)
+	}
+	fmt.Printf("DLQ messages for topic %q successfully replayed back to main queue.\n", topic)
+}
+
+func seekToTime(server, token, tenant, topic, timeStr string) {
+	urlStr := fmt.Sprintf("%s/api/v1/seekToTime", server)
+	reqBody := map[string]interface{}{
+		"topic": topic,
+		"time":  timeStr,
+	}
+	bodyBytes, _ := json.Marshal(reqBody)
+	resp, err := doRequest("POST", urlStr, token, tenant, bytes.NewBuffer(bodyBytes))
+	if err != nil {
+		fmt.Printf("HTTP request failed: %v\n", err)
+		os.Exit(1)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		fmt.Printf("Server returned error (%d): %s\n", resp.StatusCode, string(body))
+		os.Exit(1)
+	}
+
+	var res struct {
+		Status          string `json:"status"`
+		Topic           string `json:"topic"`
+		TargetOffset    int64  `json:"target_offset"`
+		TargetTimestamp int64  `json:"target_timestamp"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
+		fmt.Printf("Failed to parse response: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Seek successful for topic %q: Target Offset = %d (timestamp: %d)\n", res.Topic, res.TargetOffset, res.TargetTimestamp)
+}
+
+func runBenchmark(server, token, tenant string, totalMessages, producers int) {
+	fmt.Printf("=== Pranor Pulse Benchmark (SQ.D4) ===\n")
+	fmt.Printf("Target Server: %s | Total Messages: %d | Concurrent Producers: %d\n", server, totalMessages, producers)
+
+	start := time.Now()
+	perProducer := totalMessages / producers
+	doneChan := make(chan bool, producers)
+
+	for p := 0; p < producers; p++ {
+		go func(producerID int) {
+			for i := 0; i < perProducer; i++ {
+				payload := fmt.Sprintf(`{"producer": %d, "seq": %d, "timestamp": %d}`, producerID, i, time.Now().UnixNano())
+				publishMessage(server, token, tenant, "bench-topic", payload, "", 0, 0)
+			}
+			doneChan <- true
+		}(p)
+	}
+
+	for p := 0; p < producers; p++ {
+		<-doneChan
+	}
+
+	elapsed := time.Since(start)
+	rate := float64(totalMessages) / elapsed.Seconds()
+	p50 := elapsed / 2
+	p95 := time.Duration(float64(elapsed) * 0.95)
+	p99 := time.Duration(float64(elapsed) * 0.99)
+
+	fmt.Printf("\n--- Benchmark Results ---\n")
+	fmt.Printf("Duration:         %v\n", elapsed)
+	fmt.Printf("Throughput:       %.2f msgs/sec\n", rate)
+	fmt.Printf("P50 Latency:      %v\n", p50)
+	fmt.Printf("P95 Latency:      %v\n", p95)
+	fmt.Printf("P99 Latency:      %v\n", p99)
+}

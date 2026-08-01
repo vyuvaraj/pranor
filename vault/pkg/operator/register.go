@@ -1,4 +1,4 @@
-package main
+package operator
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

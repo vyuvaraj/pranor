@@ -1,4 +1,4 @@
-package servgateway
+package main
 
 import (
 	"bytes"

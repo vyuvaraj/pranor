@@ -1,8 +1,8 @@
 package platform
 
-// PL.G2: Automatic WireGuard Cluster Mesh Between servd Nodes (EE)
+// PL.G2: Automatic WireGuard Cluster Mesh Between pranord Nodes (EE)
 //
-// Implements automatic WireGuard mesh key exchange between servd cluster peers.
+// Implements automatic WireGuard mesh key exchange between pranord cluster peers.
 // Uses a DHT-inspired gossip-based peer discovery protocol: each node broadcasts
 // its WireGuard public key + listen port via a UDP multicast beacon. On discovery,
 // nodes automatically negotiate and register each other as WireGuard peers,
@@ -10,7 +10,7 @@ package platform
 //
 // Architecture:
 //   - WireGuardMesh: manages local keypair, peer table, and beacon loop
-//   - DiscoveredPeer: represents a remote servd node with its WG public key
+//   - DiscoveredPeer: represents a remote pranord node with its WG public key
 //   - UDP multicast (224.0.0.251:51820) for LAN peer discovery
 //   - REST API: GET /api/v1/mesh/peers, POST /api/v1/mesh/peers (add peer manually)
 
@@ -41,7 +41,7 @@ func (k WireGuardKey) String() string {
 	return base64.StdEncoding.EncodeToString(k[:])
 }
 
-// DiscoveredPeer represents a remotely discovered servd peer node.
+// DiscoveredPeer represents a remotely discovered pranord peer node.
 type DiscoveredPeer struct {
 	NodeID    string    `json:"node_id"`
 	Endpoint  string    `json:"endpoint"`   // IP:Port of the peer's WireGuard listen port
@@ -58,7 +58,7 @@ type MeshBeaconPacket struct {
 	AllowedIP string `json:"allowed_ip"`
 }
 
-// WireGuardMesh manages the WireGuard cluster mesh for a servd node.
+// WireGuardMesh manages the WireGuard cluster mesh for a pranord node.
 type WireGuardMesh struct {
 	mu         sync.RWMutex
 	nodeID     string

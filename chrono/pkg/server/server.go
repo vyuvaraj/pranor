@@ -27,9 +27,9 @@ func NewServer(scheduler *cron.Scheduler, elector cron.LeaderElectionProvider) *
 }
 
 func (s *Server) RegisterRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("/healthz", Pranor Core.HealthzHandler)
-	mux.HandleFunc("/readyz", Pranor Core.ReadyzHandler)
-	mux.HandleFunc("/api/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/chrono", "1.0.0"))
+	mux.HandleFunc("/healthz", core.HealthzHandler)
+	mux.HandleFunc("/readyz", core.ReadyzHandler)
+	mux.HandleFunc("/api/version", core.VersionHandler("github.com/vyuvaraj/pranor/chrono", "1.0.0"))
 	mux.HandleFunc("/health", s.handleHealth)
 
 	mux.HandleFunc("/api/jobs", s.handleJobsCollection)

@@ -1,4 +1,6 @@
-package inspectorhtml = `<!DOCTYPE html>
+package client
+
+const inspectorHTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">

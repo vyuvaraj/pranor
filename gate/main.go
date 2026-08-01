@@ -91,7 +91,7 @@ func main() {
 		return
 	}
 
-	standalone := Pranor Core.IsStandalone()
+	standalone := core.IsStandalone()
 
 	// Initialize distributed tracing
 	if !standalone {
@@ -172,9 +172,9 @@ func main() {
 
 	// Admin API endpoint to dynamically register WASM middlewares on the fly
 	mux := http.NewServeMux()
-	mux.HandleFunc("/healthz", Pranor Core.HealthzHandler)
-	mux.HandleFunc("/readyz", Pranor Core.ReadyzHandler)
-	mux.HandleFunc("/api/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/gate", "1.0.0"))
+	mux.HandleFunc("/healthz", core.HealthzHandler)
+	mux.HandleFunc("/readyz", core.ReadyzHandler)
+	mux.HandleFunc("/api/version", core.VersionHandler("github.com/vyuvaraj/pranor/gate", "1.0.0"))
 	mux.Handle("/", handler)
 
 	handleMiddleware := func(w http.ResponseWriter, r *http.Request) {
@@ -940,7 +940,9 @@ func runPolicyCommand() {
 `, methodCond, pathCond, cond, action))
 	}
 
-	goSource := fmt.Sprintf(`package import (
+	goSource := fmt.Sprintf(`package main
+
+import (
 	"encoding/json"
 	"fmt"
 	"io"

@@ -62,18 +62,18 @@ type SendResponse struct {
 
 func (ctx *HandlerContext) HandleSend(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		Pranor Core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+		core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
 		return
 	}
 
 	var req storage.SendRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		Pranor Core.WriteJSONError(w, r, "Invalid payload: "+err.Error(), "ERR_BAD_REQUEST_BODY", http.StatusBadRequest)
+		core.WriteJSONError(w, r, "Invalid payload: "+err.Error(), "ERR_BAD_REQUEST_BODY", http.StatusBadRequest)
 		return
 	}
 
 	if req.Channel == "" || req.Target == "" || req.Template == "" {
-		Pranor Core.WriteJSONError(w, r, "Channel, target, and template are required", "ERR_BAD_REQUEST_BODY", http.StatusBadRequest)
+		core.WriteJSONError(w, r, "Channel, target, and template are required", "ERR_BAD_REQUEST_BODY", http.StatusBadRequest)
 		return
 	}
 
@@ -136,7 +136,7 @@ func (ctx *HandlerContext) HandleSend(w http.ResponseWriter, r *http.Request) {
 
 	bodyStr, err := mailtemplate.RenderTemplate(templateText, req.Context)
 	if err != nil {
-		Pranor Core.WriteJSONError(w, r, "Template execution/compile error: "+err.Error(), "ERR_TEMPLATE_COMPILE_ERROR", http.StatusBadRequest)
+		core.WriteJSONError(w, r, "Template execution/compile error: "+err.Error(), "ERR_TEMPLATE_COMPILE_ERROR", http.StatusBadRequest)
 		return
 	}
 
@@ -196,7 +196,7 @@ func (ctx *HandlerContext) HandleSend(w http.ResponseWriter, r *http.Request) {
 			case "sms":
 				log.Printf("[Pranor Notify] [SMS] Sending to number %s: %s", req.Target, bodyStr)
 			default:
-				Pranor Core.WriteJSONError(w, r, "Unsupported delivery channel: "+req.Channel, "ERR_UNSUPPORTED_CHANNEL", http.StatusBadRequest)
+				core.WriteJSONError(w, r, "Unsupported delivery channel: "+req.Channel, "ERR_UNSUPPORTED_CHANNEL", http.StatusBadRequest)
 				return
 			}
 			break
@@ -264,7 +264,7 @@ func (ctx *HandlerContext) HandleSend(w http.ResponseWriter, r *http.Request) {
 
 func (ctx *HandlerContext) HandleRegisterTemplate(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		Pranor Core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+		core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -274,12 +274,12 @@ func (ctx *HandlerContext) HandleRegisterTemplate(w http.ResponseWriter, r *http
 		Content string `json:"content"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		Pranor Core.WriteJSONError(w, r, "Invalid payload", "ERR_BAD_REQUEST_BODY", http.StatusBadRequest)
+		core.WriteJSONError(w, r, "Invalid payload", "ERR_BAD_REQUEST_BODY", http.StatusBadRequest)
 		return
 	}
 
 	if req.Name == "" || req.Version == "" || req.Content == "" {
-		Pranor Core.WriteJSONError(w, r, "Name, version, and content are required", "ERR_BAD_REQUEST_BODY", http.StatusBadRequest)
+		core.WriteJSONError(w, r, "Name, version, and content are required", "ERR_BAD_REQUEST_BODY", http.StatusBadRequest)
 		return
 	}
 
@@ -306,7 +306,7 @@ func (ctx *HandlerContext) HandleRegisterTemplate(w http.ResponseWriter, r *http
 		_ = ctx.TemplateStore.SaveTemplates(copied)
 	}
 
-	_ = Pranor Core.EmitAuditEvent("github.com/vyuvaraj/pranor/notify", "TEMPLATE_REGISTER", "system", map[string]interface{}{"name": req.Name, "version": req.Version})
+	_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/notify", "TEMPLATE_REGISTER", "system", map[string]interface{}{"name": req.Name, "version": req.Version})
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
@@ -315,7 +315,7 @@ func (ctx *HandlerContext) HandleRegisterTemplate(w http.ResponseWriter, r *http
 
 func (ctx *HandlerContext) HandleGetTracking(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		Pranor Core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+		core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -327,7 +327,7 @@ func (ctx *HandlerContext) HandleGetTracking(w http.ResponseWriter, r *http.Requ
 		fmt.Sscanf(path, "/api/v1/mail/tracking/%s", &msgID)
 	}
 	if msgID == "" {
-		Pranor Core.WriteJSONError(w, r, "Message ID is required", "ERR_BAD_REQUEST", http.StatusBadRequest)
+		core.WriteJSONError(w, r, "Message ID is required", "ERR_BAD_REQUEST", http.StatusBadRequest)
 		return
 	}
 
@@ -336,7 +336,7 @@ func (ctx *HandlerContext) HandleGetTracking(w http.ResponseWriter, r *http.Requ
 	ctx.TrackingMu.RUnlock()
 
 	if !exists {
-		Pranor Core.WriteJSONError(w, r, "Tracking info not found", "ERR_NOT_FOUND", http.StatusNotFound)
+		core.WriteJSONError(w, r, "Tracking info not found", "ERR_NOT_FOUND", http.StatusNotFound)
 		return
 	}
 
@@ -347,7 +347,7 @@ func (ctx *HandlerContext) HandleGetTracking(w http.ResponseWriter, r *http.Requ
 
 func (ctx *HandlerContext) HandlePostTrackingEvent(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		Pranor Core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+		core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -356,7 +356,7 @@ func (ctx *HandlerContext) HandlePostTrackingEvent(w http.ResponseWriter, r *htt
 		Status    string `json:"status"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		Pranor Core.WriteJSONError(w, r, "Invalid payload", "ERR_BAD_REQUEST_BODY", http.StatusBadRequest)
+		core.WriteJSONError(w, r, "Invalid payload", "ERR_BAD_REQUEST_BODY", http.StatusBadRequest)
 		return
 	}
 
@@ -369,7 +369,7 @@ func (ctx *HandlerContext) HandlePostTrackingEvent(w http.ResponseWriter, r *htt
 	ctx.TrackingMu.Unlock()
 
 	if !exists {
-		Pranor Core.WriteJSONError(w, r, "Message not found", "ERR_NOT_FOUND", http.StatusNotFound)
+		core.WriteJSONError(w, r, "Message not found", "ERR_NOT_FOUND", http.StatusNotFound)
 		return
 	}
 
@@ -414,12 +414,12 @@ func (ctx *HandlerContext) HandlePreferences(w http.ResponseWriter, r *http.Requ
 	if r.Method == http.MethodPost {
 		var req storage.Preferences
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			Pranor Core.WriteJSONError(w, r, "Invalid payload", "ERR_BAD_REQUEST_BODY", http.StatusBadRequest)
+			core.WriteJSONError(w, r, "Invalid payload", "ERR_BAD_REQUEST_BODY", http.StatusBadRequest)
 			return
 		}
 
 		if req.Recipient == "" {
-			Pranor Core.WriteJSONError(w, r, "Recipient is required", "ERR_BAD_REQUEST", http.StatusBadRequest)
+			core.WriteJSONError(w, r, "Recipient is required", "ERR_BAD_REQUEST", http.StatusBadRequest)
 			return
 		}
 
@@ -433,12 +433,12 @@ func (ctx *HandlerContext) HandlePreferences(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	Pranor Core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+	core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
 }
 
 func (ctx *HandlerContext) HandleMailDashboard(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		Pranor Core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+		core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -483,7 +483,7 @@ func (ctx *HandlerContext) HandleUploadAttachment(w http.ResponseWriter, r *http
 	}
 
 	if r.Method != http.MethodPost {
-		Pranor Core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+		core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -492,7 +492,7 @@ func (ctx *HandlerContext) HandleUploadAttachment(w http.ResponseWriter, r *http
 		Payload  string `json:"payload"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		Pranor Core.WriteJSONError(w, r, "Invalid payload", "ERR_BAD_REQUEST_BODY", http.StatusBadRequest)
+		core.WriteJSONError(w, r, "Invalid payload", "ERR_BAD_REQUEST_BODY", http.StatusBadRequest)
 		return
 	}
 
@@ -528,7 +528,7 @@ func (ctx *HandlerContext) HandleUploadAttachment(w http.ResponseWriter, r *http
 
 func (ctx *HandlerContext) HandleGetAttachment(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		Pranor Core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+		core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -540,7 +540,7 @@ func (ctx *HandlerContext) HandleGetAttachment(w http.ResponseWriter, r *http.Re
 	ctx.AttachmentsMu.RUnlock()
 
 	if !exists {
-		Pranor Core.WriteJSONError(w, r, "Attachment not found", "ERR_NOT_FOUND", http.StatusNotFound)
+		core.WriteJSONError(w, r, "Attachment not found", "ERR_NOT_FOUND", http.StatusNotFound)
 		return
 	}
 
@@ -565,5 +565,5 @@ func (ctx *HandlerContext) HandleGetMockEmails(w http.ResponseWriter, r *http.Re
 		w.Write([]byte(`{"status":"success","message":"Mock emails cleared"}`))
 		return
 	}
-	Pranor Core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+	core.WriteJSONError(w, r, "Method Not Allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
 }

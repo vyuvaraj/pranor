@@ -458,7 +458,7 @@ func TestReplayAndOffsets(t *testing.T) {
 	}
 
 	// 2. Publish some messages to WAL
-	topic := "replay-topic"
+	topic := fmt.Sprintf("replay-topic-%d", time.Now().UnixNano())
 	engine.Publish(context.Background(), topic, "message-0")
 	engine.Publish(context.Background(), topic, "message-1")
 	engine.Publish(context.Background(), topic, "message-2")
@@ -468,7 +468,7 @@ func TestReplayAndOffsets(t *testing.T) {
 	defer engine.Unsubscribe(topic, sub)
 
 	// 3. Trigger replay via HTTP POST /api/v1/replay starting from index 1
-	replayReq := `{"topic":"replay-topic","offset":1}`
+	replayReq := fmt.Sprintf(`{"topic":%q,"offset":1}`, topic)
 	resp, err = http.Post("http://127.0.0.1:8085/api/v1/replay", "application/json", strings.NewReader(replayReq))
 	if err != nil {
 		t.Fatalf("Replay request failed: %v", err)

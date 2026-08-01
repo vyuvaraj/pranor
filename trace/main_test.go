@@ -24,7 +24,7 @@ func TestPranorTraceCollector(t *testing.T) {
 	span1ID := "00f067aa0ba902b7"
 	span2ID := "3e63f565c553856a"
 
-	// Mock OTLP payload matching exportSpans in Pranor Core
+	// Mock OTLP payload matching exportSpans in core
 	nowNano := time.Now().UnixNano()
 	end1Nano := nowNano + int64(100*time.Millisecond)
 	start2Nano := nowNano + int64(10*time.Millisecond)

@@ -627,7 +627,7 @@ func httpError(w http.ResponseWriter, r *http.Request, msg string, status int) {
 	default:
 		errorCode = "ERR_INTERNAL_SERVER_ERROR"
 	}
-	Pranor Core.WriteJSONError(w, r, msg, errorCode, status)
+	core.WriteJSONError(w, r, msg, errorCode, status)
 }
 
 type GenerateWorkflowRequest struct {

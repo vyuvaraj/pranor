@@ -191,7 +191,7 @@ func (t *MeshTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 
 		// Inject tracing span
 		traceparent := req.Header.Get("traceparent")
-		span := Pranor Core.StartSpan(fmt.Sprintf("mesh:call %s %s", req.Method, serviceName), traceparent)
+		span := core.StartSpan(fmt.Sprintf("mesh:call %s %s", req.Method, serviceName), traceparent)
 		if span != nil {
 			clonedReq.Header.Set("traceparent", fmt.Sprintf("00-%s-%s-01", span.TraceID, span.SpanID))
 		}
@@ -264,7 +264,7 @@ func (t *MeshTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		}
 		
 		if span != nil {
-			Pranor Core.EndSpan(span, err, map[string]interface{}{
+			core.EndSpan(span, err, map[string]interface{}{
 				"mesh.service": serviceName,
 				"mesh.target":  target,
 			})

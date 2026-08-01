@@ -151,7 +151,7 @@ func (r *ServRuntime) heartbeatLoop(ctx context.Context, resolver MeshResolver) 
 // --- Simple HTTP mesh resolver for wiring without Pranor Mesh import -----------
 
 // httpMeshResolver is a lightweight MeshResolver that speaks directly to the
-// Pranor Mesh REST API. Services that import only Pranor Core (not Pranor Mesh) can
+// Pranor Mesh REST API. Services that import only core (not Pranor Mesh) can
 // use this as the resolver — no Pranor Mesh pkg dependency required.
 type httpMeshResolver struct {
 	baseURL    string

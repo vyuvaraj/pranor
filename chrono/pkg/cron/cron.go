@@ -411,7 +411,7 @@ func (s *Scheduler) executeJobWithDepth(job *Job, depth int) {
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("traceparent", traceparent)
 
-		span := Pranor Core.Span{
+		span := core.Span{
 			TraceID:   traceID,
 			SpanID:    spanID,
 			Name:      fmt.Sprintf("Pranor Chrono:TRIGGER %s", job.ID),
@@ -426,7 +426,7 @@ func (s *Scheduler) executeJobWithDepth(job *Job, depth int) {
 		} else {
 			attrs = map[string]interface{}{"status_code": res.StatusCode}
 		}
-		Pranor Core.EndSpan(&span, doErr, attrs)
+		core.EndSpan(&span, doErr, attrs)
 		return res, doErr
 	}
 

@@ -308,10 +308,10 @@ func (r *Registry) startEvictionLoop(interval time.Duration) {
 func (r *Registry) Handler() http.Handler {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/healthz", Pranor Core.HealthzHandler)
-	mux.HandleFunc("/readyz", Pranor Core.ReadyzHandler)
-	mux.HandleFunc("/api/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/mesh", "1.0.0"))
-	mux.HandleFunc("/api/v1/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/mesh", "1.0.0"))
+	mux.HandleFunc("/healthz", core.HealthzHandler)
+	mux.HandleFunc("/readyz", core.ReadyzHandler)
+	mux.HandleFunc("/api/version", core.VersionHandler("github.com/vyuvaraj/pranor/mesh", "1.0.0"))
+	mux.HandleFunc("/api/v1/version", core.VersionHandler("github.com/vyuvaraj/pranor/mesh", "1.0.0"))
 	mux.HandleFunc("/health", func(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
@@ -792,20 +792,20 @@ func (r *Registry) Handler() http.Handler {
 		mux.ServeHTTP(w, req)
 	})
 
-	rateLimiter := Pranor Core.RateLimitMiddleware
+	rateLimiter := core.RateLimitMiddleware
 	if flag.Lookup("test.v") != nil {
 		rateLimiter = func(next http.Handler) http.Handler {
 			return next
 		}
 	}
 
-	// Wrap in Pranor Core middleware: Trace -> RateLimit -> CORS -> MaxBytes -> Auth -> Tenant -> v1Wrapper
-	return Pranor Core.TraceMiddleware("github.com/vyuvaraj/pranor/mesh",
+	// Wrap in core middleware: Trace -> RateLimit -> CORS -> MaxBytes -> Auth -> Tenant -> v1Wrapper
+	return core.TraceMiddleware("github.com/vyuvaraj/pranor/mesh",
 		rateLimiter(
-			Pranor Core.CORSMiddleware(
-				Pranor Core.MaxBytesMiddleware(10*1024*1024)(
-					Pranor Core.AuthMiddleware(
-						Pranor Core.TenantMiddleware(v1Wrapper),
+			core.CORSMiddleware(
+				core.MaxBytesMiddleware(10*1024*1024)(
+					core.AuthMiddleware(
+						core.TenantMiddleware(v1Wrapper),
 					),
 				),
 			),
@@ -833,7 +833,7 @@ func httpError(w http.ResponseWriter, req *http.Request, msg string, status int)
 	default:
 		errorCode = "ERR_INTERNAL_SERVER_ERROR"
 	}
-	Pranor Core.WriteJSONError(w, req, msg, errorCode, status)
+	core.WriteJSONError(w, req, msg, errorCode, status)
 }
 
 func (r *Registry) startMulticastListener() {

@@ -56,7 +56,7 @@ type DistributedLocker interface {
 // ──────────────────────────────────────────────────────────────────────────────
 
 // HTTPLockClient calls Pranor Mesh's /api/lock/* endpoints over HTTP.
-// It is zero-dependency from Pranor Core's perspective (only stdlib + JWT which
+// It is zero-dependency from core's perspective (only stdlib + JWT which
 // is already in go.mod).
 type HTTPLockClient struct {
 	meshAddr string       // e.g. "http://localhost:8089"

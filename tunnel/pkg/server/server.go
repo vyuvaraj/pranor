@@ -188,10 +188,10 @@ func (s *Server) Start() error {
 	mux := http.NewServeMux()
 
 	// Management endpoints (accessed directly, not via subdomain)
-	mux.HandleFunc("/healthz", Pranor Core.HealthzHandler)
-	mux.HandleFunc("/readyz", Pranor Core.ReadyzHandler)
-	mux.HandleFunc("/api/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/tunnel", "1.0.0"))
-	mux.HandleFunc("/api/v1/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/tunnel", "1.0.0"))
+	mux.HandleFunc("/healthz", core.HealthzHandler)
+	mux.HandleFunc("/readyz", core.ReadyzHandler)
+	mux.HandleFunc("/api/version", core.VersionHandler("github.com/vyuvaraj/pranor/tunnel", "1.0.0"))
+	mux.HandleFunc("/api/v1/version", core.VersionHandler("github.com/vyuvaraj/pranor/tunnel", "1.0.0"))
 	mux.HandleFunc("/ws/connect", s.handleWebSocket)
 	mux.HandleFunc("/api/tunnels", s.handleListTunnels)
 	mux.HandleFunc("/api/tunnels/bandwidth", s.handleBandwidthRateLimit)
@@ -210,20 +210,20 @@ func (s *Server) Start() error {
 		mux.ServeHTTP(w, r)
 	})
 
-	// Wrap in Pranor Core middleware: Trace -> RateLimit -> CORS -> MaxBytes -> Auth -> Tenant -> v1Wrapper
-	rateLimiter := Pranor Core.RateLimitMiddleware
+	// Wrap in core middleware: Trace -> RateLimit -> CORS -> MaxBytes -> Auth -> Tenant -> v1Wrapper
+	rateLimiter := core.RateLimitMiddleware
 	if flag.Lookup("test.v") != nil {
 		rateLimiter = func(next http.Handler) http.Handler {
 			return next
 		}
 	}
 
-	handlerChain := Pranor Core.TraceMiddleware("github.com/vyuvaraj/pranor/tunnel",
+	handlerChain := core.TraceMiddleware("github.com/vyuvaraj/pranor/tunnel",
 		rateLimiter(
-			Pranor Core.CORSMiddleware(
-				Pranor Core.MaxBytesMiddleware(10*1024*1024)(
-					Pranor Core.AuthMiddleware(
-						Pranor Core.TenantMiddleware(v1Wrapper),
+			core.CORSMiddleware(
+				core.MaxBytesMiddleware(10*1024*1024)(
+					core.AuthMiddleware(
+						core.TenantMiddleware(v1Wrapper),
 					),
 				),
 			),
@@ -237,7 +237,7 @@ func (s *Server) Start() error {
 			handlerChain.ServeHTTP(w, r)
 			return
 		}
-		Pranor Core.AuthMiddleware(mux).ServeHTTP(w, r)
+		core.AuthMiddleware(mux).ServeHTTP(w, r)
 	})
 
 	s.httpSrv = &http.Server{
@@ -303,7 +303,7 @@ func (s *Server) authenticate(r *http.Request) error {
 	var tokenStr string
 	if authHeader := r.Header.Get("Authorization"); authHeader != "" {
 		var err error
-		tokenStr, err = Pranor Core.ExtractTokenFromHeader(authHeader)
+		tokenStr, err = core.ExtractTokenFromHeader(authHeader)
 		if err != nil {
 			tokenStr = strings.TrimPrefix(authHeader, "Bearer ")
 			tokenStr = strings.TrimSpace(tokenStr)
@@ -322,7 +322,7 @@ func (s *Server) authenticate(r *http.Request) error {
 	}
 
 	if secret != "" {
-		validator := Pranor Core.NewAuthValidator(secret, "", "")
+		validator := core.NewAuthValidator(secret, "", "")
 		_, err := validator.ValidateToken(tokenStr)
 		if err == nil {
 			return nil
@@ -409,7 +409,7 @@ func (s *Server) handleWebSocket(w http.ResponseWriter, r *http.Request) {
 				var tokenUsed string
 				if authHeader := r.Header.Get("Authorization"); authHeader != "" {
 					var err error
-					tokenUsed, err = Pranor Core.ExtractTokenFromHeader(authHeader)
+					tokenUsed, err = core.ExtractTokenFromHeader(authHeader)
 					if err != nil {
 						tokenUsed = strings.TrimPrefix(authHeader, "Bearer ")
 						tokenUsed = strings.TrimSpace(tokenUsed)
@@ -1253,7 +1253,7 @@ func (s *Server) writeJSONError(w http.ResponseWriter, r *http.Request, msg stri
 			}
 		}
 	}
-	Pranor Core.WriteJSONError(w, r, msg, errorCode, status)
+	core.WriteJSONError(w, r, msg, errorCode, status)
 }
 
 // TN.G5: Per-Tunnel Bandwidth Throttling & Rate Limiting (EE)

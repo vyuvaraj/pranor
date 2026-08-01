@@ -6,7 +6,7 @@
 // Usage:
 //
 //	go run ./cmd/inspect/ [--registry <url>] [--service <name>] [--watch]
-package inspect
+package main
 
 import (
 	"encoding/json"

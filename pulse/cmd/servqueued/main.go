@@ -1,4 +1,4 @@
-package servqueued
+package main
 
 import (
 	"embed"

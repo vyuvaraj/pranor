@@ -1,4 +1,6 @@
-package func (p *Parser) parseImportStatement() Statement {
+package compiler
+
+func (p *Parser) parseImportStatement() Statement {
 	// Check for Go package import: import alias from "go/package/path"
 	if p.peekToken.Type == TOKEN_IDENT {
 		alias := p.peekToken.Literal

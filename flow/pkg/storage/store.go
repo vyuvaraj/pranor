@@ -61,18 +61,18 @@ type WorkflowStore interface {
 	SaveDefinitions(defs map[string]WorkflowDef) error
 	LoadInstances() (map[string]*WorkflowInstance, error)
 	SaveInstances(insts map[string]*WorkflowInstance) error
-	GetClient() *Pranor Core.StoreClient
+	GetClient() *core.StoreClient
 }
 
 type PranorVaultWorkflowStore struct {
-	Client *Pranor Core.StoreClient
+	Client *core.StoreClient
 }
 
-func NewPranorVaultWorkflowStore(client *Pranor Core.StoreClient) *PranorVaultWorkflowStore {
+func NewPranorVaultWorkflowStore(client *core.StoreClient) *PranorVaultWorkflowStore {
 	return &PranorVaultWorkflowStore{Client: client}
 }
 
-func (s *PranorVaultWorkflowStore) GetClient() *Pranor Core.StoreClient {
+func (s *PranorVaultWorkflowStore) GetClient() *core.StoreClient {
 	return s.Client
 }
 

@@ -129,7 +129,7 @@ func HandleConsoleCacheStats(w http.ResponseWriter, r *http.Request) {
 	req, _ := http.NewRequest("GET", targetURL, nil)
 
 	if jwtSec := os.Getenv("PRANOR_JWT_SECRET"); jwtSec != "" {
-		svcToken, _ := Pranor Core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
+		svcToken, _ := core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
 		if svcToken != "" {
 			req.Header.Set("Authorization", "Bearer "+svcToken)
 		}
@@ -163,7 +163,7 @@ func HandleConsoleCacheClear(w http.ResponseWriter, r *http.Request) {
 	req, _ := http.NewRequest("DELETE", targetURL, nil)
 
 	if jwtSec := os.Getenv("PRANOR_JWT_SECRET"); jwtSec != "" {
-		svcToken, _ := Pranor Core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
+		svcToken, _ := core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
 		if svcToken != "" {
 			req.Header.Set("Authorization", "Bearer "+svcToken)
 		}
@@ -196,7 +196,7 @@ func HandleConsoleMeshInstances(w http.ResponseWriter, r *http.Request) {
 	req, _ := http.NewRequest("GET", targetURL, nil)
 
 	if jwtSec := os.Getenv("PRANOR_JWT_SECRET"); jwtSec != "" {
-		svcToken, _ := Pranor Core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
+		svcToken, _ := core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
 		if svcToken != "" {
 			req.Header.Set("Authorization", "Bearer "+svcToken)
 		}
@@ -226,7 +226,7 @@ func HandleConsoleRegistryPackages(w http.ResponseWriter, r *http.Request) {
 	req, _ := http.NewRequest("GET", targetURL, nil)
 
 	if jwtSec := os.Getenv("PRANOR_JWT_SECRET"); jwtSec != "" {
-		svcToken, _ := Pranor Core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
+		svcToken, _ := core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
 		if svcToken != "" {
 			req.Header.Set("Authorization", "Bearer "+svcToken)
 		}
@@ -256,7 +256,7 @@ func HandleConsoleCloudServices(w http.ResponseWriter, r *http.Request) {
 	req, _ := http.NewRequest("GET", targetURL, nil)
 
 	if jwtSec := os.Getenv("PRANOR_JWT_SECRET"); jwtSec != "" {
-		svcToken, _ := Pranor Core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
+		svcToken, _ := core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
 		if svcToken != "" {
 			req.Header.Set("Authorization", "Bearer "+svcToken)
 		}
@@ -317,7 +317,7 @@ func HandleConsoleCloudServicesItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if jwtSec := os.Getenv("PRANOR_JWT_SECRET"); jwtSec != "" {
-		svcToken, _ := Pranor Core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
+		svcToken, _ := core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
 		if svcToken != "" {
 			req.Header.Set("Authorization", "Bearer "+svcToken)
 		}
@@ -354,7 +354,7 @@ func HandleConsoleCloudDeploy(w http.ResponseWriter, r *http.Request) {
 	req.Header.Set("Content-Type", "application/json")
 
 	if jwtSec := os.Getenv("PRANOR_JWT_SECRET"); jwtSec != "" {
-		svcToken, _ := Pranor Core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
+		svcToken, _ := core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
 		if svcToken != "" {
 			req.Header.Set("Authorization", "Bearer "+svcToken)
 		}
@@ -387,7 +387,7 @@ func HandleConsoleCloudHistory(w http.ResponseWriter, r *http.Request) {
 	req, _ := http.NewRequest("GET", targetURL, nil)
 
 	if jwtSec := os.Getenv("PRANOR_JWT_SECRET"); jwtSec != "" {
-		svcToken, _ := Pranor Core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
+		svcToken, _ := core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
 		if svcToken != "" {
 			req.Header.Set("Authorization", "Bearer "+svcToken)
 		}

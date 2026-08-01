@@ -1,5 +1,5 @@
 //go:build !enterprise
 
-package func (s *InMemoryStore) replicateState() {
+package storage (s *InMemoryStore) replicateState() {
 	// Open-source version does not replicate state to peers
 }

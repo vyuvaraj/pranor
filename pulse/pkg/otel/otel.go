@@ -4,24 +4,24 @@ import (
 	"github.com/vyuvaraj/pranor/core"
 )
 
-type Span = Pranor Core.Span
+type Span = core.Span
 
 func Init() {
-	Pranor Core.InitTrace("github.com/vyuvaraj/pranor/pulse")
+	core.InitTrace("github.com/vyuvaraj/pranor/pulse")
 }
 
 func GenerateTraceID() string {
-	return Pranor Core.GenerateTraceID()
+	return core.GenerateTraceID()
 }
 
 func GenerateSpanID() string {
-	return Pranor Core.GenerateSpanID()
+	return core.GenerateSpanID()
 }
 
 func StartSpan(name string, parentTrace string) *Span {
-	return Pranor Core.StartSpan(name, parentTrace)
+	return core.StartSpan(name, parentTrace)
 }
 
 func EndSpan(span *Span, err error, attributes map[string]interface{}) {
-	Pranor Core.EndSpan(span, err, attributes)
+	core.EndSpan(span, err, attributes)
 }

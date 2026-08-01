@@ -1,4 +1,4 @@
-package core_test
+package core
 
 import (
 	"crypto/rand"
@@ -10,8 +10,6 @@ import (
 	"net/http/httptest"
 	"testing"
 	"time"
-
-	"github.com/vyuvaraj/pranor/core"
 )
 
 func TestJWKSVerification(t *testing.T) {
@@ -49,7 +47,7 @@ func TestJWKSVerification(t *testing.T) {
 	defer jwksServer.Close()
 
 	// 3. Generate an RS256 token signed by the private key
-	token, err := core.GenerateUserTokenRS256(privKey, kid, "bob", []string{"user"}, "tenant123", time.Hour)
+	token, err := GenerateUserTokenRS256(privKey, kid, "bob", []string{"user"}, "tenant123", time.Hour)
 	if err != nil {
 		t.Fatalf("failed to generate RS256 token: %v", err)
 	}
@@ -59,8 +57,8 @@ func TestJWKSVerification(t *testing.T) {
 	t.Setenv("PRANOR_JWT_SECRET", "") // Unset HS256 secret
 
 	// 5. Build handler chain
-	handler := core.AuthMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		claims := core.GetClaims(r)
+	handler := AuthMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		claims := GetClaims(r)
 		if claims == nil {
 			http.Error(w, "no claims", http.StatusUnauthorized)
 			return

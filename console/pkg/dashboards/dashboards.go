@@ -173,7 +173,7 @@ func HandleIngestLog(w http.ResponseWriter, r *http.Request) {
 			if err == nil {
 				req.Header.Set("Content-Type", "application/json")
 				if jwtSec := os.Getenv("PRANOR_JWT_SECRET"); jwtSec != "" {
-					svcToken, _ := Pranor Core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
+					svcToken, _ := core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
 					if svcToken != "" {
 						req.Header.Set("Authorization", "Bearer "+svcToken)
 					}

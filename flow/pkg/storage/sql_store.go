@@ -100,7 +100,7 @@ func (s *SQLWorkflowStore) bootstrap() error {
 	return nil
 }
 
-func (s *SQLWorkflowStore) GetClient() *Pranor Core.StoreClient {
+func (s *SQLWorkflowStore) GetClient() *core.StoreClient {
 	return nil
 }
 

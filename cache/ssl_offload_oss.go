@@ -1,6 +1,6 @@
 //go:build !enterprise
 
-package cache
+package main
 
 import "net/http"
 

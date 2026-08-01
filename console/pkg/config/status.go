@@ -55,7 +55,7 @@ func CheckStatus(name string, baseUrl string) ComponentStatus {
 	}
 
 	if jwtSec := os.Getenv("PRANOR_JWT_SECRET"); jwtSec != "" {
-		svcToken, _ := Pranor Core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
+		svcToken, _ := core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
 		if svcToken != "" {
 			req.Header.Set("Authorization", "Bearer "+svcToken)
 		}
@@ -95,7 +95,7 @@ func CheckStatus(name string, baseUrl string) ComponentStatus {
 		dreq, derr := http.NewRequest("GET", detUrl, nil)
 		if derr == nil {
 			if jwtSec := os.Getenv("PRANOR_JWT_SECRET"); jwtSec != "" {
-				svcToken, _ := Pranor Core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
+				svcToken, _ := core.GenerateServiceToken(jwtSec, "github.com/vyuvaraj/pranor/console")
 				if svcToken != "" {
 					dreq.Header.Set("Authorization", "Bearer "+svcToken)
 				}

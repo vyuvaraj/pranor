@@ -285,7 +285,7 @@
       },
       {
         "command": "serv.openServdConsole",
-        "title": "Serv: Open servd Unified Platform Console"
+        "title": "Pranor: Open pranord Unified Platform Console"
       }
     ],
     "keybindings": [

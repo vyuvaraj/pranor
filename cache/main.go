@@ -36,7 +36,7 @@ func main() {
 		return
 	}
 
-	standalone := Pranor Core.IsStandalone()
+	standalone := core.IsStandalone()
 
 	// Initialize OpenTelemetry
 	if !standalone {

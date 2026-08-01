@@ -52,7 +52,7 @@ type Server struct {
 	regionPools   map[string]pool.Manager
 	regionPoolsMu sync.RWMutex
 
-	storeClient *Pranor Core.StoreClient
+	storeClient *core.StoreClient
 
 	queryAnalytics map[string]*analytics.QueryMetric
 	analyticsMu    sync.RWMutex
@@ -68,7 +68,7 @@ type Server struct {
 }
 
 // NewServer initialises a Server and loads any persisted migrations.
-func NewServer(primary, replica pool.Manager, store *Pranor Core.StoreClient) *Server {
+func NewServer(primary, replica pool.Manager, store *core.StoreClient) *Server {
 	srv := &Server{
 		primaryPool:    primary,
 		replicaPool:    replica,
@@ -136,11 +136,11 @@ func (srv *Server) loadMigrationsFromStore() {
 		var loaded []migration.Migration
 		if json.Unmarshal(data, &loaded) == nil {
 			srv.migrations = loaded
-			Pranor Core.LogJSON(nil, "info", fmt.Sprintf("Loaded %d migrations from Pranor Vault", len(srv.migrations)))
+			core.LogJSON(nil, "info", fmt.Sprintf("Loaded %d migrations from Pranor Vault", len(srv.migrations)))
 		}
 		srv.migrationsMu.Unlock()
 	} else {
-		Pranor Core.LogJSON(nil, "warn", fmt.Sprintf("Failed to load migrations (will use default/empty): %v", err))
+		core.LogJSON(nil, "warn", fmt.Sprintf("Failed to load migrations (will use default/empty): %v", err))
 	}
 }
 
@@ -222,7 +222,7 @@ func (srv *Server) HandleQuery(w http.ResponseWriter, r *http.Request) {
 
 	durationMs := time.Since(start).Milliseconds()
 	if durationMs > 100 {
-		Pranor Core.LogJSON(r, "warn", fmt.Sprintf("Slow query detected in ServDB: %q (duration: %dms)", req.Query, durationMs))
+		core.LogJSON(r, "warn", fmt.Sprintf("Slow query detected in ServDB: %q (duration: %dms)", req.Query, durationMs))
 	}
 
 	srv.analyticsMu.Lock()
@@ -370,7 +370,7 @@ func (srv *Server) HandleMigrate(w http.ResponseWriter, r *http.Request) {
 
 		srv.migrations = append(srv.migrations[:targetIdx], srv.migrations[targetIdx+1:]...)
 		srv.saveMigrationsToStore()
-		_ = Pranor Core.EmitAuditEvent("ServDB", "MIGRATION_ROLLBACK", "system",
+		_ = core.EmitAuditEvent("ServDB", "MIGRATION_ROLLBACK", "system",
 			map[string]interface{}{"version": target.Version, "name": target.Name})
 
 		w.Header().Set("Content-Type", "application/json")
@@ -414,7 +414,7 @@ func (srv *Server) HandleMigrate(w http.ResponseWriter, r *http.Request) {
 	srv.migrations = append(srv.migrations, newMigration)
 	srv.migrationsMu.Unlock()
 	srv.saveMigrationsToStore()
-	_ = Pranor Core.EmitAuditEvent("ServDB", "MIGRATION_APPLY", "system",
+	_ = core.EmitAuditEvent("ServDB", "MIGRATION_APPLY", "system",
 		map[string]interface{}{"version": req.Version, "name": req.Name})
 
 	w.Header().Set("Content-Type", "application/json")
@@ -528,5 +528,5 @@ func (srv *Server) writeJSONError(w http.ResponseWriter, r *http.Request, msg st
 	default:
 		errorCode = "ERR_INTERNAL_SERVER_ERROR"
 	}
-	Pranor Core.WriteJSONError(w, r, msg, errorCode, status)
+	core.WriteJSONError(w, r, msg, errorCode, status)
 }

@@ -1,4 +1,4 @@
-package lockctl
+package main
 
 import (
 	"bytes"

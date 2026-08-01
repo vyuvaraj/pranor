@@ -1,4 +1,4 @@
-package servqueue
+package main
 
 import (
 	"bytes"

@@ -214,7 +214,7 @@ func main() {
 	// Proxy Downstream Mappings
 	registerProxies(mux)
 
-	mux.HandleFunc("/api/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/console", "1.0.0"))
+	mux.HandleFunc("/api/version", core.VersionHandler("github.com/vyuvaraj/pranor/console", "1.0.0"))
 
 	// Wrapper handler for /api/v1/ prefix rewriting (V1.1 support)
 	v1Wrapper := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -231,10 +231,10 @@ func main() {
 	}
 
 	// Middlewares chain: Trace -> RateLimit -> CORS -> MaxBytes -> v1Wrapper
-	handlerChain := Pranor Core.TraceMiddleware("github.com/vyuvaraj/pranor/console",
-		Pranor Core.RateLimitMiddleware(
-			Pranor Core.CORSMiddleware(
-				Pranor Core.MaxBytesMiddleware(10*1024*1024)(v1Wrapper),
+	handlerChain := core.TraceMiddleware("github.com/vyuvaraj/pranor/console",
+		core.RateLimitMiddleware(
+			core.CORSMiddleware(
+				core.MaxBytesMiddleware(10*1024*1024)(v1Wrapper),
 			),
 		),
 	)
@@ -300,7 +300,7 @@ func registerProxies(mux *http.ServeMux) {
 }
 
 func WriteJSONError(w http.ResponseWriter, r *http.Request, msg string, code string, status int) {
-	Pranor Core.WriteJSONError(w, r, msg, code, status)
+	core.WriteJSONError(w, r, msg, code, status)
 }
 
 func loadAuditLogs() {

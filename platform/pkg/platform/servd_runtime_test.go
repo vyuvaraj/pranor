@@ -37,7 +37,7 @@ func TestServdRuntime_RegisterAndStart(t *testing.T) {
 	}
 
 	// HTTP status endpoint
-	req := httptest.NewRequest(http.MethodGet, "/api/v1/servd/components", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/pranord/components", nil)
 	w := httptest.NewRecorder()
 	rt.HTTPHandler().ServeHTTP(w, req)
 	if w.Code != http.StatusOK {

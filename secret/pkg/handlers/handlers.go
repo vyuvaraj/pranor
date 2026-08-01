@@ -33,7 +33,7 @@ type RotateRequest struct {
 
 // HandleSecretRoute routes requests for /api/secrets and /api/secrets/
 func HandleSecretRoute(w http.ResponseWriter, r *http.Request) {
-	tenantID := Pranor Core.GetTenantID(r)
+	tenantID := core.GetTenantID(r)
 	if tenantID == "" {
 		tenantID = "default"
 	}
@@ -49,7 +49,7 @@ func HandleSecretRoute(w http.ResponseWriter, r *http.Request) {
 			handleRotate(w, r)
 			return
 		}
-		Pranor Core.WriteJSONError(w, r, "Method not allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+		core.WriteJSONError(w, r, "Method not allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -62,7 +62,7 @@ func HandleSecretRoute(w http.ResponseWriter, r *http.Request) {
 			handleSet(w, r, tenantID)
 			return
 		}
-		Pranor Core.WriteJSONError(w, r, "Method not allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+		core.WriteJSONError(w, r, "Method not allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -73,24 +73,24 @@ func HandleSecretRoute(w http.ResponseWriter, r *http.Request) {
 	case http.MethodDelete:
 		handleDelete(w, r, tenantID, key)
 	default:
-		Pranor Core.WriteJSONError(w, r, "Method not allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+		core.WriteJSONError(w, r, "Method not allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
 	}
 }
 
 func handleSet(w http.ResponseWriter, r *http.Request, tenantID string) {
 	var req SecretRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		Pranor Core.WriteJSONError(w, r, "Invalid request body", "ERR_BAD_REQUEST", http.StatusBadRequest)
+		core.WriteJSONError(w, r, "Invalid request body", "ERR_BAD_REQUEST", http.StatusBadRequest)
 		return
 	}
 
 	if req.Key == "" || req.Value == "" {
-		Pranor Core.WriteJSONError(w, r, "Key and Value are required fields", "ERR_BAD_REQUEST", http.StatusBadRequest)
+		core.WriteJSONError(w, r, "Key and Value are required fields", "ERR_BAD_REQUEST", http.StatusBadRequest)
 		return
 	}
 
 	if err := Store.Set(tenantID, req.Key, req.Value); err != nil {
-		Pranor Core.WriteJSONError(w, r, "Failed to save secret: "+err.Error(), "ERR_INTERNAL", http.StatusInternalServerError)
+		core.WriteJSONError(w, r, "Failed to save secret: "+err.Error(), "ERR_INTERNAL", http.StatusInternalServerError)
 		return
 	}
 
@@ -106,17 +106,17 @@ func handleGet(w http.ResponseWriter, r *http.Request, tenantID, key string) {
 		ip = r.RemoteAddr
 	}
 	if !Store.VerifyIPRestriction(tenantID, key, ip) {
-		Pranor Core.WriteJSONError(w, r, "Forbidden: IP policy restriction", "ERR_FORBIDDEN", http.StatusForbidden)
+		core.WriteJSONError(w, r, "Forbidden: IP policy restriction", "ERR_FORBIDDEN", http.StatusForbidden)
 		return
 	}
 
 	val, err := Store.Get(tenantID, key)
 	if err != nil {
 		if err == storage.ErrSecretNotFound {
-			Pranor Core.WriteJSONError(w, r, "Secret not found", "ERR_NOT_FOUND", http.StatusNotFound)
+			core.WriteJSONError(w, r, "Secret not found", "ERR_NOT_FOUND", http.StatusNotFound)
 			return
 		}
-		Pranor Core.WriteJSONError(w, r, "Failed to get secret: "+err.Error(), "ERR_INTERNAL", http.StatusInternalServerError)
+		core.WriteJSONError(w, r, "Failed to get secret: "+err.Error(), "ERR_INTERNAL", http.StatusInternalServerError)
 		return
 	}
 
@@ -129,10 +129,10 @@ func handleDelete(w http.ResponseWriter, r *http.Request, tenantID, key string) 
 	err := Store.Delete(tenantID, key)
 	if err != nil {
 		if err == storage.ErrSecretNotFound {
-			Pranor Core.WriteJSONError(w, r, "Secret not found", "ERR_NOT_FOUND", http.StatusNotFound)
+			core.WriteJSONError(w, r, "Secret not found", "ERR_NOT_FOUND", http.StatusNotFound)
 			return
 		}
-		Pranor Core.WriteJSONError(w, r, "Failed to delete secret: "+err.Error(), "ERR_INTERNAL", http.StatusInternalServerError)
+		core.WriteJSONError(w, r, "Failed to delete secret: "+err.Error(), "ERR_INTERNAL", http.StatusInternalServerError)
 		return
 	}
 
@@ -144,7 +144,7 @@ func handleDelete(w http.ResponseWriter, r *http.Request, tenantID, key string) 
 func handleList(w http.ResponseWriter, r *http.Request, tenantID string) {
 	keys, err := Store.List(tenantID)
 	if err != nil {
-		Pranor Core.WriteJSONError(w, r, "Failed to list secrets: "+err.Error(), "ERR_INTERNAL", http.StatusInternalServerError)
+		core.WriteJSONError(w, r, "Failed to list secrets: "+err.Error(), "ERR_INTERNAL", http.StatusInternalServerError)
 		return
 	}
 
@@ -156,7 +156,7 @@ func handleList(w http.ResponseWriter, r *http.Request, tenantID string) {
 func handleRotate(w http.ResponseWriter, r *http.Request) {
 	var req RotateRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		Pranor Core.WriteJSONError(w, r, "Invalid request body", "ERR_BAD_REQUEST", http.StatusBadRequest)
+		core.WriteJSONError(w, r, "Invalid request body", "ERR_BAD_REQUEST", http.StatusBadRequest)
 		return
 	}
 
@@ -164,13 +164,13 @@ func handleRotate(w http.ResponseWriter, r *http.Request) {
 	if err != nil || len(newKey) != 32 {
 		newKey = []byte(req.NewMasterKey)
 		if len(newKey) != 32 {
-			Pranor Core.WriteJSONError(w, r, "New master key must be 32 bytes (or 64-character hex)", "ERR_BAD_REQUEST", http.StatusBadRequest)
+			core.WriteJSONError(w, r, "New master key must be 32 bytes (or 64-character hex)", "ERR_BAD_REQUEST", http.StatusBadRequest)
 			return
 		}
 	}
 
 	if err := Store.RotateMasterKey(newKey); err != nil {
-		Pranor Core.WriteJSONError(w, r, "Failed to rotate master key: "+err.Error(), "ERR_INTERNAL", http.StatusInternalServerError)
+		core.WriteJSONError(w, r, "Failed to rotate master key: "+err.Error(), "ERR_INTERNAL", http.StatusInternalServerError)
 		return
 	}
 
@@ -185,7 +185,7 @@ type RollbackRequest struct {
 
 func HandleSecretRollback(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		Pranor Core.WriteJSONError(w, r, "Method not allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+		core.WriteJSONError(w, r, "Method not allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
 		return
 	}
 	tenantID := r.Header.Get("X-Tenant-ID")
@@ -194,15 +194,15 @@ func HandleSecretRollback(w http.ResponseWriter, r *http.Request) {
 	}
 	var req RollbackRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		Pranor Core.WriteJSONError(w, r, "Invalid request body", "ERR_BAD_REQUEST", http.StatusBadRequest)
+		core.WriteJSONError(w, r, "Invalid request body", "ERR_BAD_REQUEST", http.StatusBadRequest)
 		return
 	}
 	if req.Key == "" {
-		Pranor Core.WriteJSONError(w, r, "Key is required", "ERR_BAD_REQUEST", http.StatusBadRequest)
+		core.WriteJSONError(w, r, "Key is required", "ERR_BAD_REQUEST", http.StatusBadRequest)
 		return
 	}
 	if err := Store.Rollback(tenantID, req.Key); err != nil {
-		Pranor Core.WriteJSONError(w, r, err.Error(), "ERR_BAD_REQUEST", http.StatusBadRequest)
+		core.WriteJSONError(w, r, err.Error(), "ERR_BAD_REQUEST", http.StatusBadRequest)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")

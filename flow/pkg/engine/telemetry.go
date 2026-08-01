@@ -34,7 +34,7 @@ func NewTelemetryTracker() *TelemetryTracker {
 }
 
 // StartTaskSpan creates a W3C traceparent context and starts an OTel span for a workflow step.
-func (tt *TelemetryTracker) StartTaskSpan(instanceID, taskName, parentTraceparent string) (*Pranor Core.Span, string) {
+func (tt *TelemetryTracker) StartTaskSpan(instanceID, taskName, parentTraceparent string) (*core.Span, string) {
 	var traceID, spanID string
 	if parentTraceparent != "" {
 		parts := parseTraceparent(parentTraceparent)
@@ -47,7 +47,7 @@ func (tt *TelemetryTracker) StartTaskSpan(instanceID, taskName, parentTraceparen
 	}
 	spanID = randomHex(8)
 
-	span := Pranor Core.StartSpan(fmt.Sprintf("Pranor Flow:task %s %s", instanceID, taskName), parentTraceparent)
+	span := core.StartSpan(fmt.Sprintf("Pranor Flow:task %s %s", instanceID, taskName), parentTraceparent)
 	if span != nil {
 		span.TraceID = traceID
 		span.SpanID = spanID
@@ -58,13 +58,13 @@ func (tt *TelemetryTracker) StartTaskSpan(instanceID, taskName, parentTraceparen
 }
 
 // EndTaskSpan records span completion, duration, and computes estimated execution cost.
-func (tt *TelemetryTracker) EndTaskSpan(span *Pranor Core.Span, instanceID, taskName string, err error) StepCostRecord {
+func (tt *TelemetryTracker) EndTaskSpan(span *core.Span, instanceID, taskName string, err error) StepCostRecord {
 	var duration time.Duration
 	var traceID, spanID string
 	if span != nil {
 		traceID = span.TraceID
 		spanID = span.SpanID
-		Pranor Core.EndSpan(span, err, map[string]interface{}{
+		core.EndSpan(span, err, map[string]interface{}{
 			"Pranor Flow.instance_id": instanceID,
 			"Pranor Flow.task_name":   taskName,
 		})

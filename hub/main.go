@@ -172,7 +172,7 @@ func main() {
 		log.Printf("OCI Package Registry Backend enabled at %s", envOciEndpoint)
 		registry.ActiveStore = registry.NewOCIRegistryStore(envOciEndpoint, envOciUser, envOciPass)
 	} else {
-		standalone := Pranor Core.IsStandalone()
+		standalone := core.IsStandalone()
 		if standalone {
 			mockEndpoint := startMockS3Server()
 			log.Printf("Pranor Hub: Running in standalone mode. Redirecting package storage to local packages/ directory via mock S3 at %s.", mockEndpoint)
@@ -211,10 +211,10 @@ func main() {
 	web.InitSchemas()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/healthz", Pranor Core.HealthzHandler)
-	mux.HandleFunc("/readyz", Pranor Core.ReadyzHandler)
-	mux.HandleFunc("/api/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/hub", "1.0.0"))
-	mux.HandleFunc("/api/v1/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/hub", "1.0.0"))
+	mux.HandleFunc("/healthz", core.HealthzHandler)
+	mux.HandleFunc("/readyz", core.ReadyzHandler)
+	mux.HandleFunc("/api/version", core.VersionHandler("github.com/vyuvaraj/pranor/hub", "1.0.0"))
+	mux.HandleFunc("/api/v1/version", core.VersionHandler("github.com/vyuvaraj/pranor/hub", "1.0.0"))
 
 	mux.HandleFunc("/publish", web.HandlePublish)
 	mux.HandleFunc("/api/v1/publish", web.HandlePublish)
@@ -231,20 +231,20 @@ func main() {
 	mux.HandleFunc("/api/v1/marketplace/publish", web.HandleMarketplacePublish)
 	mux.HandleFunc("/", web.HandleWebDashboard)
 
-	rateLimiter := Pranor Core.RateLimitMiddleware
+	rateLimiter := core.RateLimitMiddleware
 	if flag.Lookup("test.v") != nil {
 		rateLimiter = func(next http.Handler) http.Handler {
 			return next
 		}
 	}
 
-	// Wrap in Pranor Core middleware: Trace -> RateLimit -> CORS -> MaxBytes -> Auth -> Tenant -> mux
-	serverHandler := Pranor Core.TraceMiddleware("github.com/vyuvaraj/pranor/hub",
+	// Wrap in core middleware: Trace -> RateLimit -> CORS -> MaxBytes -> Auth -> Tenant -> mux
+	serverHandler := core.TraceMiddleware("github.com/vyuvaraj/pranor/hub",
 		rateLimiter(
-			Pranor Core.CORSMiddleware(
-				Pranor Core.MaxBytesMiddleware(10*1024*1024)(
-					Pranor Core.AuthMiddleware(
-						Pranor Core.TenantMiddleware(mux),
+			core.CORSMiddleware(
+				core.MaxBytesMiddleware(10*1024*1024)(
+					core.AuthMiddleware(
+						core.TenantMiddleware(mux),
 					),
 				),
 			),

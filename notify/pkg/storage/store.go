@@ -52,10 +52,10 @@ type TemplateStore interface {
 }
 
 type PranorVaultTemplateStore struct {
-	Client *Pranor Core.StoreClient
+	Client *core.StoreClient
 }
 
-func NewPranorVaultTemplateStore(client *Pranor Core.StoreClient) *PranorVaultTemplateStore {
+func NewPranorVaultTemplateStore(client *core.StoreClient) *PranorVaultTemplateStore {
 	return &PranorVaultTemplateStore{Client: client}
 }
 

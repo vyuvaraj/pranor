@@ -53,10 +53,10 @@ type SetRequest struct {
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/healthz", Pranor Core.HealthzHandler)
-	mux.HandleFunc("/readyz", Pranor Core.ReadyzHandler)
-	mux.HandleFunc("/api/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/cache", "1.0.0"))
-	mux.HandleFunc("/api/v1/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/cache", "1.0.0"))
+	mux.HandleFunc("/healthz", core.HealthzHandler)
+	mux.HandleFunc("/readyz", core.ReadyzHandler)
+	mux.HandleFunc("/api/version", core.VersionHandler("github.com/vyuvaraj/pranor/cache", "1.0.0"))
+	mux.HandleFunc("/api/v1/version", core.VersionHandler("github.com/vyuvaraj/pranor/cache", "1.0.0"))
 	mux.HandleFunc("/health", func(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
@@ -121,12 +121,12 @@ func (s *Server) Handler() http.Handler {
 		mux.ServeHTTP(w, r)
 	})
 
-	// Wrap in Pranor Core middleware: RateLimit → CORS → MaxBytes → JWT auth → tenant enforcement → handlers
-	return Pranor Core.RateLimitMiddleware(
-		Pranor Core.CORSMiddleware(
-			Pranor Core.MaxBytesMiddleware(10*1024*1024)(
-				Pranor Core.AuthMiddleware(
-					Pranor Core.TenantMiddleware(v1Wrapper),
+	// Wrap in core middleware: RateLimit → CORS → MaxBytes → JWT auth → tenant enforcement → handlers
+	return core.RateLimitMiddleware(
+		core.CORSMiddleware(
+			core.MaxBytesMiddleware(10*1024*1024)(
+				core.AuthMiddleware(
+					core.TenantMiddleware(v1Wrapper),
 				),
 			),
 		),
@@ -514,7 +514,7 @@ func (s *Server) gossipInvalidate(key string, path string) {
 }
 
 func (s *Server) isolateKey(req *http.Request, key string) string {
-	tid := Pranor Core.GetTenantID(req)
+	tid := core.GetTenantID(req)
 	if tid != "" && tid != "default" {
 		return tid + ":" + key
 	}
@@ -522,7 +522,7 @@ func (s *Server) isolateKey(req *http.Request, key string) string {
 }
 
 func (s *Server) writeJSONError(w http.ResponseWriter, r *http.Request, msg string, code string, status int) {
-	Pranor Core.WriteJSONError(w, r, msg, code, status)
+	core.WriteJSONError(w, r, msg, code, status)
 }
 
 // SC.G1: Multi-Node Raft-Based Distributed Cache Cluster (EE)

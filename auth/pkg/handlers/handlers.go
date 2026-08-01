@@ -60,7 +60,7 @@ func VerifyPassword(password, hash string) bool {
 }
 
 func InitStore() {
-	client := Pranor Core.NewStoreClient()
+	client := core.NewStoreClient()
 	UserStore = store.NewPranorVaultUserStore(client)
 	LoadStateFromStore()
 	InitEnterprise()
@@ -151,7 +151,7 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req store.RegisterRequest
-	if !Pranor Core.DecodeAndValidateJSON(w, r, &req) {
+	if !core.DecodeAndValidateJSON(w, r, &req) {
 		return
 	}
 
@@ -196,7 +196,7 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	UsersMu.Unlock()
 
 	SaveUsersToStore()
-	_ = Pranor Core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "USER_REGISTER", req.Username, map[string]interface{}{"email": req.Email, "tenant": tenantID})
+	_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "USER_REGISTER", req.Username, map[string]interface{}{"email": req.Email, "tenant": tenantID})
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
@@ -210,7 +210,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req store.LoginRequest
-	if !Pranor Core.DecodeAndValidateJSON(w, r, &req) {
+	if !core.DecodeAndValidateJSON(w, r, &req) {
 		return
 	}
 
@@ -241,7 +241,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	passwordMatches := VerifyPassword(req.Password, hashToCheck)
 
 	if !exists {
-		_ = Pranor Core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "LOGIN_FAILED", req.Username, map[string]interface{}{
+		_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "LOGIN_FAILED", req.Username, map[string]interface{}{
 			"ip":     r.RemoteAddr,
 			"reason": "user_not_found",
 			"tenant": tenantID,
@@ -263,7 +263,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		u.FailedAttempts++
 		if u.FailedAttempts >= 3 {
 			u.LockedUntil = time.Now().Add(5 * time.Minute)
-			_ = Pranor Core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "ACCOUNT_LOCKED", req.Username, map[string]interface{}{
+			_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "ACCOUNT_LOCKED", req.Username, map[string]interface{}{
 				"ip":              r.RemoteAddr,
 				"failed_attempts": u.FailedAttempts,
 				"locked_until":    u.LockedUntil.UTC().Format(time.RFC3339),
@@ -273,7 +273,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		Users[userKey] = u
 		UsersMu.Unlock()
 		SaveUsersToStore()
-		_ = Pranor Core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "LOGIN_FAILED", req.Username, map[string]interface{}{
+		_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "LOGIN_FAILED", req.Username, map[string]interface{}{
 			"ip":     r.RemoteAddr,
 			"reason": "invalid_password",
 			"tenant": tenantID,
@@ -291,7 +291,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	UsersMu.Unlock()
 	SaveUsersToStore()
 
-	// Generate JWT using Pranor Core Secret or default test key
+	// Generate JWT using core Secret or default test key
 	secret := os.Getenv("PRANOR_JWT_SECRET")
 	if secret == "" {
 		secret = "test-secret-key-12345"
@@ -300,9 +300,9 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	var token string
 	var err error
 	if os.Getenv("PRANOR_JWKS_URL") != "" || os.Getenv("PRANOR_JWT_SIGNING_METHOD") == "RS256" {
-		token, err = Pranor Core.GenerateUserTokenRS256(JWTRSAPrivateKey, JWTKeyID, user.Username, []string{"user"}, tenantID, 24*time.Hour)
+		token, err = core.GenerateUserTokenRS256(JWTRSAPrivateKey, JWTKeyID, user.Username, []string{"user"}, tenantID, 24*time.Hour)
 	} else {
-		token, err = Pranor Core.GenerateUserToken(secret, user.Username, []string{"user"}, tenantID, 24*time.Hour)
+		token, err = core.GenerateUserToken(secret, user.Username, []string{"user"}, tenantID, 24*time.Hour)
 	}
 	if err != nil {
 		httpError(w, r, "Token generation failed", http.StatusInternalServerError)
@@ -321,7 +321,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	sessions.SessionsMu.Unlock()
 	SaveSessionsToStore()
 	_ = sessions.EnterpriseRegisterAuthSession(token, user.Username, r.RemoteAddr, r.UserAgent())
-	_ = Pranor Core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "USER_LOGIN", user.Username, map[string]interface{}{"ip": r.RemoteAddr, "tenant": tenantID})
+	_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "USER_LOGIN", user.Username, map[string]interface{}{"ip": r.RemoteAddr, "tenant": tenantID})
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -406,8 +406,8 @@ func HandleToken(w http.ResponseWriter, r *http.Request) {
 		}
 		tenantID := r.Header.Get("X-Tenant-ID")
 
-		newAccessToken, _ := Pranor Core.GenerateUserToken(secret, session.Username, []string{"user"}, tenantID, 1*time.Hour)
-		newRefreshToken, _ := Pranor Core.GenerateUserToken(secret, session.Username, []string{"user"}, tenantID, 24*time.Hour)
+		newAccessToken, _ := core.GenerateUserToken(secret, session.Username, []string{"user"}, tenantID, 1*time.Hour)
+		newRefreshToken, _ := core.GenerateUserToken(secret, session.Username, []string{"user"}, tenantID, 24*time.Hour)
 
 		// 4. Save new session/refresh token
 		sessions.SessionsMu.Lock()
@@ -447,7 +447,7 @@ func HandleToken(w http.ResponseWriter, r *http.Request) {
 		secret = "test-secret-key-12345"
 	}
 
-	claims := Pranor Core.Claims{
+	claims := core.Claims{
 		Username: clientID,
 		Roles:    []string{"client"},
 		Scopes:   []string{"*"},
@@ -497,7 +497,7 @@ func HandleResetRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req store.ResetRequest
-	if !Pranor Core.DecodeAndValidateJSON(w, r, &req) {
+	if !core.DecodeAndValidateJSON(w, r, &req) {
 		return
 	}
 
@@ -538,7 +538,7 @@ func HandleResetConfirm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req store.ResetConfirm
-	if !Pranor Core.DecodeAndValidateJSON(w, r, &req) {
+	if !core.DecodeAndValidateJSON(w, r, &req) {
 		return
 	}
 
@@ -614,7 +614,7 @@ func HandleKeys(w http.ResponseWriter, r *http.Request) {
 	APIKeysMu.Unlock()
 	SaveAPIKeysToStore()
 
-	_ = Pranor Core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "API_KEY_ISSUE", req.Username, map[string]interface{}{"scopes": req.Scopes})
+	_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "API_KEY_ISSUE", req.Username, map[string]interface{}{"scopes": req.Scopes})
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
@@ -652,7 +652,7 @@ func HandleKeysValidate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_ = Pranor Core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "API_KEY_VALIDATE", apiKey.Username, map[string]interface{}{"scopes": apiKey.Scopes})
+	_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "API_KEY_VALIDATE", apiKey.Username, map[string]interface{}{"scopes": apiKey.Scopes})
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -689,7 +689,7 @@ func HandleKeysRevoke(w http.ResponseWriter, r *http.Request) {
 	}
 
 	SaveAPIKeysToStore()
-	_ = Pranor Core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "API_KEY_REVOKE", apiKey.Username, map[string]interface{}{"scopes": apiKey.Scopes})
+	_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "API_KEY_REVOKE", apiKey.Username, map[string]interface{}{"scopes": apiKey.Scopes})
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`{"status":"success","message":"API key revoked"}`))
@@ -727,7 +727,7 @@ func HandleSessionsRevoke(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_ = Pranor Core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "SESSION_REVOKE", session.Username, map[string]interface{}{"token": req.Token})
+	_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "SESSION_REVOKE", session.Username, map[string]interface{}{"token": req.Token})
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -779,7 +779,7 @@ func HandleMfaSetup(w http.ResponseWriter, r *http.Request) {
 	UsersMu.Unlock()
 	SaveUsersToStore()
 
-	_ = Pranor Core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "MFA_SETUP", req.Username, map[string]interface{}{"tenant": tenantID})
+	_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "MFA_SETUP", req.Username, map[string]interface{}{"tenant": tenantID})
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -832,7 +832,7 @@ func HandleMfaVerify(w http.ResponseWriter, r *http.Request) {
 		UsersMu.Unlock()
 		SaveUsersToStore()
 
-		_ = Pranor Core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "MFA_VERIFY", req.Username, map[string]interface{}{"tenant": tenantID})
+		_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "MFA_VERIFY", req.Username, map[string]interface{}{"tenant": tenantID})
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -930,16 +930,16 @@ func HandleSocialCallback(w http.ResponseWriter, r *http.Request) {
 		secret = "test-secret-key-12345"
 	}
 
-	tenantID := Pranor Core.GetTenantID(r)
+	tenantID := core.GetTenantID(r)
 	if tenantID == "" {
 		tenantID = "default"
 	}
 
 	var token string
 	if os.Getenv("PRANOR_JWKS_URL") != "" || os.Getenv("PRANOR_JWT_SIGNING_METHOD") == "RS256" {
-		token, err = Pranor Core.GenerateUserTokenRS256(JWTRSAPrivateKey, JWTKeyID, username, []string{"user"}, tenantID, 24*time.Hour)
+		token, err = core.GenerateUserTokenRS256(JWTRSAPrivateKey, JWTKeyID, username, []string{"user"}, tenantID, 24*time.Hour)
 	} else {
-		token, err = Pranor Core.GenerateUserToken(secret, username, []string{"user"}, tenantID, 24*time.Hour)
+		token, err = core.GenerateUserToken(secret, username, []string{"user"}, tenantID, 24*time.Hour)
 	}
 	if err != nil {
 		httpError(w, r, "Token generation failed", http.StatusInternalServerError)
@@ -1057,7 +1057,7 @@ func HandleSecretsEncrypt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_ = Pranor Core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "SECRET_ENCRYPT", "system", nil)
+	_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "SECRET_ENCRYPT", "system", nil)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -1088,7 +1088,7 @@ func HandleSecretsDecrypt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_ = Pranor Core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "SECRET_DECRYPT", "system", nil)
+	_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "SECRET_DECRYPT", "system", nil)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -1157,7 +1157,7 @@ func HandleRotateJWKS(w http.ResponseWriter, r *http.Request) {
 	JWTKeyID = kid
 	JWKKeyPairsMu.Unlock()
 
-	_ = Pranor Core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "JWKS_ROTATE", "system", nil)
+	_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "JWKS_ROTATE", "system", nil)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -1181,7 +1181,7 @@ func HandleAdaptiveRiskScore(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var req RiskScoreRequest
-	if !Pranor Core.DecodeAndValidateJSON(w, r, &req) {
+	if !core.DecodeAndValidateJSON(w, r, &req) {
 		return
 	}
 	if req.Username == "" {
@@ -1268,7 +1268,7 @@ func RevocationMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		if authHeader != "" {
-			token, err := Pranor Core.ExtractTokenFromHeader(authHeader)
+			token, err := core.ExtractTokenFromHeader(authHeader)
 			if err == nil {
 				sessions.SessionsMu.RLock()
 				session, exists := sessions.Sessions[token]
@@ -1306,7 +1306,7 @@ func httpError(w http.ResponseWriter, r *http.Request, error string, code int) {
 	default:
 		errorCode = "ERR_INTERNAL_SERVER_ERROR"
 	}
-	Pranor Core.WriteJSONError(w, r, error, errorCode, code)
+	core.WriteJSONError(w, r, error, errorCode, code)
 }
 
 // Helper to issue JWT for a user
@@ -1323,9 +1323,9 @@ func issueJWTForUser(w http.ResponseWriter, r *http.Request, username string) {
 	var token string
 	var err error
 	if os.Getenv("PRANOR_JWKS_URL") != "" || os.Getenv("PRANOR_JWT_SIGNING_METHOD") == "RS256" {
-		token, err = Pranor Core.GenerateUserTokenRS256(JWTRSAPrivateKey, JWTKeyID, username, []string{"user"}, tenantID, 24*time.Hour)
+		token, err = core.GenerateUserTokenRS256(JWTRSAPrivateKey, JWTKeyID, username, []string{"user"}, tenantID, 24*time.Hour)
 	} else {
-		token, err = Pranor Core.GenerateUserToken(secret, username, []string{"user"}, tenantID, 24*time.Hour)
+		token, err = core.GenerateUserToken(secret, username, []string{"user"}, tenantID, 24*time.Hour)
 	}
 	if err != nil {
 		httpError(w, r, "Token generation failed", http.StatusInternalServerError)
@@ -1345,7 +1345,7 @@ func issueJWTForUser(w http.ResponseWriter, r *http.Request, username string) {
 	sessions.SessionsMu.Unlock()
 	SaveSessionsToStore()
 
-	_ = Pranor Core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "LOGIN_SUCCESS", username, map[string]interface{}{"ip": r.RemoteAddr, "tenant": tenantID})
+	_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "LOGIN_SUCCESS", username, map[string]interface{}{"ip": r.RemoteAddr, "tenant": tenantID})
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -1383,7 +1383,7 @@ func HandleMagicLinkRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var req MagicLinkRequest
-	if !Pranor Core.DecodeAndValidateJSON(w, r, &req) {
+	if !core.DecodeAndValidateJSON(w, r, &req) {
 		return
 	}
 	if req.Email == "" {
@@ -1451,7 +1451,7 @@ var (
 )
 
 func HandlePasskeyRegisterChallenge(w http.ResponseWriter, r *http.Request) {
-	claims := Pranor Core.GetClaims(r)
+	claims := core.GetClaims(r)
 	if claims == nil {
 		httpError(w, r, "Unauthorized", http.StatusUnauthorized)
 		return
@@ -1484,14 +1484,14 @@ func (r *PasskeyRegisterVerifyRequest) Validate() error {
 }
 
 func HandlePasskeyRegisterVerify(w http.ResponseWriter, r *http.Request) {
-	claims := Pranor Core.GetClaims(r)
+	claims := core.GetClaims(r)
 	if claims == nil {
 		httpError(w, r, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
 	var req PasskeyRegisterVerifyRequest
-	if !Pranor Core.DecodeAndValidateJSON(w, r, &req) {
+	if !core.DecodeAndValidateJSON(w, r, &req) {
 		return
 	}
 
@@ -1542,7 +1542,7 @@ func (r *PasskeyLoginChallengeRequest) Validate() error {
 
 func HandlePasskeyLoginChallenge(w http.ResponseWriter, r *http.Request) {
 	var req PasskeyLoginChallengeRequest
-	if !Pranor Core.DecodeAndValidateJSON(w, r, &req) {
+	if !core.DecodeAndValidateJSON(w, r, &req) {
 		return
 	}
 	if req.Username == "" {
@@ -1578,7 +1578,7 @@ func (r *PasskeyLoginVerifyRequest) Validate() error {
 
 func HandlePasskeyLoginVerify(w http.ResponseWriter, r *http.Request) {
 	var req PasskeyLoginVerifyRequest
-	if !Pranor Core.DecodeAndValidateJSON(w, r, &req) {
+	if !core.DecodeAndValidateJSON(w, r, &req) {
 		return
 	}
 

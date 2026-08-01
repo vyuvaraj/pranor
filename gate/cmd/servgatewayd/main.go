@@ -1,4 +1,4 @@
-package servgatewayd
+package main
 
 import (
 	"flag"

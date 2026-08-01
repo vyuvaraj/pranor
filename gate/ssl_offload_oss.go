@@ -1,6 +1,6 @@
 //go:build !enterprise
 
-package gate
+package main
 
 import "net/http"
 

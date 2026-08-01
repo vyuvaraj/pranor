@@ -45,8 +45,8 @@ func (s *Server) Handler() http.Handler {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(`{"status":"ok"}`))
 	})
-	mux.HandleFunc("/api/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/deploy", "1.0.0"))
-	mux.HandleFunc("/api/v1/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/deploy", "1.0.0"))
+	mux.HandleFunc("/api/version", core.VersionHandler("github.com/vyuvaraj/pranor/deploy", "1.0.0"))
+	mux.HandleFunc("/api/v1/version", core.VersionHandler("github.com/vyuvaraj/pranor/deploy", "1.0.0"))
 	mux.HandleFunc("/health", s.handleHealth)
 	mux.HandleFunc("/api/deploy", s.handleDeploy)
 	mux.HandleFunc("/api/services", s.handleListServices)
@@ -118,13 +118,13 @@ func (s *Server) Handler() http.Handler {
 		mux.ServeHTTP(w, r)
 	})
 
-	// Wrap in Pranor Core middleware: Trace -> RateLimit -> CORS -> MaxBytes -> Auth -> Tenant -> v1Wrapper
-	return Pranor Core.TraceMiddleware("github.com/vyuvaraj/pranor/deploy",
-		Pranor Core.RateLimitMiddleware(
-			Pranor Core.CORSMiddleware(
-				Pranor Core.MaxBytesMiddleware(10*1024*1024)(
-					Pranor Core.AuthMiddleware(
-						Pranor Core.TenantMiddleware(v1Wrapper),
+	// Wrap in core middleware: Trace -> RateLimit -> CORS -> MaxBytes -> Auth -> Tenant -> v1Wrapper
+	return core.TraceMiddleware("github.com/vyuvaraj/pranor/deploy",
+		core.RateLimitMiddleware(
+			core.CORSMiddleware(
+				core.MaxBytesMiddleware(10*1024*1024)(
+					core.AuthMiddleware(
+						core.TenantMiddleware(v1Wrapper),
 					),
 				),
 			),
@@ -422,7 +422,7 @@ func writeJSONError(w http.ResponseWriter, r *http.Request, msg string, status i
 	default:
 		errorCode = "ERR_INTERNAL_SERVER_ERROR"
 	}
-	Pranor Core.WriteJSONError(w, r, msg, errorCode, status)
+	core.WriteJSONError(w, r, msg, errorCode, status)
 }
 
 // CL.G5: CPU & Memory cgroup Resource Limits & Usage Telemetry (EE)

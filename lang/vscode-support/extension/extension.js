@@ -145,7 +145,7 @@ function activate(context) {
         )
     );
 
-     // Register a virtual document provider to resolve 'serv://' schemes inside editor panes
+     // Register a virtual document provider to resolve 'pranor://' schemes inside editor panes
      context.subscriptions.push(
          vscode.workspace.registerTextDocumentContentProvider('serv', {
              provideTextDocumentContent(uri) {
@@ -154,7 +154,7 @@ function activate(context) {
                  return `// Virtual definition for Pranor service: ${serviceName}\n` +
                         `// Path referenced: ${servicePath}\n\n` +
                         `service "${serviceName}" {\n` +
-                        `    // Resolved dynamically via LSP serv:// definition link\n` +
+                        `    // Resolved dynamically via LSP pranor:// definition link\n` +
                         `    status: "online"\n` +
                         `}\n`;
              }
@@ -3113,7 +3113,7 @@ function exportToPlayground(context) {
 }
 
 function openServdConsole(context) {
-    const panel = vscode.window.createWebviewPanel('servdConsole', 'servd Unified Platform Console', vscode.ViewColumn.One, { enableScripts: true });
+    const panel = vscode.window.createWebviewPanel('pranordConsole', 'pranord Unified Platform Console', vscode.ViewColumn.One, { enableScripts: true });
     panel.webview.html = `<!DOCTYPE html>
 <html>
 <head>
@@ -3126,7 +3126,7 @@ function openServdConsole(context) {
     </style>
 </head>
 <body>
-    <h2>🚀 servd Single-Binary Unified Console</h2>
+    <h2>🚀 pranord Single-Binary Unified Console</h2>
     <div class="tabs">
         <div class="tab active" onclick="switchTab('health')">Health & Rollup</div>
         <div class="tab" onclick="switchTab('components')">Embedded Components</div>
@@ -3145,10 +3145,10 @@ function openServdConsole(context) {
             fetch('http://localhost:8096/api/v1/platform/health/rollup')
                 .then(r => r.json())
                 .then(data => { document.getElementById('main').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>'; })
-                .catch(() => { document.getElementById('main').innerHTML = '<b>servd runtime reachable. Status: Healthy (All components embedded)</b>'; });
+                .catch(() => { document.getElementById('main').innerHTML = '<b>pranord runtime reachable. Status: Healthy (All components embedded)</b>'; });
         }
         function fetchComponents() {
-            fetch('http://localhost:8096/api/v1/servd/components')
+            fetch('http://localhost:8096/api/v1/pranord/components')
                 .then(r => r.json())
                 .then(data => { document.getElementById('main').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>'; })
                 .catch(() => { document.getElementById('main').innerHTML = '<b>Embedded components: pranor-gate, pranor-pulse, pranor-vault, pranor-mesh, pranor-trace, pranor-auth</b>'; });

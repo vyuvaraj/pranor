@@ -46,11 +46,11 @@ func NewServer(addr string, engine *broker.BrokerEngine, authToken, tlsCert, tls
 
 func (s *Server) Start() error {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/healthz", Pranor Core.HealthzHandler)
-	mux.HandleFunc("/readyz", Pranor Core.ReadyzHandler)
+	mux.HandleFunc("/healthz", core.HealthzHandler)
+	mux.HandleFunc("/readyz", core.ReadyzHandler)
 	mux.HandleFunc("/metrics", s.handlePrometheusMetrics)
-	mux.HandleFunc("/api/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/pulse", "1.0.0"))
-	mux.HandleFunc("/api/v1/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/pulse", "1.0.0"))
+	mux.HandleFunc("/api/version", core.VersionHandler("github.com/vyuvaraj/pranor/pulse", "1.0.0"))
+	mux.HandleFunc("/api/v1/version", core.VersionHandler("github.com/vyuvaraj/pranor/pulse", "1.0.0"))
 	mux.HandleFunc("/api/topics/", s.handleTopics)
 	mux.HandleFunc("/api/v1/topics/", s.handleTopics)
 	mux.HandleFunc("/api/v1/events/", s.handleEvents)
@@ -87,7 +87,7 @@ func (s *Server) Start() error {
 	// SQ.D5: SQLite query endpoint
 	mux.HandleFunc("/api/v1/sqlite/query", s.handleSQLiteQuery)
 
-	rateLimiter := Pranor Core.RateLimitMiddleware
+	rateLimiter := core.RateLimitMiddleware
 	if flag.Lookup("test.v") != nil {
 		rateLimiter = func(next http.Handler) http.Handler {
 			return next
@@ -95,11 +95,11 @@ func (s *Server) Start() error {
 	}
 
 	// Full middleware chain
-	fullMiddlewareChain := Pranor Core.TraceMiddleware("github.com/vyuvaraj/pranor/pulse",
+	fullMiddlewareChain := core.TraceMiddleware("github.com/vyuvaraj/pranor/pulse",
 		rateLimiter(
-			Pranor Core.CORSMiddleware(
-				Pranor Core.MaxBytesMiddleware(10*1024*1024)(
-					Pranor Core.AuthMiddleware(
+			core.CORSMiddleware(
+				core.MaxBytesMiddleware(10*1024*1024)(
+					core.AuthMiddleware(
 						s.tenantAndTokenMiddleware(mux),
 					),
 				),
@@ -108,7 +108,7 @@ func (s *Server) Start() error {
 	)
 
 	// Minimal chain that preserves Hijacker capability for WebSocket upgrade paths
-	wsChain := Pranor Core.AuthMiddleware(s.tenantAndTokenMiddleware(mux))
+	wsChain := core.AuthMiddleware(s.tenantAndTokenMiddleware(mux))
 
 	dispatcher := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Bypass hijacking-incompatible middlewares for WebSocket endpoints

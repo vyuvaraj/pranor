@@ -390,11 +390,11 @@ func TestNamespaceIsolation(t *testing.T) {
 	defer ts.Close()
 
 	// Generate tokens for Tenant A and Tenant B
-	tokenA, err := Pranor Core.GenerateUserToken(secret, "alice", []string{"user"}, "tenant-a", time.Hour)
+	tokenA, err := core.GenerateUserToken(secret, "alice", []string{"user"}, "tenant-a", time.Hour)
 	if err != nil {
 		t.Fatalf("failed to generate token A: %v", err)
 	}
-	tokenB, err := Pranor Core.GenerateUserToken(secret, "bob", []string{"user"}, "tenant-b", time.Hour)
+	tokenB, err := core.GenerateUserToken(secret, "bob", []string{"user"}, "tenant-b", time.Hour)
 	if err != nil {
 		t.Fatalf("failed to generate token B: %v", err)
 	}

@@ -78,11 +78,11 @@ func RunWorkflow(
 	instances map[string]*storage.WorkflowInstance,
 	instancesMu *sync.RWMutex,
 ) {
-	workflowSpan := Pranor Core.StartSpan(fmt.Sprintf("Pranor Flow:WORKFLOW %s", inst.WorkflowID), inst.Traceparent)
+	workflowSpan := core.StartSpan(fmt.Sprintf("Pranor Flow:WORKFLOW %s", inst.WorkflowID), inst.Traceparent)
 	var workflowErr error
 	defer func() {
 		if workflowSpan != nil {
-			Pranor Core.EndSpan(workflowSpan, workflowErr, map[string]interface{}{
+			core.EndSpan(workflowSpan, workflowErr, map[string]interface{}{
 				"workflow.id":       inst.WorkflowID,
 				"workflow.instance": inst.ID,
 				"workflow.status":   inst.Status,
@@ -226,7 +226,7 @@ func RunWorkflow(
 			} else {
 				taskTraceparent = inst.Traceparent
 			}
-			taskSpan := Pranor Core.StartSpan(fmt.Sprintf("Pranor Flow:TASK %s", task.Name), taskTraceparent)
+			taskSpan := core.StartSpan(fmt.Sprintf("Pranor Flow:TASK %s", task.Name), taskTraceparent)
 
 			// Run action logic with retry and timeout simulation
 			var err error
@@ -283,7 +283,7 @@ func RunWorkflow(
 			}
 
 			if taskSpan != nil {
-				Pranor Core.EndSpan(taskSpan, err, map[string]interface{}{
+				core.EndSpan(taskSpan, err, map[string]interface{}{
 					"task.name":     task.Name,
 					"task.attempts": attempts,
 				})

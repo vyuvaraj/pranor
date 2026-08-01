@@ -34,7 +34,7 @@ func (m *MockStore) SaveInstances(insts map[string]*storage.WorkflowInstance) er
 	m.insts = insts
 	return nil
 }
-func (m *MockStore) GetClient() *Pranor Core.StoreClient { return nil }
+func (m *MockStore) GetClient() *core.StoreClient { return nil }
 
 func TestSubWorkflowManager_Invoke(t *testing.T) {
 	mockStore := NewMockStore()

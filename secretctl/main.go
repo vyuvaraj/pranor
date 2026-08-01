@@ -1,4 +1,4 @@
-package secretctl
+package main
 
 import (
 	"bytes"

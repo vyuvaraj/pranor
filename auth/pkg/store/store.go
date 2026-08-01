@@ -129,10 +129,10 @@ type UserStore interface {
 }
 
 type PranorVaultUserStore struct {
-	Client *Pranor Core.StoreClient
+	Client *core.StoreClient
 }
 
-func NewPranorVaultUserStore(client *Pranor Core.StoreClient) *PranorVaultUserStore {
+func NewPranorVaultUserStore(client *core.StoreClient) *PranorVaultUserStore {
 	return &PranorVaultUserStore{Client: client}
 }
 

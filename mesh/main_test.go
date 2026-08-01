@@ -197,7 +197,7 @@ func TestRegistryJWTAuthentication(t *testing.T) {
 	defer ts.Close()
 
 	// Generate a valid JWT
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &Pranor Core.Claims{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &core.Claims{
 		Username: "admin",
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),

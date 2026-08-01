@@ -1,4 +1,4 @@
-package lang
+package main
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ func runUpgrade() {
 	fmt.Println("\nAll core modules are up to date:")
 	fmt.Println("  - Pranor: v0.1.0 (latest)")
 	fmt.Println("  - Pranor Mesh:  v1.0.0 (latest)")
-	fmt.Println("  - Pranor Core: v1.0.0 (latest)")
+	fmt.Println("  - core: v1.0.0 (latest)")
 	fmt.Println("  - Pranor Gate:  v1.0.0 (latest)")
 	
 	fmt.Println("\n✅ Upgrade verification complete. No updates required.")

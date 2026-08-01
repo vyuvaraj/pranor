@@ -1,6 +1,6 @@
 //go:build !enterprise
 
-package trace
+package main
 
 import (
 	"log"

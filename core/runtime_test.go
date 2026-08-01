@@ -1,4 +1,4 @@
-package core_test
+package core
 
 import (
 	"context"
@@ -8,8 +8,6 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
-
-	pranorcore "github.com/vyuvaraj/pranor/core"
 )
 
 // --- Fake mesh resolver for unit tests -------------------------------------
@@ -34,7 +32,7 @@ func (f *fakeMeshResolver) Heartbeat(_ context.Context, _, _ string) error {
 // ---------------------------------------------------------------------------
 
 func TestDefaultRuntimeConfig_Defaults(t *testing.T) {
-	cfg := pranorcore.DefaultRuntimeConfig()
+	cfg := DefaultRuntimeConfig()
 
 	if cfg.MeshAddr != "http://localhost:8089" {
 		t.Errorf("expected default MeshAddr, got %q", cfg.MeshAddr)
@@ -59,7 +57,7 @@ func TestRuntimeConfig_EnvOverride(t *testing.T) {
 	t.Setenv("PRANOR_MAX_RETRIES", "5")
 	t.Setenv("PRANOR_OTEL_ENABLED", "false")
 
-	cfg := pranorcore.DefaultRuntimeConfig()
+	cfg := DefaultRuntimeConfig()
 
 	if cfg.MeshAddr != "http://mesh.internal:9000" {
 		t.Errorf("expected overridden MeshAddr, got %q", cfg.MeshAddr)
@@ -76,14 +74,14 @@ func TestRuntimeConfig_EnvOverride(t *testing.T) {
 }
 
 func TestFunctionalOptions(t *testing.T) {
-	rt := pranorcore.NewRuntime("svc-test",
-		pranorcore.WithMeshAddr("http://override:9999"),
-		pranorcore.WithSelfAddr("http://me:8080"),
-		pranorcore.WithHealthPath("/ready"),
-		pranorcore.WithHeartbeatTTL(15*time.Second),
-		pranorcore.WithMaxRetries(7),
-		pranorcore.WithRegion("us-east"),
-		pranorcore.WithOtel(false),
+	rt := NewRuntime("svc-test",
+		WithMeshAddr("http://override:9999"),
+		WithSelfAddr("http://me:8080"),
+		WithHealthPath("/ready"),
+		WithHeartbeatTTL(15*time.Second),
+		WithMaxRetries(7),
+		WithRegion("us-east"),
+		WithOtel(false),
 	)
 
 	cfg := rt.Config
@@ -113,10 +111,10 @@ func TestFunctionalOptions(t *testing.T) {
 func TestServRuntime_Start_RegistersWithMesh(t *testing.T) {
 	fake := &fakeMeshResolver{}
 
-	rt := pranorcore.NewRuntime("test-svc",
-		pranorcore.WithSelfAddr("http://localhost:8080"),
-		pranorcore.WithHeartbeatTTL(100*time.Millisecond),
-		pranorcore.WithOtel(false),
+	rt := NewRuntime("test-svc",
+		WithSelfAddr("http://localhost:8080"),
+		WithHeartbeatTTL(100*time.Millisecond),
+		WithOtel(false),
 	)
 	rt.SetResolver(fake)
 
@@ -134,10 +132,10 @@ func TestServRuntime_Start_RegistersWithMesh(t *testing.T) {
 func TestServRuntime_Heartbeat_Fired(t *testing.T) {
 	fake := &fakeMeshResolver{}
 
-	rt := pranorcore.NewRuntime("hb-svc",
-		pranorcore.WithSelfAddr("http://localhost:8080"),
-		pranorcore.WithHeartbeatTTL(50*time.Millisecond),
-		pranorcore.WithOtel(false),
+	rt := NewRuntime("hb-svc",
+		WithSelfAddr("http://localhost:8080"),
+		WithHeartbeatTTL(50*time.Millisecond),
+		WithOtel(false),
 	)
 	rt.SetResolver(fake)
 
@@ -158,10 +156,10 @@ func TestServRuntime_Heartbeat_Fired(t *testing.T) {
 func TestServRuntime_Stop_CancelsHeartbeat(t *testing.T) {
 	fake := &fakeMeshResolver{}
 
-	rt := pranorcore.NewRuntime("stop-svc",
-		pranorcore.WithSelfAddr("http://localhost:8080"),
-		pranorcore.WithHeartbeatTTL(30*time.Millisecond),
-		pranorcore.WithOtel(false),
+	rt := NewRuntime("stop-svc",
+		WithSelfAddr("http://localhost:8080"),
+		WithHeartbeatTTL(30*time.Millisecond),
+		WithOtel(false),
 	)
 	rt.SetResolver(fake)
 
@@ -179,8 +177,8 @@ func TestServRuntime_Stop_CancelsHeartbeat(t *testing.T) {
 }
 
 func TestServRuntime_NoResolver_StartsCleanly(t *testing.T) {
-	rt := pranorcore.NewRuntime("no-mesh-svc",
-		pranorcore.WithOtel(false),
+	rt := NewRuntime("no-mesh-svc",
+		WithOtel(false),
 	)
 	// no resolver set
 	ctx := context.Background()
@@ -200,7 +198,7 @@ func TestHTTPMeshResolver_Register(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	resolver := pranorcore.NewHTTPMeshResolver(srv.URL)
+	resolver := NewHTTPMeshResolver(srv.URL)
 	err := resolver.Register(context.Background(), "my-svc", "http://localhost:9090", "http://localhost:9090/healthz")
 	if err != nil {
 		t.Fatalf("Register returned error: %v", err)
@@ -223,7 +221,7 @@ func TestHTTPMeshResolver_Heartbeat(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	resolver := pranorcore.NewHTTPMeshResolver(srv.URL)
+	resolver := NewHTTPMeshResolver(srv.URL)
 	err := resolver.Heartbeat(context.Background(), "my-svc", "http://localhost:9090")
 	if err != nil {
 		t.Fatalf("Heartbeat returned error: %v", err)
@@ -239,7 +237,7 @@ func TestHTTPMeshResolver_ErrorStatus(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	resolver := pranorcore.NewHTTPMeshResolver(srv.URL)
+	resolver := NewHTTPMeshResolver(srv.URL)
 	err := resolver.Heartbeat(context.Background(), "ghost-svc", "http://localhost:9999")
 	if err == nil {
 		t.Fatal("expected error for 404 response, got nil")

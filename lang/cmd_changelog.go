@@ -1,4 +1,4 @@
-package lang
+package main
 
 import (
 	"bufio"
@@ -11,7 +11,7 @@ import (
 func runChangelog() {
 	changelogCmd := flag.NewFlagSet("changelog", flag.ExitOnError)
 	versionFilter := changelogCmd.String("version", "", "Filter changelog by version (e.g. 1.7.0)")
-	serviceFilter := changelogCmd.String("service", "", "Filter changelog by service name (e.g. Pranor Gate, Pranor Core, Pranor Flow)")
+	serviceFilter := changelogCmd.String("service", "", "Filter changelog by service name (e.g. Pranor Gate, core, Pranor Flow)")
 
 	if len(os.Args) > 2 {
 		changelogCmd.Parse(os.Args[2:])

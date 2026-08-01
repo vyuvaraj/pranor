@@ -41,8 +41,8 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(`{"status":"ok"}`))
 	})
-	mux.HandleFunc("/api/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/auth", "1.0.0"))
-	mux.HandleFunc("/api/v1/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/auth", "1.0.0"))
+	mux.HandleFunc("/api/version", core.VersionHandler("github.com/vyuvaraj/pranor/auth", "1.0.0"))
+	mux.HandleFunc("/api/v1/version", core.VersionHandler("github.com/vyuvaraj/pranor/auth", "1.0.0"))
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
@@ -92,14 +92,14 @@ func main() {
 		mux.ServeHTTP(w, r)
 	})
 
-	// Wrap in Pranor Core middleware: OTel tracing → RateLimit → CORS → MaxBytes → JWT auth → tenant enforcement → handlers
-	serverHandler := Pranor Core.TraceMiddleware("github.com/vyuvaraj/pranor/auth",
-		Pranor Core.RateLimitMiddleware(
-			Pranor Core.CORSMiddleware(
-				Pranor Core.MaxBytesMiddleware(10*1024*1024)(
-					Pranor Core.AuthMiddleware(
+	// Wrap in core middleware: OTel tracing → RateLimit → CORS → MaxBytes → JWT auth → tenant enforcement → handlers
+	serverHandler := core.TraceMiddleware("github.com/vyuvaraj/pranor/auth",
+		core.RateLimitMiddleware(
+			core.CORSMiddleware(
+				core.MaxBytesMiddleware(10*1024*1024)(
+					core.AuthMiddleware(
 						handlers.RevocationMiddleware(
-							Pranor Core.TenantMiddleware(v1Wrapper),
+							core.TenantMiddleware(v1Wrapper),
 						),
 					),
 				),
@@ -131,7 +131,7 @@ func main() {
 	log.Println("[INFO] Shutting down Pranor Auth server...")
 
 	// Shutdown OTel
-	Pranor Core.Shutdown()
+	core.Shutdown()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

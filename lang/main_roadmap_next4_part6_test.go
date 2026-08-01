@@ -1,4 +1,4 @@
-package lang
+package main
 
 import (
 	"bytes"
@@ -44,7 +44,7 @@ func TestPhase35UtilityNamespacesPart6(t *testing.T) {
 		// 3. DNS Namespace (Test Mocks)
 		assert dns.lookup("test.local") == "127.0.0.1"
 		assert dns.txt("test.local") == "v=spf1 -all"
-		let srvInfo = dns.pnr("test.local")
+		let srvInfo = dns.srv("test.local")
 		assert srvInfo.host == "app.test.local"
 		assert srvInfo.port == 8080.0
 		assert srvInfo.priority == 10.0

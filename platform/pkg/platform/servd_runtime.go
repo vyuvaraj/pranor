@@ -79,7 +79,7 @@ func (sr *ServdRuntime) Shutdown(ctx context.Context) {
 	}
 }
 
-// HTTPHandler exposes `/api/v1/servd/components` runtime status.
+// HTTPHandler exposes `/api/v1/pranord/components` runtime status.
 func (sr *ServdRuntime) HTTPHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

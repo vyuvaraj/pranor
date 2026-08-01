@@ -85,7 +85,7 @@ func NewMailServer(port string, store storage.TemplateStore,
 }
 
 func initStore() {
-	client := Pranor Core.NewStoreClient()
+	client := core.NewStoreClient()
 	templateStore = storage.NewPranorVaultTemplateStore(client)
 	loadTemplatesFromStore()
 
@@ -231,7 +231,7 @@ func main() {
 		mockSMTPPort = *mockSMTPPortStr
 	}
 
-	standalone := Pranor Core.IsStandalone()
+	standalone := core.IsStandalone()
 	if standalone {
 		log.Println("[INFO] Pranor Notify: Running in standalone mode. Store persistence redirected to local directory.")
 	}
@@ -254,8 +254,8 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(`{"status":"ok"}`))
 	})
-	mux.HandleFunc("/api/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/notify", "1.0.0"))
-	mux.HandleFunc("/api/v1/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/notify", "1.0.0"))
+	mux.HandleFunc("/api/version", core.VersionHandler("github.com/vyuvaraj/pranor/notify", "1.0.0"))
+	mux.HandleFunc("/api/v1/version", core.VersionHandler("github.com/vyuvaraj/pranor/notify", "1.0.0"))
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
@@ -279,11 +279,11 @@ func main() {
 	mux.HandleFunc("/api/mail/mock-smtp", handleGetMockEmails)
 	mux.HandleFunc("/api/v1/mail/mock-smtp", handleGetMockEmails)
 
-	serverHandler := Pranor Core.TraceMiddleware("github.com/vyuvaraj/pranor/notify",
-		Pranor Core.AuthMiddleware(
-			Pranor Core.RateLimitMiddleware(
-				Pranor Core.CORSMiddleware(
-					Pranor Core.MaxBytesMiddleware(10*1024*1024)(mux),
+	serverHandler := core.TraceMiddleware("github.com/vyuvaraj/pranor/notify",
+		core.AuthMiddleware(
+			core.RateLimitMiddleware(
+				core.CORSMiddleware(
+					core.MaxBytesMiddleware(10*1024*1024)(mux),
 				),
 			),
 		),
@@ -307,7 +307,7 @@ func main() {
 	<-stop
 
 	log.Println("[INFO] Shutting down Pranor Notify server...")
-	Pranor Core.Shutdown()
+	core.Shutdown()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

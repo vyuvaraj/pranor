@@ -119,10 +119,10 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/healthz", Pranor Core.HealthzHandler)
-	mux.HandleFunc("/readyz", Pranor Core.ReadyzHandler)
-	mux.HandleFunc("/api/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/secret", "1.0.0"))
-	mux.HandleFunc("/api/v1/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/secret", "1.0.0"))
+	mux.HandleFunc("/healthz", core.HealthzHandler)
+	mux.HandleFunc("/readyz", core.ReadyzHandler)
+	mux.HandleFunc("/api/version", core.VersionHandler("github.com/vyuvaraj/pranor/secret", "1.0.0"))
+	mux.HandleFunc("/api/v1/version", core.VersionHandler("github.com/vyuvaraj/pranor/secret", "1.0.0"))
 
 	// Secret manager endpoints
 	mux.HandleFunc("/api/secrets", handlers.HandleSecretRoute)
@@ -174,18 +174,18 @@ func main() {
 		}
 		serverHandler = apiKeyAuth(v1Wrapper)
 	} else {
-		rateLimiter := Pranor Core.RateLimitMiddleware
+		rateLimiter := core.RateLimitMiddleware
 		if flag.Lookup("test.v") != nil {
 			rateLimiter = func(next http.Handler) http.Handler {
 				return next
 			}
 		}
-		serverHandler = Pranor Core.TraceMiddleware("github.com/vyuvaraj/pranor/secret",
+		serverHandler = core.TraceMiddleware("github.com/vyuvaraj/pranor/secret",
 			rateLimiter(
-				Pranor Core.CORSMiddleware(
-					Pranor Core.MaxBytesMiddleware(10*1024*1024)(
-						Pranor Core.AuthMiddleware(
-							Pranor Core.TenantMiddleware(v1Wrapper),
+				core.CORSMiddleware(
+					core.MaxBytesMiddleware(10*1024*1024)(
+						core.AuthMiddleware(
+							core.TenantMiddleware(v1Wrapper),
 						),
 					),
 				),

@@ -499,7 +499,7 @@ func TestTableDrivenMailValidation(t *testing.T) {
 func TestPranorNotifyMockSMTPServer(t *testing.T) {
 	setupTest()
 	
-	storeClient := Pranor Core.NewStoreClient()
+	storeClient := core.NewStoreClient()
 	tmplStore := storage.NewPranorVaultTemplateStore(storeClient)
 	mockServer := NewMailServer("8094", tmplStore,
 		&rateLimits, &rateLimitsMu,

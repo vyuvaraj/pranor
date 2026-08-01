@@ -1,4 +1,4 @@
-package lang
+package main
 
 import (
 	"bytes"
@@ -301,7 +301,9 @@ func buildServNoExit(pnrFile, outputBinary, target, goos, goarch, tags string) (
 		}
 
 		if len(mappings) > 0 {
-			smCode := fmt.Sprintf(`package import "github.com/vyuvaraj/pranor/lang/runtime"
+			smCode := fmt.Sprintf(`package main
+
+import "github.com/vyuvaraj/pranor/lang/runtime"
 
 func init() {
 	if runtime.PnrSourceMap == nil {
@@ -685,9 +687,11 @@ func ensureBuildGoMod(buildDir string) (bool, error) {
 go %s
 
 require pranor v0.0.0
+require github.com/vyuvaraj/pranor/lang v0.0.0
 
 replace pranor v0.0.0 => %s
-`, goVersion, filepath.ToSlash(servRoot))
+replace github.com/vyuvaraj/pranor/lang => %s
+`, goVersion, filepath.ToSlash(servRoot), filepath.ToSlash(servRoot))
 
 	// Check if go.mod content has changed (skip go mod tidy if identical)
 	existingContent, readErr := os.ReadFile(goModPath)

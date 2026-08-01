@@ -43,7 +43,7 @@ func main() {
 
 	log.Printf("Starting Pranor Chrono service on %s...", *addr)
 
-	standalone := Pranor Core.IsStandalone()
+	standalone := core.IsStandalone()
 	if standalone {
 		log.Println("Pranor Chrono: Running in standalone mode. Tracing disabled. Leader election runs in single-node mode.")
 		*redisURL = ""
@@ -73,7 +73,7 @@ func main() {
 	// Set up server
 	mux := http.NewServeMux()
 	srv.RegisterRoutes(mux)
-	mux.HandleFunc("/api/v1/version", Pranor Core.VersionHandler("github.com/vyuvaraj/pranor/chrono", "1.0.0"))
+	mux.HandleFunc("/api/v1/version", core.VersionHandler("github.com/vyuvaraj/pranor/chrono", "1.0.0"))
 
 	// Wrapper handler for /api/v1/ prefix rewriting (V1.1 support)
 	v1Wrapper := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -83,20 +83,20 @@ func main() {
 		mux.ServeHTTP(w, r)
 	})
 
-	rateLimiter := Pranor Core.RateLimitMiddleware
+	rateLimiter := core.RateLimitMiddleware
 	if flag.Lookup("test.v") != nil {
 		rateLimiter = func(next http.Handler) http.Handler {
 			return next
 		}
 	}
 
-	// Wrap in Pranor Core middleware: Trace -> RateLimit -> CORS -> MaxBytes -> Auth -> Tenant -> v1Wrapper
-	serverHandler := Pranor Core.TraceMiddleware("github.com/vyuvaraj/pranor/chrono",
+	// Wrap in core middleware: Trace -> RateLimit -> CORS -> MaxBytes -> Auth -> Tenant -> v1Wrapper
+	serverHandler := core.TraceMiddleware("github.com/vyuvaraj/pranor/chrono",
 		rateLimiter(
-			Pranor Core.CORSMiddleware(
-				Pranor Core.MaxBytesMiddleware(10*1024*1024)(
-					Pranor Core.AuthMiddleware(
-						Pranor Core.TenantMiddleware(v1Wrapper),
+			core.CORSMiddleware(
+				core.MaxBytesMiddleware(10*1024*1024)(
+					core.AuthMiddleware(
+						core.TenantMiddleware(v1Wrapper),
 					),
 				),
 			),

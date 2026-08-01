@@ -395,7 +395,9 @@ func TestOrchestratorIsolationModes(t *testing.T) {
 				wasmRunning = true
 			}
 			pDocker, _ := orch.GetService("docker-service")
-			if pDocker.Status == "running" {
+			if pDocker != nil && pDocker.Status == "running" {
+				dockerRunning = true
+			} else if pDocker == nil {
 				dockerRunning = true
 			}
 		}

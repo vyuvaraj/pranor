@@ -1357,7 +1357,7 @@ func TestAIObservabilityPipelines(t *testing.T) {
 // TestConsoleV1Readiness verifies V1.1 (/api/v1 prefix), V1.2 (standard errors), and V1.6 (/api/version).
 func TestConsoleV1Readiness(t *testing.T) {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/api/version", core.VersionHandler(, "1.0.0"))
+	mux.HandleFunc("/api/version", core.VersionHandler("pranor-console", "1.0.0"))
 	mux.HandleFunc("/api/error-test", func(w http.ResponseWriter, r *http.Request) {
 		WriteJSONError(w, r, "Test Error Message", "ERR_TEST", http.StatusBadRequest)
 	})
@@ -1380,7 +1380,7 @@ func TestConsoleV1Readiness(t *testing.T) {
 	if err := json.Unmarshal(rr.Body.Bytes(), &ver); err != nil {
 		t.Fatalf("failed to parse version JSON: %v", err)
 	}
-	if ver["service"] !=  || ver["version"] != "1.0.0" {
+	if ver["service"] != "pranor-console" || ver["version"] != "1.0.0" {
 		t.Errorf("unexpected version response: %+v", ver)
 	}
 

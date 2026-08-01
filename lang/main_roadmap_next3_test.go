@@ -379,7 +379,7 @@ store MyStore {}
 
 	origArgs := os.Args
 	defer func() { os.Args = origArgs }()
-	os.Args = []string{, "generate", "sandbox", pnrFile, "-o", sandboxFile}
+	os.Args = []string{"pranor-lang", "generate", "sandbox", pnrFile, "-o", sandboxFile}
 
 	runGenerateSandbox(pnrFile)
 

@@ -23,7 +23,7 @@ func TestLauncherEndpoints(t *testing.T) {
 	}
 
 	// 2. Restart dev service non-POST returns Method Not Allowed
-	req2 := httptest.NewRequest("GET", "/api/launcher/restart?service=Pranor Gate", nil)
+	req2 := httptest.NewRequest("GET", "/api/launcher/restart?service=PranorGate", nil)
 	w2 := httptest.NewRecorder()
 	HandleDevRestart(w2, req2)
 

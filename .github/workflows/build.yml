@@ -12,8 +12,28 @@ env:
 
 jobs:
   build-test:
-    name: Build and Test Workspace Modules
+    name: "Build & Test: ${{ matrix.module }}"
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module:
+          - lang
+          - gate
+          - console
+          - vault
+          - pulse
+          - notify
+          - auth
+          - secret
+          - lock
+          - flow
+          - chrono
+          - cache
+          - trace
+          - tunnel
+          - deploy
+          - pool
 
     steps:
       - name: Set up Go
@@ -24,38 +44,14 @@ jobs:
       - name: Check out codebase
         uses: actions/checkout@v4
 
-      - name: Verify workspace Go version
+      - name: Build module
+        working-directory: ${{ matrix.module }}
         run: |
-          go version
+          echo "==> Building module ${{ matrix.module }}..."
+          go build ./...
 
-      - name: Build all modules
+      - name: Test module
+        working-directory: ${{ matrix.module }}
         run: |
-          # Build each package dynamically using workspace resolution
-          modules=(
-            "Pranor-lang" "PranorTunnel" "PranorStore" "PranorTrace" "PranorShared"
-            "PranorRegistry" "PranorQueue" "PranorMesh" "PranorPool" "PranorMail"
-            "PranorGate" "PranorFlow" "PranorLock" "PranorConsole" "PranorCron"
-            "PranorCloud" "PranorCache" "PranorAuth" "PranorSecret"
-          )
-          for m in "${modules[@]}"; do
-            if [ -d "packages/$m" ]; then
-              echo "==> Building package $m..."
-              (cd "packages/$m" && go build ./...)
-            fi
-          done
-
-      - name: Run workspace tests
-        run: |
-          # Run tests for each package
-          modules=(
-            "Pranor-lang" "PranorTunnel" "PranorStore" "PranorTrace" "PranorShared"
-            "PranorRegistry" "PranorQueue" "PranorMesh" "PranorPool" "PranorMail"
-            "PranorGate" "PranorFlow" "PranorLock" "PranorConsole" "PranorCron"
-            "PranorCloud" "PranorCache" "PranorAuth" "PranorSecret"
-          )
-          for m in "${modules[@]}"; do
-            if [ -d "packages/$m" ]; then
-              echo "==> Testing package $m..."
-              (cd "packages/$m" && go test ./...)
-            fi
-          done
+          echo "==> Testing module ${{ matrix.module }}..."
+          go test ./... -timeout 120s

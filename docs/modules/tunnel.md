@@ -189,4 +189,4 @@ pranor-tunnel \
 | `PRANOR_TUNNEL_TLS_KEY` | — | TLS key path |
 
 ### Wildcard DNS
-Configure your DNS provider to point `*.pranor.net` to the Pranor Tunnel server IP. See [docs/wildcard_dns.md](docs/wildcard_dns.md) for detailed setup.
+Configure your DNS provider with a wildcard A/CNAME record pointing `*.pranor.net` to the Pranor Tunnel server IP.

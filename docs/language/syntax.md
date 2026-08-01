@@ -489,13 +489,12 @@ The output binary compiles out all debug logs and features a fast, low-overhead 
 
 ## Documentation
 
-- [Language Reference](docs/language-reference.md) — Full syntax and type system
-- [Getting Started](docs/getting-started.md) — First project walkthrough
-- [Standard Library](docs/stdlib.md) — All 48 modules documented
-- [Built-in Functions](docs/builtins.md) — `log`, `db`, `cache`, `http`, `json`, `metric`
-- [CLI Reference](docs/cli.md) — All commands and flags
-- [Deployment Guide](docs/deployment.md) — Docker, TLS, observability
-- [Examples](examples/) — 42 working examples covering all features
+- [Language Reference](../language/syntax.md) — Full syntax and type system
+- [Getting Started](../getting-started.md) — First project walkthrough
+- [Standard Library](../language/stdlib.md) — All modules documented
+- [CLI Reference](../language/cli.md) — All commands and flags
+- [Deployment Guide](../deployment/docker.md) — Docker, TLS, observability
+- [Examples](../language/examples.md) — Examples & technical articles
 
 ---
 
@@ -646,13 +645,13 @@ Use in CI:
 
 ## License
 
-Apache 2.0 — see [LICENSE](LICENSE)
+Apache 2.0 — see [LICENSE](https://github.com/vyuvaraj/pranor/blob/main/LICENSE)
 
 ---
 
 ## Links
 
-- **GitHub**: [github.com/vyuvaraj/Pranor](https://github.com/vyuvaraj/Pranor)
+- **GitHub**: [github.com/vyuvaraj/pranor](https://github.com/vyuvaraj/pranor)
 - **Playground**: [playground.pranor.dev](https://playground.pranor.dev) — zero-install WASM browser playground
 - **VS Code Extension**: Search "Pranor Language Support" in Extensions
-- **Issues**: [github.com/vyuvaraj/Pranor/issues](https://github.com/vyuvaraj/Pranor/issues)
+- **Issues**: [github.com/vyuvaraj/pranor/issues](https://github.com/vyuvaraj/pranor/issues)

@@ -17,10 +17,10 @@ Pranor Gate is engineered in Go for extreme throughput and low latency:
 
 | Benchmark Metric | Result | Benchmark File |
 |------------------|--------|----------------|
-| **Throughput** | **50,000+ req/sec** | [`pkg/proxy/performance_test.go`](pkg/proxy/performance_test.go) |
-| **P99 Added Latency** | **< 0.8 ms** per request | [`pkg/proxy/performance_test.go`](pkg/proxy/performance_test.go) |
-| **WASM Cold Start** | **~0.3 ms** compilation | [`pkg/proxy/performance_test.go`](pkg/proxy/performance_test.go) |
-| **WASM Warm Exec** | **~0.01 ms** execution | [`pkg/proxy/performance_test.go`](pkg/proxy/performance_test.go) |
+| **Throughput** | **50,000+ req/sec** | [`pkg/proxy/performance_test.go`](https://github.com/vyuvaraj/pranor/blob/main/gate/pkg/proxy/performance_test.go) |
+| **P99 Added Latency** | **< 0.8 ms** per request | [`pkg/proxy/performance_test.go`](https://github.com/vyuvaraj/pranor/blob/main/gate/pkg/proxy/performance_test.go) |
+| **WASM Cold Start** | **~0.3 ms** compilation | [`pkg/proxy/performance_test.go`](https://github.com/vyuvaraj/pranor/blob/main/gate/pkg/proxy/performance_test.go) |
+| **WASM Warm Exec** | **~0.01 ms** execution | [`pkg/proxy/performance_test.go`](https://github.com/vyuvaraj/pranor/blob/main/gate/pkg/proxy/performance_test.go) |
 
 ---
 

@@ -86,4 +86,4 @@ All endpoints support standard header authentication and `X-Tenant-ID` routing (
 
 ## License
 
-This project is licensed under the GNU Affero General Public License v3 (AGPL-3.0) - see the [LICENSE](LICENSE) file for details.
+This project is licensed under Apache 2.0 - see the [LICENSE](https://github.com/vyuvaraj/pranor/blob/main/LICENSE) file for details.

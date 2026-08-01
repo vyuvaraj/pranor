@@ -46,11 +46,13 @@
 - [Overview](./architecture/overview.md)
 - [Security](./architecture/security.md)
 - [Observability](./architecture/observability.md)
+- [Error Codes](./error_codes.md)
 
 # Enterprise
 
-- [Features & Licensing](./enterprise/features.md)
+- [Features](./enterprise/features.md)
+- [Licensing](./enterprise/licensing.md)
 
 ---
 
-[Changelog](./changelog.md)
+- [Changelog](./changelog.md)

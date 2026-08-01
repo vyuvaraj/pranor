@@ -10,7 +10,8 @@ import (
 func runQuickstart() {
 	fmt.Println("🚀 Pranor Interactive CLI Quickstart Wizard")
 	fmt.Println("===========================================")
-	fmt.Println("Welcome! Let's scaffold your infrastructure & application in 3 quick steps.\n")
+	fmt.Println("Welcome! Let's scaffold your infrastructure & application in 3 quick steps.")
+	fmt.Println()
 
 	reader := bufio.NewReader(os.Stdin)
 

@@ -6,15 +6,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/vyuvaraj/pranor/pool/pkg/pool"
-)
+	)
 
 func TestHealthChecker_HealthyConnPasses(t *testing.T) {
-	inner := pool.NewConnectionPool(5, "postgres")
+	inner := NewConnectionPool(5, "postgres")
 	defer inner.Shutdown(context.Background())
 
 	// Default validation (nil validateFn)
-	hc := pool.NewHealthChecker(inner, nil)
+	hc := NewHealthChecker(inner, nil)
 
 	conn, err := hc.Acquire()
 	if err != nil {
@@ -36,17 +35,17 @@ func TestHealthChecker_HealthyConnPasses(t *testing.T) {
 }
 
 func TestHealthChecker_DiscardAndRetry(t *testing.T) {
-	inner := pool.NewConnectionPool(5, "postgres")
+	inner := NewConnectionPool(5, "postgres")
 	defer inner.Shutdown(context.Background())
 
 	attempts := 0
 	// Reject the first 2 connections, pass the 3rd
-	validateFn := func(conn *pool.DbConn) bool {
+	validateFn := func(conn *DbConn) bool {
 		attempts++
 		return attempts >= 3
 	}
 
-	hc := pool.NewHealthChecker(inner, validateFn)
+	hc := NewHealthChecker(inner, validateFn)
 
 	conn, err := hc.Acquire()
 	if err != nil {
@@ -68,15 +67,15 @@ func TestHealthChecker_DiscardAndRetry(t *testing.T) {
 }
 
 func TestHealthChecker_AllUnhealthyReturnsError(t *testing.T) {
-	inner := pool.NewConnectionPool(5, "postgres")
+	inner := NewConnectionPool(5, "postgres")
 	defer inner.Shutdown(context.Background())
 
 	// Always fail validation
-	validateFn := func(conn *pool.DbConn) bool {
+	validateFn := func(conn *DbConn) bool {
 		return false
 	}
 
-	hc := pool.NewHealthChecker(inner, validateFn)
+	hc := NewHealthChecker(inner, validateFn)
 
 	conn, err := hc.Acquire()
 	if err == nil {
@@ -96,8 +95,8 @@ func TestHealthChecker_AllUnhealthyReturnsError(t *testing.T) {
 }
 
 func TestHealthChecker_DelegatedMethods(t *testing.T) {
-	inner := pool.NewConnectionPool(5, "postgres")
-	hc := pool.NewHealthChecker(inner, nil)
+	inner := NewConnectionPool(5, "postgres")
+	hc := NewHealthChecker(inner, nil)
 
 	if hc.Dialect() != "postgres" {
 		t.Errorf("Dialect() = %s, expected postgres", hc.Dialect())
@@ -117,8 +116,8 @@ func TestHealthChecker_DelegatedMethods(t *testing.T) {
 }
 
 func TestHealthChecker_InnerAcquireError(t *testing.T) {
-	inner := pool.NewConnectionPool(5, "postgres")
-	hc := pool.NewHealthChecker(inner, nil)
+	inner := NewConnectionPool(5, "postgres")
+	hc := NewHealthChecker(inner, nil)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
@@ -134,10 +133,10 @@ func TestHealthChecker_InnerAcquireError(t *testing.T) {
 }
 
 func TestHealthChecker_DynamicValidateFn(t *testing.T) {
-	inner := pool.NewConnectionPool(5, "postgres")
+	inner := NewConnectionPool(5, "postgres")
 	defer inner.Shutdown(context.Background())
 
-	hc := pool.NewHealthChecker(inner, nil)
+	hc := NewHealthChecker(inner, nil)
 	conn1, err := hc.Acquire()
 	if err != nil || conn1 == nil {
 		t.Fatalf("expected acquire success")
@@ -145,7 +144,7 @@ func TestHealthChecker_DynamicValidateFn(t *testing.T) {
 	hc.Release(conn1)
 
 	// Dynamically change ValidateFn to fail validation
-	hc.ValidateFn = func(c *pool.DbConn) bool { return false }
+	hc.ValidateFn = func(c *DbConn) bool { return false }
 
 	conn2, err := hc.Acquire()
 	if err == nil {
@@ -157,10 +156,10 @@ func TestHealthChecker_DynamicValidateFn(t *testing.T) {
 }
 
 func TestHealthChecker_ConcurrentAcquire(t *testing.T) {
-	inner := pool.NewConnectionPool(10, "postgres")
+	inner := NewConnectionPool(10, "postgres")
 	defer inner.Shutdown(context.Background())
 
-	hc := pool.NewHealthChecker(inner, func(c *pool.DbConn) bool {
+	hc := NewHealthChecker(inner, func(c *DbConn) bool {
 		return c.ID%2 == 0 // Reject odd IDs
 	})
 

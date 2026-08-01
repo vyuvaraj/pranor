@@ -8,82 +8,81 @@ import (
 	"testing"
 
 	"github.com/vyuvaraj/pranor/pool/pkg/pool"
-	"github.com/vyuvaraj/pranor/pool/pkg/routing"
-)
+	)
 
 // TestEmpirical_SQLClassification verifies SQL classification with leading comments, whitespace, and mixed casing.
 func TestEmpirical_SQLClassification(t *testing.T) {
 	tests := []struct {
 		name     string
 		sql      string
-		expected routing.QueryType
+		expected QueryType
 	}{
 		// Read queries - SELECT and WITH
-		{"SELECT uppercase", "SELECT * FROM users", routing.QueryTypeRead},
-		{"SELECT lowercase", "select * from users", routing.QueryTypeRead},
-		{"SELECT mixed case 1", "sElEcT id, name FROM table1", routing.QueryTypeRead},
-		{"SELECT mixed case 2", "SeLeCt 1", routing.QueryTypeRead},
-		{"WITH uppercase", "WITH summary AS (SELECT 1) SELECT * FROM summary", routing.QueryTypeRead},
-		{"WITH lowercase", "with cte as (select * from logs) select * from cte", routing.QueryTypeRead},
-		{"WITH mixed case", "WiTh cte AS (SELECT 1) SELECT 1", routing.QueryTypeRead},
+		{"SELECT uppercase", "SELECT * FROM users", QueryTypeRead},
+		{"SELECT lowercase", "select * from users", QueryTypeRead},
+		{"SELECT mixed case 1", "sElEcT id, name FROM table1", QueryTypeRead},
+		{"SELECT mixed case 2", "SeLeCt 1", QueryTypeRead},
+		{"WITH uppercase", "WITH summary AS (SELECT 1) SELECT * FROM summary", QueryTypeRead},
+		{"WITH lowercase", "with cte as (select * from logs) select * from cte", QueryTypeRead},
+		{"WITH mixed case", "WiTh cte AS (SELECT 1) SELECT 1", QueryTypeRead},
 
 		// Read queries with leading whitespace
-		{"Leading spaces", "   SELECT * FROM users", routing.QueryTypeRead},
-		{"Leading tabs", "\t\tSELECT * FROM users", routing.QueryTypeRead},
-		{"Leading newlines", "\n\nSELECT * FROM users", routing.QueryTypeRead},
-		{"Leading CRLF", "\r\n\r\nSELECT * FROM users", routing.QueryTypeRead},
-		{"Mixed leading whitespace", " \t \n \r SELECT * FROM users", routing.QueryTypeRead},
+		{"Leading spaces", "   SELECT * FROM users", QueryTypeRead},
+		{"Leading tabs", "\t\tSELECT * FROM users", QueryTypeRead},
+		{"Leading newlines", "\n\nSELECT * FROM users", QueryTypeRead},
+		{"Leading CRLF", "\r\n\r\nSELECT * FROM users", QueryTypeRead},
+		{"Mixed leading whitespace", " \t \n \r SELECT * FROM users", QueryTypeRead},
 
 		// Read queries with leading comments
-		{"Single-line comment", "-- fetch users\nSELECT * FROM users", routing.QueryTypeRead},
-		{"Multiple single-line comments", "-- comment 1\n-- comment 2\nSELECT 1", routing.QueryTypeRead},
-		{"Block comment single line", "/* inline comment */ SELECT * FROM users", routing.QueryTypeRead},
-		{"Block comment multiline", "/*\n * Multiline SQL comment\n */ SELECT * FROM users", routing.QueryTypeRead},
-		{"Sequential block and line comments", "/* block 1 */ -- line comment\n /* block 2 */ WITH cte AS (SELECT 1) SELECT 1", routing.QueryTypeRead},
+		{"Single-line comment", "-- fetch users\nSELECT * FROM users", QueryTypeRead},
+		{"Multiple single-line comments", "-- comment 1\n-- comment 2\nSELECT 1", QueryTypeRead},
+		{"Block comment single line", "/* inline comment */ SELECT * FROM users", QueryTypeRead},
+		{"Block comment multiline", "/*\n * Multiline SQL comment\n */ SELECT * FROM users", QueryTypeRead},
+		{"Sequential block and line comments", "/* block 1 */ -- line comment\n /* block 2 */ WITH cte AS (SELECT 1) SELECT 1", QueryTypeRead},
 
 		// Write queries - INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, etc.
-		{"INSERT uppercase", "INSERT INTO users (name) VALUES ('alice')", routing.QueryTypeWrite},
-		{"INSERT lowercase", "insert into users (name) values ('bob')", routing.QueryTypeWrite},
-		{"INSERT mixed case", "iNsErT INTO users VALUES (1)", routing.QueryTypeWrite},
-		{"UPDATE uppercase", "UPDATE users SET active = true WHERE id = 1", routing.QueryTypeWrite},
-		{"UPDATE lowercase", "update users set active = false", routing.QueryTypeWrite},
-		{"UPDATE mixed case", "UpDaTe users SET val = 2", routing.QueryTypeWrite},
-		{"DELETE uppercase", "DELETE FROM users WHERE id = 1", routing.QueryTypeWrite},
-		{"DELETE lowercase", "delete from tokens where expired = true", routing.QueryTypeWrite},
-		{"DELETE mixed case", "DeLeTe FROM session", routing.QueryTypeWrite},
-		{"CREATE uppercase", "CREATE TABLE test (id INT PRIMARY KEY)", routing.QueryTypeWrite},
-		{"CREATE lowercase", "create table test (id int)", routing.QueryTypeWrite},
-		{"CREATE mixed case", "CrEaTe INDEX idx ON test(id)", routing.QueryTypeWrite},
-		{"DROP uppercase", "DROP TABLE test", routing.QueryTypeWrite},
-		{"DROP lowercase", "drop table if exists test", routing.QueryTypeWrite},
-		{"DROP mixed case", "DrOp DATABASE temp", routing.QueryTypeWrite},
-		{"ALTER uppercase", "ALTER TABLE test ADD COLUMN age INT", routing.QueryTypeWrite},
-		{"ALTER lowercase", "alter table test drop column age", routing.QueryTypeWrite},
-		{"ALTER mixed case", "AlTeR TABLE test RENAME TO test_old", routing.QueryTypeWrite},
-		{"TRUNCATE", "TRUNCATE TABLE logs", routing.QueryTypeWrite},
-		{"EXPLAIN", "EXPLAIN SELECT * FROM users", routing.QueryTypeWrite},
+		{"INSERT uppercase", "INSERT INTO users (name) VALUES ('alice')", QueryTypeWrite},
+		{"INSERT lowercase", "insert into users (name) values ('bob')", QueryTypeWrite},
+		{"INSERT mixed case", "iNsErT INTO users VALUES (1)", QueryTypeWrite},
+		{"UPDATE uppercase", "UPDATE users SET active = true WHERE id = 1", QueryTypeWrite},
+		{"UPDATE lowercase", "update users set active = false", QueryTypeWrite},
+		{"UPDATE mixed case", "UpDaTe users SET val = 2", QueryTypeWrite},
+		{"DELETE uppercase", "DELETE FROM users WHERE id = 1", QueryTypeWrite},
+		{"DELETE lowercase", "delete from tokens where expired = true", QueryTypeWrite},
+		{"DELETE mixed case", "DeLeTe FROM session", QueryTypeWrite},
+		{"CREATE uppercase", "CREATE TABLE test (id INT PRIMARY KEY)", QueryTypeWrite},
+		{"CREATE lowercase", "create table test (id int)", QueryTypeWrite},
+		{"CREATE mixed case", "CrEaTe INDEX idx ON test(id)", QueryTypeWrite},
+		{"DROP uppercase", "DROP TABLE test", QueryTypeWrite},
+		{"DROP lowercase", "drop table if exists test", QueryTypeWrite},
+		{"DROP mixed case", "DrOp DATABASE temp", QueryTypeWrite},
+		{"ALTER uppercase", "ALTER TABLE test ADD COLUMN age INT", QueryTypeWrite},
+		{"ALTER lowercase", "alter table test drop column age", QueryTypeWrite},
+		{"ALTER mixed case", "AlTeR TABLE test RENAME TO test_old", QueryTypeWrite},
+		{"TRUNCATE", "TRUNCATE TABLE logs", QueryTypeWrite},
+		{"EXPLAIN", "EXPLAIN SELECT * FROM users", QueryTypeWrite},
 
 		// Write queries with comments & whitespace
-		{"INSERT with single-line comment", "-- insert query\nINSERT INTO users VALUES (1)", routing.QueryTypeWrite},
-		{"UPDATE with block comment", "/* update status */ UPDATE users SET status = 'done'", routing.QueryTypeWrite},
-		{"DELETE with multiline comments", "/* comment 1 */\n-- line comment\nDELETE FROM users", routing.QueryTypeWrite},
+		{"INSERT with single-line comment", "-- insert query\nINSERT INTO users VALUES (1)", QueryTypeWrite},
+		{"UPDATE with block comment", "/* update status */ UPDATE users SET status = 'done'", QueryTypeWrite},
+		{"DELETE with multiline comments", "/* comment 1 */\n-- line comment\nDELETE FROM users", QueryTypeWrite},
 
 		// Boundary & edge cases
-		{"Empty string", "", routing.QueryTypeWrite},
-		{"Spaces only", "     ", routing.QueryTypeWrite},
-		{"Tabs and newlines only", "\t\n\r  ", routing.QueryTypeWrite},
-		{"Comment without trailing newline", "-- comment only", routing.QueryTypeWrite},
-		{"Unclosed block comment", "/* unclosed comment SELECT 1", routing.QueryTypeWrite},
-		{"SELECT followed immediately by paren", "SELECT(1)", routing.QueryTypeRead},
-		{"SELECT followed immediately by semicolon", "SELECT;1", routing.QueryTypeRead},
+		{"Empty string", "", QueryTypeWrite},
+		{"Spaces only", "     ", QueryTypeWrite},
+		{"Tabs and newlines only", "\t\n\r  ", QueryTypeWrite},
+		{"Comment without trailing newline", "-- comment only", QueryTypeWrite},
+		{"Unclosed block comment", "/* unclosed comment SELECT 1", QueryTypeWrite},
+		{"SELECT followed immediately by paren", "SELECT(1)", QueryTypeRead},
+		{"SELECT followed immediately by semicolon", "SELECT;1", QueryTypeRead},
 	}
 
-	splitter := routing.NewRWSplitter()
+	splitter := NewRWSplitter()
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotPkg := routing.ClassifyQuery(tt.sql)
+			gotPkg := ClassifyQuery(tt.sql)
 			if gotPkg != tt.expected {
-				t.Errorf("routing.ClassifyQuery(%q) = %v, expected %v", tt.sql, gotPkg, tt.expected)
+				t.Errorf("ClassifyQuery(%q) = %v, expected %v", tt.sql, gotPkg, tt.expected)
 			}
 
 			gotInst := splitter.ClassifyQuery(tt.sql)
@@ -103,7 +102,7 @@ func TestEmpirical_ReplicaDistributionFairness(t *testing.T) {
 		replicas[i] = pool.NewConnectionPool(10, fmt.Sprintf("replica_%d", i))
 	}
 
-	splitter := routing.NewRWSplitter()
+	splitter := NewRWSplitter()
 	const totalQueries = 10000
 
 	counts := make(map[pool.Manager]int)
@@ -133,7 +132,7 @@ func TestEmpirical_ReplicaDistributionFairness_Concurrent(t *testing.T) {
 		replicas[i] = pool.NewConnectionPool(10, fmt.Sprintf("replica_%d", i))
 	}
 
-	splitter := routing.NewRWSplitter()
+	splitter := NewRWSplitter()
 	const numGoroutines = 100
 	const queriesPerGoroutine = 100
 	const totalQueries = numGoroutines * queriesPerGoroutine // 10,000
@@ -183,7 +182,7 @@ func TestEmpirical_RouteWriteQueriesAndFallback(t *testing.T) {
 	primary := pool.NewConnectionPool(10, "postgres")
 	replica := pool.NewConnectionPool(10, "replica")
 
-	splitter := routing.NewRWSplitter()
+	splitter := NewRWSplitter()
 
 	// Write query with replicas available must route to primary
 	writeSQL := "/* write query */ INSERT INTO users (name) VALUES ('charlie')"

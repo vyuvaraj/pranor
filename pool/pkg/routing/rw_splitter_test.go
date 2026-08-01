@@ -5,43 +5,42 @@ import (
 	"testing"
 
 	"github.com/vyuvaraj/pranor/pool/pkg/pool"
-	"github.com/vyuvaraj/pranor/pool/pkg/routing"
-)
+	)
 
 func TestClassifyQuery_SQLVerbsAndCasing(t *testing.T) {
 	tests := []struct {
 		name     string
 		sql      string
-		expected routing.QueryType
+		expected QueryType
 	}{
 		// Read queries
-		{"uppercase SELECT", "SELECT * FROM users", routing.QueryTypeRead},
-		{"lowercase select", "select id, name from products", routing.QueryTypeRead},
-		{"mixedcase sElEcT", "sElEcT 1", routing.QueryTypeRead},
-		{"uppercase WITH", "WITH cte AS (SELECT 1) SELECT * FROM cte", routing.QueryTypeRead},
-		{"lowercase with", "with summary as (select * from logs) select * from summary", routing.QueryTypeRead},
-		{"mixedcase wItH", "wItH cte AS (SELECT 1) SELECT 1", routing.QueryTypeRead},
+		{"uppercase SELECT", "SELECT * FROM users", QueryTypeRead},
+		{"lowercase select", "select id, name from products", QueryTypeRead},
+		{"mixedcase sElEcT", "sElEcT 1", QueryTypeRead},
+		{"uppercase WITH", "WITH cte AS (SELECT 1) SELECT * FROM cte", QueryTypeRead},
+		{"lowercase with", "with summary as (select * from logs) select * from summary", QueryTypeRead},
+		{"mixedcase wItH", "wItH cte AS (SELECT 1) SELECT 1", QueryTypeRead},
 
 		// Write queries
-		{"uppercase INSERT", "INSERT INTO users (name) VALUES ('alice')", routing.QueryTypeWrite},
-		{"lowercase insert", "insert into logs (msg) values ('hello')", routing.QueryTypeWrite},
-		{"mixedcase InSeRt", "InSeRt INTO tbl VALUES (1)", routing.QueryTypeWrite},
-		{"uppercase UPDATE", "UPDATE users SET status = 'active' WHERE id = 1", routing.QueryTypeWrite},
-		{"lowercase update", "update users set status = 'idle'", routing.QueryTypeWrite},
-		{"uppercase DELETE", "DELETE FROM users WHERE id = 1", routing.QueryTypeWrite},
-		{"lowercase delete", "delete from tokens", routing.QueryTypeWrite},
-		{"uppercase CREATE", "CREATE TABLE test (id INT)", routing.QueryTypeWrite},
-		{"lowercase create", "create table foo (bar text)", routing.QueryTypeWrite},
-		{"uppercase DROP", "DROP TABLE test", routing.QueryTypeWrite},
-		{"lowercase drop", "drop index idx_user", routing.QueryTypeWrite},
-		{"uppercase ALTER", "ALTER TABLE test ADD COLUMN age INT", routing.QueryTypeWrite},
-		{"lowercase alter", "alter table test drop column age", routing.QueryTypeWrite},
-		{"other verb TRUNCATE", "TRUNCATE TABLE users", routing.QueryTypeWrite},
+		{"uppercase INSERT", "INSERT INTO users (name) VALUES ('alice')", QueryTypeWrite},
+		{"lowercase insert", "insert into logs (msg) values ('hello')", QueryTypeWrite},
+		{"mixedcase InSeRt", "InSeRt INTO tbl VALUES (1)", QueryTypeWrite},
+		{"uppercase UPDATE", "UPDATE users SET status = 'active' WHERE id = 1", QueryTypeWrite},
+		{"lowercase update", "update users set status = 'idle'", QueryTypeWrite},
+		{"uppercase DELETE", "DELETE FROM users WHERE id = 1", QueryTypeWrite},
+		{"lowercase delete", "delete from tokens", QueryTypeWrite},
+		{"uppercase CREATE", "CREATE TABLE test (id INT)", QueryTypeWrite},
+		{"lowercase create", "create table foo (bar text)", QueryTypeWrite},
+		{"uppercase DROP", "DROP TABLE test", QueryTypeWrite},
+		{"lowercase drop", "drop index idx_user", QueryTypeWrite},
+		{"uppercase ALTER", "ALTER TABLE test ADD COLUMN age INT", QueryTypeWrite},
+		{"lowercase alter", "alter table test drop column age", QueryTypeWrite},
+		{"other verb TRUNCATE", "TRUNCATE TABLE users", QueryTypeWrite},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := routing.ClassifyQuery(tt.sql)
+			got := ClassifyQuery(tt.sql)
 			if got != tt.expected {
 				t.Errorf("ClassifyQuery(%q) = %v, expected %v", tt.sql, got, tt.expected)
 			}
@@ -53,24 +52,24 @@ func TestClassifyQuery_WhitespaceAndComments(t *testing.T) {
 	tests := []struct {
 		name     string
 		sql      string
-		expected routing.QueryType
+		expected QueryType
 	}{
-		{"leading spaces", "   SELECT * FROM users", routing.QueryTypeRead},
-		{"leading tabs and newlines", "\n\t\r  SELECT 1", routing.QueryTypeRead},
-		{"single-line comment", "-- query comment\nSELECT * FROM users", routing.QueryTypeRead},
-		{"multi-line comment", "/* block comment */ SELECT * FROM users", routing.QueryTypeRead},
-		{"multiline comment with newlines", "/* line 1\n line 2 */\nSELECT 1", routing.QueryTypeRead},
-		{"sequential comments", "/* comment 1 */ -- comment 2\n  \t  WITH cte AS (SELECT 1) SELECT 1", routing.QueryTypeRead},
-		{"write with leading comment", "-- insert comment\nINSERT INTO users VALUES (1)", routing.QueryTypeWrite},
-		{"write with block comment", "/* write block */ UPDATE users SET status = 'ok'", routing.QueryTypeWrite},
-		{"empty query", "", routing.QueryTypeWrite},
-		{"whitespace only", "   \n\t  ", routing.QueryTypeWrite},
-		{"unclosed comment", "/* unclosed comment SELECT 1", routing.QueryTypeWrite},
+		{"leading spaces", "   SELECT * FROM users", QueryTypeRead},
+		{"leading tabs and newlines", "\n\t\r  SELECT 1", QueryTypeRead},
+		{"single-line comment", "-- query comment\nSELECT * FROM users", QueryTypeRead},
+		{"multi-line comment", "/* block comment */ SELECT * FROM users", QueryTypeRead},
+		{"multiline comment with newlines", "/* line 1\n line 2 */\nSELECT 1", QueryTypeRead},
+		{"sequential comments", "/* comment 1 */ -- comment 2\n  \t  WITH cte AS (SELECT 1) SELECT 1", QueryTypeRead},
+		{"write with leading comment", "-- insert comment\nINSERT INTO users VALUES (1)", QueryTypeWrite},
+		{"write with block comment", "/* write block */ UPDATE users SET status = 'ok'", QueryTypeWrite},
+		{"empty query", "", QueryTypeWrite},
+		{"whitespace only", "   \n\t  ", QueryTypeWrite},
+		{"unclosed comment", "/* unclosed comment SELECT 1", QueryTypeWrite},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := routing.ClassifyQuery(tt.sql)
+			got := ClassifyQuery(tt.sql)
 			if got != tt.expected {
 				t.Errorf("ClassifyQuery(%q) = %v, expected %v", tt.sql, got, tt.expected)
 			}
@@ -85,7 +84,7 @@ func TestRoute_RoundRobinAndFallback(t *testing.T) {
 	replica3 := pool.NewConnectionPool(5, "postgres")
 	replicas := []pool.Manager{replica1, replica2, replica3}
 
-	splitter := routing.NewRWSplitter()
+	splitter := NewRWSplitter()
 
 	// 1. Write queries should always route to primary
 	writeSQLs := []string{
@@ -126,11 +125,11 @@ func TestRoute_RoundRobinAndFallback(t *testing.T) {
 }
 
 func TestClassifyQuery_InstanceMethod(t *testing.T) {
-	splitter := routing.NewRWSplitter()
-	if splitter.ClassifyQuery("SELECT 1") != routing.QueryTypeRead {
+	splitter := NewRWSplitter()
+	if splitter.ClassifyQuery("SELECT 1") != QueryTypeRead {
 		t.Errorf("expected QueryTypeRead from instance method")
 	}
-	if splitter.ClassifyQuery("UPDATE tbl SET a=1") != routing.QueryTypeWrite {
+	if splitter.ClassifyQuery("UPDATE tbl SET a=1") != QueryTypeWrite {
 		t.Errorf("expected QueryTypeWrite from instance method")
 	}
 }
@@ -140,12 +139,12 @@ func TestRoute_PackageLevelFunc(t *testing.T) {
 	replica := pool.NewConnectionPool(5, "postgres")
 	replicas := []pool.Manager{replica}
 
-	got := routing.Route("SELECT 1", primary, replicas)
+	got := Route("SELECT 1", primary, replicas)
 	if got != replica {
 		t.Errorf("expected package-level Route to return replica pool")
 	}
 
-	gotWrite := routing.Route("INSERT INTO tbl VALUES (1)", primary, replicas)
+	gotWrite := Route("INSERT INTO tbl VALUES (1)", primary, replicas)
 	if gotWrite != primary {
 		t.Errorf("expected package-level Route to return primary pool for write")
 	}
@@ -156,7 +155,7 @@ func TestRoute_Concurrent(t *testing.T) {
 	replica1 := pool.NewConnectionPool(5, "postgres")
 	replica2 := pool.NewConnectionPool(5, "postgres")
 	replicas := []pool.Manager{replica1, replica2}
-	splitter := routing.NewRWSplitter()
+	splitter := NewRWSplitter()
 
 	const numGoroutines = 20
 	const queriesPerGoroutine = 50

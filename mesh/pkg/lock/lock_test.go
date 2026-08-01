@@ -4,11 +4,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/vyuvaraj/pranor/mesh/pkg/lock"
-)
+	)
 
 func TestAcquire_GrantsFreeLock(t *testing.T) {
-	s := lock.NewStore(10 * time.Second)
+	s := NewStore(10 * time.Second)
 	defer s.Close()
 
 	result := s.Acquire("key1", "svc-a", 5*time.Second)
@@ -24,7 +23,7 @@ func TestAcquire_GrantsFreeLock(t *testing.T) {
 }
 
 func TestAcquire_BlocksSecondOwner(t *testing.T) {
-	s := lock.NewStore(10 * time.Second)
+	s := NewStore(10 * time.Second)
 	defer s.Close()
 
 	r1 := s.Acquire("key1", "svc-a", 5*time.Second)
@@ -42,7 +41,7 @@ func TestAcquire_BlocksSecondOwner(t *testing.T) {
 }
 
 func TestAcquire_SameOwnerRefreshesTTL(t *testing.T) {
-	s := lock.NewStore(10 * time.Second)
+	s := NewStore(10 * time.Second)
 	defer s.Close()
 
 	r1 := s.Acquire("key1", "svc-a", 5*time.Second)
@@ -62,7 +61,7 @@ func TestAcquire_SameOwnerRefreshesTTL(t *testing.T) {
 }
 
 func TestRelease_ByOwner(t *testing.T) {
-	s := lock.NewStore(10 * time.Second)
+	s := NewStore(10 * time.Second)
 	defer s.Close()
 
 	s.Acquire("key1", "svc-a", 5*time.Second)
@@ -79,7 +78,7 @@ func TestRelease_ByOwner(t *testing.T) {
 }
 
 func TestRelease_WrongOwnerFails(t *testing.T) {
-	s := lock.NewStore(10 * time.Second)
+	s := NewStore(10 * time.Second)
 	defer s.Close()
 
 	s.Acquire("key1", "svc-a", 5*time.Second)
@@ -90,7 +89,7 @@ func TestRelease_WrongOwnerFails(t *testing.T) {
 }
 
 func TestRelease_NotHeldFails(t *testing.T) {
-	s := lock.NewStore(10 * time.Second)
+	s := NewStore(10 * time.Second)
 	defer s.Close()
 
 	ok := s.Release("nonexistent", "svc-a")
@@ -100,7 +99,7 @@ func TestRelease_NotHeldFails(t *testing.T) {
 }
 
 func TestExtend_RefreshesTTL(t *testing.T) {
-	s := lock.NewStore(10 * time.Second)
+	s := NewStore(10 * time.Second)
 	defer s.Close()
 
 	s.Acquire("key1", "svc-a", 2*time.Second)
@@ -114,7 +113,7 @@ func TestExtend_RefreshesTTL(t *testing.T) {
 }
 
 func TestExtend_WrongOwnerFails(t *testing.T) {
-	s := lock.NewStore(10 * time.Second)
+	s := NewStore(10 * time.Second)
 	defer s.Close()
 
 	s.Acquire("key1", "svc-a", 5*time.Second)
@@ -125,7 +124,7 @@ func TestExtend_WrongOwnerFails(t *testing.T) {
 }
 
 func TestStatus_HeldLock(t *testing.T) {
-	s := lock.NewStore(10 * time.Second)
+	s := NewStore(10 * time.Second)
 	defer s.Close()
 
 	s.Acquire("key1", "svc-a", 5*time.Second)
@@ -139,7 +138,7 @@ func TestStatus_HeldLock(t *testing.T) {
 }
 
 func TestStatus_NotHeld(t *testing.T) {
-	s := lock.NewStore(10 * time.Second)
+	s := NewStore(10 * time.Second)
 	defer s.Close()
 
 	_, ok := s.Status("nothing")
@@ -149,7 +148,7 @@ func TestStatus_NotHeld(t *testing.T) {
 }
 
 func TestExpiry_LockExpires(t *testing.T) {
-	s := lock.NewStore(50 * time.Millisecond)
+	s := NewStore(50 * time.Millisecond)
 	defer s.Close()
 
 	s.Acquire("key1", "svc-a", 50*time.Millisecond)
@@ -163,7 +162,7 @@ func TestExpiry_LockExpires(t *testing.T) {
 }
 
 func TestList_ReturnsHeld(t *testing.T) {
-	s := lock.NewStore(10 * time.Second)
+	s := NewStore(10 * time.Second)
 	defer s.Close()
 
 	s.Acquire("alpha", "svc-a", 5*time.Second)
@@ -176,7 +175,7 @@ func TestList_ReturnsHeld(t *testing.T) {
 }
 
 func TestList_ExcludesExpired(t *testing.T) {
-	s := lock.NewStore(50 * time.Millisecond)
+	s := NewStore(50 * time.Millisecond)
 	defer s.Close()
 
 	s.Acquire("short", "svc-a", 50*time.Millisecond)

@@ -455,7 +455,7 @@ type mockSocialProvider struct{}
 
 func (m *mockSocialProvider) Redirect(w http.ResponseWriter, r *http.Request, provider string) {
 	redirectURL := fmt.Sprintf("https://auth.provider.com/%s/authorize?client_id=mock-client&redirect_uri=mock-redirect&response_type=code", provider)
-	_ = core.EmitAuditEvent("github.com/vyuvaraj/pranor/auth", "SOCIAL_LOGIN_REDIRECT", "guest", map[string]interface{}{"provider": provider})
+	_ = core.EmitAuditEvent(, "SOCIAL_LOGIN_REDIRECT", "guest", map[string]interface{}{"provider": provider})
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{
@@ -786,7 +786,7 @@ func TestTraceparentPropagation(t *testing.T) {
 	core.InitTrace("Pranor Auth-test")
 
 	// Set up the trace middleware wrapped handler
-	handler := core.TraceMiddleware("github.com/vyuvaraj/pranor/auth", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := core.TraceMiddleware(, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Inside the handler, traceparent header must be set
 		tp := r.Header.Get("traceparent")
 		if !strings.Contains(tp, "4fa3b1234567890abcdef1234567890a") {

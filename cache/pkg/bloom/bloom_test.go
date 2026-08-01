@@ -5,13 +5,12 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/vyuvaraj/pranor/cache/pkg/bloom"
-)
+	)
 
 func TestBloom_ZeroFalseNegatives(t *testing.T) {
 	capacity := 1000
 	fpRate := 0.01
-	b := bloom.NewBloom(capacity, fpRate)
+	b := NewBloom(capacity, fpRate)
 
 	// Add 1000 items
 	for i := 0; i < capacity; i++ {
@@ -31,7 +30,7 @@ func TestBloom_ZeroFalseNegatives(t *testing.T) {
 func TestBloom_FalsePositiveRate(t *testing.T) {
 	capacity := 1000
 	fpRate := 0.05
-	b := bloom.NewBloom(capacity, fpRate)
+	b := NewBloom(capacity, fpRate)
 
 	// Add 1000 items
 	for i := 0; i < capacity; i++ {
@@ -60,7 +59,7 @@ func TestBloom_FalsePositiveRate(t *testing.T) {
 
 func TestBloom_EdgeAndInvalidParameters(t *testing.T) {
 	// Negative / zero capacity and out-of-range fpRate should fallback safely
-	b := bloom.NewBloom(0, -0.5)
+	b := NewBloom(0, -0.5)
 	if b.Capacity() <= 0 {
 		t.Errorf("expected positive fallback capacity, got %d", b.Capacity())
 	}
@@ -88,7 +87,7 @@ func TestBloom_EdgeAndInvalidParameters(t *testing.T) {
 }
 
 func TestBloom_Concurrency(t *testing.T) {
-	b := bloom.NewBloom(1000, 0.01)
+	b := NewBloom(1000, 0.01)
 	var wg sync.WaitGroup
 
 	numWriters := 10

@@ -7,24 +7,23 @@ import (
 	"time"
 
 	"github.com/vyuvaraj/pranor/cache/pkg/cache"
-	"github.com/vyuvaraj/pranor/cache/pkg/tieredttl"
-)
+	)
 
 func TestTierPolicy_ClassificationAndNaming(t *testing.T) {
-	policy := tieredttl.NewTierPolicy()
+	policy := NewTierPolicy()
 
 	tests := []struct {
 		ttl          time.Duration
-		expectedTier tieredttl.Tier
+		expectedTier Tier
 		expectedName string
 	}{
-		{100 * time.Millisecond, tieredttl.TierHot, "Hot"},
-		{1 * time.Second, tieredttl.TierHot, "Hot"},
-		{1*time.Second + 1*time.Millisecond, tieredttl.TierWarm, "Warm"},
-		{1 * time.Minute, tieredttl.TierWarm, "Warm"},
-		{5 * time.Minute, tieredttl.TierWarm, "Warm"},
-		{5*time.Minute + 1*time.Millisecond, tieredttl.TierCold, "Cold"},
-		{1 * time.Hour, tieredttl.TierCold, "Cold"},
+		{100 * time.Millisecond, TierHot, "Hot"},
+		{1 * time.Second, TierHot, "Hot"},
+		{1*time.Second + 1*time.Millisecond, TierWarm, "Warm"},
+		{1 * time.Minute, TierWarm, "Warm"},
+		{5 * time.Minute, TierWarm, "Warm"},
+		{5*time.Minute + 1*time.Millisecond, TierCold, "Cold"},
+		{1 * time.Hour, TierCold, "Cold"},
 	}
 
 	for _, tt := range tests {
@@ -39,18 +38,18 @@ func TestTierPolicy_ClassificationAndNaming(t *testing.T) {
 		}
 
 		// Also check package-level helpers
-		if tieredttl.Classify(tt.ttl) != tt.expectedTier {
-			t.Errorf("tieredttl.Classify(%v) = %v; want %v", tt.ttl, tieredttl.Classify(tt.ttl), tt.expectedTier)
+		if Classify(tt.ttl) != tt.expectedTier {
+			t.Errorf("Classify(%v) = %v; want %v", tt.ttl, Classify(tt.ttl), tt.expectedTier)
 		}
-		if tieredttl.TierName(tier) != tt.expectedName {
-			t.Errorf("tieredttl.TierName(%v) = %v; want %v", tier, tieredttl.TierName(tier), tt.expectedName)
+		if TierName(tier) != tt.expectedName {
+			t.Errorf("TierName(%v) = %v; want %v", tier, TierName(tier), tt.expectedName)
 		}
 	}
 }
 
 func TestTieredCache_HitAndMissCounters(t *testing.T) {
 	memCache := cache.NewInMemoryCache(100 * time.Millisecond)
-	tc := tieredttl.NewTieredCache(memCache, nil)
+	tc := NewTieredCache(memCache, nil)
 
 	// Set Hot item
 	err := tc.Set("hot_key", "val_hot", 500*time.Millisecond)
@@ -58,7 +57,7 @@ func TestTieredCache_HitAndMissCounters(t *testing.T) {
 		t.Fatalf("failed to Set hot_key: %v", err)
 	}
 	tier, ok := tc.GetTier("hot_key")
-	if !ok || tier != tieredttl.TierHot {
+	if !ok || tier != TierHot {
 		t.Fatalf("expected hot_key tier to be TierHot, got %v, ok=%v", tier, ok)
 	}
 
@@ -117,7 +116,7 @@ func TestTieredCache_HitAndMissCounters(t *testing.T) {
 
 func TestTieredCache_ExpiryAndMisses(t *testing.T) {
 	memCache := cache.NewInMemoryCache(10 * time.Millisecond)
-	tc := tieredttl.NewTieredCache(memCache, nil)
+	tc := NewTieredCache(memCache, nil)
 
 	// Set a Hot item with very short TTL
 	tc.Set("short_hot", "value", 30*time.Millisecond)
@@ -138,7 +137,7 @@ func TestTieredCache_ExpiryAndMisses(t *testing.T) {
 
 func TestTieredCache_DeleteAndClear(t *testing.T) {
 	memCache := cache.NewInMemoryCache(100 * time.Millisecond)
-	tc := tieredttl.NewTieredCache(memCache, nil)
+	tc := NewTieredCache(memCache, nil)
 
 	tc.Set("k1", "v1", 500*time.Millisecond)
 	tc.Set("k2", "v2", 2*time.Minute)
@@ -160,7 +159,7 @@ func TestTieredCache_DeleteAndClear(t *testing.T) {
 
 func TestTieredCache_DeletePattern(t *testing.T) {
 	memCache := cache.NewInMemoryCache(100 * time.Millisecond)
-	tc := tieredttl.NewTieredCache(memCache, nil)
+	tc := NewTieredCache(memCache, nil)
 
 	tc.Set("user:101", "v1", 1*time.Minute)
 	tc.Set("user:102", "v2", 1*time.Minute)
@@ -184,7 +183,7 @@ func TestTieredCache_DeletePattern(t *testing.T) {
 
 func TestTieredCache_Concurrency(t *testing.T) {
 	memCache := cache.NewInMemoryCache(100 * time.Millisecond)
-	tc := tieredttl.NewTieredCache(memCache, nil)
+	tc := NewTieredCache(memCache, nil)
 
 	var wg sync.WaitGroup
 	workers := 10

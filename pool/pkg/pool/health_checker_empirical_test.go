@@ -8,17 +8,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/vyuvaraj/pranor/pool/pkg/pool"
-)
+	)
 
 // TestEmpirical_HealthChecker_Retries verifies checkout retries up to attempt 3.
 func TestEmpirical_HealthChecker_Retries(t *testing.T) {
 	t.Run("Succeeds on attempt 1", func(t *testing.T) {
-		inner := pool.NewConnectionPool(5, "postgres")
+		inner := NewConnectionPool(5, "postgres")
 		defer inner.Shutdown(context.Background())
 
 		calls := 0
-		hc := pool.NewHealthChecker(inner, func(conn *pool.DbConn) bool {
+		hc := NewHealthChecker(inner, func(conn *DbConn) bool {
 			calls++
 			return true
 		})
@@ -43,11 +42,11 @@ func TestEmpirical_HealthChecker_Retries(t *testing.T) {
 	})
 
 	t.Run("Succeeds on attempt 2 (1 retry)", func(t *testing.T) {
-		inner := pool.NewConnectionPool(5, "postgres")
+		inner := NewConnectionPool(5, "postgres")
 		defer inner.Shutdown(context.Background())
 
 		calls := 0
-		hc := pool.NewHealthChecker(inner, func(conn *pool.DbConn) bool {
+		hc := NewHealthChecker(inner, func(conn *DbConn) bool {
 			calls++
 			return calls > 1 // Fail attempt 1, pass attempt 2
 		})
@@ -72,11 +71,11 @@ func TestEmpirical_HealthChecker_Retries(t *testing.T) {
 	})
 
 	t.Run("Succeeds on attempt 3 (2 retries)", func(t *testing.T) {
-		inner := pool.NewConnectionPool(5, "postgres")
+		inner := NewConnectionPool(5, "postgres")
 		defer inner.Shutdown(context.Background())
 
 		calls := 0
-		hc := pool.NewHealthChecker(inner, func(conn *pool.DbConn) bool {
+		hc := NewHealthChecker(inner, func(conn *DbConn) bool {
 			calls++
 			return calls >= 3 // Fail attempts 1 & 2, pass attempt 3
 		})
@@ -103,11 +102,11 @@ func TestEmpirical_HealthChecker_Retries(t *testing.T) {
 
 // TestEmpirical_HealthChecker_FailureAfter3Attempts verifies error, counters, and connection cleanup when all 3 attempts fail.
 func TestEmpirical_HealthChecker_FailureAfter3Attempts(t *testing.T) {
-	inner := pool.NewConnectionPool(5, "postgres")
+	inner := NewConnectionPool(5, "postgres")
 	defer inner.Shutdown(context.Background())
 
 	calls := 0
-	hc := pool.NewHealthChecker(inner, func(conn *pool.DbConn) bool {
+	hc := NewHealthChecker(inner, func(conn *DbConn) bool {
 		calls++
 		return false // Always fail validation
 	})
@@ -137,7 +136,7 @@ func TestEmpirical_HealthChecker_FailureAfter3Attempts(t *testing.T) {
 	}
 
 	// Crucial check: verify all discarded connections were properly released back to the pool
-	// and no active connection leak remains in inner pool.
+	// and no active connection leak remains in inner 
 	poolStats := inner.Stats()
 	if poolStats.ActiveConnections != 0 {
 		t.Errorf("expected 0 active connections after failure, got %d (connection leak!)", poolStats.ActiveConnections)
@@ -146,11 +145,11 @@ func TestEmpirical_HealthChecker_FailureAfter3Attempts(t *testing.T) {
 
 // TestEmpirical_HealthChecker_NilValidateFn verifies behavior when ValidateFn is nil.
 func TestEmpirical_HealthChecker_NilValidateFn(t *testing.T) {
-	inner := pool.NewConnectionPool(5, "postgres")
+	inner := NewConnectionPool(5, "postgres")
 	defer inner.Shutdown(context.Background())
 
 	// Explicitly pass nil validateFn
-	hc := pool.NewHealthChecker(inner, nil)
+	hc := NewHealthChecker(inner, nil)
 	conn, err := hc.Acquire()
 	if err != nil || conn == nil {
 		t.Fatalf("expected Acquire success with nil ValidateFn")
@@ -173,12 +172,12 @@ func TestEmpirical_HealthChecker_NilValidateFn(t *testing.T) {
 
 // TestEmpirical_HealthChecker_ConcurrentAcquireRelease verifies race safety under concurrent load.
 func TestEmpirical_HealthChecker_ConcurrentAcquireRelease(t *testing.T) {
-	inner := pool.NewConnectionPool(20, "postgres")
+	inner := NewConnectionPool(20, "postgres")
 	defer inner.Shutdown(context.Background())
 
 	var validateCounter int64
 
-	hc := pool.NewHealthChecker(inner, func(conn *pool.DbConn) bool {
+	hc := NewHealthChecker(inner, func(conn *DbConn) bool {
 		val := atomic.AddInt64(&validateCounter, 1)
 		// Reject every 3rd connection attempt
 		return val%3 != 0

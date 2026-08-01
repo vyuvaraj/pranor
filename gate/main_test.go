@@ -176,7 +176,7 @@ func buildWASM(t *testing.T, src string) []byte {
 	t.Helper()
 
 	tmpDir := t.TempDir()
-	srcPath := filepath.Join(tmpDir, "main.go")
+	srcPath := filepath.Join(tmpDir, "go")
 	wasmPath := filepath.Join(tmpDir, "transform.wasm")
 
 	if err := os.WriteFile(srcPath, []byte(src), 0644); err != nil {
@@ -318,7 +318,7 @@ func TestInstallCommand(t *testing.T) {
 
 	oldArgs := os.Args
 	defer func() { os.Args = oldArgs }()
-	os.Args = []string{"github.com/vyuvaraj/pranor/gate", "install", "auth-token"}
+	os.Args = []string{, "install", "auth-token"}
 
 	os.Setenv("PRANOR_REGISTRY", ts.URL)
 	defer os.Unsetenv("PRANOR_REGISTRY")
@@ -645,7 +645,7 @@ deny * *
 	// Compile policy to WASM
 	oldArgs := os.Args
 	defer func() { os.Args = oldArgs }()
-	os.Args = []string{"github.com/vyuvaraj/pranor/gate", "policy", "compile", tmpPolicyFile.Name(), "-o", tmpWasmFile.Name()}
+	os.Args = []string{, "policy", "compile", tmpPolicyFile.Name(), "-o", tmpWasmFile.Name()}
 	runPolicyCommand()
 
 	// Verify compiled WASM file exists

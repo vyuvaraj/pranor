@@ -31,15 +31,44 @@ type DoctorDiscovery struct {
 var osExit = os.Exit
 
 func runDoctor(integration bool) {
-	fmt.Println("🩺 Running Ecosystem Doctor check...")
-	if integration {
-		fmt.Println("🐳 Running docker-compose service integration checks...")
+	fmt.Println("🩺 Running Ecosystem Health & Diagnostic Doctor...")
+	fmt.Println("==================================================")
+
+	// Check Go compiler installation
+	fmt.Print("🔍 Checking Go compiler... ")
+	if _, err := exec.LookPath("go"); err == nil {
+		out, _ := exec.Command("go", "version").Output()
+		fmt.Printf("✅ Found (%s)\n", strings.TrimSpace(string(out)))
+	} else {
+		fmt.Println("❌ Go compiler not found in PATH! (Download from https://go.dev)")
 	}
+
+	// Check Docker daemon availability
+	fmt.Print("🐳 Checking Docker daemon... ")
+	if _, err := exec.LookPath("docker"); err == nil {
+		if err := exec.Command("docker", "info").Run(); err == nil {
+			fmt.Println("✅ Online & Accessible")
+		} else {
+			fmt.Println("⚠️ Docker CLI found, but daemon is not running or accessible")
+		}
+	} else {
+		fmt.Println("⚪ Docker CLI not found (optional for container builds)")
+	}
+
+	// Check environment variable configuration
+	fmt.Print("⚙️  Checking Environment Configuration... ")
+	if otlp := os.Getenv("PRANOR_OTLP_ENDPOINT"); otlp != "" {
+		fmt.Printf("PRANOR_OTLP_ENDPOINT=%s ", otlp)
+	}
+	fmt.Println("✅ OK")
+
 	raw := os.Getenv("PRANOR_DISCOVERY")
 	if raw == "" {
-		fmt.Println("❌ Error: PRANOR_DISCOVERY environment variable is not set.")
-		fmt.Println("Please set PRANOR_DISCOVERY to a valid JSON manifest or file path.")
-		osExit(1)
+		fmt.Println("\n💡 Tip: PRANOR_DISCOVERY environment variable is not set.")
+		fmt.Println("   Set PRANOR_DISCOVERY to a JSON manifest string or filepath to check live running microservices.")
+		checkWasmRuntime()
+		checkCompilerPlugins()
+		return
 	}
 
 	var discovery DoctorDiscovery

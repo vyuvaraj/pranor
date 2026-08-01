@@ -271,6 +271,9 @@ func main() {
 	case "upgrade":
 		runUpgrade()
 
+	case "quickstart":
+		runQuickstart()
+
 
 	case "cache":
 		if len(os.Args) >= 3 && os.Args[2] == "inspect" {

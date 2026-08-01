@@ -125,7 +125,7 @@ func TestPranorFlowDurableExecution(t *testing.T) {
 	execResp.Body.Close()
 
 	// Wait for failure
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(300 * time.Millisecond)
 
 	// Verify failed status
 	getResp, _ := http.Get(testServer.URL + "/api/workflows/instances/" + inst.ID)

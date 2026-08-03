@@ -90,6 +90,41 @@ Pranor Lock can run as:
 └─────────────────────────────────────────────────────────┘
 ```
 
+### Lease Acquisition & Fencing Token Sequence Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Worker as Client / Worker Instance
+    participant Lock as Pranor Lock Manager
+    participant Deadlock as Deadlock Cycle Evaluator
+    participant Storage as Raft / File Lock Store
+    participant DB as Target Storage / Database
+
+    Worker->>Lock: POST /api/locks/acquire (key="orders/process", duration_ms=10000)
+    Lock->>Deadlock: Evaluate Wait-For Graph (Cycle Detection)
+    Deadlock-->>Lock: Cycle Free (No Deadlock)
+    Lock->>Storage: Issue Monotonic Fencing Token (Token=1042)
+    Storage-->>Lock: Lock State Persisted & Lease TTL Set
+    Lock-->>Worker: Lock Granted (Fencing Token = 1042)
+    Worker->>DB: Write Record with Fencing Token = 1042
+    DB-->>Worker: Write Validated (Token 1042 > Previous 1041)
+    Worker->>Lock: POST /api/locks/renew (Heartbeat Keepalive)
+    Lock-->>Worker: TTL Extended (10,000ms refreshed)
+    Worker->>Lock: POST /api/locks/release (Fencing Token = 1042)
+    Lock-->>Worker: Lock Released & Next Waiter Notified via SSE
+```
+
+### Ecosystem Cross-Module Integration
+
+Pranor Lock provides distributed synchronization across all core ecosystem components:
+
+- **Pranor Chrono**: Uses exclusive fencing token locks to ensure distributed cron jobs trigger on exactly one node during multi-replica deployments.
+- **Pranor Flow**: Manages saga execution state locks, preventing concurrent workers from processing duplicate saga compensation steps.
+- **Pranor Pool**: Coordinates online database DDL migrations, ensuring zero-downtime schema changes are executed by a single leader node.
+- **Pranor Auth**: Enforces single-session user login restrictions across clusters when configured in strict single-tenant security mode.
+- **Pranor Trace**: Emits lock contention metrics, wait-queue durations, and deadlock cycle detections directly to OpenTelemetry traces.
+
 ---
 
 ## Installation & Deployment

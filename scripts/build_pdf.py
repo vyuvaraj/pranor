@@ -1,6 +1,5 @@
 import os
 import sys
-import glob
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import (
     SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether, HRFlowable
@@ -32,8 +31,8 @@ class NumberedCanvas(canvas.Canvas):
         self.setFillColor(colors.HexColor("#64748B"))
         
         # Header (Top of Page)
-        self.drawString(54, 750, "PRANOR PLATFORM ENTERPRISE MASTER TECHNICAL ARCHITECTURE MANUAL")
-        self.drawRightString(612 - 54, 750, "PRANOR-MASTER-SPEC-2026-V1.0")
+        self.drawString(54, 750, "PRANOR PLATFORM ENTERPRISE TECHNICAL ARCHITECTURE MANUAL")
+        self.drawRightString(612 - 54, 750, "PRANOR-SPEC-2026-V10")
         self.setStrokeColor(colors.HexColor("#CBD5E1"))
         self.setLineWidth(0.5)
         self.line(54, 742, 612 - 54, 742)
@@ -41,12 +40,12 @@ class NumberedCanvas(canvas.Canvas):
         # Footer (Bottom of Page)
         self.line(54, 50, 612 - 54, 50)
         self.setFont("Helvetica", 8)
-        self.drawString(54, 38, "Confidential — For Enterprise Architect & Customer Technical Review")
+        self.drawString(54, 38, "Confidential — For Enterprise Architect & Technical Review Only")
         page_text = f"Page {self._pageNumber} of {page_count}"
         self.drawRightString(612 - 54, 38, page_text)
         self.restoreState()
 
-def build_master_pdf(docs_dir, pdf_file_path):
+def build_pdf(md_file_path, pdf_file_path):
     doc = SimpleDocTemplate(
         pdf_file_path,
         pagesize=letter,
@@ -63,6 +62,7 @@ def build_master_pdf(docs_dir, pdf_file_path):
     SECONDARY = colors.HexColor("#0284C7")  # Sky Blue
     ACCENT = colors.HexColor("#0D9488")     # Teal
     TEXT_DARK = colors.HexColor("#1E293B")  # Slate 800
+    BG_LIGHT = colors.HexColor("#F8FAFC")   # Light Slate
 
     # Custom Typography Styles
     style_title = ParagraphStyle(
@@ -135,10 +135,10 @@ def build_master_pdf(docs_dir, pdf_file_path):
 
     story = []
 
-    # Master Cover Title Block Box
+    # Document Header Title Block Box
     header_content = [
-        [Paragraph("Pranor Ecosystem — Master Technical Architecture Reference Manual", style_title)],
-        [Paragraph("Reference: PRANOR-MASTER-SPEC-2026-V1.0  |  17 Core Modules  |  Phases 1-87", style_subtitle)]
+        [Paragraph("Pranor Vault — Technical Architecture Reference Manual", style_title)],
+        [Paragraph("Reference: PRANOR-SPEC-VAULT-2026-V10  |  Classification: Technical Manual  |  Phases 1-87", style_subtitle)]
     ]
     header_table = Table(header_content, colWidths=[504])
     header_table.setStyle(TableStyle([
@@ -148,69 +148,63 @@ def build_master_pdf(docs_dir, pdf_file_path):
         ('BOTTOMPADDING', (0,0), (-1,0), 2),
     ]))
     story.append(header_table)
-    story.append(Spacer(1, 15))
+    story.append(Spacer(1, 12))
 
-    # Collect and sort all 17 module md files
-    md_files = sorted(glob.glob(os.path.join(docs_dir, "*.md")))
+    # Read Markdown content
+    with open(md_file_path, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
 
-    for i, md_file in enumerate(md_files):
-        mod_name = os.path.basename(md_file).replace('.md', '').upper()
-        if i > 0:
-            story.append(PageBreak())
+    in_code_block = False
+    code_lines = []
 
-        with open(md_file, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
+    for line in lines:
+        raw_line = line.rstrip('\n')
 
-        in_code_block = False
-        code_lines = []
-
-        for line in lines:
-            raw_line = line.rstrip('\n')
-
-            # Code block handler
-            if raw_line.startswith('```'):
-                if in_code_block:
-                    in_code_block = False
-                    code_table_data = [[Paragraph(cline, style_code)] for cline in code_lines]
-                    if code_table_data:
-                        c_table = Table(code_table_data, colWidths=[504])
-                        c_table.setStyle(TableStyle([
-                            ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#0F172A")),
-                            ('PADDING', (0,0), (-1,-1), 3),
-                            ('LEFTPADDING', (0,0), (-1,-1), 8),
-                        ]))
-                        story.append(c_table)
-                        story.append(Spacer(1, 6))
-                    code_lines = []
-                else:
-                    in_code_block = True
-                    code_lines = []
-                continue
-
+        # Code block handler
+        if raw_line.startswith('```'):
             if in_code_block:
-                code_lines.append(raw_line.replace('<', '&lt;').replace('>', '&gt;'))
-                continue
+                # Close code block
+                in_code_block = False
+                code_table_data = [[Paragraph(cline, style_code)] for cline in code_lines]
+                if code_table_data:
+                    c_table = Table(code_table_data, colWidths=[504])
+                    c_table.setStyle(TableStyle([
+                        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#0F172A")),
+                        ('PADDING', (0,0), (-1,-1), 3),
+                        ('LEFTPADDING', (0,0), (-1,-1), 8),
+                    ]))
+                    story.append(c_table)
+                    story.append(Spacer(1, 6))
+                code_lines = []
+            else:
+                in_code_block = True
+                code_lines = []
+            continue
 
-            # Headers
-            if raw_line.startswith('# '):
-                story.append(Paragraph(raw_line.replace('# ', ''), style_h1))
-                story.append(HRFlowable(width="100%", thickness=1.5, color=PRIMARY, spaceBefore=2, spaceAfter=6))
-            elif raw_line.startswith('## '):
-                story.append(Paragraph(raw_line.replace('## ', ''), style_h1))
-                story.append(HRFlowable(width="100%", thickness=1, color=SECONDARY, spaceBefore=2, spaceAfter=4))
-            elif raw_line.startswith('### '):
-                story.append(Paragraph(raw_line.replace('### ', ''), style_h2))
-            elif raw_line.startswith('- ') or raw_line.startswith('* '):
-                item_text = raw_line[2:].replace('**', '<b>', 1).replace('**', '</b>', 1)
-                story.append(Paragraph(f"• {item_text}", style_bullet))
-            elif len(raw_line.strip()) > 0:
-                formatted_text = raw_line.replace('**', '<b>', 1).replace('**', '</b>', 1)
-                story.append(Paragraph(formatted_text, style_body))
+        if in_code_block:
+            code_lines.append(raw_line.replace('<', '&lt;').replace('>', '&gt;'))
+            continue
+
+        # Headers
+        if raw_line.startswith('## '):
+            story.append(Paragraph(raw_line.replace('## ', ''), style_h1))
+            story.append(HRFlowable(width="100%", thickness=1, color=SECONDARY, spaceBefore=2, spaceAfter=4))
+        elif raw_line.startswith('### '):
+            story.append(Paragraph(raw_line.replace('### ', ''), style_h2))
+        elif raw_line.startswith('- ') or raw_line.startswith('* '):
+            item_text = raw_line[2:].replace('**', '<b>', 1).replace('**', '</b>', 1)
+            story.append(Paragraph(f"• {item_text}", style_bullet))
+        elif raw_line.startswith('1. ') or raw_line.startswith('2. ') or raw_line.startswith('3. ') or raw_line.startswith('4. '):
+            item_text = raw_line[3:].replace('**', '<b>', 1).replace('**', '</b>', 1)
+            story.append(Paragraph(f"{raw_line[:3]} {item_text}", style_bullet))
+        elif len(raw_line.strip()) > 0:
+            formatted_text = raw_line.replace('**', '<b>', 1).replace('**', '</b>', 1)
+            story.append(Paragraph(formatted_text, style_body))
 
     doc.build(story, canvasmaker=NumberedCanvas)
-    print(f"Master Architecture PDF compiled successfully: {pdf_file_path}")
+    print(f"Technical Architecture PDF rendered successfully: {pdf_file_path}")
 
 if __name__ == '__main__':
-    docs_directory = "/home/developer/workspace/pranor/docs/modules"
-    output_pdf = "/home/developer/workspace/pranor/docs/Pranor-Master-Architecture-Manual.pdf"
-    build_master_pdf(docs_directory, output_pdf)
+    md_path = sys.argv[1] if len(sys.argv) > 1 else "/home/developer/workspace/pranor/docs/modules/vault.md"
+    pdf_path = sys.argv[2] if len(sys.argv) > 2 else "/home/developer/workspace/pranor/docs/modules/vault.pdf"
+    build_pdf(md_path, pdf_path)

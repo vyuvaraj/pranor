@@ -4,3 +4,7 @@
 .build/
 dist/
 pranor-chrono
+
+# Enterprise Edition implementations — live in private pranor-ee repo only
+*_ee.go
+*_ee_test.go

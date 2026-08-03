@@ -1,3 +1,7 @@
 pranor-flow.exe
 inst-*.state
 *.state
+
+# Enterprise Edition implementations — live in private pranor-ee repo only
+*_ee.go
+*_ee_test.go

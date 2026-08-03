@@ -1,57 +1,89 @@
 # Pranor Enterprise Edition (EE)
 
-Pranor EE extends the open-source single-binary platform with advanced security, compliance, multi-region high availability, and operational governance for enterprise engineering teams.
+Pranor EE extends the open-source single-binary platform with 32 advanced security, compliance, multi-region high availability, and operational governance capabilities for enterprise engineering teams.
 
 ---
 
-## Feature Comparison Matrix
+## Detailed Enterprise Feature Comparison (By Module)
 
-| Capability / Feature Area | Community OSS | Enterprise EE |
+### 1. 🚪 Pranor Gate (API Gateway & Ingress Router)
+| Feature | Community OSS | Enterprise EE |
 | :--- | :---: | :---: |
-| **API Gateway (Gate)** | Ingress proxy, WASM sandbox, Rate limiting, ACME mTLS | **+ Kernel eBPF XDP DDoS bypass, AI Cost Router, Geo-IP steering, GraphQL Federation** |
-| **Object & Vector Storage (Vault)** | AWS S3 API, HNSW vector search, RAG queries, zstd compression | **+ Active-Active multi-region sync, Copy-on-Write bucket branching, Sovereign envelope encryption** |
-| **Event Broker & Queue (Pulse)** | Kafka, STOMP, MQTT decoders, DLQ replay, WASM transforms | **+ Multi-region MirrorMaker, Hardware payload encryption at rest, Schema Registry enforcement** |
-| **Stateful Workflows (Flow)** | Saga orchestrator, Reverse compensation, Crash checkpointing | **+ Visual drag-and-drop builder, Multi-region coordinator cluster, SLA auto-escalation** |
-| **Observability (Trace & Console)** | OTLP trace collector, Flamegraph viewer, SQL workbench | **+ Anomaly-based auto-remediation runbooks, SOC2/HIPAA WORM audit exporter, SAML/OIDC SSO** |
-| **Identity & Secrets (Auth & Secret)** | JWKS, TOTP MFA, OAuth, KMS envelope key rotation | **+ Biometric Passkey/WebAuthn server, AD/LDAP Directory sync, Hardware HSM key signing** |
-| **Scheduler & PaaS (Chrono & Deploy)** | Cron scheduler, Process runner, Gateway auto-sync | **+ Smart SLA-aware cron window optimizer, Multi-cluster fleet DR failover** |
-| **Zero-Trust Mesh (Mesh)** | UDP auto-discovery, In-memory gRPC, mTLS rotation | **+ Hardware TPM/HSM attestation, Multi-cloud cross-VPC mesh peering** |
-| **Enterprise Compliance & Support** | AGPL-3.0 Open Source | **+ FIPS 140-3 cryptography, SOC2 Type II audit evidence, 24/7 SLA Support** |
+| **Ingress Proxy** | HTTP/1.1, HTTP/2, gRPC | ✅ Sub-millisecond edge proxy with header matching & path rewriting |
+| **Kernel eBPF XDP DDoS Bypass** | ❌ | ✅ **100Gbps network packet filtering at Linux kernel level** |
+| **AI Cost Router & Prompt Firewall** | ❌ | ✅ **Semantic prompt inspection, PII redaction & LLM failover** |
+| **Geo-IP Latency Anycast Steering** | ❌ | ✅ **Real-time edge routing to lowest-latency datacenter** |
+| **GraphQL Schema Federation** | ❌ | ✅ **Stitches multiple backend GraphQL subgraphs into single schema** |
+| **Enterprise WAF Rule Generator** | ❌ | ✅ **Auto-generates OWASP Top-10 protection rules** |
+| **TLS Hardware Offloading** | ❌ | ✅ **Offloads TLS handshakes to PCIe crypto accelerator cards** |
 
----
+### 2. 🗄️ Pranor Vault (S3 Storage & Vector Search)
+| Feature | Community OSS | Enterprise EE |
+| :--- | :---: | :---: |
+| **AWS S3 API & HNSW Vector Search** | ✅ | ✅ AWS S3 SDK compatibility & HNSW vector search engine |
+| **Immutable Access Audit Trail** | ❌ | ✅ **Append-only log recording object reads/writes with identity** |
+| **Active-Active Multi-Region Sync** | ❌ | ✅ **Cross-cloud object replication with LWW conflict resolution** |
+| **CoW Bucket Branching** | ❌ | ✅ **Instant copy-on-write bucket branching for sandbox dev** |
+| **Sovereign Client Envelope Encryption** | ❌ | ✅ **Zero-knowledge client encryption (storage nodes hold no keys)** |
+| **Automatic Cold-Tier Archival** | ❌ | ✅ **Lifecycle migration to AWS Glacier, Azure Cool & GCS Nearline** |
+| **WORM Retention Lock Manager** | ❌ | ✅ **SEC 17a-4 / HIPAA immutable retention windows & legal holds** |
+| **Embedded Analytics & Torrent** | ❌ | ✅ **DuckDB SQL over S3 parquet objects & P2P WebTorrent seeding** |
 
-## Key Enterprise Capabilities
+### 3. ⚡ Pranor Pulse (Async Event Broker & Queue)
+| Feature | Community OSS | Enterprise EE |
+| :--- | :---: | :---: |
+| **Multi-Protocol Engine** | Kafka, STOMP, MQTT 3.1/5.0 | ✅ Unified multi-protocol message decoders & WASM transforms |
+| **Multi-Tenant Partition Sharding** | ❌ | ✅ **Isolated queue memory pools & dedicated partition routing** |
+| **Multi-Region MirrorMaker Sync** | ❌ | ✅ **Active-active cross-cloud topic mirroring (AWS, GCP, Azure)** |
+| **Hardware Payload Encryption at Rest** | ❌ | ✅ **KMS/HSM envelope encryption before writing to disk WAL** |
+| **Schema Breaking-Change Guard** | ❌ | ✅ **BACKWARD/FULL compatibility blocking breaking event payloads** |
+| **Rebalance Auto-Tuning** | ❌ | ✅ **AI-assisted partition rebalancing eliminating consumer starvation** |
 
-### 🔒 1. Advanced Security & Zero-Trust
-- **Hardware TPM / HSM Attestation**: Hardware-backed cryptographic identity verification across zero-trust enterprise clusters.
-- **Biometric Passkey & WebAuthn Server**: FIDO2 / WebAuthn passwordless authentication server eliminating password storage.
-- **Active Directory & LDAP Directory Sync**: Direct enterprise directory synchronization with automatic group and role mapping.
-- **Sovereign Client Envelope Encryption**: Zero-knowledge envelope encryption ensuring storage nodes never hold raw decryption keys.
+### 4. 🔀 Pranor Flow (Stateful Workflows & Sagas)
+| Feature | Community OSS | Enterprise EE |
+| :--- | :---: | :---: |
+| **Durable Saga Orchestrator** | ✅ | ✅ Stateful transaction coordinator with compensation rollbacks |
+| **Visual Workflow Builder & Replay** | ❌ | ✅ **Drag-and-drop designer with step-by-step state diff playback** |
+| **HA Coordinator Cluster** | ❌ | ✅ **Multi-region workflow state replication across Raft clusters** |
+| **SLA Deadline Enforcer** | ❌ | ✅ **Monitors instance SLAs & fires escalation webhooks (PagerDuty/Slack)** |
 
-### ⚡ 2. Scale & Multi-Region High Availability
-- **Kernel eBPF XDP 100Gbps Acceleration**: Linux kernel-bypass packet filtering eliminating OS socket overhead for Pranor Gate.
-- **Active-Active Multi-Region Replication**: Cross-cloud object statement replication with Last-Write-Wins (LWW) conflict resolution for Pranor Vault.
-- **Multi-Region MirrorMaker Event Sync**: Active-active cross-cloud event topic mirroring with automatic deduplication across AWS, GCP, and Azure for Pranor Pulse.
-- **Multi-Cluster Fleet DR Failover**: 1-click active-passive region failover, automatic DNS update sync, and cross-cloud deployment status for Pranor Deploy.
+### 5. 📡 Pranor Trace & Console (Observability & Control)
+| Feature | Community OSS | Enterprise EE |
+| :--- | :---: | :---: |
+| **OTLP Tracing & SQL Workbench** | ✅ | ✅ Full OTel span collector, flamegraphs & SQL workbench |
+| **Anomaly Auto-Remediation Runbooks** | ❌ | ✅ **Fires remediation webhooks or container restarts on trace anomaly** |
+| **Long-Term Tail Sampling Storage** | ❌ | ✅ **Archives 100% error traces + 0.1% normal spans to cold S3** |
+| **SOC2 / HIPAA Immutable Audit** | ❌ | ✅ **WORM audit logging with SHA-256 tamper-proof proof generation** |
+| **SAML 2.0 / OIDC Enterprise SSO & RBAC** | ❌ | ✅ **Enterprise SSO (Okta, Azure AD) with fine-grained RBAC** |
 
-### 🛡️ 3. Governance, Compliance & Automation
-- **SOC2 Type II / HIPAA WORM Audit Exporter**: Immutable Write-Once-Read-Many audit logging for all control plane actions, API calls, and queries with automated report generation.
-- **Anomaly-Based Auto-Remediation Runbooks**: Automatically executes remediation webhooks or container restarts when trace anomaly models detect SLA breaches.
-- **AI Cost Router & Prompt Guard**: Semantic prompt inspection, PII redaction, embedding similarity injection detection, and LLM failover routing.
-- **Compliance Schema Registry**: Strict Schema Registry enforcement blocking producers from publishing backward-incompatible event payloads.
+### 6. 🔐 Pranor Auth & Secret (Security & Keys)
+| Feature | Community OSS | Enterprise EE |
+| :--- | :---: | :---: |
+| **Identity & Access Management** | JWKS, MFA, OAuth | ✅ IAM server with adaptive risk-based authentication |
+| **SCIM 2.0 User Provisioning** | ❌ | ✅ **User/group sync from Okta, Azure AD & Google Workspace** |
+| **Credential Stuffing Detector** | ❌ | ✅ **Distributed velocity tracking blocking credential stuffing** |
+| **Biometric Passkey / WebAuthn** | ❌ | ✅ **FIDO2 / Passkey passwordless authentication server** |
+| **VS Code Visual Secret Console** | ❌ | ✅ **Unseal vault stores & manage secret maps inside VS Code** |
+
+### 7. ⏰ Pranor Chrono, Deploy & Mesh (Orchestration & Network)
+| Feature | Community OSS | Enterprise EE |
+| :--- | :---: | :---: |
+| **Smart SLA Cron Optimizer** | ❌ | ✅ **Predictive cron optimizer shifting jobs to off-peak cost windows** |
+| **Multi-Cluster Fleet DR Failover** | ❌ | ✅ **1-click active-passive region failover with DNS update sync** |
+| **Multi-Cloud Cross-VPC Mesh Peering**| ❌ | ✅ **Encrypted WireGuard mesh tunnels across AWS EKS, GCP & on-prem** |
 
 ---
 
 ## Commercial Licensing & Build Tags
 
-Enterprise features are compiled cleanly behind `//go:build enterprise` build tags. They compile into the standard single binary without external sidecars:
+Enterprise features compile cleanly behind `//go:build enterprise` build tags into the standard single binary:
 
 ```bash
-# Compile binary with enterprise feature tags
+# Compile binary with all 32 Enterprise Edition capabilities enabled
 go build -tags enterprise -o pranord ./cmd/pranord
 ```
 
-For commercial licensing inquiries, pilot programs, or dedicated enterprise support contracts:
+For commercial licensing inquiries, pilot programs, or dedicated support contracts:
 - **Enterprise Repository**: [`github.com/vyuvaraj/pranor-ee`](https://github.com/vyuvaraj/pranor-ee) (Private)
 - **Interactive Feature Matrix**: [`https://vyuvaraj.github.io/pranor-platform/features.html`](https://vyuvaraj.github.io/pranor-platform/features.html)
 

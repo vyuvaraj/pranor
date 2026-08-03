@@ -1,0 +1,13 @@
+{
+  "name": "pranor-devcontainer",
+  "image": "mcr.microsoft.com/devcontainers/go:1.22-bookworm",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go"
+      ]
+    }
+  },
+  "forwardPorts": [8080, 8090, 8081, 8086],
+  "postCreateCommand": "go version && echo 'Pranor Dev Container Ready!'"
+}

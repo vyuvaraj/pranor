@@ -15,6 +15,10 @@
 - [CLI Commands](./language/cli.md)
 - [Examples & Articles](./language/examples.md)
 
+# Tooling & IDE
+
+- [VS Code Extension & LSP](./tooling.md)
+
 # Modules
 
 - [Gate — API Gateway](./modules/gate.md)
@@ -40,6 +44,7 @@
 - [Docker](./deployment/docker.md)
 - [Kubernetes](./deployment/kubernetes.md)
 - [Standalone](./deployment/standalone.md)
+- [Integrations & Connectors](./integrations.md)
 
 # Architecture
 

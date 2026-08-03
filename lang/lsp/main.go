@@ -268,6 +268,16 @@ func (s *Server) handleMessage(msg JSONRPCMessage) {
 		s.handleInlayHint(msg) // DX.10
 	case "textDocument/selectionRange":
 		s.handleSelectionRange(msg) // DX.13
+	case "workspace/symbol":
+		s.handleWorkspaceSymbol(msg) // LSP.3
+	case "textDocument/prepareCallHierarchy":
+		s.handlePrepareCallHierarchy(msg) // LSP.4
+	case "callHierarchy/incomingCalls":
+		s.handleCallHierarchyIncomingCalls(msg) // LSP.4
+	case "callHierarchy/outgoingCalls":
+		s.handleCallHierarchyOutgoingCalls(msg) // LSP.4
+	case "textDocument/documentHighlight":
+		s.handleDocumentHighlight(msg) // LSP.6
 	}
 }
 
@@ -290,6 +300,9 @@ func (s *Server) handleInitialize(msg JSONRPCMessage) {
 			},
 			"inlayHintProvider":      true, // DX.10
 			"selectionRangeProvider": true, // DX.13
+			"workspaceSymbolProvider": true, // LSP.3
+			"callHierarchyProvider":  true, // LSP.4
+			"documentHighlightProvider": true, // LSP.6
 			"signatureHelpProvider": map[string]interface{}{
 				"triggerCharacters":   []string{"(", ","},
 				"retriggerCharacters": []string{","},

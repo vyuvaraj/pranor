@@ -1,26 +1,27 @@
 go 1.26.3
 
 use (
-	./lang
-	./gate
-	./pulse
-	./chrono
 	./auth
-	./vault
-	./hub
 	./cache
-	./mesh
-	./trace
+	./chrono
 	./console
-	./pool
-	./notify
-	./flow
-	./deploy
-	./tunnel
 	./core
+	./deploy
+	./flow
+	./gate
+	./hub
+	./lang
 	./lock
-	./secret
-	./platform
 	./lockctl
+	./mesh
+	./notify
+	./platform
+	./pool
+	./pulse
+	./secret
 	./secretctl
+	./tools/terraform-provider-pranor
+	./trace
+	./tunnel
+	./vault
 )

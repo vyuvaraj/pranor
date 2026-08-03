@@ -1,0 +1,22 @@
+name: 'Pranor App Deployment'
+description: 'Builds a .pnr app, pushes to Pranor Hub, and triggers blue/green deployment on Pranor Deploy'
+inputs:
+  app_path:
+    description: 'Path to application source directory'
+    required: false
+    default: '.'
+  pranor_hub_url:
+    description: 'Pranor Hub registry URL'
+    required: false
+    default: 'http://localhost:8082'
+  pranor_deploy_url:
+    description: 'Pranor Deploy service URL'
+    required: false
+    default: 'http://localhost:8088'
+  api_token:
+    description: 'Authentication token for deployment'
+    required: true
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

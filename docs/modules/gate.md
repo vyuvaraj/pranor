@@ -67,30 +67,25 @@ Pranor Gate can run as:
 
 ```mermaid
 graph TD
-    classDef ingress fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
-    classDef security fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
-    classDef proxy fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
-    classDef backend fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
-
-    subgraph Edge ["🌐 Global Ingress Layer"]
-        DNS["Geo-IP Anycast DNS"] :::ingress
-        XDP["eBPF XDP Packet Filter<br/><i>(100Gbps DDoS Drop)</i>"] :::ingress
+    subgraph Edge ["Global Ingress Layer"]
+        DNS["Geo-IP Anycast DNS"]
+        XDP["eBPF XDP Packet Filter"]
     end
 
-    subgraph Security ["🛡️ Zero-Trust Security & WASM Engine"]
-        TLS["PCIe Hardware TLS Offload"] :::security
-        WASM["WASM Security Sandbox<br/><i>(Side-Channel Safe)</i>"] :::security
-        PromptGuard["AI Prompt Injection Guard<br/><i>(Semantic Vector Filter)</i>"] :::security
+    subgraph Security ["Zero-Trust Security and WASM Engine"]
+        TLS["PCIe Hardware TLS Offload"]
+        WASM["WASM Security Sandbox"]
+        PromptGuard["AI Prompt Injection Guard"]
     end
 
-    subgraph Core ["⚡ Proxy Router & Rate Limiter"]
-        CRDT["Global CRDT Rate Limiter<br/><i>(Sub-ms Gossip Sync)</i>"] :::proxy
-        Router["Dynamic Reverse Proxy<br/><i>(Canary / Blue-Green)</i>"] :::proxy
+    subgraph Core ["Proxy Router and Rate Limiter"]
+        CRDT["Global CRDT Rate Limiter"]
+        Router["Dynamic Reverse Proxy"]
     end
 
-    subgraph Upstream ["☁️ Upstream Microservices"]
-        AIModel["LLM / Model Service"] :::backend
-        Microservice["gRPC / REST Microservice"] :::backend
+    subgraph Upstream ["Upstream Microservices"]
+        AIModel["LLM / Model Service"]
+        Microservice["gRPC / REST Microservice"]
     end
 
     DNS --> XDP
@@ -99,8 +94,8 @@ graph TD
     WASM --> PromptGuard
     PromptGuard --> CRDT
     CRDT --> Router
-    Router -->|mTLS Stream| AIModel
-    Router -->|mTLS Stream| Microservice
+    Router -->|mTLS| AIModel
+    Router -->|mTLS| Microservice
 ```
 
 ### Request Processing Sequence & WASM Execution Flow

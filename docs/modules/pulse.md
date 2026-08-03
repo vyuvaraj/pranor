@@ -72,35 +72,30 @@ Pranor Pulse can run as:
 
 ```mermaid
 graph TD
-    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
-    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
-    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
-    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
-
-    subgraph Adapters ["🌐 Multi-Protocol Wire Interface"]
-        STOMP["STOMP 1.2 Protocol Listener<br/><i>(:61613)</i>"] :::client
-        Kafka["Kafka Wire Decoder<br/><i>(:9092)</i>"] :::client
-        MQTT["MQTT v5 Broker Listener<br/><i>(:1883)</i>"] :::client
-        HTTP["HTTP / REST Management API<br/><i>(:8082)</i>"] :::client
+    subgraph Adapters ["Multi-Protocol Wire Interface"]
+        STOMP["STOMP 1.2 Listener :61613"]
+        Kafka["Kafka Wire Decoder :9092"]
+        MQTT["MQTT v5 Broker :1883"]
+        HTTP["HTTP REST API :8082"]
     end
 
-    subgraph Core ["⚡ Core Event Streaming Broker"]
-        Registry["Topic Registry & Wildcard Matcher"] :::engine
-        Dedup["Idempotent Dedup Window<br/><i>(5-min Sliding Window)</i>"] :::engine
-        Schema["Schema Compatibility Inspector"] :::engine
-        WASM["WASM Transform Pipeline"] :::engine
-        Dispatch["Partition & Consumer Group Dispatcher"] :::engine
+    subgraph Core ["Core Event Streaming Broker"]
+        Registry["Topic Registry and Wildcard Matcher"]
+        Dedup["Idempotent Dedup Window"]
+        Schema["Schema Compatibility Inspector"]
+        WASM["WASM Transform Pipeline"]
+        Dispatch["Partition and Consumer Group Dispatcher"]
     end
 
-    subgraph Storage ["💾 WAL & Tiered Persistence Engine"]
-        WAL["Write-Ahead Log Engine<br/><i>(Zero-Copy Hardware AES-NI)</i>"] :::storage
-        DLQ["Dead-Letter Queue Storage<br/><i>(AI Auto-Triage)</i>"] :::storage
-        ColdStore["S3 Cold Storage Offloader<br/><i>(Closed Segments)</i>"] :::storage
+    subgraph Storage ["WAL and Tiered Persistence Engine"]
+        WAL["Write-Ahead Log Engine"]
+        DLQ["Dead-Letter Queue Storage"]
+        ColdStore["S3 Cold Storage Offloader"]
     end
 
-    subgraph Timers ["⏱️ Delayed Delivery & Recovery"]
-        TimeWheel["TimeWheel Delayed Scheduler<br/><i>(10ms Tick Slots)</i>"] :::monitor
-        OffsetStore["Consumer Group Offset Commit Store"] :::monitor
+    subgraph Timers ["Delayed Delivery and Recovery"]
+        TimeWheel["TimeWheel Delayed Scheduler"]
+        OffsetStore["Consumer Group Offset Store"]
     end
 
     STOMP --> Registry

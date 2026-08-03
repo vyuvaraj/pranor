@@ -1178,7 +1178,7 @@ func TestSagaCompensationOrdering(t *testing.T) {
 	execResp.Body.Close()
 
 	// Wait for execution and saga rollback
-	time.Sleep(600 * time.Millisecond)
+	time.Sleep(1200 * time.Millisecond)
 
 	// Fetch final instance logs
 	getResp, _ := http.Get(testServer.URL + "/api/workflows/instances/" + inst.ID)

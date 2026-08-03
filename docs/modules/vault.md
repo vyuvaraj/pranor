@@ -68,55 +68,96 @@ Pranor Vault can run as:
 
 ## Architecture
 
+```mermaid
+graph TD
+    subgraph API ["S3-Compatible API Layer"]
+        S3["S3 REST API :9000"]
+        Admin["Admin API :9001"]
+        Console["Web Console /ui/"]
+    end
+
+    subgraph Auth ["Auth and RBAC"]
+        SigV4["AWS Signature V4 Verification"]
+        RBAC["Policy-Based Access Control"]
+        RateLimit["Per-Tenant Rate Limiter"]
+    end
+
+    subgraph Engine ["Object Processing Engine"]
+        S3Ops["S3 Operations Engine"]
+        Vector["Vector Search HNSW Index"]
+        WASMPipe["WASM Transform Pipeline"]
+        Federation["Federation Router"]
+    end
+
+    subgraph Cluster ["Distributed Cluster Layer"]
+        Raft["Raft Consensus Leader Election"]
+        HashRing["Consistent Hash Ring Placement"]
+        Erasure["Reed-Solomon Erasure Coding"]
+        CRR["Cross-Region Replication"]
+    end
+
+    subgraph Storage ["Persistence Layer"]
+        LocalStore["Content-Addressed Local Store"]
+        Versioning["Version Metadata Engine"]
+        ColdTier["S3 Cold Storage Tier"]
+        WAL["Write-Ahead Log"]
+    end
+
+    S3 --> SigV4
+    Admin --> SigV4
+    Console --> SigV4
+    SigV4 --> RBAC
+    RBAC --> RateLimit
+    RateLimit --> S3Ops
+    RateLimit --> Vector
+    RateLimit --> WASMPipe
+    S3Ops --> Raft
+    Raft --> HashRing
+    HashRing --> Erasure
+    Erasure --> LocalStore
+    LocalStore --> Versioning
+    LocalStore -.-> ColdTier
+    Versioning --> WAL
+    Federation -.-> CRR
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         Pranor Vault                                 │
-│                                                                     │
-│  ┌───────────────┐  ┌───────────────┐  ┌────────────────────────┐  │
-│  │  S3 API       │  │  Admin API    │  │  Console Web UI        │  │
-│  │  Gateway      │  │  (:9001)      │  │  (/ui/)                │  │
-│  │  (:9000)      │  │               │  │                        │  │
-│  └───────┬───────┘  └───────┬───────┘  └────────────┬───────────┘  │
-│          └──────────────────┼────────────────────────┘              │
-│                             ▼                                       │
-│  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                  Auth & RBAC Layer                           │    │
-│  │  • AWS Signature V4 verification                            │    │
-│  │  • RBAC policy enforcement                                  │    │
-│  │  • Per-tenant rate limiting                                 │    │
-│  │  • Console session management                               │    │
-│  └─────────────────────────────────────────────────────────────┘    │
-│                             ▼                                       │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌───────────────────┐   │
-│  │  S3 Ops  │  │  Vector  │  │  WASM    │  │  Federation       │   │
-│  │  Engine  │  │  Search  │  │  Pipeline│  │  Router           │   │
-│  │          │  │  (HNSW)  │  │  Engine  │  │                   │   │
-│  └──────────┘  └──────────┘  └──────────┘  └───────────────────┘   │
-│                             ▼                                       │
-│  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                  Cluster Layer                               │    │
-│  │  • Raft Consensus (leader election, log replication)        │    │
-│  │  • Consistent Hash Ring (object placement)                  │    │
-│  │  • Erasure Coding (Reed-Solomon data/parity shards)         │    │
-│  │  • Cross-Region Replication (CRR)                           │    │
-│  │  • Membership Manager (node health, gossip)                 │    │
-│  └─────────────────────────────────────────────────────────────┘    │
-│                             ▼                                       │
-│  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                Storage Engine (PebbleDB/Local FS)            │    │
-│  │  • Object data (content-addressed)                          │    │
-│  │  • Version metadata                                         │    │
-│  │  • Bucket configuration                                     │    │
-│  │  • Lifecycle rules & cold tier config                       │    │
-│  │  • Access audit logs                                        │    │
-│  └─────────────────────────────────────────────────────────────┘    │
-│                                                                     │
-│  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌─────────────┐   │
-│  │  OTel      │  │  Prometheus│  │  Event     │  │  Lifecycle  │   │
-│  │  Tracing   │  │  Metrics   │  │  Notifier  │  │  Sweeper    │   │
-│  └────────────┘  └────────────┘  └────────────┘  └─────────────┘   │
-└─────────────────────────────────────────────────────────────────────┘
+
+### Object Lifecycle Sequence Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Client as S3 Client
+    participant Gate as S3 API Gateway
+    participant Auth as SigV4 Auth Layer
+    participant Engine as S3 Operations Engine
+    participant Cluster as Cluster Placement
+    participant Store as Storage Engine
+    participant Notify as Event Notifier
+
+    Client->>Gate: PUT /bucket/key (Object Upload)
+    Gate->>Auth: Verify AWS Signature V4
+    Auth-->>Gate: Authenticated (Access Key + Policy)
+    Gate->>Engine: Process PutObject Request
+    Engine->>Cluster: Determine Placement via Hash Ring
+    Cluster->>Store: Write Object Data + Version Metadata
+    Store-->>Cluster: Write Committed (ETag Generated)
+    Cluster-->>Engine: Placement Confirmed
+    Engine->>Notify: Emit s3:ObjectCreated Event
+    Notify-->>Engine: Webhook Dispatched
+    Engine-->>Gate: 200 OK (ETag, VersionId)
+    Gate-->>Client: HTTP 200 with ETag Header
 ```
+
+### Ecosystem Cross-Module Integration
+
+Pranor Vault serves as the primary data persistence layer across the Pranor platform:
+
+- **Pranor Pulse**: Receives closed WAL segments offloaded to S3 buckets for cold archive retention. Vault also emits object event notifications to Pulse topics.
+- **Pranor Auth**: Validates JWT tokens and enforces RBAC bucket policies. OIDC and LDAP integration for enterprise environments.
+- **Pranor Trace**: Every S3 operation generates an OTel span with trace context propagation across cluster nodes.
+- **Pranor Console**: Provides bucket management dashboard, storage capacity monitoring, and object browsing UI.
+- **Pranor Hub**: Uses Vault as the backing store for package artifacts (tarballs, WASM modules, metadata).
+- **Pranor Secret**: Fetches encryption keys for server-side object encryption (SSE-KMS mode).
 
 ---
 

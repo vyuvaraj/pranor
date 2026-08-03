@@ -1,77 +1,36 @@
-# Pranor Auth
+# Pranor Auth — Identity & Access Management
 
-```bash
-# 5-Minute Auth Quickstart
-curl -X POST http://localhost:8086/api/auth/register -d '{"username":"dev","password":"secretpassword"}'
-curl -X POST http://localhost:8086/api/auth/login -d '{"username":"dev","password":"secretpassword"}'
-# → Returns JWT token; pass header 'Authorization: Bearer <token>' to protected APIs
-```
-
-```bash
-docker run -p 8086:8086 ghcr.io/vyuvaraj/pranor-auth:latest
-```
-
-`Pranor Auth` is the authentication and authorization service for the **Pranor** ecosystem. It provides passkey/WebAuthn login, adaptive MFA, OAuth2/OIDC provider functionality, JWT issuance and rotation, RBAC, and seamless integration with `Pranor Gate` for API-level enforcement.
+**Version:** 1.0.0  
+**Module Path:** `github.com/vyuvaraj/pranor/auth`  
+**Default Port:** 8098  
+**License:** AGPL-3.0 (OSS) / Enterprise License (EE with Adaptive MFA & Federation)
 
 ---
 
-## Table of Contents
-- [Key Features](#key-features)
-- [Architecture](#architecture)
-- [API Endpoints](#api-endpoints)
-- [Passkeys & WebAuthn](#passkeys--webauthn)
-- [MFA & Adaptive Step-Up](#mfa--adaptive-step-up)
-- [JWT & OAuth2/OIDC](#jwt--oauth2oidc)
-- [RBAC](#rbac)
-- [Pranor Gate Integration](#pranor-gate-integration)
-- [Getting Started](#getting-started)
+## Overview
+
+Pranor Auth is the centralized authentication, authorization, and identity management service for the Pranor ecosystem. It provides OAuth2/OIDC provider functionality, WebAuthn/FIDO2 passkey login, adaptive multi-factor authentication, JWT issuance with automatic key rotation, RBAC/ABAC policy enforcement, session management, and SCIM provisioning.
+
+Pranor Auth can run as:
+- A **standalone binary** with local user store and JWT signing
+- An **integrated module** within the Pranor ecosystem with mTLS, OTel tracing, tenant isolation, and federated IdP support
 
 ---
 
 ## Key Features
 
-### 🔑 Passkeys & WebAuthn (FIDO2)
-- **Passkey registration**: Register hardware security keys, biometric authenticators (Face ID, Touch ID, Windows Hello), and platform authenticators
-- **WebAuthn authentication**: Full FIDO2/WebAuthn ceremony — challenge/response with attestation verification
-- **Cross-device passkeys**: Synced passkeys via cloud keychains (iCloud Keychain, Google Password Manager)
-- **Passkey management**: List, rename, and revoke registered passkeys per user
-
-### 🔐 Session Management
-- **Secure session tokens**: Cryptographically signed session tokens with configurable expiry
-- **Automatic token rotation**: Sessions are silently rotated on each request within the rotation window — reduces token theft risk
-- **Session invalidation**: Immediately invalidate all sessions for a user (e.g., on password change or security alert)
-- **Device session tracking**: Track active sessions per device with last-seen timestamps
-
-### 📱 Multi-Factor Authentication (MFA)
-- **TOTP (Time-based OTP)**: Standard RFC 6238 TOTP — compatible with Google Authenticator, Authy, 1Password
-- **SMS OTP**: Send one-time codes via SMS (configurable SMS provider)
-- **Email OTP**: Send one-time codes via email (integrates with `Pranor Notify`)
-- **Backup codes**: Generate and manage one-time recovery backup codes
-- **MFA enforcement policies**: Enforce MFA per user group, per role, or per app
-
-### 🎯 Adaptive MFA Step-Up (EE)
-- **Risk-based authentication**: Dynamically require additional MFA factors based on risk signals (new device, unusual location, high-value transaction)
-- **Configurable risk rules**: Define risk scoring rules (IP reputation, device fingerprint, behavioral anomaly)
-- **Step-up on demand**: Applications can request MFA step-up mid-session for sensitive operations
-
-### 🌐 OAuth2 & OIDC Provider
-- **OAuth2 authorization server**: Full OAuth2 flow support — Authorization Code (with PKCE), Client Credentials, Refresh Token
-- **OIDC identity provider**: OpenID Connect 1.0 — issues ID tokens with standard claims (`sub`, `email`, `name`, `picture`)
-- **JWKS endpoint**: Standard `/.well-known/jwks.json` for token verification by downstream services
-- **Dynamic client registration**: Register OAuth2 clients via API
-- **Scope management**: Define custom scopes and map to RBAC roles
-
-### 🎫 JWT Issuance & Validation
-- **JWT issuance**: RS256/ES256 signed JWTs with configurable claims and expiry
-- **JWT rotation**: Automatic signing key rotation with JWKS rollover period — zero-downtime key rotation
-- **Token introspection**: RFC 7662 token introspection endpoint
-- **Token revocation**: RFC 7009 token revocation — immediately invalidate any issued token
-
-### 🏷️ Role-Based Access Control (RBAC)
-- **Role definitions**: Create hierarchical roles with inheritance (e.g., `admin` → `editor` → `viewer`)
-- **Permission assignment**: Assign granular permissions (e.g., `orders:read`, `orders:write`) to roles
-- **User-role binding**: Assign roles to users, groups, or OAuth2 clients
-- **Policy enforcement**: Pranor Auth validates role/permission on every API call when integrated with Pranor Gate
+| Feature | Description |
+|---------|-------------|
+| **OAuth2/OIDC Provider** | Full Authorization Code (PKCE), Client Credentials, Refresh Token flows with JWKS endpoint |
+| **WebAuthn/FIDO2 Passkeys** | Hardware keys, biometric authenticators, cross-device synced passkeys |
+| **JWT Issuance & Rotation** | RS256/ES256 signed tokens with automatic JWKS key rotation via KMS |
+| **Adaptive MFA** | TOTP, SMS OTP, Email OTP, Magic Links with risk-based step-up challenges |
+| **RBAC/ABAC** | Hierarchical roles, granular permissions, tenant-scoped policy enforcement |
+| **Session Management** | Secure session tokens with rotation, device tracking, and bulk invalidation |
+| **Social Login** | OAuth2 social provider integration (Google, GitHub, etc.) |
+| **Credential Stuffing Detection** | Real-time detection of credential stuffing attacks |
+| **SCIM Provisioning** | SCIM v2 user lifecycle management for enterprise directory sync |
+| **SPIFFE/SPIRE Exchange** | Workload identity attestation via short-lived x509 SVID certificates |
 
 ---
 
@@ -79,28 +38,24 @@ docker run -p 8086:8086 ghcr.io/vyuvaraj/pranor-auth:latest
 
 ```mermaid
 graph TD
-    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
-    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
-    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
-    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
 
     subgraph Clients ["🌐 Auth Ceremony Clients"]
-        PasskeyClient["WebAuthn FIDO2 Passkey"] :::client
-        MFAClient["TOTP / SMS / Email OTP"] :::client
-        OIDCClient["OAuth2 / OIDC Client (PKCE)"] :::client
+        PasskeyClient["WebAuthn FIDO2 Passkey"]
+        MFAClient["TOTP / SMS / Email OTP"]
+        OIDCClient["OAuth2 / OIDC Client (PKCE)"]
     end
 
     subgraph Core ["⚡ Core Identity Engine"]
-        SessionMgr["Session Manager & Rotation Engine"] :::engine
-        AdaptiveMFA["Adaptive Risk-Based Step-Up MFA<br/><i>(Enterprise EE)</i>"] :::engine
-        JWTProvider["JWT / OIDC Issuer (RS256 / JWKS)"] :::engine
-        RBACEngine["Granular RBAC / ABAC Policy Engine"] :::engine
-        SPIFFEExchange["SPIFFE/SPIRE SVID Token Exchanger<br/><i>(Enterprise EE)</i>"] :::engine
+        SessionMgr["Session Manager and Rotation Engine"]
+        AdaptiveMFA["Adaptive Risk-Based Step-Up MFA"]
+        JWTProvider["JWT / OIDC Issuer (RS256 / JWKS)"]
+        RBACEngine["Granular RBAC / ABAC Policy Engine"]
+        SPIFFEExchange["SPIFFE/SPIRE SVID Token Exchanger"]
     end
 
     subgraph IdentityStores ["💾 Enterprise Identity Provider Federation"]
-        FederatedIdP["IdP Mapper (Okta / Azure AD SAML)"] :::storage
-        UserStore["User Credential Store"] :::storage
+        FederatedIdP["IdP Mapper (Okta / Azure AD SAML)"]
+        UserStore["User Credential Store"]
     end
 
     PasskeyClient --> SessionMgr
@@ -145,114 +100,376 @@ Pranor Auth establishes zero-trust identity across all platform components:
 
 ---
 
-## API Endpoints
+## Installation & Deployment
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/api/v1/auth/passkey/register/begin` | Begin passkey registration (get challenge) |
-| `POST` | `/api/v1/auth/passkey/register/finish` | Complete passkey registration |
-| `POST` | `/api/v1/auth/passkey/login/begin` | Begin passkey authentication (get challenge) |
-| `POST` | `/api/v1/auth/passkey/login/finish` | Complete passkey authentication |
-| `POST` | `/api/v1/auth/mfa/setup` | Set up MFA for a user |
-| `POST` | `/api/v1/auth/mfa/verify` | Verify an MFA code |
-| `POST` | `/api/v1/auth/mfa/step-up` | Request MFA step-up (adaptive) |
-| `POST` | `/api/v1/auth/token` | OAuth2 token endpoint |
-| `GET` | `/api/v1/auth/authorize` | OAuth2 authorization endpoint |
-| `GET` | `/.well-known/openid-configuration` | OIDC discovery document |
-| `GET` | `/.well-known/jwks.json` | JSON Web Key Set for token verification |
-| `POST` | `/api/v1/auth/token/introspect` | RFC 7662 token introspection |
-| `POST` | `/api/v1/auth/token/revoke` | RFC 7009 token revocation |
-| `POST` | `/api/v1/sessions/invalidate` | Invalidate all sessions for a user |
-| `GET` | `/api/v1/sessions` | List active sessions for a user |
-| `POST` | `/api/v1/rbac/roles` | Create a role |
-| `GET` | `/api/v1/rbac/roles` | List roles |
-| `POST` | `/api/v1/rbac/roles/{role}/permissions` | Assign permissions to a role |
-| `POST` | `/api/v1/rbac/users/{id}/roles` | Assign roles to a user |
-| `/healthz` | `GET` | Liveness probe |
-
----
-
-## Passkeys & WebAuthn
-
-```javascript
-// Browser: Begin registration
-const { challenge } = await fetch('/api/v1/auth/passkey/register/begin', {
-  method: 'POST', body: JSON.stringify({ user_id: 'user-123' })
-}).then(r => r.json());
-
-const credential = await navigator.credentials.create({ publicKey: challenge });
-
-// Finish registration
-await fetch('/api/v1/auth/passkey/register/finish', {
-  method: 'POST', body: JSON.stringify(credential)
-});
-```
-
----
-
-## JWT & OAuth2/OIDC
-
-Configure Pranor Gate to verify Pranor Auth JWTs:
-
-```json
-{
-  "routes": [{
-    "prefix": "/api/orders",
-    "target": "http://orders:3000",
-    "auth": {
-      "type": "bearer",
-      "jwks_url": "http://pranor-auth:8086/.well-known/jwks.json",
-      "required_scope": "orders:read"
-    }
-  }]
-}
-```
-
----
-
-## RBAC
+### Binary
 
 ```bash
-# Create roles
-curl -X POST http://pranor-auth:8086/api/v1/rbac/roles \
-  -d '{"name": "admin", "permissions": ["orders:read", "orders:write", "orders:delete"]}'
-
-# Assign role to user
-curl -X POST http://pranor-auth:8086/api/v1/rbac/users/user-123/roles \
-  -d '{"roles": ["admin"]}'
+cd pranor/auth
+go build -o pranor-auth .
+./pranor-auth --port 8098
 ```
+
+### Docker
+
+```bash
+docker run -p 8098:8098 ghcr.io/vyuvaraj/pranor-auth:latest
+```
+
+### As Part of Pranor Ecosystem
+
+When running under the Pranor platform, Auth integrates automatically with Gate (JWT enforcement), Trace (OTel spans), Secret (key storage), and Console (dashboard visibility).
 
 ---
 
-## Getting Started
-
-```bash
-docker run -p 8086:8086 \
-  -e PRANOR_AUTH_JWT_SECRET=my-rsa-key.pem \
-  -e PRANOR_AUTH_SESSION_SECRET=32-byte-random-secret \
-  -e PRANOR_AUTH_PRANOR_NOTIFY_URL=http://pranor-notify:8091 \
-  -e PRANOR_AUTH_OTEL_ENDPOINT=http://pranor-trace:4318 \
-  ghcr.io/vyuvaraj/pranor-auth:latest
-```
+## Configuration
 
 ### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `PRANOR_AUTH_PORT` | `8086` | HTTP listener port |
+| `PORT` | `8098` | HTTP listener port |
 | `PRANOR_AUTH_JWT_ALGORITHM` | `RS256` | JWT signing algorithm (`RS256` or `ES256`) |
 | `PRANOR_AUTH_JWT_KEY_PATH` | — | Path to RSA/EC private key for JWT signing |
 | `PRANOR_AUTH_SESSION_SECRET` | — | 32-byte secret for session token signing |
 | `PRANOR_AUTH_MFA_TOTP_ISSUER` | `Pranor` | TOTP issuer name shown in authenticator apps |
-| `PRANOR_AUTH_PRANOR_NOTIFY_URL` | — | Pranor Notify URL for email OTP delivery |
+| `PRANOR_AUTH_PRANOR_NOTIFY_URL` | — | Pranor Notify URL for email/SMS OTP delivery |
 | `PRANOR_AUTH_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
+| `PRANOR_AUTH_KMS_ROTATION_INTERVAL` | `24h` | KMS envelope key rotation interval |
+
+### YAML Config (`auth.yaml`)
+
+```yaml
+port: "8098"
+jwt_algorithm: "RS256"
+jwt_key_path: "/keys/auth-signing.pem"
+session_secret: "32-byte-random-secret-here"
+mfa_totp_issuer: "Pranor"
+notify_url: "http://pranor-notify:8094"
+otel_endpoint: "http://pranor-trace:8090"
+```
+
+### CLI Flags
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--port` | `8098` | HTTP listen port |
 
 ---
 
-## Enterprise Edition (Planned)
+## API Reference
 
-| Feature | Tier |
-|---------|------|
-| Adaptive Risk-Based MFA Step-Up Engine | EE |
-| Device Fingerprinting & Trusted Device Registry | EE |
-| Per-Tenant OIDC Provider Federation (Okta, Azure AD, Google Workspace) | EE |
+**Base URL:** `http://localhost:8098`  
+**API Version:** `/api/v1/` (recommended) or `/api/` (legacy)
+
+### POST /api/auth/register
+
+Register a new user.
+
+**Request:**
+
+```json
+{
+  "username": "alice",
+  "password": "secure-password-123",
+  "email": "alice@example.com"
+}
+```
+
+**Response (201):**
+
+```json
+{
+  "status": "success",
+  "user_id": "usr-abc-123",
+  "message": "User registered successfully"
+}
+```
+
+---
+
+### POST /api/auth/login
+
+Authenticate a user and receive a JWT.
+
+**Request:**
+
+```json
+{
+  "username": "alice",
+  "password": "secure-password-123"
+}
+```
+
+**Response (200):**
+
+```json
+{
+  "token": "eyJhbGciOiJSUzI1NiIs...",
+  "expires_at": "2026-08-01T11:00:00Z",
+  "user_id": "usr-abc-123"
+}
+```
+
+---
+
+### POST /api/auth/passkey/register/challenge
+
+Begin WebAuthn passkey registration ceremony.
+
+**Request:**
+
+```json
+{
+  "user_id": "usr-abc-123"
+}
+```
+
+**Response (200):**
+
+```json
+{
+  "challenge": "base64-encoded-challenge",
+  "rp": { "name": "Pranor", "id": "pranor.net" },
+  "user": { "id": "usr-abc-123", "name": "alice" }
+}
+```
+
+---
+
+### POST /api/auth/passkey/login/challenge
+
+Begin WebAuthn authentication ceremony.
+
+**Request:**
+
+```json
+{
+  "username": "alice"
+}
+```
+
+**Response (200):**
+
+```json
+{
+  "challenge": "base64-encoded-challenge",
+  "allowCredentials": [{ "id": "cred-xyz", "type": "public-key" }]
+}
+```
+
+---
+
+### POST /api/auth/mfa/setup
+
+Set up MFA for a user (TOTP, SMS, or Email).
+
+**Request:**
+
+```json
+{
+  "user_id": "usr-abc-123",
+  "method": "totp"
+}
+```
+
+**Response (200):**
+
+```json
+{
+  "secret": "JBSWY3DPEHPK3PXP",
+  "qr_code_url": "otpauth://totp/Pranor:alice?secret=JBSWY3DPEHPK3PXP&issuer=Pranor"
+}
+```
+
+---
+
+### POST /api/auth/mfa/step-up
+
+Request adaptive MFA step-up based on risk signals.
+
+**Request:**
+
+```json
+{
+  "user_id": "usr-abc-123",
+  "context": {
+    "ip": "203.0.113.42",
+    "device_fingerprint": "fp-new-device",
+    "action": "high-value-transfer"
+  }
+}
+```
+
+**Response (200):**
+
+```json
+{
+  "step_up_required": true,
+  "risk_score": 78,
+  "required_factors": ["totp"],
+  "reason": "new_device_detected"
+}
+```
+
+---
+
+### GET /.well-known/jwks.json
+
+JSON Web Key Set for token verification.
+
+**Response (200):**
+
+```json
+{
+  "keys": [
+    {
+      "kty": "RSA",
+      "kid": "key-2026-08",
+      "use": "sig",
+      "alg": "RS256",
+      "n": "...",
+      "e": "AQAB"
+    }
+  ]
+}
+```
+
+---
+
+### POST /api/auth/sessions/revoke
+
+Invalidate all sessions for a user.
+
+**Request:**
+
+```json
+{
+  "user_id": "usr-abc-123"
+}
+```
+
+**Response (200):**
+
+```json
+{
+  "status": "success",
+  "revoked_count": 3
+}
+```
+
+---
+
+### GET /healthz
+
+Liveness probe.
+
+```json
+{"status":"ok"}
+```
+
+---
+
+## Security
+
+### Standalone Mode
+
+In standalone mode, Pranor Auth uses a local user store with bcrypt-hashed passwords and issues self-signed JWTs. Configure `PRANOR_AUTH_SESSION_SECRET` for session signing.
+
+### Ecosystem Mode (Full Auth Stack)
+
+When running within the Pranor ecosystem, the full middleware chain activates:
+
+1. **OTel Tracing** — every request gets a span
+2. **Rate Limiting** — per-client request throttling
+3. **CORS** — cross-origin request handling
+4. **Max Body Size** — 10MB request body limit
+5. **JWT Auth** — validates Bearer tokens
+6. **Token Revocation** — checks revocation list
+7. **Tenant Isolation** — multi-tenant namespace enforcement
+
+### mTLS / SPIFFE
+
+Enable mutual TLS for service-to-service authentication with SPIFFE SVID certificates. Auth issues short-lived x509 workload identities for zero-trust inter-service communication.
+
+### KMS Key Rotation
+
+Background KMS envelope key rotation runs on a configurable schedule (default: 24h). JWKS endpoints serve both current and previous keys during rollover for zero-downtime rotation.
+
+---
+
+## Observability
+
+### Prometheus Metrics
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `pranor_auth_logins_total` | Counter | Total login attempts (labeled by method, status) |
+| `pranor_auth_mfa_challenges_total` | Counter | MFA challenges issued |
+| `pranor_auth_token_issued_total` | Counter | JWTs issued |
+| `pranor_auth_sessions_active` | Gauge | Currently active sessions |
+| `pranor_auth_stuffing_blocks_total` | Counter | Credential stuffing attacks blocked |
+
+### OpenTelemetry Tracing
+
+Every authentication flow generates OTel spans:
+- `auth.login` — full login ceremony
+- `auth.mfa.verify` — MFA verification step
+- `auth.token.issue` — JWT generation
+- `auth.passkey.ceremony` — WebAuthn challenge/response
+
+### Logging
+
+Structured JSON logs with fields: `level`, `timestamp`, `trace_id`, `user_id`, `action`, `ip`, `risk_score`.
+
+---
+
+## Enterprise Edition
+
+| Feature | OSS | EE |
+|---------|:---:|:--:|
+| Local user store & JWT issuance | ✓ | ✓ |
+| TOTP/Email/SMS MFA | ✓ | ✓ |
+| WebAuthn/FIDO2 Passkeys | ✓ | ✓ |
+| Session management & revocation | ✓ | ✓ |
+| RBAC roles & permissions | ✓ | ✓ |
+| Social login (OAuth2 providers) | ✓ | ✓ |
+| SCIM v2 provisioning | ✓ | ✓ |
+| Adaptive Risk-Based MFA Step-Up | — | ✓ |
+| Device Fingerprinting & Trusted Device Registry | — | ✓ |
+| Per-Tenant OIDC Federation (Okta, Azure AD, Google) | — | ✓ |
+| SPIFFE/SPIRE Workload Identity Exchange | — | ✓ |
+| Credential Stuffing Detection Engine | — | ✓ |
+
+---
+
+## Operational Runbook
+
+### Users cannot log in
+
+1. Check `/healthz` endpoint is returning 200
+2. Verify JWT signing key is accessible (`PRANOR_AUTH_JWT_KEY_PATH`)
+3. Check logs for `auth.login` span errors
+4. If MFA is failing, verify Pranor Notify connectivity for OTP delivery
+5. Check rate limiter isn't blocking legitimate traffic
+
+### JWT tokens rejected by downstream services
+
+1. Verify JWKS endpoint (`/.well-known/jwks.json`) is accessible from downstream services
+2. Check if key rotation occurred — downstream services may be caching stale keys
+3. Ensure clock skew between Auth and consumer services is < 30 seconds
+4. Check token hasn't been explicitly revoked via `/api/auth/sessions/revoke`
+
+### High credential stuffing alerts
+
+1. Monitor `pranor_auth_stuffing_blocks_total` metric
+2. Review blocked IPs in logs
+3. Consider enabling adaptive MFA step-up for all logins from flagged IPs
+4. Integrate with upstream WAF for IP-level blocking
+
+### KMS key rotation failures
+
+1. Check KMS connectivity and credentials
+2. Verify rotation interval configuration (`PRANOR_AUTH_KMS_ROTATION_INTERVAL`)
+3. Monitor logs for `kms.rotation` errors
+4. Manual key rotation: `POST /api/auth/rotate-keys`

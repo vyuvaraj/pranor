@@ -1,63 +1,37 @@
-# Pranor Notify
+# Pranor Notify — Multi-Channel Notification Engine
 
-```bash
-docker run -p 8091:8091 ghcr.io/vyuvaraj/pranor-notify:latest
-```
-
-`Pranor Notify` is the transactional email and deliverability management service for the **Pranor** ecosystem. It handles sending, receiving, bounce management, unsubscribe compliance, DMARC enforcement, and provides a rich templating DSL and delivery analytics.
+**Version:** 1.0.0  
+**Module Path:** `github.com/vyuvaraj/pranor/notify`  
+**Default Port:** 8094  
+**License:** AGPL-3.0 (OSS) / Enterprise License (EE with AI Deliverability & WebPush)
 
 ---
 
-## Table of Contents
-- [Key Features](#key-features)
-- [Architecture](#architecture)
-- [API Endpoints](#api-endpoints)
-- [Template DSL](#template-dsl)
-- [DMARC & Deliverability](#dmarc--deliverability)
-- [Compliance](#compliance)
-- [Getting Started](#getting-started)
+## Overview
+
+Pranor Notify is the transactional email, SMS, and push notification service for the Pranor ecosystem. It handles sending, receiving, bounce management, unsubscribe compliance (RFC 8058), DMARC/SPF/DKIM enforcement, inbound email routing, and provides a rich templating DSL with delivery analytics.
+
+Pranor Notify can run as:
+- A **standalone binary** with SMTP relay configuration for email delivery
+- An **integrated module** within the Pranor ecosystem with multi-channel dispatch, OTel tracing, and Console analytics
 
 ---
 
 ## Key Features
 
-### 📤 Sending
-- **Transactional email API**: Simple REST API to send emails with HTML/plain text body, attachments, CC/BCC
-- **SMTP relay integration**: Route outgoing mail through your own SMTP relay (Postfix, SendGrid, AWS SES, Mailgun)
-- **Template rendering**: Render emails from reusable templates with the Pranor Notify DSL
-
-### 📥 Inbound Routing
-- **Inbound email webhook router**: Route inbound emails to HTTP endpoints based on configurable rules (match by `From`, `Subject`, header patterns, or recipient address)
-- **Rule-based routing**: Priority-ordered rules with regex matching; fallback default handler
-
-### 📝 Template Engine DSL
-- **Variable interpolation**: `{{ user.name }}`, `{{ order.total }}`
-- **Conditionals**: `{% if user.verified %} ... {% endif %}`
-- **Loops**: `{% for item in order.items %} ... {% endfor %}`
-- **Partials / includes**: `{% include "components/footer.html" %}`
-- **Layouts**: Extend base layouts for consistent header/footer across templates
-
-### 📊 Bounce & Complaint Management
-- **Automatic suppression list**: Bounced and complained addresses are automatically added to a suppression list; future sends are blocked
-- **Bounce classification**: Distinguishes hard bounces (invalid address) from soft bounces (mailbox full) — hard bounces are immediately suppressed, soft bounces retry with backoff
-- **Webhook callbacks**: Configure webhooks for bounce, complaint, and delivery events
-- **Retry policies**: Configurable retry count and backoff strategy for soft bounces
-
-### 🔒 DMARC & Deliverability
-- **DMARC policy enforcement**: Check incoming mail against sender's DMARC DNS record; reject, quarantine, or report non-compliant messages
-- **SPF/DKIM alignment checking**: Validate SPF and DKIM headers are aligned with the `From:` domain
-- **DMARC aggregation reports (RUA)**: Generate and send periodic DMARC aggregate reports to the domain owner's `rua` address
-- **Deliverability scoring**: Pre-send score estimation based on SPF/DKIM/DMARC alignment, suppression list checks, and content scoring
-
-### ✅ Compliance
-- **One-click unsubscribe (RFC 8058)**: `List-Unsubscribe-Post` header injected on all bulk emails; honor unsubscribe POSTs from email clients (Gmail, Apple Mail)
-- **List management API**: Subscribe, unsubscribe, and manage mailing list membership; segmentation support
-- **Automatic unsubscribe link injection**: Pranor Notify injects a unique unsubscribe link in every outgoing email footer
-
-### 📈 Analytics
-- **Delivery analytics telemetry**: Per-campaign delivery rates, open rates, click rates, bounce rates, complaint rates
-- **Per-recipient event tracking**: Track individual recipient events (delivered, opened, clicked, bounced, unsubscribed)
-- **Pranor Console dashboard integration**: Live analytics charts for mail campaigns
+| Feature | Description |
+|---------|-------------|
+| **Transactional Email** | REST API for HTML/plain text emails with attachments, CC/BCC |
+| **Template DSL** | Variable interpolation, conditionals, loops, partials, and layouts |
+| **SMTP Relay** | Route via SendGrid, AWS SES, Mailgun, or custom SMTP |
+| **Inbound Routing** | Route incoming emails to HTTP webhooks based on rules |
+| **Bounce Management** | Auto-suppression list with hard/soft bounce classification |
+| **DMARC Enforcement** | SPF/DKIM/DMARC alignment checking and aggregate reports |
+| **RFC 8058 Unsubscribe** | One-click unsubscribe headers on all bulk emails |
+| **SMS Gateway** | Twilio and multi-carrier SMS delivery |
+| **WebPush / APNs** | Browser push and Apple Push Notification delivery |
+| **Delivery Analytics** | Per-campaign rates, opens, clicks, bounces, complaints |
+| **Suppression List** | Automatic and manual address suppression management |
 
 ---
 
@@ -65,27 +39,23 @@ docker run -p 8091:8091 ghcr.io/vyuvaraj/pranor-notify:latest
 
 ```mermaid
 graph TD
-    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
-    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
-    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
-    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
 
     subgraph ChannelAdapters ["🌐 Multi-Channel Notification Ingress"]
-        EmailAPI["Transactional Email API<br/><i>(POST /api/v1/send)</i>"] :::client
-        PushAPI["WebPush & APNs Provider"] :::client
-        SMSAPI["Twilio & Multi-Carrier SMS Gateway"] :::client
+        EmailAPI["Transactional Email API"]
+        PushAPI["WebPush and APNs Provider"]
+        SMSAPI["Twilio and Multi-Carrier SMS Gateway"]
     end
 
-    subgraph DispatchEngine ["⚡ Template & Deliverability Engine"]
-        TemplateEngine["HTML / DSL Template Rendering Engine"] :::engine
-        DMARCVal["DMARC / SPF / DKIM Inspector & Alignment"] :::engine
-        SuppressionList["Automatic Bounce & Suppression Filter"] :::engine
-        AIOptimizer["AI Deliverability & Send-Time Optimizer<br/><i>(Enterprise EE)</i>"] :::engine
+    subgraph DispatchEngine ["⚡ Template and Deliverability Engine"]
+        TemplateEngine["HTML / DSL Template Rendering Engine"]
+        DMARCVal["DMARC / SPF / DKIM Inspector and Alignment"]
+        SuppressionList["Automatic Bounce and Suppression Filter"]
+        AIOptimizer["AI Deliverability and Send-Time Optimizer"]
     end
 
-    subgraph Relays ["💾 Provider Relays & Analytics"]
-        SMTPRelay["Outbound SMTP Relay Pool"] :::storage
-        WebhookRouter["Inbound Webhook & RFC 8058 Unsubscribe Router"] :::storage
+    subgraph Relays ["💾 Provider Relays and Analytics"]
+        SMTPRelay["Outbound SMTP Relay Pool"]
+        WebhookRouter["Inbound Webhook and RFC 8058 Unsubscribe Router"]
     end
 
     EmailAPI --> TemplateEngine
@@ -131,102 +101,47 @@ Pranor Notify delivers multi-channel communications across the Pranor platform:
 
 ---
 
----
+## Installation & Deployment
 
-## API Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/api/v1/send` | Send a transactional email |
-| `POST` | `/api/v1/send/template` | Send using a named template |
-| `POST` | `/api/v1/templates` | Create/update an email template |
-| `GET` | `/api/v1/templates` | List all templates |
-| `GET` | `/api/v1/templates/{name}` | Get a template |
-| `DELETE` | `/api/v1/templates/{name}` | Delete a template |
-| `GET` | `/api/v1/suppression` | List suppressed addresses |
-| `POST` | `/api/v1/suppression` | Manually suppress an address |
-| `DELETE` | `/api/v1/suppression/{email}` | Remove from suppression list |
-| `POST` | `/api/v1/inbound/rules` | Create an inbound routing rule |
-| `GET` | `/api/v1/inbound/rules` | List inbound routing rules |
-| `POST` | `/api/v1/lists` | Create a mailing list |
-| `POST` | `/api/v1/lists/{id}/subscribe` | Subscribe to a list |
-| `POST` | `/api/v1/lists/{id}/unsubscribe` | Unsubscribe from a list |
-| `GET` | `/api/v1/analytics/campaigns/{id}` | Analytics for a campaign |
-| `GET` | `/api/v1/dmarc/report` | Generate DMARC aggregate report |
-| `/healthz` | `GET` | Liveness probe |
-
----
-
-## Template DSL
-
-Create a template:
+### Binary
 
 ```bash
-curl -X POST http://pranor-notify:8091/api/v1/templates \
-  -d '{
-    "name": "welcome-email",
-    "subject": "Welcome, {{ user.name }}!",
-    "html": "<h1>Welcome, {{ user.name }}!</h1>\n{% if user.verified %}<p>Your account is verified.</p>{% endif %}\n{% include \"components/footer.html\" %}"
-  }'
+cd pranor/notify
+go build -o pranor-notify .
+./pranor-notify --port 8094
 ```
 
-Send using the template:
+### Docker
 
 ```bash
-curl -X POST http://pranor-notify:8091/api/v1/send/template \
-  -d '{
-    "template": "welcome-email",
-    "to": "alice@example.com",
-    "variables": { "user": { "name": "Alice", "verified": true } }
-  }'
+docker run -p 8094:8094 ghcr.io/vyuvaraj/pranor-notify:latest
 ```
 
----
-
-## DMARC & Deliverability
+### With SMTP Configuration
 
 ```bash
-# Check DMARC policy for a domain
-curl http://pranor-notify:8091/api/v1/dmarc/check?domain=example.com
-
-# Generate DMARC aggregate report
-curl -X POST http://pranor-notify:8091/api/v1/dmarc/report \
-  -d '{"reporting_period": "2026-07", "report_to": "dmarc-reports@example.com"}'
-```
-
----
-
-## Compliance
-
-Pranor Notify automatically injects unsubscribe headers on bulk sends:
-
-```
-List-Unsubscribe: <https://pranor-notify.yourapp.com/unsubscribe?token=xxx>
-List-Unsubscribe-Post: List-Unsubscribe=One-Click
-```
-
-When a mail client (Gmail, Apple Mail) sends the one-click unsubscribe POST, Pranor Notify handles it and suppresses the recipient automatically.
-
----
-
-## Getting Started
-
-```bash
-docker run -p 8091:8091 \
+docker run -p 8094:8094 \
   -e PRANOR_NOTIFY_SMTP_HOST=smtp.sendgrid.net \
   -e PRANOR_NOTIFY_SMTP_PORT=587 \
   -e PRANOR_NOTIFY_SMTP_USER=apikey \
   -e PRANOR_NOTIFY_SMTP_PASS=SG.xxxxx \
   -e PRANOR_NOTIFY_FROM_DOMAIN=yourapp.com \
-  -e PRANOR_NOTIFY_OTEL_ENDPOINT=http://pranor-trace:4318 \
   ghcr.io/vyuvaraj/pranor-notify:latest
 ```
+
+### As Part of Pranor Ecosystem
+
+When running under the Pranor platform, Notify integrates automatically with Auth (MFA OTP), Trace (OTel spans), Flow (saga steps), and Console (analytics dashboard).
+
+---
+
+## Configuration
 
 ### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `PRANOR_NOTIFY_PORT` | `8091` | HTTP listener port |
+| `PRANOR_NOTIFY_PORT` | `8094` | HTTP listener port |
 | `PRANOR_NOTIFY_SMTP_HOST` | — | Outbound SMTP relay host |
 | `PRANOR_NOTIFY_SMTP_PORT` | `587` | Outbound SMTP relay port |
 | `PRANOR_NOTIFY_SMTP_USER` | — | SMTP authentication username |
@@ -235,3 +150,288 @@ docker run -p 8091:8091 \
 | `PRANOR_NOTIFY_INBOUND_PORT` | — | SMTP port for inbound mail reception |
 | `PRANOR_NOTIFY_DMARC_ENABLED` | `true` | Enable DMARC enforcement |
 | `PRANOR_NOTIFY_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
+
+### YAML Config (`notify.yaml`)
+
+```yaml
+port: "8094"
+smtp:
+  host: "smtp.sendgrid.net"
+  port: 587
+  user: "apikey"
+  pass: "SG.xxxxx"
+from_domain: "yourapp.com"
+inbound_port: 25
+dmarc_enabled: true
+otel_endpoint: "http://pranor-trace:8090"
+```
+
+### CLI Flags
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--port` | `8094` | HTTP listen port |
+
+---
+
+## API Reference
+
+**Base URL:** `http://localhost:8094`
+
+### POST /api/v1/send
+
+Send a transactional email.
+
+**Request:**
+
+```json
+{
+  "to": "alice@example.com",
+  "from": "noreply@yourapp.com",
+  "subject": "Order Confirmation",
+  "html": "<h1>Thanks for your order!</h1>",
+  "text": "Thanks for your order!",
+  "cc": ["admin@yourapp.com"],
+  "attachments": []
+}
+```
+
+**Response (200):**
+
+```json
+{
+  "status": "sent",
+  "message_id": "msg-7718",
+  "delivered_at": "2026-08-01T10:00:01Z"
+}
+```
+
+---
+
+### POST /api/v1/send/template
+
+Send using a named template.
+
+**Request:**
+
+```json
+{
+  "template": "welcome-email",
+  "to": "alice@example.com",
+  "variables": {
+    "user": { "name": "Alice", "verified": true }
+  }
+}
+```
+
+**Response (200):**
+
+```json
+{
+  "status": "sent",
+  "message_id": "msg-7719",
+  "template": "welcome-email"
+}
+```
+
+---
+
+### POST /api/v1/templates
+
+Create or update an email template.
+
+**Request:**
+
+```json
+{
+  "name": "welcome-email",
+  "subject": "Welcome, {{ user.name }}!",
+  "html": "<h1>Welcome, {{ user.name }}!</h1>\n{% if user.verified %}<p>Verified.</p>{% endif %}"
+}
+```
+
+**Response (201):**
+
+```json
+{
+  "status": "created",
+  "name": "welcome-email"
+}
+```
+
+---
+
+### GET /api/v1/suppression
+
+List suppressed addresses.
+
+**Response (200):**
+
+```json
+{
+  "addresses": [
+    { "email": "bad@example.com", "reason": "hard_bounce", "suppressed_at": "2026-07-30T08:00:00Z" }
+  ]
+}
+```
+
+---
+
+### POST /api/v1/inbound/rules
+
+Create an inbound routing rule.
+
+**Request:**
+
+```json
+{
+  "name": "support-tickets",
+  "match": { "to_pattern": "support@yourapp.com" },
+  "forward_to": "http://helpdesk/api/tickets",
+  "priority": 10
+}
+```
+
+**Response (201):**
+
+```json
+{
+  "status": "created",
+  "rule_id": "rule-001"
+}
+```
+
+---
+
+### GET /api/v1/dmarc/report
+
+Generate DMARC aggregate report.
+
+**Response (200):**
+
+```json
+{
+  "period": "2026-07",
+  "total_messages": 15420,
+  "aligned": 15100,
+  "failed_spf": 120,
+  "failed_dkim": 200
+}
+```
+
+---
+
+### GET /healthz
+
+Liveness probe.
+
+```json
+{"status":"UP","service":"pranor-notify","version":"1.0.0"}
+```
+
+---
+
+## Security
+
+### Standalone Mode
+
+In standalone mode, Notify connects directly to a configured SMTP relay. No authentication required for API access.
+
+### Ecosystem Mode (Full Auth Stack)
+
+When running within the Pranor ecosystem:
+
+1. **JWT Auth** — validates Bearer tokens against Pranor Auth
+2. **Rate Limiting** — per-client send rate throttling
+3. **DMARC Enforcement** — incoming mail validated against SPF/DKIM/DMARC
+4. **Suppression List** — automatic blocking of bounced/complained addresses
+5. **OTel Tracing** — every send generates a trace span
+
+### Email Security
+
+- **SPF alignment** — validates sender IP against domain's SPF record
+- **DKIM signing** — signs outgoing emails with domain key
+- **DMARC reporting** — generates and sends RUA aggregate reports
+- **TLS encryption** — STARTTLS for all outbound SMTP connections
+
+---
+
+## Observability
+
+### Prometheus Metrics
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `pranor_notify_sent_total` | Counter | Emails sent (labeled by channel, status) |
+| `pranor_notify_bounces_total` | Counter | Bounce events (labeled by type: hard/soft) |
+| `pranor_notify_suppressed_total` | Counter | Suppressed sends (address on suppression list) |
+| `pranor_notify_delivery_latency_ms` | Histogram | Time to SMTP acknowledgment |
+| `pranor_notify_templates_active` | Gauge | Registered templates |
+| `pranor_notify_inbound_routed_total` | Counter | Inbound emails routed |
+
+### OpenTelemetry Tracing
+
+Notify emits spans for:
+- `notify.send` — email dispatch
+- `notify.template.render` — template rendering
+- `notify.suppression.check` — suppression list lookup
+- `notify.dmarc.validate` — DMARC alignment check
+- `notify.inbound.route` — inbound email routing
+
+### Logging
+
+Structured JSON logs with fields: `level`, `timestamp`, `trace_id`, `message_id`, `to`, `template`, `channel`, `status`.
+
+---
+
+## Enterprise Edition
+
+| Feature | OSS | EE |
+|---------|:---:|:--:|
+| Transactional email via SMTP | ✓ | ✓ |
+| Template DSL (variables, conditionals, loops) | ✓ | ✓ |
+| Bounce management & suppression | ✓ | ✓ |
+| DMARC/SPF/DKIM enforcement | ✓ | ✓ |
+| Inbound email routing | ✓ | ✓ |
+| RFC 8058 one-click unsubscribe | ✓ | ✓ |
+| Mailing list management | ✓ | ✓ |
+| SMS gateway (Twilio, multi-carrier) | — | ✓ |
+| WebPush / APNs push notifications | — | ✓ |
+| AI deliverability & send-time optimizer | — | ✓ |
+| Delivery analytics dashboard | — | ✓ |
+| Per-recipient event tracking | — | ✓ |
+
+---
+
+## Operational Runbook
+
+### Emails not being delivered
+
+1. Check SMTP relay connectivity (`PRANOR_NOTIFY_SMTP_HOST`)
+2. Verify SMTP credentials are correct
+3. Check suppression list — recipient may be suppressed
+4. Review DMARC/SPF/DKIM alignment for the sending domain
+5. Check `pranor_notify_delivery_latency_ms` for SMTP timeout issues
+
+### High bounce rate
+
+1. Monitor `pranor_notify_bounces_total` metric by type
+2. Hard bounces indicate invalid addresses — clean your list
+3. Soft bounces (mailbox full) will auto-retry with backoff
+4. Review suppression list growth: `GET /api/v1/suppression`
+5. Check domain reputation via external tools (Google Postmaster)
+
+### Inbound routing not matching
+
+1. List rules: `GET /api/v1/inbound/rules`
+2. Verify rule patterns match incoming email headers
+3. Check priority ordering — higher priority rules match first
+4. Verify the `forward_to` webhook URL is reachable
+5. Check inbound SMTP port is accessible (`PRANOR_NOTIFY_INBOUND_PORT`)
+
+### Template rendering errors
+
+1. Verify template exists: `GET /api/v1/templates/{name}`
+2. Check variable names match the payload structure
+3. Review DSL syntax for unclosed conditionals or loops
+4. Test with minimal variables to isolate the issue

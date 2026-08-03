@@ -1,73 +1,38 @@
-# Pranor Console
+# Pranor Console — Unified Management Dashboard
 
-```bash
-docker run -p 8083:8083 ghcr.io/vyuvaraj/pranor-console:latest
-```
-
-`Pranor Console` is the unified, premium management dashboard and observability console for the **Pranor** ecosystem. It provides a single pane of glass for managing Pranor Gate, Pranor Pulse, Pranor Vault, Pranor Mesh, Pranor Deploy, Pranor Trace, Pranor Flow, and all other Pranor components — with a glassmorphic, real-time UI designed for power users.
+**Version:** 1.0.0  
+**Module Path:** `github.com/vyuvaraj/pranor/console`  
+**Default Port:** 8083  
+**License:** AGPL-3.0 (OSS) / Enterprise License (EE with AI Co-Pilot & Chaos Panel)
 
 ---
 
-## Table of Contents
-- [Key Features](#key-features)
-- [Architecture](#architecture)
-- [Dashboard Modules](#dashboard-modules)
-- [API Endpoints](#api-endpoints)
-- [Getting Started](#getting-started)
-- [Configuration](#configuration)
+## Overview
+
+Pranor Console is the unified, premium management dashboard and observability console for the Pranor ecosystem. It provides a single pane of glass for managing all Pranor components — Gate, Pulse, Vault, Mesh, Deploy, Trace, Flow, and more — with a glassmorphic, real-time UI designed for power users. It features global search, chaos engineering controls, incident management, eBPF flamegraphs, and WebSocket-driven live telemetry.
+
+Pranor Console can run as:
+- A **standalone binary** serving the web UI with manual service URL configuration
+- An **integrated module** within the Pranor ecosystem with auto-discovery, mTLS, and federated telemetry
 
 ---
 
 ## Key Features
 
-### 🎛️ Unified Management
-- **Single pane of glass**: Manage the entire Pranor stack from one premium UI
-- **Glassmorphic dark UI**: Premium visual design with smooth animations and real-time data refresh
-- **Multi-tab navigation**: Navigate between components in organized tabs without page reloads
-- **Global `⌘K` search**: Fuzzy search across all Pranor resources — services, routes, queues, buckets, workflows, traces — instantly
-
-### 🚪 API Gateway Management (Pranor Gate)
-- **Live route audits**: View, create, and delete proxy routes in real-time
-- **WASM hot-swap interface**: Upload and activate WASM middleware modules without restarting Pranor Gate
-- **AI middleware audit panel**: Monitor Prompt Guard violations, Semantic Cache similarity hits, PII scrubbing events, AI cost per request
-- **OpenAPI Swagger UI**: Interactive API documentation browser for all registered gateway routes
-- **Circuit breaker status board**: Live open/half-open/closed state per route with SLO metrics
-
-### 📨 Queue Inspector (Pranor Pulse)
-- **Topic browser**: Real-time topic list with message rates, partition counts, and replication status
-- **Schema registry browser**: Browse, compare, and evolve message schemas
-- **DLQ browser & one-click replay**: Inspect dead letter messages; replay individual or bulk messages with one click
-- **Consumer group lag dashboard**: Per-consumer-group, per-partition offset lag visualization with historical trend
-
-### 🗃️ Storage Inspector (Pranor Vault)
-- **Bucket browser**: Navigate bucket contents, upload/download files, manage object metadata
-- **Vector index namespace browser**: Inspect HNSW graph stats, index namespaces, embedding coverage
-- **Branch management**: Create, diff, and merge CoW bucket branches from the UI
-- **Tiering policy editor**: Configure hot/warm/cold tiering rules visually
-
-### 🔭 Observability & Telemetry
-- **eBPF flamegraph telemetry**: Live CPU and memory flamegraph profiling from the kernel layer — visualized in-browser
-- **OTel trace correlation**: Click from a slow request directly into its distributed trace waterfall
-- **SLO burn rate alerts**: Real-time error budget burn rate dashboards per service, with fast/slow window indicators
-- **Service topology live graph**: Interactive dependency map of all Pranor services with live traffic flow edges
-
-### 🔥 Chaos Engineering Panel
-- **Chaos control panel**: Design and trigger chaos experiments (latency injection, error rate simulation, network partition) across Pranor Mesh nodes
-- **Experiment lifecycle management**: Start, monitor, and abort experiments; view blast radius before triggering
-- **Historical experiment log**: Full audit trail of past chaos events with impact metrics
-
-### 🛎️ Alerts & Incidents
-- **Alert rule management**: Define threshold and anomaly-based alert rules across all Pranor metrics
-- **Incident timeline**: Structured incident management with severity triage, notes, and resolution tracking
-
-### 🌿 Provisioning & Environments
-- **Environment provisioner**: Create complete isolated Pranor environments (dev/staging/prod) with one click
-- **Branch preview provisioner**: Automatically spin up ephemeral Pranor Deploy environments per git branch for PR previews
-
-### ⚙️ Customization
-- **Theme selector**: Dark, light, and glassmorphism themes; custom accent color
-- **Pinned dashboard widgets**: Pin any metric chart or panel to a personal dashboard
-- **Custom keyboard shortcuts**: User-configurable keybindings for common operations
+| Feature | Description |
+|---------|-------------|
+| **Single Pane of Glass** | Manage the entire Pranor stack from one premium glassmorphic UI |
+| **Global ⌘K Search** | Fuzzy search across all resources — services, routes, queues, buckets, workflows |
+| **API Gateway Management** | Live route audits, WASM hot-swap, circuit breaker status board |
+| **Queue Inspector** | Topic browser, DLQ replay, consumer group lag dashboard |
+| **Storage Inspector** | Bucket browser, vector index namespaces, branch management |
+| **eBPF Flamegraphs** | Live CPU/memory profiling from the kernel layer |
+| **SLO Burn Rate** | Real-time error budget dashboards with fast/slow windows |
+| **Chaos Engineering** | Design, trigger, and monitor chaos experiments |
+| **Service Topology** | Interactive dependency map with live traffic flow edges |
+| **Incident Manager** | Alert rules, triage, severity management, resolution tracking |
+| **Environment Provisioner** | One-click isolated environments and branch previews |
+| **SQL Workbench** | Interactive query editor with schema exploration |
 
 ---
 
@@ -75,29 +40,25 @@ docker run -p 8083:8083 ghcr.io/vyuvaraj/pranor-console:latest
 
 ```mermaid
 graph TD
-    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
-    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
-    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
-    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
 
-    subgraph UserInterface ["🌐 Glassmorphic Web & TUI Interface"]
-        SPA["React / WASM Glassmorphic SPA<br/><i>(Glass UI & Global ⌘K Search)</i>"] :::client
-        TUI["Terminal TUI Control Plane<br/><i>(Bubbletea Go Framework)</i>"] :::client
-        WSClient["WebSocket Live Telemetry Stream<br/><i>(/ws/feeds)</i>"] :::client
+    subgraph UserInterface ["🌐 Glassmorphic Web and TUI Interface"]
+        SPA["React / WASM Glassmorphic SPA"]
+        TUI["Terminal TUI Control Plane"]
+        WSClient["WebSocket Live Telemetry Stream"]
     end
 
     subgraph BackendCore ["⚡ Central Control Plane Backend"]
-        SearchEngine["Global Ecosystem ⌘K Indexer"] :::engine
-        ChaosControl["Chaos Experiment Orchestrator"] :::engine
-        IncidentEngine["Incident Triage & Alert Engine"] :::engine
-        AIAssistant["Autonomous AI Co-Pilot<br/><i>(Enterprise EE)</i>"] :::engine
+        SearchEngine["Global Ecosystem ⌘K Indexer"]
+        ChaosControl["Chaos Experiment Orchestrator"]
+        IncidentEngine["Incident Triage and Alert Engine"]
+        AIAssistant["Autonomous AI Co-Pilot"]
     end
 
     subgraph ServiceIntegrations ["💾 Platform Services Monitoring Hub"]
-        GateSync["Pranor Gate API Sync"] :::storage
-        PulseSync["Pranor Pulse Queue & DLQ Sync"] :::storage
-        VaultSync["Pranor Vault Bucket & Vector Sync"] :::storage
-        TraceSync["Pranor Trace & eBPF Flamegraph Sync"] :::storage
+        GateSync["Pranor Gate API Sync"]
+        PulseSync["Pranor Pulse Queue and DLQ Sync"]
+        VaultSync["Pranor Vault Bucket and Vector Sync"]
+        TraceSync["Pranor Trace and eBPF Flamegraph Sync"]
     end
 
     SPA --> SearchEngine
@@ -145,73 +106,281 @@ Pranor Console provides single-pane-of-glass management for all platform compone
 
 ---
 
----
+## Installation & Deployment
 
-## Dashboard Modules
+### Binary
 
-| Module | Description |
-|--------|-------------|
-| **Gateway Inspector** | Pranor Gate routes, WASM modules, circuit breakers, AI middleware stats |
-| **Queue Inspector** | Topic browser, consumer lag, DLQ management, schema registry |
-| **Storage Inspector** | Bucket browser, vector index namespaces, branch management |
-| **Topology Graph** | Live service dependency graph with traffic flow visualization |
-| **Flamegraph Profiler** | eBPF-powered CPU/memory flamegraph per service |
-| **Chaos Panel** | Design, trigger, and monitor chaos experiments |
-| **SLO Dashboard** | Error budget burn rate, SLO compliance per service |
-| **Trace Explorer** | Distributed trace waterfall search and correlation |
-| **Incident Manager** | Alert rules, incident triage, resolution tracking |
-| **Provisioner** | Environment and branch preview management |
-| **AI Cost Dashboard** | Per-service AI token spend, model routing savings |
+```bash
+cd pranor/console
+go build -o pranor-console .
+./pranor-console --port 8083
+```
 
----
+### Docker
 
-## API Endpoints
+```bash
+docker run -p 8083:8083 ghcr.io/vyuvaraj/pranor-console:latest
+```
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/api/v1/search?q=` | Global resource search (⌘K) |
-| `GET` | `/api/v1/topology/graph` | Live service topology graph data |
-| `GET` | `/ws/topology` | WebSocket: real-time topology updates |
-| `GET` | `/api/v1/flamegraph/{service}` | eBPF flamegraph for a service |
-| `GET` | `/api/v1/slo/{service}/burn-rate` | SLO burn rate metrics |
-| `POST` | `/api/v1/chaos/experiments` | Create a chaos experiment |
-| `DELETE` | `/api/v1/chaos/experiments/{id}` | Abort a chaos experiment |
-| `GET` | `/api/v1/incidents` | List active incidents |
-| `POST` | `/api/v1/incidents` | Create an incident |
-| `GET` | `/api/v1/queue/dlq/{topic}` | DLQ browser |
-| `POST` | `/api/v1/queue/dlq/{topic}/replay` | One-click DLQ replay |
-| `GET` | `/api/v1/queue/consumers/{group}/lag` | Consumer lag per group |
-| `POST` | `/api/v1/environments` | Provision an environment |
-| `POST` | `/api/v1/branch-preview` | Provision a branch preview |
-| `GET` | `/api/v1/preferences` | Get user preferences |
-| `PUT` | `/api/v1/preferences` | Update user preferences |
-
----
-
-## Getting Started
+### With Service Discovery
 
 ```bash
 docker run -p 8083:8083 \
   -e PRANOR_CONSOLE_PRANOR_GATE_URL=http://pranor-gate:8080 \
   -e PRANOR_CONSOLE_PRANOR_PULSE_URL=http://pranor-pulse:9090 \
   -e PRANOR_CONSOLE_PRANOR_VAULT_URL=http://pranor-vault:7070 \
-  -e PRANOR_CONSOLE_PRANOR_TRACE_URL=http://pranor-trace:4318 \
-  -e PRANOR_CONSOLE_PRANOR_MESH_URL=http://pranor-mesh:8095 \
+  -e PRANOR_CONSOLE_PRANOR_TRACE_URL=http://pranor-trace:8090 \
+  -e PRANOR_CONSOLE_PRANOR_MESH_URL=http://pranor-mesh:8089 \
   ghcr.io/vyuvaraj/pranor-console:latest
 ```
 
-Open `http://localhost:8083` in your browser.
+### As Part of Pranor Ecosystem
+
+When running under the Pranor platform, Console auto-discovers all services via Mesh and displays the full topology.
 
 ---
 
 ## Configuration
 
-| Variable | Description |
-|----------|-------------|
-| `PRANOR_CONSOLE_PORT` | HTTP port (default: `8083`) |
-| `PRANOR_CONSOLE_PRANOR_GATE_URL` | Pranor Gate backend URL |
-| `PRANOR_CONSOLE_PRANOR_PULSE_URL` | Pranor Pulse backend URL |
-| `PRANOR_CONSOLE_PRANOR_VAULT_URL` | Pranor Vault backend URL |
-| `PRANOR_CONSOLE_PRANOR_TRACE_URL` | Pranor Trace OTLP URL |
-| `PRANOR_CONSOLE_PRANOR_MESH_URL` | Pranor Mesh backend URL |
-| `PRANOR_CONSOLE_AUTH_TOKEN` | Static admin auth token |
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PRANOR_CONSOLE_PORT` | `8083` | HTTP port |
+| `PRANOR_CONSOLE_PRANOR_GATE_URL` | — | Pranor Gate backend URL |
+| `PRANOR_CONSOLE_PRANOR_PULSE_URL` | — | Pranor Pulse backend URL |
+| `PRANOR_CONSOLE_PRANOR_VAULT_URL` | — | Pranor Vault backend URL |
+| `PRANOR_CONSOLE_PRANOR_TRACE_URL` | — | Pranor Trace OTLP URL |
+| `PRANOR_CONSOLE_PRANOR_MESH_URL` | — | Pranor Mesh backend URL |
+| `PRANOR_CONSOLE_AUTH_TOKEN` | — | Static admin auth token |
+| `PRANOR_CONSOLE_THEME` | `dark` | Default theme (`dark`, `light`, `glassmorphism`) |
+
+### YAML Config (`console.yaml`)
+
+```yaml
+port: "8083"
+gate_url: "http://pranor-gate:8080"
+pulse_url: "http://pranor-pulse:9090"
+vault_url: "http://pranor-vault:7070"
+trace_url: "http://pranor-trace:8090"
+mesh_url: "http://pranor-mesh:8089"
+auth_token: "admin-secret-token"
+theme: "dark"
+```
+
+### CLI Flags
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--port` | `8083` | HTTP listen port |
+
+---
+
+## API Reference
+
+**Base URL:** `http://localhost:8083`
+
+### GET /api/v1/search?q={query}
+
+Global resource search (⌘K).
+
+**Response (200):**
+
+```json
+{
+  "results": [
+    { "type": "service", "name": "orders-api", "module": "mesh", "url": "/mesh/services/orders-api" },
+    { "type": "route", "name": "/api/orders", "module": "gate", "url": "/gate/routes/api-orders" }
+  ],
+  "took_ms": 3
+}
+```
+
+---
+
+### GET /api/v1/topology/graph
+
+Live service topology graph data.
+
+**Response (200):**
+
+```json
+{
+  "nodes": [
+    { "id": "orders-api", "type": "service", "status": "healthy" },
+    { "id": "payments-api", "type": "service", "status": "degraded" }
+  ],
+  "edges": [
+    { "from": "orders-api", "to": "payments-api", "rps": 120, "error_rate": 0.02, "p99_ms": 45 }
+  ]
+}
+```
+
+---
+
+### POST /api/v1/chaos/experiments
+
+Create a chaos experiment.
+
+**Request:**
+
+```json
+{
+  "name": "latency-spike-test",
+  "target_service": "payments-api",
+  "fault_type": "latency",
+  "latency_ms": 500,
+  "percentage": 25,
+  "duration": "5m"
+}
+```
+
+**Response (201):**
+
+```json
+{
+  "id": "exp-001",
+  "status": "active",
+  "blast_radius": ["orders-api", "checkout-api"],
+  "expires_at": "2026-08-01T10:05:00Z"
+}
+```
+
+---
+
+### POST /api/v1/incidents
+
+Create an incident.
+
+**Request:**
+
+```json
+{
+  "title": "High error rate on payments-api",
+  "severity": "P2",
+  "services": ["payments-api"],
+  "description": "Error rate exceeded 5% SLO threshold"
+}
+```
+
+**Response (201):**
+
+```json
+{
+  "id": "inc-001",
+  "status": "open",
+  "created_at": "2026-08-01T10:00:00Z"
+}
+```
+
+---
+
+### GET /healthz
+
+Liveness probe.
+
+```json
+{"status":"UP","service":"pranor-console","version":"1.0.0"}
+```
+
+---
+
+## Security
+
+### Standalone Mode
+
+Set `PRANOR_CONSOLE_AUTH_TOKEN` for basic token authentication. Clients authenticate via:
+
+```
+Authorization: Bearer admin-secret-token
+```
+
+### Ecosystem Mode (Full Auth Stack)
+
+When running within the Pranor ecosystem, Console integrates with Pranor Auth for RBAC-based access control:
+
+1. **JWT Auth** — validates Bearer tokens against Pranor Auth
+2. **Role-based dashboard access** — admins see all panels; operators see limited views
+3. **Audit logging** — all management actions logged with user identity
+4. **mTLS** — service-to-service communication encrypted
+
+### CORS
+
+Console serves the SPA from a configurable origin. CORS headers allow the frontend to call backend APIs cross-origin.
+
+---
+
+## Observability
+
+### Prometheus Metrics
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `pranor_console_active_sessions` | Gauge | Active WebSocket connections |
+| `pranor_console_search_latency_ms` | Histogram | ⌘K search response time |
+| `pranor_console_chaos_experiments_active` | Gauge | Running chaos experiments |
+| `pranor_console_incidents_open` | Gauge | Open incidents |
+| `pranor_console_ws_messages_total` | Counter | WebSocket messages received |
+
+### OpenTelemetry Tracing
+
+Console emits spans for:
+- `console.search` — global search queries
+- `console.chaos.inject` — chaos experiment triggers
+- `console.topology.refresh` — topology graph rebuilds
+
+### Logging
+
+Structured JSON logs with fields: `level`, `timestamp`, `user_id`, `action`, `module`, `latency_ms`.
+
+---
+
+## Enterprise Edition
+
+| Feature | OSS | EE |
+|---------|:---:|:--:|
+| Unified dashboard UI | ✓ | ✓ |
+| Global ⌘K search | ✓ | ✓ |
+| Service topology graph | ✓ | ✓ |
+| SLO burn rate dashboards | ✓ | ✓ |
+| Incident management | ✓ | ✓ |
+| Queue inspector (DLQ replay) | ✓ | ✓ |
+| Chaos engineering panel | — | ✓ |
+| eBPF flamegraph profiling | — | ✓ |
+| AI Co-Pilot auto-remediation | — | ✓ |
+| Environment provisioner | — | ✓ |
+| Custom keyboard shortcuts & themes | — | ✓ |
+| Multi-cluster federation view | — | ✓ |
+
+---
+
+## Operational Runbook
+
+### WebSocket connections dropping
+
+1. Check `pranor_console_active_sessions` gauge for sudden drops
+2. Verify network stability between Console and downstream services
+3. Check if rate limiting is affecting WebSocket upgrade requests
+4. Review nginx/load balancer timeout settings for WebSocket connections
+5. Ensure `Connection: Upgrade` headers are not being stripped
+
+### Global search returning stale results
+
+1. Console indexes resources on startup and via WebSocket feeds
+2. Force re-index by restarting Console or triggering topology refresh
+3. Check connectivity to all configured service URLs
+4. Verify Mesh is reporting accurate service catalog
+
+### Chaos experiment not propagating
+
+1. Verify Pranor Mesh connectivity (`PRANOR_CONSOLE_PRANOR_MESH_URL`)
+2. Check experiment status via `GET /api/v1/chaos/experiments/{id}`
+3. Confirm target service is registered in Mesh service catalog
+4. Review blast radius preview before re-triggering
+
+### Dashboard panels blank or loading
+
+1. Check browser console for WebSocket connection errors
+2. Verify backend service URLs are correct and accessible
+3. Check auth token validity if using static token auth
+4. Review CORS configuration if frontend is served from a different origin

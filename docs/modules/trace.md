@@ -1,49 +1,36 @@
-# Pranor Trace
+# Pranor Trace — Distributed Tracing & Continuous Profiling
 
-```bash
-docker run -p 8090:8090 ghcr.io/vyuvaraj/pranor-trace:latest
-```
-
-`Pranor Trace` is the distributed tracing and continuous profiling service for the **Pranor** ecosystem. It ingests OTLP-format traces, assembles waterfall hierarchies, provides SLO burn rate alerting, and delivers eBPF-powered flamegraph profiling with automatic OTel correlation.
+**Version:** 1.0.0  
+**Module Path:** `github.com/vyuvaraj/pranor/trace`  
+**Default Port:** 8090  
+**License:** AGPL-3.0 (OSS) / Enterprise License (EE with AI Anomaly Detection & SIEM Streaming)
 
 ---
 
-## Table of Contents
-- [Key Features](#key-features)
-- [Architecture](#architecture)
-- [API Endpoints](#api-endpoints)
-- [SLO Burn Rate Alerting](#slo-burn-rate-alerting)
-- [Flamegraph Profiling](#flamegraph-profiling)
-- [Getting Started](#getting-started)
+## Overview
+
+Pranor Trace is the distributed tracing and continuous profiling service for the Pranor ecosystem. It ingests OTLP-format traces, assembles waterfall hierarchies, provides SLO burn rate alerting, delivers eBPF-powered flamegraph profiling with automatic OTel correlation, critical path analysis, and anomaly detection.
+
+Pranor Trace can run as:
+- A **standalone binary** accepting OTLP/HTTP traces with in-memory storage
+- An **integrated module** within the Pranor ecosystem with eBPF profiling, Console integration, and SIEM streaming
 
 ---
 
 ## Key Features
 
-### 📡 OTLP Ingestion & Span Assembly
-- **OTLP/HTTP ingestion**: Standard `/v1/traces` endpoint compatible with all OpenTelemetry SDKs and collectors
-- **Trace reassembly**: Groups spans by trace ID, links parent-child relationships, calculates absolute and relative duration offsets
-- **Waterfall hierarchy tree**: Full span waterfall with nested children, duration bars, and critical path highlighting
-- **Configurable in-memory store**: Thread-safe store with oldest-first trace eviction at configurable capacity
-
-### 🔥 eBPF Flamegraph Profiling
-- **Continuous eBPF CPU & memory profiler**: Kernel-level profiling via eBPF — no code instrumentation required
-- **OTel trace-to-flamegraph correlator**: Automatically correlates a slow trace span to the flamegraph profile captured during that span's execution window
-- **In-browser flamegraph visualization**: Interactive flamegraph rendered in Pranor Console — click to zoom, search symbol names
-
-### 📊 SLO & Error Budget
-- **SLO burn rate alert engine**: Configurable SLO targets (e.g. 99.9% availability) with dual burn rate windows
-  - **Fast burn window** (1h): Catches sudden spikes consuming error budget rapidly
-  - **Slow burn window** (6h/24h): Catches gradual degradation
-- **Error budget tracking**: Real-time remaining error budget per service per SLO definition
-- **Pranor Console integration**: Live SLO burn rate dashboard with alert status
-
-### 📈 Prometheus Exemplars
-- **Exemplar-linked OpenMetrics generator**: Produces Prometheus-compatible OpenMetrics text with `# TYPE` / `# UNIT` annotations and trace exemplar links embedded in histogram observations
-
-### 🗺️ Distributed Dependency Analysis
-- **Critical path analyzer**: Identifies the longest-latency path across a distributed trace — pinpoints bottleneck services
-- **Distributed dependency map**: Builds a service-call graph from observed trace data; visualized in Pranor Console topology view
+| Feature | Description |
+|---------|-------------|
+| **OTLP Ingestion** | Standard `/v1/traces` endpoint compatible with all OpenTelemetry SDKs |
+| **Span Reassembly** | Groups spans by trace ID, links parent-child relationships |
+| **Waterfall UI** | Full span waterfall with nested children and duration bars |
+| **SLO Burn Rate** | Dual-window burn rate alerting with error budget tracking |
+| **eBPF Flamegraphs** | Kernel-level CPU/memory profiling without code instrumentation |
+| **Trace-to-Flamegraph** | Correlate slow spans to flamegraph profiles |
+| **Critical Path Analysis** | Identify the longest-latency path across distributed traces |
+| **Prometheus Exemplars** | OpenMetrics with trace exemplar links in histograms |
+| **Dependency Map** | Auto-discovered service call graph from trace data |
+| **Anomaly Detection** | AI-powered latency anomaly baseline comparison |
 
 ---
 
@@ -51,26 +38,22 @@ docker run -p 8090:8090 ghcr.io/vyuvaraj/pranor-trace:latest
 
 ```mermaid
 graph TD
-    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
-    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
-    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
-    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
 
     subgraph Ingestion ["🌐 Telemetry Ingestion Layer"]
-        OTLP["OTLP / gRPC / HTTP Collector<br/><i>(:4317 / :4318)</i>"] :::client
-        eBPFProf["Kernel eBPF Continuous Profiler"] :::client
+        OTLP["OTLP / gRPC / HTTP Collector"]
+        eBPFProf["Kernel eBPF Continuous Profiler"]
     end
 
-    subgraph Processing ["⚡ Span Reassembly & AI Engine"]
-        Reassembly["Span Grouping & Trace ID Linker"] :::engine
-        CriticalPath["Critical Path Evaluator"] :::engine
-        AIAutoTune["Autonomous AI Anomaly Auto-Tuner<br/><i>(Enterprise EE)</i>"] :::engine
-        SLOEngine["SLO Burn Rate Alerting Engine"] :::engine
+    subgraph Processing ["⚡ Span Reassembly and AI Engine"]
+        Reassembly["Span Grouping and Trace ID Linker"]
+        CriticalPath["Critical Path Evaluator"]
+        AIAutoTune["Autonomous AI Anomaly Auto-Tuner"]
+        SLOEngine["SLO Burn Rate Alerting Engine"]
     end
 
-    subgraph Storage ["💾 In-Memory & SIEM Storage"]
-        MemStore["In-Memory Evicting Trace Store"] :::storage
-        SIEMStreamer["Encrypted SIEM Streamer<br/><i>(Splunk / Datadog EE)</i>"] :::storage
+    subgraph Storage ["💾 In-Memory and SIEM Storage"]
+        MemStore["In-Memory Evicting Trace Store"]
+        SIEMStreamer["Encrypted SIEM Streamer"]
     end
 
     OTLP --> Reassembly
@@ -116,84 +99,39 @@ Pranor Trace serves as the central telemetry and observability hub across the Pr
 
 ---
 
-## API Endpoints
+## Installation & Deployment
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/v1/traces` | OTLP/HTTP trace ingestion (standard OTel endpoint) |
-| `GET` | `/api/v1/traces` | List recent traces (filterable by service, status, duration) |
-| `GET` | `/api/v1/traces/{traceID}` | Get full trace with span waterfall hierarchy |
-| `GET` | `/api/v1/traces/{traceID}/critical-path` | Critical path analysis for a trace |
-| `GET` | `/api/v1/services` | List all services seen in ingested traces |
-| `GET` | `/api/v1/dependencies` | Distributed service dependency map |
-| `GET` | `/api/v1/flamegraph/{service}` | Latest eBPF flamegraph for a service (SVG/JSON) |
-| `GET` | `/api/v1/flamegraph/{service}/correlated/{traceID}/{spanID}` | Flamegraph slice correlated to a span |
-| `GET` | `/api/v1/slo/{service}/burn-rate` | SLO burn rate for a service |
-| `POST` | `/api/v1/slo` | Define an SLO for a service |
-| `GET` | `/api/v1/slo` | List all SLO definitions |
-| `GET` | `/metrics` | Prometheus OpenMetrics text with exemplar links |
-| `GET` | `/healthz` | Liveness probe |
-
----
-
-## SLO Burn Rate Alerting
-
-Define SLOs with dual burn windows:
+### Binary
 
 ```bash
-curl -X POST http://pranor-trace:8090/api/v1/slo \
-  -d '{
-    "service": "orders-api",
-    "slo_name": "availability",
-    "target_ratio": 0.999,
-    "windows": [
-      { "name": "fast", "duration": "1h", "burn_rate_threshold": 14.4 },
-      { "name": "slow", "duration": "6h", "burn_rate_threshold": 6.0 }
-    ]
-  }'
+cd pranor/trace
+go build -o pranor-trace .
+./pranor-trace --port 8090
 ```
 
-Query burn rate:
-```bash
-curl http://pranor-trace:8090/api/v1/slo/orders-api/burn-rate
-# → { "slo": "availability", "budget_remaining": 0.82, "burn_rate_1h": 2.1, "burn_rate_6h": 0.8, "alerting": false }
-```
-
----
-
-## Flamegraph Profiling
-
-eBPF profiling runs continuously in the background. Access profiles via:
+### Docker
 
 ```bash
-# Get current CPU flamegraph for orders-api
-curl http://pranor-trace:8090/api/v1/flamegraph/orders-api > flamegraph.svg
-
-# Get flamegraph slice correlated to a specific slow span
-curl http://pranor-trace:8090/api/v1/flamegraph/orders-api/correlated/abc123/span456
+docker run -p 8090:8090 ghcr.io/vyuvaraj/pranor-trace:latest
 ```
 
----
-
-## Getting Started
+### With eBPF Profiling
 
 ```bash
 docker run -p 8090:8090 \
-  -e PRANOR_TRACE_MAX_TRACES=50000 \
+  --privileged \
   -e PRANOR_TRACE_EBPF_ENABLED=true \
-  -e PRANOR_TRACE_OTEL_EXPORT=http://collector:4318 \
+  -e PRANOR_TRACE_MAX_TRACES=50000 \
   ghcr.io/vyuvaraj/pranor-trace:latest
 ```
 
-Configure your services to send OTLP traces:
+### As Part of Pranor Ecosystem
 
-```bash
-# Go
-OTEL_EXPORTER_OTLP_ENDPOINT=http://pranor-trace:8090 ./my-service
+When running under the Pranor platform, Trace integrates automatically with all services via the `PRANOR_OTLP_ENDPOINT` env var. Console connects for waterfall rendering and flamegraph display.
 
-# Python
-opentelemetry-instrument --exporter-otlp-endpoint http://pranor-trace:8090 python app.py
-```
+---
+
+## Configuration
 
 ### Environment Variables
 
@@ -203,3 +141,283 @@ opentelemetry-instrument --exporter-otlp-endpoint http://pranor-trace:8090 pytho
 | `PRANOR_TRACE_MAX_TRACES` | `10000` | Max traces in memory before eviction |
 | `PRANOR_TRACE_EBPF_ENABLED` | `false` | Enable eBPF continuous profiling |
 | `PRANOR_TRACE_OTEL_EXPORT` | — | Re-export spans to another OTLP collector |
+| `PRANOR_TRACE_SLO_ALERT_WEBHOOK` | — | Webhook URL for SLO burn rate alerts |
+
+### YAML Config (`trace.yaml`)
+
+```yaml
+port: "8090"
+max_traces: 50000
+ebpf_enabled: true
+otel_export: ""
+slo_alert_webhook: "http://pranor-notify:8094/api/v1/send"
+```
+
+### CLI Flags
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--port` | `8090` | HTTP listen port |
+
+---
+
+## API Reference
+
+**Base URL:** `http://localhost:8090`
+
+### POST /v1/traces
+
+OTLP/HTTP trace ingestion (standard OpenTelemetry endpoint).
+
+**Request:** Standard OTLP ExportTraceServiceRequest (protobuf or JSON).
+
+**Response (200):**
+
+```json
+{}
+```
+
+---
+
+### GET /api/v1/traces
+
+List recent traces.
+
+**Query parameters:** `service`, `status`, `min_duration_ms`, `limit`
+
+**Response (200):**
+
+```json
+{
+  "traces": [
+    {
+      "trace_id": "abc123def456",
+      "root_service": "orders-api",
+      "root_operation": "POST /orders",
+      "duration_ms": 234,
+      "span_count": 8,
+      "status": "ok",
+      "started_at": "2026-08-01T10:00:00Z"
+    }
+  ]
+}
+```
+
+---
+
+### GET /api/v1/traces/{traceID}
+
+Get full trace with span waterfall hierarchy.
+
+**Response (200):**
+
+```json
+{
+  "trace_id": "abc123def456",
+  "spans": [
+    {
+      "span_id": "span-001",
+      "parent_span_id": null,
+      "service": "orders-api",
+      "operation": "POST /orders",
+      "duration_ms": 234,
+      "status": "ok",
+      "children": [
+        {
+          "span_id": "span-002",
+          "service": "payments-api",
+          "operation": "charge",
+          "duration_ms": 180
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+### GET /api/v1/traces/{traceID}/critical-path
+
+Critical path analysis for a trace.
+
+**Response (200):**
+
+```json
+{
+  "trace_id": "abc123def456",
+  "critical_path": [
+    { "service": "orders-api", "operation": "POST /orders", "self_time_ms": 54 },
+    { "service": "payments-api", "operation": "charge", "self_time_ms": 180 }
+  ],
+  "bottleneck": "payments-api"
+}
+```
+
+---
+
+### POST /api/v1/slo
+
+Define an SLO for a service.
+
+**Request:**
+
+```json
+{
+  "service": "orders-api",
+  "slo_name": "availability",
+  "target_ratio": 0.999,
+  "windows": [
+    { "name": "fast", "duration": "1h", "burn_rate_threshold": 14.4 },
+    { "name": "slow", "duration": "6h", "burn_rate_threshold": 6.0 }
+  ]
+}
+```
+
+**Response (201):**
+
+```json
+{
+  "status": "created",
+  "slo_id": "slo-001"
+}
+```
+
+---
+
+### GET /api/v1/slo/{service}/burn-rate
+
+SLO burn rate for a service.
+
+**Response (200):**
+
+```json
+{
+  "slo": "availability",
+  "budget_remaining": 0.82,
+  "burn_rate_1h": 2.1,
+  "burn_rate_6h": 0.8,
+  "alerting": false
+}
+```
+
+---
+
+### GET /api/v1/flamegraph/{service}
+
+Latest eBPF flamegraph for a service.
+
+**Response (200):** SVG or JSON flamegraph data.
+
+---
+
+### GET /healthz
+
+Liveness probe.
+
+```json
+{"status":"UP","service":"pranor-trace","version":"1.0.0"}
+```
+
+---
+
+## Security
+
+### Standalone Mode
+
+In standalone mode, Trace accepts OTLP spans without authentication. Suitable for development and internal networks.
+
+### Ecosystem Mode (Full Auth Stack)
+
+When running within the Pranor ecosystem:
+
+1. **JWT Auth** — management APIs require Bearer token
+2. **OTel ingestion** — `/v1/traces` can be optionally auth-gated
+3. **Tenant Isolation** — traces scoped per tenant
+4. **SIEM Streaming** — encrypted export to external SIEM systems
+5. **Data Retention** — configurable max traces with oldest-first eviction
+
+### eBPF Security
+
+eBPF profiling requires `--privileged` Docker flag or `CAP_SYS_ADMIN` + `CAP_BPF` capabilities. In production, use a dedicated profiling sidecar with minimal permissions.
+
+---
+
+## Observability
+
+### Prometheus Metrics
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `pranor_trace_spans_ingested_total` | Counter | Total spans received |
+| `pranor_trace_traces_stored` | Gauge | Traces currently in memory |
+| `pranor_trace_slo_burn_rate` | Gauge | Current burn rate per service/SLO |
+| `pranor_trace_slo_alerts_fired_total` | Counter | SLO alert triggers |
+| `pranor_trace_flamegraph_samples_total` | Counter | eBPF stack samples collected |
+| `pranor_trace_evictions_total` | Counter | Traces evicted from memory |
+
+### OpenTelemetry Self-Telemetry
+
+Trace emits its own spans for:
+- `trace.ingest` — span ingestion pipeline
+- `trace.reassemble` — trace ID grouping
+- `trace.slo.evaluate` — burn rate calculation
+- `trace.flamegraph.correlate` — span-to-flamegraph correlation
+
+### Logging
+
+Structured JSON logs with fields: `level`, `timestamp`, `trace_id`, `service`, `operation`, `duration_ms`, `alert`.
+
+---
+
+## Enterprise Edition
+
+| Feature | OSS | EE |
+|---------|:---:|:--:|
+| OTLP/HTTP trace ingestion | ✓ | ✓ |
+| Span reassembly & waterfall | ✓ | ✓ |
+| SLO burn rate alerting | ✓ | ✓ |
+| Critical path analysis | ✓ | ✓ |
+| Service dependency map | ✓ | ✓ |
+| Prometheus exemplars | ✓ | ✓ |
+| In-memory evicting store | ✓ | ✓ |
+| eBPF flamegraph profiling | — | ✓ |
+| AI anomaly detection auto-tuner | — | ✓ |
+| Encrypted SIEM streaming | — | ✓ |
+| Trace-to-flamegraph correlation | — | ✓ |
+| Multi-cluster trace federation | — | ✓ |
+
+---
+
+## Operational Runbook
+
+### Traces being evicted too quickly
+
+1. Check `pranor_trace_traces_stored` gauge vs `PRANOR_TRACE_MAX_TRACES`
+2. Increase `PRANOR_TRACE_MAX_TRACES` or add more memory
+3. Consider exporting to external storage via `PRANOR_TRACE_OTEL_EXPORT`
+4. Review if unnecessary high-cardinality spans are being ingested
+
+### SLO alerts firing incorrectly
+
+1. Check `pranor_trace_slo_burn_rate` metric for the service
+2. Verify SLO definition — is the target ratio correct?
+3. Review burn rate window configuration (fast: 1h, slow: 6h)
+4. Check if a deployment or incident caused a legitimate spike
+5. Adjust thresholds if alerting is too sensitive
+
+### eBPF profiling not producing data
+
+1. Verify `PRANOR_TRACE_EBPF_ENABLED=true`
+2. Check container has `--privileged` or necessary capabilities
+3. Verify kernel version supports BPF (Linux 4.15+)
+4. Check `pranor_trace_flamegraph_samples_total` metric
+5. Review logs for BPF program load errors
+
+### High span ingestion latency
+
+1. Monitor span ingestion rate vs processing capacity
+2. Check `pranor_trace_spans_ingested_total` rate
+3. If store is full, eviction adds overhead — increase capacity
+4. Consider sampling at the SDK level to reduce volume
+5. Review if SIEM streaming is creating backpressure

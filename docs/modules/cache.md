@@ -1,20 +1,37 @@
-# Pranor Cache
+# Pranor Cache — Distributed Caching Engine
 
-```bash
-docker run -p 8084:8084 ghcr.io/vyuvaraj/pranor-cache:latest
-```
+**Version:** 0.1.0  
+**Module Path:** `github.com/vyuvaraj/pranor/cache`  
+**Default Port:** 8086  
+**License:** AGPL-3.0 (OSS) / Enterprise License (EE with TLS offload & SIMD vector cache)
 
-Pranor Cache is the distributed, high-performance caching service for the Pranor ecosystem. It exposes a low-latency REST API backed by pluggable engines (in-memory or Redis) with native support for OpenTelemetry context propagation, read-through/write-behind database synchronisation, key pattern invalidation, and multi-region replication.
+---
 
-## Features
+## Overview
 
-- **Pluggable Engines**: Swap transparently between thread-safe local in-memory storage and high-throughput Redis/Valkey clusters.
-- **TTL Eviction**: Automatic, background time-based pruning of expired cache keys.
-- **Key Pattern Invalidation**: Delete matching keys dynamically via wildcards and prefix matching.
-- **Read-Through Cache**: Cache misses automatically load data from a backend database (`PRANOR_CACHE_BACKEND_DB`) and populate the cache.
-- **Write-Behind Cache**: Writes asynchronously update the backend database in the background to ensure eventually consistent writes without blocking clients.
-- **Multi-Region Replication**: Forward mutations asynchronously to peer cache nodes (`PRANOR_CACHE_PEERS`) to maintain global cache consistency.
-- **OTel Instrumentation**: Standardized hit/miss/latency metrics automatically exported via OTel tracing context.
+Pranor Cache is a distributed, high-performance caching service for the Pranor ecosystem. It exposes a low-latency REST API backed by pluggable engines (in-memory or Redis) with native support for OpenTelemetry context propagation, read-through/write-behind database synchronization, key pattern invalidation, bloom filter guards, multi-region replication, and a Redis wire protocol adapter.
+
+Pranor Cache can run as:
+- A **standalone binary** with zero external dependencies (in-memory engine)
+- An **integrated module** within the Pranor ecosystem with mTLS, OTel tracing, and multi-region sync
+
+---
+
+## Key Features
+
+| Feature | Description |
+|---------|-------------|
+| **Pluggable Engines** | Swap transparently between thread-safe in-memory storage and Redis/Valkey clusters |
+| **TTL Eviction** | Automatic background time-based pruning of expired cache keys |
+| **Key Pattern Invalidation** | Delete matching keys via wildcards and prefix matching |
+| **Read-Through Cache** | Misses auto-load from backend database and populate the cache |
+| **Write-Behind Cache** | Writes asynchronously update the backend database for eventual consistency |
+| **Multi-Region Replication** | Forward mutations to peer cache nodes for global consistency |
+| **Bloom Filter Guard** | Probabilistic filter prevents unnecessary backend lookups on non-existent keys |
+| **Redis Wire Protocol** | RESP-compatible adapter allows existing Redis clients to connect directly |
+| **SIMD Vector Similarity** | AVX-512 accelerated cosine-distance vector cache for LLM embedding lookups |
+| **Multi-Tenant Pools** | Isolated memory pools per tenant to prevent noisy-neighbor issues |
+| **OTel Instrumentation** | Hit/miss/latency metrics exported via OpenTelemetry tracing context |
 
 ---
 
@@ -22,27 +39,23 @@ Pranor Cache is the distributed, high-performance caching service for the Pranor
 
 ```mermaid
 graph TD
-    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
-    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
-    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
-    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
 
     subgraph Interface ["🌐 Cache Access Protocol"]
-        API["REST Cache Engine API<br/><i>(:8084 / :8088)</i>"] :::client
-        RedisProto["Redis Wire Protocol Adapter"] :::client
+        API["REST Cache Engine API"]
+        RedisProto["Redis Wire Protocol Adapter"]
     end
 
     subgraph Core ["⚡ Core Cache Engine"]
-        MemGrid["Thread-Safe In-Memory Data Grid"] :::engine
-        SIMDVector["SIMD AVX-512 Vector Similarity Cache<br/><i>(Enterprise EE)</i>"] :::engine
-        BloomFilter["Probabilistic Bloom Filter Guard"] :::engine
-        MultiTenantPool["Multi-Tenant Isolation Memory Pool<br/><i>(Enterprise EE)</i>"] :::engine
+        MemGrid["Thread-Safe In-Memory Data Grid"]
+        SIMDVector["SIMD AVX-512 Vector Similarity Cache"]
+        BloomFilter["Probabilistic Bloom Filter Guard"]
+        MultiTenantPool["Multi-Tenant Isolation Memory Pool"]
     end
 
-    subgraph Persistence ["💾 Pluggable Backends & DB Sync"]
-        RedisCluster["Redis / Valkey Cluster"] :::storage
-        ReadThrough["Read-Through & Write-Behind DB Sync"] :::storage
-        ActiveMirror["Active-Active Multi-Cluster Sync<br/><i>(Enterprise EE)</i>"] :::storage
+    subgraph Persistence ["💾 Pluggable Backends and DB Sync"]
+        RedisCluster["Redis / Valkey Cluster"]
+        ReadThrough["Read-Through and Write-Behind DB Sync"]
+        ActiveMirror["Active-Active Multi-Cluster Sync"]
     end
 
     API --> MemGrid
@@ -90,103 +103,269 @@ Pranor Cache provides sub-millisecond data acceleration across all platform comp
 
 ---
 
-### 1. Health Checks
-- `GET /health` - Health probe showing cache readiness and connection status.
+## Installation & Deployment
 
-### 2. Cache Operations
+### Binary
 
-#### Set Cache Entry
-* **Path**: `POST /api/cache`
-* **Headers**: `Content-Type: application/json`
-* **Body**:
-  ```json
-  {
-    "key": "user:101",
-    "value": { "name": "Alice", "role": "admin" },
-    "ttl": "5m"
-  }
-  ```
-  *(TTL uses standard Go duration strings like `10s`, `5m`, `1h`)*
+```bash
+cd pranor/cache
+go build -o pranor-cache .
+./pranor-cache --port 8086
+```
 
-#### Get Cache Entry
-* **Path**: `GET /api/cache/{key}`
-* **Response (200 OK)**:
-  ```json
-  {
-    "key": "user:101",
-    "value": { "name": "Alice", "role": "admin" }
-  }
-  ```
-* **Response (404 Not Found)**: If key doesn't exist (and no database read-through is configured/succeeds).
+### Docker
 
-#### Delete Cache Entry
-* **Path**: `DELETE /api/cache/{key}`
+```bash
+docker run -p 8086:8086 ghcr.io/vyuvaraj/pranor-cache:latest
+```
 
-#### Clear Cache / Invalidate Pattern
-* **Path**: `DELETE /api/cache`
-* **Query Parameters**:
-  * `pattern` (Optional) - Wildcard pattern matching keys to delete (e.g. `user:*`). If omitted, fully clears the cache.
-  * `replicated` (Internal) - Used by peer nodes to denote replication loops.
+### With Redis Backend
+
+```bash
+./pranor-cache --port 8086 --backend redis --redis-url redis://localhost:6379
+```
+
+### As Part of Pranor Ecosystem
+
+When running under the Pranor platform, Cache integrates automatically with Auth (JWT/mTLS), Trace (OTel spans), and Console (dashboard visibility).
 
 ---
 
-## Configuration (Environment Variables)
+## Configuration
 
-Configure Pranor Cache dynamically by setting these parameters at startup:
+### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | HTTP Server port | `8088` |
-| `REDIS_URL` | Redis cluster URL (e.g. `redis://localhost:6379`). Uses in-memory engine if unset. | *(In-Memory)* |
-| `PRANOR_CACHE_BACKEND_DB` | Endpoint URL of the backend database for read-through & write-behind sync. | *(Disabled)* |
-| `PRANOR_CACHE_PEERS` | Comma-separated URLs of peer Pranor Cache nodes to replicate mutations (e.g. `http://peer1:8088,http://peer2:8088`). | *(Disabled)* |
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `8086` | HTTP Server port |
+| `REDIS_URL` | — | Redis cluster URL. Uses in-memory engine if unset |
+| `PRANOR_CACHE_BACKEND_DB` | — | Backend database URL for read-through & write-behind sync |
+| `PRANOR_CACHE_PEERS` | — | Comma-separated peer URLs for multi-region replication |
+| `PRANOR_CACHE_TLS_CERT` | — | Path to TLS certificate for HTTPS |
+| `PRANOR_CACHE_TLS_KEY` | — | Path to TLS private key |
+| `PRANOR_OTLP_ENDPOINT` | — | OpenTelemetry collector URL |
+
+### YAML Config (`cache.yaml`)
+
+```yaml
+port: "8086"
+backend: "memory"          # "memory" or "redis"
+redis_url: "redis://localhost:6379"
+backend_db: ""             # read-through DB endpoint
+peers: []                  # peer cache nodes for replication
+tls_cert: ""
+tls_key: ""
+```
+
+### CLI Flags
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--port` | `8086` | HTTP listen port |
+| `--backend` | `memory` | Cache backend: `memory` or `redis` |
+| `--redis-url` | `redis://localhost:6379` | Redis connection URL |
+| `--version` | — | Print version and exit |
 
 ---
 
-## Running Locally
+## API Reference
 
-### 1. In-Memory Mode
-```bash
-go run main.go --addr :8088
+**Base URL:** `http://localhost:8086`
+
+### POST /api/cache
+
+Set a cache entry.
+
+**Request:**
+
+```json
+{
+  "key": "user:101",
+  "value": { "name": "Alice", "role": "admin" },
+  "ttl": "5m"
+}
 ```
 
-### 2. Redis Mode
-```bash
-go run main.go --addr :8088 --redis-url redis://localhost:6379
-```
+**Response (200):**
 
-### 3. Verification Suite
-Run integration and unit tests:
-```bash
-go test -v ./...
+```json
+{
+  "status": "success",
+  "key": "user:101"
+}
 ```
 
 ---
 
-## Use Without Pranor (Standalone Quickstart)
+### GET /api/cache/{key}
 
-`Pranor Cache` can be used as a standalone HTTP memory caching microservice (Redis alternative for development):
+Get a cache entry.
 
-1. **Run Pranor Cache** in standalone mode (uses in-memory engine by default):
-   ```bash
-   go run main.go --standalone --addr :8084
-   ```
+**Response (200):**
 
-2. **Set a cache entry** (with a 5-minute TTL):
-   ```bash
-   curl -X POST http://localhost:8084/api/cache \
-     -H "Content-Type: application/json" \
-     -d '{"key": "my-key", "value": "my-cached-payload", "ttl": "5m"}'
-   ```
+```json
+{
+  "key": "user:101",
+  "value": { "name": "Alice", "role": "admin" }
+}
+```
 
-3. **Retrieve the cache entry**:
-   ```bash
-   curl http://localhost:8084/api/cache/my-key
-   ```
+**Response (404):**
 
-4. **Delete the cache entry**:
-   ```bash
-   curl -X DELETE http://localhost:8084/api/cache/my-key
-   ```
+```json
+{
+  "status": "not_found",
+  "key": "user:101"
+}
+```
 
+---
 
+### DELETE /api/cache/{key}
+
+Delete a specific cache entry.
+
+**Response (200):**
+
+```json
+{
+  "status": "deleted",
+  "key": "user:101"
+}
+```
+
+---
+
+### DELETE /api/cache?pattern={pattern}
+
+Invalidate keys by pattern. If no pattern is provided, clears the entire cache.
+
+**Response (200):**
+
+```json
+{
+  "status": "success",
+  "invalidated": 42
+}
+```
+
+---
+
+### GET /health
+
+Health probe showing cache readiness and connection status.
+
+**Response (200):**
+
+```json
+{"status":"UP","service":"pranor-cache","version":"0.1.0","backend":"memory"}
+```
+
+---
+
+## Security
+
+### Standalone Mode
+
+In standalone mode, Pranor Cache runs without authentication. Suitable for development and testing.
+
+### Ecosystem Mode (Full Auth Stack)
+
+When running within the Pranor ecosystem (detected automatically), the full middleware chain activates:
+
+1. **OTel Tracing** — every request gets a span
+2. **Rate Limiting** — per-client request throttling
+3. **CORS** — cross-origin request handling
+4. **Max Body Size** — 10MB request body limit
+5. **JWT Auth** — validates Bearer tokens against Pranor Auth
+6. **Tenant Isolation** — multi-tenant namespace enforcement
+
+### TLS
+
+Enable HTTPS with TLS certificates:
+
+```yaml
+tls_cert: "/certs/cache.crt"
+tls_key: "/certs/cache.key"
+```
+
+TLS offload is an Enterprise feature that uses optimized kernel-bypass SSL termination.
+
+---
+
+## Observability
+
+### Prometheus Metrics
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `pranor_cache_hits_total` | Counter | Cache hit count |
+| `pranor_cache_misses_total` | Counter | Cache miss count |
+| `pranor_cache_keys_active` | Gauge | Currently stored keys |
+| `pranor_cache_evictions_total` | Counter | Keys evicted by TTL |
+| `pranor_cache_read_through_total` | Counter | Read-through backend fetches |
+| `pranor_cache_replication_lag_ms` | Histogram | Peer replication latency |
+
+### OpenTelemetry Tracing
+
+Every cache operation generates OTel spans:
+- `cache.get` — read operation with hit/miss attribute
+- `cache.set` — write operation with TTL
+- `cache.delete` — deletion/invalidation
+- `cache.read_through` — backend fetch on miss
+
+### Logging
+
+Structured JSON logs with fields: `level`, `timestamp`, `trace_id`, `operation`, `key`, `hit`, `latency_us`.
+
+---
+
+## Enterprise Edition
+
+| Feature | OSS | EE |
+|---------|:---:|:--:|
+| In-memory cache engine | ✓ | ✓ |
+| Redis/Valkey backend | ✓ | ✓ |
+| TTL eviction | ✓ | ✓ |
+| Key pattern invalidation | ✓ | ✓ |
+| Read-through / Write-behind | ✓ | ✓ |
+| Multi-region peer replication | ✓ | ✓ |
+| Bloom filter guard | ✓ | ✓ |
+| TLS offload (kernel-bypass SSL) | — | ✓ |
+| SIMD AVX-512 vector similarity cache | — | ✓ |
+| Multi-tenant memory pool isolation | — | ✓ |
+| Redis wire protocol adapter | — | ✓ |
+| Active-active multi-cluster sync | — | ✓ |
+
+---
+
+## Operational Runbook
+
+### High cache miss rate
+
+1. Check `/health` endpoint for backend connectivity
+2. Verify TTLs aren't too short for workload patterns
+3. Review bloom filter effectiveness — false positive rate should be < 1%
+4. If using read-through, check backend DB latency via `pranor_cache_read_through_total`
+5. Consider increasing memory allocation for the in-memory engine
+
+### Replication lag between regions
+
+1. Monitor `pranor_cache_replication_lag_ms` histogram
+2. Check network connectivity to peer nodes (`PRANOR_CACHE_PEERS`)
+3. Verify peer URLs are reachable and responding to health checks
+4. Consider reducing write volume if replication can't keep up
+
+### Memory pressure / OOM
+
+1. Check `pranor_cache_keys_active` gauge for key count growth
+2. Review TTL policies — ensure all entries have finite TTLs
+3. Use pattern invalidation to bulk-remove stale namespaces
+4. If using multi-tenant pools, check per-tenant quotas
+
+### Redis backend connection failures
+
+1. Verify `REDIS_URL` is correct and Redis is reachable
+2. Check Redis cluster health (CLUSTER INFO)
+3. Pranor Cache falls back to in-memory in standalone mode
+4. Monitor reconnection attempts in structured logs

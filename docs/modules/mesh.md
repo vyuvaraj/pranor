@@ -1,73 +1,60 @@
-# Pranor Mesh
+# Pranor Mesh — Intelligent Service Mesh
 
-```bash
-docker run -p 8095:8095 ghcr.io/vyuvaraj/pranor-mesh:latest
-```
-
-`Pranor Mesh` is the intelligent service mesh for the **Pranor** ecosystem, providing latency-aware load balancing, distributed rate limiting, live topology telemetry, and chaos fault injection — all without requiring sidecar proxies.
+**Version:** 1.0.0  
+**Module Path:** `github.com/vyuvaraj/pranor/mesh`  
+**Default Port:** 8089  
+**License:** AGPL-3.0 (OSS) / Enterprise License (EE with WireGuard & mTLS Attestation)
 
 ---
 
-## Table of Contents
-- [Key Features](#key-features)
-- [Architecture](#architecture)
-- [API Endpoints](#api-endpoints)
-- [Load Balancing](#load-balancing)
-- [Rate Limiting](#rate-limiting)
-- [Chaos Fault Injection](#chaos-fault-injection)
-- [Getting Started](#getting-started)
+## Overview
+
+Pranor Mesh is the intelligent service mesh for the Pranor ecosystem, providing latency-aware Power-of-Two-Choices (P2C) load balancing, distributed rate limiting, live topology telemetry, circuit breaking, mTLS, and chaos fault injection — all without requiring sidecar proxies.
+
+Pranor Mesh can run as:
+- A **standalone binary** providing load balancing and service discovery
+- An **integrated module** within the Pranor ecosystem with distributed rate limiting via Cache, topology push to Console, and mTLS via Auth
 
 ---
 
 ## Key Features
 
-### ⚖️ Load Balancing
-- **Latency-aware Power-of-Two-Choices (P2C)**: On each routing decision, sample two random backends and pick the one with lower observed latency — dramatically reduces tail latency compared to round-robin
-- **Locality preference**: Prefer backends in the same availability zone/region before spilling over to remote nodes; configurable locality weight
-- **Health-aware routing**: Unhealthy backends are automatically excluded; exponential recovery probing
-
-### 🚦 Distributed Rate Limiting
-- **Global rate limiting via Pranor Cache token buckets**: Rate limit counters stored in Pranor Cache — all mesh nodes share state for true global enforcement (not per-node)
-- **Per-service and per-route policies**: Define separate rate limits per service, per endpoint pattern
-- **Burst control**: Token bucket allows short bursts above sustained rate
-
-### 🗺️ Live Topology Telemetry
-- **Real-time service topology graph**: Pranor Mesh tracks all observed service-to-service call edges and pushes live updates to Pranor Console via WebSocket
-- **Traffic flow visualization**: Annotates edges with RPS, error rate, and p99 latency in real-time
-- **Dependency discovery**: Automatically discovers service dependencies without manual configuration
-
-### 💥 Chaos Fault Injection
-- **Latency injection**: Add artificial delay (configurable distribution: fixed, uniform, normal) to selected service calls
-- **Error rate simulation**: Inject synthetic HTTP errors (configurable status code and percentage)
-- **Network partition simulation**: Block traffic between specified service pairs
-- **Abort experiments**: Immediately restore normal traffic flow; auto-expiry on configured duration
-- **Blast radius preview**: Preview which service pairs are affected before triggering
+| Feature | Description |
+|---------|-------------|
+| **P2C Load Balancing** | Power-of-Two-Choices with latency-aware backend selection |
+| **Locality Preference** | Prefer backends in the same AZ before spilling to remote nodes |
+| **Distributed Rate Limiting** | Global rate limits via Pranor Cache token buckets |
+| **Circuit Breaking** | Automatic circuit open/half-open/closed state per backend |
+| **Live Topology** | Real-time service dependency graph pushed to Console |
+| **Chaos Fault Injection** | Latency injection, error simulation, network partition |
+| **Health-aware Routing** | Unhealthy backends excluded with exponential recovery probing |
+| **mTLS** | Mutual TLS for encrypted service-to-service communication |
+| **Traffic Flow Visualization** | Edges annotated with RPS, error rate, and p99 latency |
+| **Microsegmentation** | eBPF L4/L7 policy enforcement between services |
 
 ---
 
+## Architecture
+
 ```mermaid
 graph TD
-    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
-    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
-    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
-    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
 
     subgraph ServiceTraffic ["🌐 Encrypted Service Connectivity"]
-        ClientService["Client Service Pod / Host"] :::client
-        mTLSSidecar["mTLS Auto-Inject Sidecar Proxy"] :::client
-        WireGuardMesh["WireGuard Private Network Mesh Overlay"] :::client
+        ClientService["Client Service Pod / Host"]
+        mTLSSidecar["mTLS Auto-Inject Sidecar Proxy"]
+        WireGuardMesh["WireGuard Private Network Mesh Overlay"]
     end
 
-    subgraph MeshCore ["⚡ Zero-Trust Control & Microsegmentation"]
-        P2CRouter["Power-of-Two-Choices (P2C) Load Balancer"] :::engine
-        Microseg["eBPF Layer 4/7 Microsegmentation Policy Engine<br/><i>(Enterprise EE)</i>"] :::engine
-        BFTRaft["Byzantine Fault Tolerant (BFT) Raft Control Plane<br/><i>(Enterprise EE)</i>"] :::engine
-        ChaosEngine["In-Situ Chaos Experiment Injector"] :::engine
+    subgraph MeshCore ["⚡ Zero-Trust Control and Microsegmentation"]
+        P2CRouter["Power-of-Two-Choices (P2C) Load Balancer"]
+        Microseg["eBPF Layer 4/7 Microsegmentation Policy Engine"]
+        BFTRaft["Byzantine Fault Tolerant (BFT) Raft Control Plane"]
+        ChaosEngine["In-Situ Chaos Experiment Injector"]
     end
 
-    subgraph PlatformSync ["💾 Ecosystem Sync & Observability"]
-        CacheLimit["Pranor Cache Shared Token Bucket"] :::storage
-        ConsoleTopology["Pranor Console Live Topology Emitter"] :::storage
+    subgraph PlatformSync ["💾 Ecosystem Sync and Observability"]
+        CacheLimit["Pranor Cache Shared Token Bucket"]
+        ConsoleTopology["Pranor Console Live Topology Emitter"]
     end
 
     ClientService --> mTLSSidecar
@@ -110,107 +97,302 @@ Pranor Mesh manages secure inter-service communication across all ecosystem comp
 
 ---
 
----
+## Installation & Deployment
 
-## API Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/api/v1/services` | Register a service endpoint |
-| `GET` | `/api/v1/services` | List all registered services |
-| `POST` | `/api/v1/route` | Route a request (P2C selection) |
-| `GET` | `/api/v1/topology` | Current topology graph snapshot |
-| `POST` | `/api/v1/ratelimit/policy` | Set rate limit policy for a service |
-| `GET` | `/api/v1/ratelimit/policy` | List rate limit policies |
-| `POST` | `/api/v1/chaos/inject` | Inject a chaos fault |
-| `POST` | `/api/v1/chaos/abort/{id}` | Abort an active chaos fault |
-| `GET` | `/api/v1/chaos/active` | List active chaos faults |
-| `/metrics` | `GET` | Prometheus metrics (routing decisions, rate limit hits, fault injection events) |
-| `/healthz` | `GET` | Liveness probe |
-
----
-
-## Load Balancing
+### Binary
 
 ```bash
-# Register backends for a service
-curl -X POST http://pranor-mesh:8095/api/v1/services \
-  -d '{"name": "orders-api", "endpoints": ["http://orders-1:3000", "http://orders-2:3000", "http://orders-3:3000"], "locality_zone": "us-east-1a"}'
-
-# Route a request (pranor-mesh selects backend via P2C)
-curl -X POST http://pranor-mesh:8095/api/v1/route \
-  -d '{"service": "orders-api", "caller_zone": "us-east-1a"}'
-# → { "selected_endpoint": "http://orders-2:3000", "latency_p99_ms": 12 }
+cd pranor/mesh
+go build -o pranor-mesh .
+./pranor-mesh --port 8089
 ```
 
----
-
-## Rate Limiting
+### Docker
 
 ```bash
-# Set global rate limit for a service
-curl -X POST http://pranor-mesh:8095/api/v1/ratelimit/policy \
-  -d '{"service": "orders-api", "requests_per_second": 500, "burst": 1000}'
+docker run -p 8089:8089 ghcr.io/vyuvaraj/pranor-mesh:latest
 ```
 
-Pranor Mesh uses `Pranor Cache` token buckets — the rate limit is enforced globally across all Pranor Mesh nodes:
-
-```
-Node 1 ──┐
-Node 2 ──┼──→ Pranor Cache token bucket ──→ allow/deny
-Node 3 ──┘    (shared global counter)
-```
-
----
-
-## Chaos Fault Injection
+### With Distributed Rate Limiting
 
 ```bash
-# Inject 200ms latency into 30% of calls to payments-api
-curl -X POST http://pranor-mesh:8095/api/v1/chaos/inject \
-  -d '{
-    "target_service": "payments-api",
-    "fault_type": "latency",
-    "latency_ms": 200,
-    "percentage": 30,
-    "duration": "5m"
-  }'
-
-# Inject 5% HTTP 503 errors
-curl -X POST http://pranor-mesh:8095/api/v1/chaos/inject \
-  -d '{"target_service": "inventory-api", "fault_type": "error", "error_code": 503, "percentage": 5, "duration": "2m"}'
-
-# Abort an experiment
-curl -X POST http://pranor-mesh:8095/api/v1/chaos/abort/exp-123
-```
-
----
-
-## Getting Started
-
-```bash
-docker run -p 8095:8095 \
-  -e PRANOR_MESH_PRANOR_CACHE_URL=http://pranor-cache:6379 \
+docker run -p 8089:8089 \
+  -e PRANOR_MESH_PRANOR_CACHE_URL=http://pranor-cache:8086 \
   -e PRANOR_MESH_PRANOR_CONSOLE_WS_URL=ws://pranor-console:8083/ws/topology \
-  -e PRANOR_MESH_OTEL_ENDPOINT=http://pranor-trace:4318 \
   ghcr.io/vyuvaraj/pranor-mesh:latest
 ```
+
+### As Part of Pranor Ecosystem
+
+When running under the Pranor platform, Mesh integrates automatically with Cache (rate limiting), Console (topology), Auth (mTLS), and Trace (OTel spans).
+
+---
+
+## Configuration
 
 ### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `PRANOR_MESH_PORT` | `8095` | HTTP listener port |
+| `PRANOR_MESH_PORT` | `8089` | HTTP listener port |
 | `PRANOR_MESH_PRANOR_CACHE_URL` | — | Pranor Cache URL for distributed rate limit state |
 | `PRANOR_MESH_PRANOR_CONSOLE_WS_URL` | — | Pranor Console WebSocket URL for topology push |
 | `PRANOR_MESH_LOCALITY_ZONE` | — | Availability zone for locality-preference routing |
 | `PRANOR_MESH_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
 
+### YAML Config (`mesh.yaml`)
+
+```yaml
+port: "8089"
+cache_url: "http://pranor-cache:8086"
+console_ws_url: "ws://pranor-console:8083/ws/topology"
+locality_zone: "us-east-1a"
+otel_endpoint: "http://pranor-trace:8090"
+circuit_breaker:
+  failure_threshold: 5
+  recovery_timeout: "30s"
+```
+
+### CLI Flags
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--port` | `8089` | HTTP listen port |
+
 ---
 
-## Enterprise Edition (Planned)
+## API Reference
 
-| Feature | Tier |
-|---------|------|
-| Automatic WireGuard Kernel Tunnel Mesh | EE |
-| SPIFFE/SPIRE mTLS Workload Identity Attestation | EE |
+**Base URL:** `http://localhost:8089`
+
+### POST /api/v1/services
+
+Register a service endpoint.
+
+**Request:**
+
+```json
+{
+  "name": "orders-api",
+  "endpoints": ["http://orders-1:3000", "http://orders-2:3000", "http://orders-3:3000"],
+  "locality_zone": "us-east-1a"
+}
+```
+
+**Response (201):**
+
+```json
+{
+  "status": "registered",
+  "service": "orders-api",
+  "endpoint_count": 3
+}
+```
+
+---
+
+### POST /api/v1/route
+
+Route a request via P2C selection.
+
+**Request:**
+
+```json
+{
+  "service": "orders-api",
+  "caller_zone": "us-east-1a"
+}
+```
+
+**Response (200):**
+
+```json
+{
+  "selected_endpoint": "http://orders-2:3000",
+  "latency_p99_ms": 12,
+  "locality_match": true
+}
+```
+
+---
+
+### POST /api/v1/ratelimit/policy
+
+Set rate limit policy for a service.
+
+**Request:**
+
+```json
+{
+  "service": "orders-api",
+  "requests_per_second": 500,
+  "burst": 1000
+}
+```
+
+**Response (200):**
+
+```json
+{
+  "status": "applied",
+  "service": "orders-api"
+}
+```
+
+---
+
+### POST /api/v1/chaos/inject
+
+Inject a chaos fault.
+
+**Request:**
+
+```json
+{
+  "target_service": "payments-api",
+  "fault_type": "latency",
+  "latency_ms": 200,
+  "percentage": 30,
+  "duration": "5m"
+}
+```
+
+**Response (201):**
+
+```json
+{
+  "id": "exp-123",
+  "status": "active",
+  "expires_at": "2026-08-01T10:05:00Z"
+}
+```
+
+---
+
+### GET /api/v1/topology
+
+Current topology graph snapshot.
+
+**Response (200):**
+
+```json
+{
+  "services": ["orders-api", "payments-api", "inventory-api"],
+  "edges": [
+    { "from": "orders-api", "to": "payments-api", "rps": 120, "p99_ms": 45 }
+  ]
+}
+```
+
+---
+
+### GET /healthz
+
+Liveness probe.
+
+```json
+{"status":"UP","service":"pranor-mesh","version":"1.0.0"}
+```
+
+---
+
+## Security
+
+### Standalone Mode
+
+In standalone mode, Mesh provides unauthenticated load balancing and service discovery.
+
+### Ecosystem Mode (Full Auth Stack)
+
+When running within the Pranor ecosystem:
+
+1. **mTLS** — mutual TLS for all service-to-service traffic
+2. **SPIFFE/SPIRE** — workload identity attestation per service
+3. **eBPF Microsegmentation** — L4/L7 zero-trust policy enforcement
+4. **WireGuard Overlay** — encrypted mesh network between nodes
+5. **Token-bucket rate limiting** — global enforcement via Pranor Cache
+
+### Circuit Breaking
+
+Mesh implements circuit breaking per backend:
+- **Closed**: Normal traffic flow
+- **Open**: All requests fast-fail (after failure threshold)
+- **Half-Open**: Limited probe requests to test recovery
+
+---
+
+## Observability
+
+### Prometheus Metrics
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `pranor_mesh_routing_decisions_total` | Counter | Total P2C routing decisions |
+| `pranor_mesh_rate_limit_hits_total` | Counter | Rate limit rejections |
+| `pranor_mesh_chaos_faults_active` | Gauge | Active chaos experiments |
+| `pranor_mesh_circuit_breaker_state` | Gauge | Circuit state per backend (0=closed, 1=open, 2=half-open) |
+| `pranor_mesh_backend_latency_ms` | Histogram | Backend response latency |
+| `pranor_mesh_topology_edges` | Gauge | Active service-to-service edges |
+
+### OpenTelemetry Tracing
+
+Mesh emits spans for:
+- `mesh.route` — P2C routing decision
+- `mesh.ratelimit.check` — rate limit evaluation
+- `mesh.chaos.inject` — chaos fault injection
+- `mesh.circuit.trip` — circuit breaker state change
+
+### Logging
+
+Structured JSON logs with fields: `level`, `timestamp`, `trace_id`, `service`, `endpoint`, `latency_ms`, `action`.
+
+---
+
+## Enterprise Edition
+
+| Feature | OSS | EE |
+|---------|:---:|:--:|
+| P2C load balancing | ✓ | ✓ |
+| Service registration & discovery | ✓ | ✓ |
+| Locality-aware routing | ✓ | ✓ |
+| Distributed rate limiting (via Cache) | ✓ | ✓ |
+| Chaos fault injection | ✓ | ✓ |
+| Circuit breaking | ✓ | ✓ |
+| Live topology telemetry | ✓ | ✓ |
+| WireGuard kernel tunnel mesh | — | ✓ |
+| SPIFFE/SPIRE mTLS workload attestation | — | ✓ |
+| eBPF L4/L7 microsegmentation | — | ✓ |
+| BFT Raft control plane | — | ✓ |
+
+---
+
+## Operational Runbook
+
+### High tail latency on routed requests
+
+1. Check `pranor_mesh_backend_latency_ms` histogram for p99 spikes
+2. Review which backends are being selected — P2C should prefer faster ones
+3. Verify locality zone configuration matches actual deployment topology
+4. Check if circuit breaker is tripping on slow backends
+5. Look for active chaos experiments affecting the target service
+
+### Rate limiting blocking legitimate traffic
+
+1. Check `pranor_mesh_rate_limit_hits_total` for unexpected rejections
+2. Review rate limit policy: `GET /api/v1/ratelimit/policy`
+3. Verify Pranor Cache connectivity — rate limit state is shared globally
+4. Increase burst allowance if traffic is legitimately spiky
+
+### Topology graph missing services
+
+1. Verify services are registered: `GET /api/v1/services`
+2. Check Console WebSocket connectivity (`PRANOR_MESH_PRANOR_CONSOLE_WS_URL`)
+3. Ensure services are actually making calls through Mesh (not direct)
+4. Review Mesh logs for registration errors
+
+### Chaos experiment not auto-expiring
+
+1. Check experiment status: `GET /api/v1/chaos/active`
+2. Verify system clock is accurate (expiry is time-based)
+3. Manually abort: `POST /api/v1/chaos/abort/{id}`
+4. Review duration configuration in the inject request

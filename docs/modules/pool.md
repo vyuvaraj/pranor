@@ -1,62 +1,36 @@
-# Pranor Pool
+# Pranor Pool — Database Connection Proxy
 
-```bash
-docker run -p 8094:8094 ghcr.io/vyuvaraj/pranor-pool:latest
-```
-
-`Pranor Pool` is an intelligent, observable database connection pool manager for the **Pranor** ecosystem. It provides read/write splitting, connection health validation, leak detection, query telemetry, prepared statement caching, and pool saturation alerting.
+**Version:** 1.0.0  
+**Module Path:** `github.com/vyuvaraj/pranor/pool`  
+**Default Port:** 8097  
+**License:** AGPL-3.0 (OSS) / Enterprise License (EE with pgvector accelerator & multi-dialect)
 
 ---
 
-## Table of Contents
-- [Key Features](#key-features)
-- [Architecture](#architecture)
-- [API Endpoints](#api-endpoints)
-- [Read/Write Split Routing](#readwrite-split-routing)
-- [Connection Health & Leak Detection](#connection-health--leak-detection)
-- [Query Analytics](#query-analytics)
-- [Prepared Statement Cache](#prepared-statement-cache)
-- [Getting Started](#getting-started)
+## Overview
+
+Pranor Pool is an intelligent, observable database connection pool manager for the Pranor ecosystem. It provides read/write splitting, connection health validation, leak detection, query telemetry, prepared statement caching, pool saturation alerting, and multi-dialect support for PostgreSQL, MySQL, and SQLite.
+
+Pranor Pool can run as:
+- A **standalone binary** providing connection pooling for any PostgreSQL/MySQL application
+- An **integrated module** within the Pranor ecosystem with OTel tracing, Console dashboards, and Lock-coordinated DDL migrations
 
 ---
 
 ## Key Features
 
-### 🔀 Read/Write Split Routing
-- **Primary for writes, replica for reads**: Automatically routes `SELECT` queries to read replicas and `INSERT`/`UPDATE`/`DELETE` to the primary
-- **Configurable replica weighting**: Assign traffic weights per replica (e.g., 70% to replica-1, 30% to replica-2) for load distribution
-- **Transaction pinning**: Within an active transaction, all queries are pinned to the primary regardless of query type
-- **Replica lag awareness**: Skip replicas with lag > configurable threshold (uses `SHOW SLAVE STATUS` or Postgres `pg_stat_replication`)
-
-### ✅ Connection Health Validation
-- **Pre-checkout validation**: Before handing a connection to a caller, Pranor Pool pings it and runs a configurable validation query (e.g., `SELECT 1`) — eliminates "stale connection" errors
-- **Unhealthy connection eviction**: Connections that fail validation are immediately evicted and replaced with fresh ones
-- **Background health sweeps**: Periodic background sweeps validate idle connections in the pool
-
-### 🔍 Connection Leak Detection
-- **Age-based detection**: Connections held longer than configurable `max_checkout_duration` are flagged as leaked
-- **Activity-based detection**: Connections with no query activity for `idle_timeout` are reclaimed
-- **Goroutine tracking**: Each checkout is tracked with the acquiring goroutine ID and stack trace for leak attribution
-- **Forced reclaim**: Leaked connections are forcibly returned to the pool and the offending caller is logged
-
-### 📊 Query Analytics
-- **Per-query execution time histogram**: Tracks `p50`, `p75`, `p90`, `p99` query latency per query signature
-- **Slow query logger**: Queries exceeding configurable `slow_query_threshold` are logged with full context (query, args, duration, caller)
-- **Query normalization**: Normalizes queries by replacing literal values for accurate aggregation
-- **Prometheus metrics**: Exposes per-query latency histograms via `/metrics`
-- **Pranor Console integration**: Pool saturation and query analytics visible in Pranor Console dashboard
-
-### 💾 Prepared Statement Cache
-- **Multi-dialect support**: Caches prepared statements for PostgreSQL, MySQL, and SQLite
-- **Automatic cache invalidation**: Detects schema changes and invalidates affected prepared statements
-- **Connection-local cache**: Each connection maintains its own prepared statement cache; Pranor Pool manages the lifecycle
-- **Cache hit rate metrics**: Track cache hits vs. prepared statement re-preparations
-
-### 🚨 Saturation Alerting
-- **Pool utilization monitoring**: Tracks checked-out vs. total connections as a utilization percentage
-- **Wait queue depth**: Monitors how many callers are waiting for a connection — leading indicator of saturation
-- **Pranor Console alert**: Pushes saturation alerts to Pranor Console when utilization exceeds configurable thresholds (e.g., >80%, >95%)
-- **Prometheus alerting rules**: Pre-built alert rules for pool saturation and wait queue depth
+| Feature | Description |
+|---------|-------------|
+| **Read/Write Split** | Auto-routes SELECTs to replicas, writes to primary |
+| **Replica Weighting** | Configurable traffic distribution across replicas |
+| **Transaction Pinning** | All queries within a transaction pinned to primary |
+| **Replica Lag Awareness** | Skip replicas exceeding configurable lag threshold |
+| **Pre-checkout Validation** | Ping + validation query before handing connections to callers |
+| **Leak Detection** | Age-based and activity-based detection with goroutine stack traces |
+| **Query Analytics** | Per-query p50/p75/p90/p99 latency histograms |
+| **Slow Query Logger** | Queries exceeding threshold logged with full context |
+| **Prepared Statement Cache** | Per-connection cache with automatic invalidation on schema change |
+| **Saturation Alerting** | Pool utilization and wait queue depth alerts to Console |
 
 ---
 
@@ -64,27 +38,23 @@ docker run -p 8094:8094 ghcr.io/vyuvaraj/pranor-pool:latest
 
 ```mermaid
 graph TD
-    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
-    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
-    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
-    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
 
     subgraph AppCallers ["🌐 Microservice Connection Request"]
-        App["Application Microservice Caller"] :::client
-        PoolClient["Pranor Pool Go/Python/Java Client"] :::client
+        App["Application Microservice Caller"]
+        PoolClient["Pranor Pool Go/Python/Java Client"]
     end
 
-    subgraph PoolCore ["⚡ Core Connection Routing & Health Engine"]
-        RWRouter["Read/Write Query Router<br/><i>(SELECT → Replica | DML → Primary)</i>"] :::engine
-        HealthCheck["Pre-Checkout Validation Engine<br/><i>(Ping & Active Connection Evictor)</i>"] :::engine
-        LeakDetector["Connection Leak & Goroutine Stack Tracker"] :::engine
-        StmtCache["Per-Connection Prepared Statement Cache"] :::engine
-        VectorOffload["PostgreSQL pgvector Accelerator<br/><i>(Enterprise EE)</i>"] :::engine
+    subgraph PoolCore ["⚡ Core Connection Routing and Health Engine"]
+        RWRouter["Read/Write Query Router"]
+        HealthCheck["Pre-Checkout Validation Engine"]
+        LeakDetector["Connection Leak and Goroutine Stack Tracker"]
+        StmtCache["Per-Connection Prepared Statement Cache"]
+        VectorOffload["PostgreSQL pgvector Accelerator"]
     end
 
     subgraph DBClusters ["💾 Heterogeneous Relational DB Tier"]
-        PrimaryDB["Primary RDBMS<br/><i>(PostgreSQL / MySQL Writes)</i>"] :::storage
-        ReplicaPool["Weighted Replica Pool<br/><i>(70% Replica-1 / 30% Replica-2 Reads)</i>"] :::storage
+        PrimaryDB["Primary RDBMS"]
+        ReplicaPool["Weighted Replica Pool"]
     end
 
     App --> PoolClient
@@ -130,103 +100,317 @@ Pranor Pool provides intelligent database proxying across the Pranor ecosystem:
 
 ---
 
-## API Endpoints
+## Installation & Deployment
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/api/v1/pools` | Create a connection pool |
-| `GET` | `/api/v1/pools` | List all pools |
-| `GET` | `/api/v1/pools/{name}/stats` | Pool stats (utilization, wait queue, active connections) |
-| `GET` | `/api/v1/pools/{name}/leaks` | List detected connection leaks |
-| `POST` | `/api/v1/pools/{name}/reclaim` | Force-reclaim all leaked connections |
-| `GET` | `/api/v1/pools/{name}/slow-queries` | Recent slow queries log |
-| `GET` | `/api/v1/pools/{name}/query-stats` | Per-query latency histograms |
-| `GET` | `/api/v1/pools/{name}/prepared-cache` | Prepared statement cache contents |
-| `/metrics` | `GET` | Prometheus metrics (pool utilization, query latency, cache hit rates) |
-| `/healthz` | `GET` | Liveness probe |
-
----
-
-## Read/Write Split Routing
+### Binary
 
 ```bash
-# Create a pool with primary + replicas
-curl -X POST http://pranor-pool:8094/api/v1/pools \
-  -d '{
-    "name": "orders-db",
-    "primary": "postgres://user:pass@primary:5432/orders",
-    "replicas": [
-      { "dsn": "postgres://user:pass@replica1:5432/orders", "weight": 70 },
-      { "dsn": "postgres://user:pass@replica2:5432/orders", "weight": 30 }
-    ],
-    "max_connections": 50,
-    "min_idle": 5,
-    "validation_query": "SELECT 1",
-    "max_checkout_duration": "30s",
-    "slow_query_threshold_ms": 100
-  }'
+cd pranor/pool
+go build -o pranor-pool .
+./pranor-pool --port 8097
 ```
 
----
-
-## Connection Health & Leak Detection
+### Docker
 
 ```bash
-# Check pool stats (utilization + wait queue depth)
-curl http://pranor-pool:8094/api/v1/pools/orders-db/stats
-# → { "total": 50, "active": 38, "idle": 12, "wait_queue": 2, "utilization_pct": 76 }
-
-# View detected leaks
-curl http://pranor-pool:8094/api/v1/pools/orders-db/leaks
-# → [ { "conn_id": "conn-42", "held_since": "2026-07-26T10:00:00Z", "goroutine": "main.go:84", ... } ]
-
-# Force reclaim leaked connections
-curl -X POST http://pranor-pool:8094/api/v1/pools/orders-db/reclaim
+docker run -p 8097:8097 ghcr.io/vyuvaraj/pranor-pool:latest
 ```
 
----
-
-## Query Analytics
+### With OTel and Console
 
 ```bash
-# View p99 latency by query signature
-curl http://pranor-pool:8094/api/v1/pools/orders-db/query-stats
-# → { "queries": [ { "signature": "SELECT * FROM orders WHERE id = ?", "p50": 3, "p99": 45, "count": 10234 }, ... ] }
-
-# Recent slow queries
-curl http://pranor-pool:8094/api/v1/pools/orders-db/slow-queries
-```
-
----
-
-## Prepared Statement Cache
-
-Pranor Pool automatically caches prepared statements per connection:
-
-```go
-// Application uses Pranor Pool client — no special code needed
-db := pranor-pool.Open("orders-db", "http://pranor-pool:8094")
-rows, err := db.Query("SELECT id, total FROM orders WHERE user_id = $1", userID)
-// Pranor Pool automatically uses cached prepared statement on subsequent calls
-```
-
----
-
-## Getting Started
-
-```bash
-docker run -p 8094:8094 \
-  -e PRANOR_POOL_OTEL_ENDPOINT=http://pranor-trace:4318 \
+docker run -p 8097:8097 \
+  -e PRANOR_POOL_OTEL_ENDPOINT=http://pranor-trace:8090 \
   -e PRANOR_POOL_PRANOR_CONSOLE_URL=http://pranor-console:8083 \
   ghcr.io/vyuvaraj/pranor-pool:latest
 ```
+
+### As Part of Pranor Ecosystem
+
+When running under the Pranor platform, Pool integrates automatically with Lock (DDL coordination), Trace (query spans), and Console (saturation dashboards).
+
+---
+
+## Configuration
 
 ### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `PRANOR_POOL_PORT` | `8094` | HTTP listener port |
+| `PRANOR_POOL_PORT` | `8097` | HTTP listener port |
 | `PRANOR_POOL_OTEL_ENDPOINT` | — | OpenTelemetry collector URL |
 | `PRANOR_POOL_PRANOR_CONSOLE_URL` | — | Pranor Console URL for saturation alerts |
 | `PRANOR_POOL_DEFAULT_MAX_CONN` | `25` | Default max connections per pool |
 | `PRANOR_POOL_LEAK_CHECK_INTERVAL` | `30s` | How often to run leak detection sweep |
+
+### YAML Config (`pool.yaml`)
+
+```yaml
+port: "8097"
+otel_endpoint: "http://pranor-trace:8090"
+console_url: "http://pranor-console:8083"
+default_max_connections: 25
+leak_check_interval: "30s"
+slow_query_threshold_ms: 100
+```
+
+### CLI Flags
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--port` | `8097` | HTTP listen port |
+
+---
+
+## API Reference
+
+**Base URL:** `http://localhost:8097`
+
+### POST /api/v1/pools
+
+Create a connection pool.
+
+**Request:**
+
+```json
+{
+  "name": "orders-db",
+  "primary": "postgres://user:pass@primary:5432/orders",
+  "replicas": [
+    { "dsn": "postgres://user:pass@replica1:5432/orders", "weight": 70 },
+    { "dsn": "postgres://user:pass@replica2:5432/orders", "weight": 30 }
+  ],
+  "max_connections": 50,
+  "min_idle": 5,
+  "validation_query": "SELECT 1",
+  "max_checkout_duration": "30s",
+  "slow_query_threshold_ms": 100
+}
+```
+
+**Response (201):**
+
+```json
+{
+  "status": "created",
+  "name": "orders-db",
+  "max_connections": 50
+}
+```
+
+---
+
+### GET /api/v1/pools/{name}/stats
+
+Pool stats — utilization, wait queue, active connections.
+
+**Response (200):**
+
+```json
+{
+  "name": "orders-db",
+  "total": 50,
+  "active": 38,
+  "idle": 12,
+  "wait_queue": 2,
+  "utilization_pct": 76
+}
+```
+
+---
+
+### GET /api/v1/pools/{name}/leaks
+
+List detected connection leaks.
+
+**Response (200):**
+
+```json
+{
+  "leaks": [
+    {
+      "conn_id": "conn-42",
+      "held_since": "2026-08-01T10:00:00Z",
+      "duration_s": 45,
+      "goroutine": "main.go:84",
+      "stack_trace": "goroutine 42 [running]:\nmain.handleOrder(...)"
+    }
+  ]
+}
+```
+
+---
+
+### POST /api/v1/pools/{name}/reclaim
+
+Force-reclaim all leaked connections.
+
+**Response (200):**
+
+```json
+{
+  "status": "reclaimed",
+  "reclaimed_count": 3
+}
+```
+
+---
+
+### GET /api/v1/pools/{name}/query-stats
+
+Per-query latency histograms.
+
+**Response (200):**
+
+```json
+{
+  "queries": [
+    {
+      "signature": "SELECT * FROM orders WHERE id = ?",
+      "p50_ms": 3,
+      "p75_ms": 8,
+      "p90_ms": 22,
+      "p99_ms": 45,
+      "count": 10234
+    }
+  ]
+}
+```
+
+---
+
+### GET /api/v1/pools/{name}/slow-queries
+
+Recent slow queries.
+
+**Response (200):**
+
+```json
+{
+  "queries": [
+    {
+      "query": "SELECT * FROM orders JOIN items ON ...",
+      "duration_ms": 340,
+      "timestamp": "2026-08-01T10:01:30Z",
+      "caller": "handlers.go:156"
+    }
+  ]
+}
+```
+
+---
+
+### GET /healthz
+
+Liveness probe.
+
+```json
+{"status":"UP","service":"pranor-pool","version":"1.0.0"}
+```
+
+---
+
+## Security
+
+### Standalone Mode
+
+In standalone mode, Pool provides unauthenticated connection pooling. DSN credentials are stored in memory only.
+
+### Ecosystem Mode (Full Auth Stack)
+
+When running within the Pranor ecosystem:
+
+1. **JWT Auth** — validates Bearer tokens for pool management API
+2. **Tenant Isolation** — pools scoped per tenant namespace
+3. **OTel Tracing** — every query generates a trace span
+4. **Credential Injection** — DSN passwords can be sourced from Pranor Secret
+
+### Connection Security
+
+- **TLS to database** — supports `sslmode=require` in PostgreSQL DSNs
+- **Credential rotation** — integrates with Pranor Secret for dynamic password rotation
+- **No credential exposure** — DSN passwords never exposed in API responses
+
+---
+
+## Observability
+
+### Prometheus Metrics
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `pranor_pool_connections_active` | Gauge | Currently checked-out connections |
+| `pranor_pool_connections_idle` | Gauge | Idle connections in pool |
+| `pranor_pool_wait_queue_depth` | Gauge | Callers waiting for a connection |
+| `pranor_pool_utilization_pct` | Gauge | Pool utilization percentage |
+| `pranor_pool_query_duration_ms` | Histogram | Query execution latency |
+| `pranor_pool_leaks_detected_total` | Counter | Connection leaks detected |
+| `pranor_pool_stmt_cache_hits_total` | Counter | Prepared statement cache hits |
+| `pranor_pool_slow_queries_total` | Counter | Slow queries logged |
+
+### OpenTelemetry Tracing
+
+Pool emits spans for:
+- `pool.checkout` — connection checkout with routing decision
+- `pool.query` — SQL query execution
+- `pool.leak.detect` — leak detection event
+- `pool.health.validate` — connection validation
+
+### Logging
+
+Structured JSON logs with fields: `level`, `timestamp`, `trace_id`, `pool`, `query_signature`, `duration_ms`, `connection_id`.
+
+---
+
+## Enterprise Edition
+
+| Feature | OSS | EE |
+|---------|:---:|:--:|
+| Connection pooling (PostgreSQL, MySQL, SQLite) | ✓ | ✓ |
+| Read/write split routing | ✓ | ✓ |
+| Replica weighting | ✓ | ✓ |
+| Pre-checkout validation | ✓ | ✓ |
+| Leak detection | ✓ | ✓ |
+| Query analytics | ✓ | ✓ |
+| Slow query logger | ✓ | ✓ |
+| Prepared statement cache | ✓ | ✓ |
+| Saturation alerting | ✓ | ✓ |
+| PostgreSQL pgvector accelerator | — | ✓ |
+| Multi-dialect federation (cross-DB routing) | — | ✓ |
+| AI query optimization advisor | — | ✓ |
+| Connection pool sharding | — | ✓ |
+
+---
+
+## Operational Runbook
+
+### Pool saturation (high utilization)
+
+1. Check `/api/v1/pools/{name}/stats` for utilization percentage
+2. Monitor `pranor_pool_wait_queue_depth` — if growing, pool is undersized
+3. Increase `max_connections` in pool configuration
+4. Check for connection leaks: `GET /api/v1/pools/{name}/leaks`
+5. Force reclaim leaks: `POST /api/v1/pools/{name}/reclaim`
+
+### Connection leaks accumulating
+
+1. Monitor `pranor_pool_leaks_detected_total` metric
+2. Review leak stack traces: `GET /api/v1/pools/{name}/leaks`
+3. Identify code paths that checkout but don't release connections
+4. Reduce `max_checkout_duration` to catch leaks sooner
+5. Ensure all `defer conn.Close()` patterns are correct in application code
+
+### Replica lag causing stale reads
+
+1. Check replica lag via database metrics
+2. Configure lag threshold in pool — lagging replicas auto-excluded
+3. Monitor how many queries fall back to primary due to lag
+4. Consider adding more replicas or optimizing replication
+
+### Slow queries increasing
+
+1. Review `/api/v1/pools/{name}/slow-queries` for patterns
+2. Check `pranor_pool_query_duration_ms` histogram for p99 growth
+3. Use query normalization to identify expensive query signatures
+4. Work with DBA to add indexes or optimize queries
+5. Consider prepared statement cache to reduce parse overhead

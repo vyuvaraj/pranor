@@ -12,6 +12,74 @@ Deploy as a **unified platform** using `pranor run`, or run any component **inde
 
 ---
 
+## System-Wide Ecosystem Architecture Topology
+
+```mermaid
+graph TD
+    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef ingress fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
+    classDef services fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
+    classDef storage fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef ops fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
+
+    subgraph ExternalIngress ["🌐 External Entrypoints & Tunnels"]
+        WebClient["Web Browser / Mobile App"] :::client
+        ExternalWebhook["Stripe / GitHub Webhook"] :::client
+        TunnelRelay["Pranor Tunnel Daemon<br/><i>(Local Dev Exposure)</i>"] :::client
+    end
+
+    subgraph SecurityIngress ["🛡️ Zero-Trust Ingress & Security Tier"]
+        Gate["Pranor Gate API Gateway<br/><i>(eBPF DDoS / WASM / AI Guard)</i>"] :::ingress
+        Auth["Pranor Auth Engine<br/><i>(OAuth2 / OIDC / WebAuthn / SPIFFE)</i>"] :::ingress
+        Secret["Pranor Secret Manager<br/><i>(AES-256-GCM / HSM)</i>"] :::ingress
+    end
+
+    subgraph MicroservicesTier ["⚡ Microservices Mesh & Orchestration"]
+        Mesh["Pranor Mesh Overlay<br/><i>(P2C Load Balancer & WireGuard)</i>"] :::services
+        Flow["Pranor Flow Orchestrator<br/><i>(Saga Workflows & DAG)</i>"] :::services
+        Chrono["Pranor Chrono Scheduler<br/><i>(Sub-ms TimeWheel Cron)</i>"] :::services
+        Deploy["Pranor Deploy Engine<br/><i>(Canary & Preview Envs)</i>"] :::services
+    end
+
+    subgraph EventAndStorageTier ["💾 State, Caching & Data Layer"]
+        Pulse["Pranor Pulse Event Broker<br/><i>(STOMP / Kafka / MQTT)</i>"] :::storage
+        Vault["Pranor Vault Object Store<br/><i>(S3 REST & HNSW Vector Engine)</i>"] :::storage
+        Cache["Pranor Cache Engine<br/><i>(SIMD Vector & Redis Grid)</i>"] :::storage
+        Pool["Pranor Pool DB Proxy<br/><i>(RDBMS Read/Write Split)</i>"] :::storage
+        Lock["Pranor Lock Engine<br/><i>(Fencing Token Leases)</i>"] :::storage
+    end
+
+    subgraph ObservabilityOps ["🔭 Central Observability & Control Plane"]
+        Console["Pranor Console UI & TUI<br/><i>(Live Telemetry & ⌘K Search)</i>"] :::ops
+        Trace["Pranor Trace Collector<br/><i>(OTLP Spans & eBPF Flamegraphs)</i>"] :::ops
+        Notify["Pranor Notify Gateway<br/><i>(Email / SMS / WebPush)</i>"] :::ops
+        Hub["Pranor Hub Registry<br/><i>(Package & WASM Registry)</i>"] :::ops
+    end
+
+    WebClient --> Gate
+    ExternalWebhook --> Gate
+    TunnelRelay --> Gate
+    Gate --> Auth
+    Auth --> Secret
+    Gate --> Mesh
+    Mesh --> Flow
+    Mesh --> Chrono
+    Flow --> Pulse
+    Pulse --> Vault
+    Flow --> Cache
+    Mesh --> Pool
+    Flow --> Lock
+    Gate -.-> Trace
+    Mesh -.-> Trace
+    Console -.-> Trace
+    Console -.-> Gate
+    Console -.-> Pulse
+    Console -.-> Vault
+    Deploy --> Hub
+```
+
+---
+
 ## Unified Platform vs. Standalone Tools
 
 | Mode | Deployment | Best For |

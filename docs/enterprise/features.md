@@ -4,96 +4,86 @@ Pranor EE extends the open-source single-binary platform with advanced security,
 
 ---
 
-## Detailed Enterprise Feature Comparison (By Module)
+## Detailed Enterprise & Open-Source Feature Comparison (By Module)
 
 ### 1. 🚪 Pranor Gate (API Gateway & Ingress Router)
 | Feature | Community OSS | Enterprise EE |
 | :--- | :---: | :---: |
-| **Ingress Proxy** | HTTP/1.1, HTTP/2, gRPC | ✅ Sub-millisecond edge proxy with header matching & path rewriting |
+| **Ingress Proxy & WASM Middleware** | ✅ Sub-millisecond HTTP/gRPC proxy & WASM hot-swap | ✅ Zero-downtime TLS hardware PCIe offloading |
 | **Kernel eBPF XDP DDoS Bypass** | ❌ | ✅ **100Gbps network packet filtering at Linux kernel level** |
-| **AI Cost Router & Prompt Firewall** | ❌ | ✅ **Semantic prompt inspection, PII redaction & LLM failover** |
-| **Hardware GPU/TPU Accelerator Offloader** | ❌ | ✅ **Direct PCIe bypass routing for high-throughput AI token streams** |
-| **AI Prompt Injection Guard** | ❌ | ✅ **Real-time prompt injection detection & poison pill sanitization** |
-| **Multi-Tenant Bandwidth Shaper** | ❌ | ✅ **Dynamic token-bucket shaping enforcing noisy-neighbor quotas** |
-| **Custom WASM Security Sandbox** | ❌ | ✅ **Strict memory-bound WASM runtime isolation against side-channels** |
-| **Global CRDT Rate-Limiting Grid** | ❌ | ✅ **Sub-millisecond global rate-limiting budget sync across edge** |
-| **1-Click Multi-Region DR Failover** | ❌ | ✅ **Active-passive region failover with automated DNS updates** |
+| **AI Agent (MCP) Traffic & Prompt Guard** | ✅ MCP JSON-RPC routing & token cost headers | ✅ **Semantic prompt firewall, PII redaction & injection guard** |
+| **Hardware Accelerator & Bandwidth Shaper** | ❌ | ✅ **Direct PCIe GPU/TPU offloader & noisy-neighbor bandwidth shaper** |
+| **Geo-IP Anycast & GraphQL Federation** | ❌ | ✅ **Real-time edge Anycast steering & GraphQL schema stitching** |
+| **CRDT Rate Limiting & DR Failover** | ❌ | ✅ **Global CRDT rate-limiting grid & 1-click active-passive DR** |
 
 ### 2. 🗄️ Pranor Vault (S3 Storage & Vector Search)
 | Feature | Community OSS | Enterprise EE |
 | :--- | :---: | :---: |
-| **AWS S3 API & HNSW Vector Search** | ✅ | ✅ AWS S3 SDK compatibility & HNSW vector search engine |
-| **AI Sovereign Vector Isolation** | ❌ | ✅ **Geofenced vector embedding index isolation for cross-border laws** |
-| **Zero-Knowledge Homomorphic Search** | ❌ | ✅ **Encrypted search operating over homomorphically encrypted data** |
-| **Automated GDPR Purge Worker** | ❌ | ✅ **Cryptographic zeroization of user records across WALs & vectors** |
-| **Dynamic Data Masking & PII Redaction** | ❌ | ✅ **Auto-detects SSNs/credit cards, replacing with deterministic masks** |
-| **Multi-Party Computation (MPC)** | ❌ | ✅ **Threshold secret key splitting across cloud providers** |
-| **WORM Retention Lock Manager** | ❌ | ✅ **SEC 17a-4 / HIPAA immutable retention windows & legal holds** |
+| **AWS S3 API & HNSW Vector Search** | ✅ Full S3 SDK compatibility & native HNSW vector search | ✅ Sovereign vector embedding index isolation |
+| **Zero-Knowledge Search & GDPR Purge** | ❌ | ✅ **Encrypted homomorphic search & automated GDPR zeroization** |
+| **Audit Trail & Geo-Replication** | ❌ | ✅ **Immutable access audit logs & active-active multi-region sync** |
+| **CoW Branching & Masking / MPC** | ❌ | ✅ **Instant bucket branching, dynamic PII masking & MPC secret split** |
+| **WORM Retention & Cold Tiering** | ❌ | ✅ **SEC 17a-4 retention lock manager & Glacier automated tiering** |
 
 ### 3. ⚡ Pranor Pulse (Async Event Broker & Queue)
 | Feature | Community OSS | Enterprise EE |
 | :--- | :---: | :---: |
-| **Multi-Protocol Engine** | Kafka, STOMP, MQTT | ✅ Unified multi-protocol message decoders & WASM transforms |
+| **Multi-Protocol Engine & DLQ Replay** | ✅ Kafka, STOMP, MQTT decoders & 1-click DLQ replay | ✅ Dedicated per-tenant partition memory pool sharding |
 | **Exactly-Once 2PC Transaction Coordinator** | ❌ | ✅ **Two-Phase Commit transaction manager enforcing atomic publish** |
-| **Active-Active Cross-Cloud MirrorMaker v2** | ❌ | ✅ **Event topic mirroring across AWS, GCP, Azure with poison-pill filter** |
-| **Hardware-Accelerated Zero-Copy WAL Encryption** | ❌ | ✅ **Hardware AES-NI zero-copy payload encryption to disk WAL** |
-| **Blind Broker End-to-End Encryption** | ❌ | ✅ **Zero-trust payload encryption where brokers hold no keys** |
-| **SIMD / AVX-512 Vectorized Event Filter** | ❌ | ✅ **Hardware SIMD-accelerated event filter engine at line rate** |
+| **MirrorMaker v2 & Hardware WAL** | ❌ | ✅ **Cross-cloud event topic mirroring & zero-copy WAL encryption** |
+| **Blind Broker Encryption & SIMD Filter** | ❌ | ✅ **End-to-end payload encryption & SIMD / AVX-512 event filter** |
+| **Rebalance Tuning & Schema Guard** | ❌ | ✅ **AI consumer rebalance auto-tuning & breaking-change guard** |
 
-### 4. 🔀 Pranor Flow, Deploy & Pool (Workflows, Fleet & DB)
+### 4. 🔀 Pranor Flow & Deploy (Workflows & Fleet Orchestration)
 | Feature | Community OSS | Enterprise EE |
 | :--- | :---: | :---: |
-| **Durable Saga Orchestrator** | ✅ | ✅ Stateful transaction coordinator with compensation rollbacks |
+| **Durable Saga Orchestrator** | ✅ Stateful transaction coordinator with compensation rollbacks | ✅ Visual workflow builder, step replay & Raft coordinator |
 | **Automated DR Chaos Simulation Suite** | ❌ | ✅ **In-situ chaos engineering testing cross-cloud failover SLAs** |
-| **Zero-Downtime Live Schema Migration** | ❌ | ✅ **Online DDL schema migration proxy with automatic rollback** |
-| **Multi-Region DB Replica Failover** | ❌ | ✅ **Automatic health checks promoting read replicas to primary DB** |
-| **AI FinOps Cloud Cost Guardrails** | ❌ | ✅ **Analyzes RAM/CPU usage, recommending spot instance scheduling** |
-| **Zero-Downtime Blue/Green Promotion** | ❌ | ✅ **Blue/green cluster switching with automated canary rollback** |
+| **AI FinOps & Blue/Green Promotion** | ❌ | ✅ **Cloud cost guardrails & zero-downtime blue/green cluster promotion** |
 
-### 5. 📡 Pranor Trace & Console (Observability & Control)
+### 5. 📡 Pranor Trace & Console (Observability & Governance)
 | Feature | Community OSS | Enterprise EE |
 | :--- | :---: | :---: |
-| **OTLP Tracing & SQL Workbench** | ✅ | ✅ Full OTel span collector, flamegraphs & SQL workbench |
-| **Autonomous AI Anomaly Auto-Tuner** | ❌ | ✅ **Self-learning anomaly baseline updating thresholds automatically** |
-| **SIEM Audit Log Streamer** | ❌ | ✅ **High-throughput streaming of audit trails to Splunk/Datadog** |
-| **Regulatory WORM Log Vault** | ❌ | ✅ **SEC Rule 17a-4 compliant WORM archive with legal holds** |
-| **Real-Time Compliance Inspector** | ❌ | ✅ **Continuous security posture audit with PDF report generation** |
-| **Dedicated VIP Emergency Support** | ❌ | ✅ **In-console emergency escalation routing to principal architects** |
-| **Automated Incident Postmortem Synthesizer** | ❌ | ✅ **Synthesizes trace flamegraphs & log lines into postmortems** |
+| **OTLP Tracing & SQL Workbench** | ✅ Full OTel span collector, flamegraphs & SQL workbench | ✅ Anomaly auto-remediation runbooks & tail trace sampling |
+| **AI Anomaly Auto-Tuner & SIEM Streamer** | ❌ | ✅ **Self-learning anomaly baseline & SIEM audit log streamer** |
+| **Regulatory WORM Log & Compliance** | ❌ | ✅ **SEC Rule 17a-4 WORM vault & real-time compliance inspector** |
+| **Incident Postmortem & VIP Support** | ❌ | ✅ **Automated postmortem synthesizer & 15-min emergency SLA support** |
 
-### 6. 🔐 Pranor Auth, Secret, Core & Hub (Security, Identity & Hub)
+### 6. 🔐 Pranor Auth, Secret, Core & Hub (Security & Identity)
 | Feature | Community OSS | Enterprise EE |
 | :--- | :---: | :---: |
-| **Confidential Computing Enclave Isolation** | ❌ | ✅ **Hardware memory isolation (AMD SEV / Intel SGX) for core code** |
-| **Multi-Cloud KMS Federation Sync** | ❌ | ✅ **Synchronizes keys across AWS KMS, Azure Key Vault & GCP KMS** |
-| **Enterprise SSO IdP Attribute Mapping** | ❌ | ✅ **Dynamic SAML/OIDC claim mapping creating workspace roles** |
-| **Air-Gapped Private Artifact Registry** | ❌ | ✅ **Self-hosted package registry & offline RSA-4096 licensing** |
-| **FIPS 140-3 Cryptographic Engine** | ❌ | ✅ **FIPS 140-3 Level 3 hardware cryptographic module integration** |
-| **Post-Quantum Hybrid Cryptography** | ❌ | ✅ **Post-quantum hybrid key exchange (X25519 + Kyber768)** |
-| **SPIFFE/SPIRE Identity Token Exchange** | ❌ | ✅ **Exchanges SAML/OAuth tokens for short-lived SVID certs** |
+| **IAM & KMS Envelope Encryption** | ✅ JWKS rotation, MFA, OAuth & KMS key rotation worker | ✅ Hardware HSM offloading & Vault Transit integration |
+| **Confidential Computing Enclave** | ❌ | ✅ **Hardware memory enclave (AMD SEV / Intel SGX) isolation** |
+| **Multi-Cloud KMS Federation Sync** | ❌ | ✅ **Key synchronization across AWS KMS, Azure Key Vault & GCP KMS** |
+| **Enterprise Identity & Passkey** | ❌ | ✅ **SCIM 2.0 provisioning, FIDO2/WebAuthn & IdP claim mapping** |
+| **FIPS 140-3 & Post-Quantum SPIFFE** | ❌ | ✅ **FIPS 140-3 Level 3 engine, Kyber768 PQC & SPIFFE token exchange** |
+| **Air-Gapped Private Artifact Registry** | ❌ | ✅ **Offline package registry & RSA-4096 license key verifier** |
 
-### 7. ⏰ Pranor Cache & Mesh (Infrastructure & Network)
+### 7. ⏰ Pranor Cache, Pool, Chrono, Tunnel & Mesh (Infrastructure)
 | Feature | Community OSS | Enterprise EE |
 | :--- | :---: | :---: |
-| **Sub-Millisecond Vector Cache Accelerator** | ❌ | ✅ **SIMD HNSW vector caching delivering sub-50µs similarity lookups** |
-| **Zero-Trust Microsegmentation Engine** | ❌ | ✅ **Fine-grained L7 application network policy microsegmentation** |
-| **Multi-Tenant Memory Pool Isolation** | ❌ | ✅ **Dedicated per-tenant memory quotas & hardware cache isolation** |
-| **Byzantine Fault Tolerant (BFT) Raft** | ❌ | ✅ **Tamper-resistant BFT Raft consensus for zero-trust clusters** |
+| **Raft KV Cache & Developer Tunnel** | ✅ Distributed in-memory cache & multiplexed local tunnel | ✅ Sub-millisecond SIMD vector cache & zero-trust private relay |
+| **Zero-Downtime DB Schema Migration** | ❌ | ✅ **Online DDL schema migration proxy & replica failover coordinator** |
+| **Smart Cron & Fencing Tokens** | ✅ Mono-lock distributed cron execution with fencing tokens | ✅ AI off-peak cron window optimizer & multi-region fencing |
+| **Zero-Trust Mesh & Microsegmentation** | ✅ Library-level sidecarless mTLS mesh & auto-discovery | ✅ Hardware TPM attestation, cross-VPC peering & L7 microsegmentation |
 
 ---
 
-## Commercial Licensing & Build Tags
+## Complete Interactive Features Matrix & Licensing
+
+For the full interactive table listing **all 137+ Community OSS and Enterprise EE capabilities** with search filtering:
+- **Interactive Web Matrix**: [`https://vyuvaraj.github.io/pranor-platform/features.html`](https://vyuvaraj.github.io/pranor-platform/features.html)
 
 Enterprise features compile cleanly behind `//go:build enterprise` build tags into the standard single binary:
 
 ```bash
-# Compile binary with all 76 Enterprise Edition capabilities enabled
+# Compile single binary with all Enterprise Edition capabilities enabled
 go build -tags enterprise -o pranord ./cmd/pranord
 ```
 
 For commercial licensing inquiries, pilot programs, or dedicated support contracts:
 - **Enterprise Repository**: [`github.com/vyuvaraj/pranor-ee`](https://github.com/vyuvaraj/pranor-ee) (Private)
-- **Interactive Feature Matrix**: [`https://vyuvaraj.github.io/pranor-platform/features.html`](https://vyuvaraj.github.io/pranor-platform/features.html)
+- **Open-Source Repository**: [`github.com/vyuvaraj/pranor`](https://github.com/vyuvaraj/pranor)
 
 ---
 

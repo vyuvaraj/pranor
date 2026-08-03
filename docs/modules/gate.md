@@ -65,48 +65,42 @@ Pranor Gate can run as:
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                          Pranor Gate                                 │
-│                                                                     │
-│  ┌──────────────┐  ┌──────────────┐  ┌───────────────┐            │
-│  │  HTTP/HTTPS  │  │  WebSocket   │  │  SSE Stream   │            │
-│  │  Listener    │  │  Upgrader    │  │  Passthrough  │            │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬────────┘            │
-│         └─────────────────┼──────────────────┘                     │
-│                           ▼                                         │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                   Middleware Chain                           │   │
-│  │  OTel → RateLimit → CORS → MaxBody → Auth → Tenant         │   │
-│  └─────────────────────────────────────────────────────────────┘   │
-│                           ▼                                         │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                    Route Matcher                             │   │
-│  │  • Prefix-based matching                                    │   │
-│  │  • IP allowlist/blocklist                                   │   │
-│  │  • Multi-tenant API key validation                          │   │
-│  │  • Schema registry validation                               │   │
-│  └─────────────────────────────────────────────────────────────┘   │
-│                           ▼                                         │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────────┐   │
-│  │  WASM    │  │  AI      │  │  Circuit  │  │  Canary/         │   │
-│  │  Plugin  │  │  Guard   │  │  Breaker  │  │  Blue-Green      │   │
-│  │  Engine  │  │  Engine  │  │           │  │  Router          │   │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────────────┘   │
-│                           ▼                                         │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │              Reverse Proxy (httputil.ReverseProxy)           │   │
-│  │  • Retrying transport (3 attempts, exponential backoff)     │   │
-│  │  • mTLS per-route client certificates                       │   │
-│  │  • Response caching / Semantic caching                      │   │
-│  │  • Backpressure queue                                       │   │
-│  └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌─────────────┐  │
-│  │  Metrics   │  │  Access    │  │  AI Token  │  │  Config     │  │
-│  │  Tracker   │  │  Logger    │  │  Billing   │  │  Provider   │  │
-│  └────────────┘  └────────────┘  └────────────┘  └─────────────┘  │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    classDef ingress fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef security fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
+    classDef proxy fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
+    classDef backend fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
+
+    subgraph Edge ["🌐 Global Ingress Layer"]
+        DNS["Geo-IP Anycast DNS"] :::ingress
+        XDP["eBPF XDP Packet Filter<br/><i>(100Gbps DDoS Drop)</i>"] :::ingress
+    end
+
+    subgraph Security ["🛡️ Zero-Trust Security & WASM Engine"]
+        TLS["PCIe Hardware TLS Offload"] :::security
+        WASM["WASM Security Sandbox<br/><i>(Side-Channel Safe)</i>"] :::security
+        PromptGuard["AI Prompt Injection Guard<br/><i>(Semantic Vector Filter)</i>"] :::security
+    end
+
+    subgraph Core ["⚡ Proxy Router & Rate Limiter"]
+        CRDT["Global CRDT Rate Limiter<br/><i>(Sub-ms Gossip Sync)</i>"] :::proxy
+        Router["Dynamic Reverse Proxy<br/><i>(Canary / Blue-Green)</i>"] :::proxy
+    end
+
+    subgraph Upstream ["☁️ Upstream Microservices"]
+        AIModel["LLM / Model Service"] :::backend
+        Microservice["gRPC / REST Microservice"] :::backend
+    end
+
+    DNS --> XDP
+    XDP --> TLS
+    TLS --> WASM
+    WASM --> PromptGuard
+    PromptGuard --> CRDT
+    CRDT --> Router
+    Router -->|mTLS Stream| AIModel
+    Router -->|mTLS Stream| Microservice
 ```
 
 ### Request Processing Sequence & WASM Execution Flow

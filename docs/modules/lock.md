@@ -55,39 +55,48 @@ Pranor Lock can run as:
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Pranor Lock                           │
-│                                                         │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
-│  │  HTTP API    │  │  Auth Layer  │  │  SSE Stream   │  │
-│  │  (REST)      │  │  (API Key /  │  │  (Pub/Sub)    │  │
-│  │              │  │   mTLS/JWT)  │  │              │  │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  │
-│         └─────────────────┼──────────────────┘          │
-│                           ▼                             │
-│  ┌────────────────────────────────────────────────────┐ │
-│  │              Lock Engine                            │ │
-│  │  • Acquire / Release / Renew                       │ │
-│  │  • Reentrancy tracking                             │ │
-│  │  • Shared/Exclusive mode resolution                │ │
-│  │  • Priority queue management                       │ │
-│  │  • Deadlock cycle detection                        │ │
-│  │  • Fencing token generation                        │ │
-│  └────────────────────────┬───────────────────────────┘ │
-│                           ▼                             │
-│  ┌────────────────────────────────────────────────────┐ │
-│  │           Storage Backend                          │ │
-│  │  • InMemoryStore (default)                         │ │
-│  │  • FileLockStore (file-persisted)                  │ │
-│  │  • Raft Consensus (EE)                             │ │
-│  └────────────────────────────────────────────────────┘ │
-│                                                         │
-│  ┌─────────────┐  ┌─────────────┐  ┌────────────────┐  │
-│  │ TTL Cleaner │  │  Heartbeat  │  │  Metrics       │  │
-│  │ (500ms tick)│  │  Monitor    │  │  Exporter      │  │
-│  └─────────────┘  └─────────────┘  └────────────────┘  │
-└─────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
+    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
+    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
+
+    subgraph API ["🌐 Access & Stream Interface"]
+        REST["HTTP REST API<br/><i>(Acquire / Release / Renew)</i>"] :::client
+        Auth["Auth & Security Layer<br/><i>(mTLS / JWT / API Key)</i>"] :::client
+        SSE["SSE Pub/Sub Stream<br/><i>(Real-Time Lock Events)</i>"] :::client
+    end
+
+    subgraph Core ["⚡ Core Distributed Lock Engine"]
+        Reentrant["Reentrancy & Lease Engine<br/><i>(Exclusive & Shared Modes)</i>"] :::engine
+        Fencing["Monotonic Fencing Token Generator"] :::engine
+        Deadlock["Deadlock Cycle Detector<br/><i>(Wait-For Graph Evaluator)</i>"] :::engine
+        Priority["Priority Wait Queue Manager"] :::engine
+    end
+
+    subgraph Backend ["💾 Persisted Lock Store"]
+        MemStore["In-Memory Lock Store<br/><i>(Zero-Allocation)</i>"] :::storage
+        FileStore["File-Backed Lease Store"] :::storage
+        RaftStore["Raft Consensus Engine<br/><i>(Enterprise EE)</i>"] :::storage
+    end
+
+    subgraph Background ["⏱️ Background Monitors"]
+        TTLCleaner["TTL Lease Evictor<br/><i>(500ms Sweep)</i>"] :::monitor
+        Heartbeat["Client Heartbeat Monitor"] :::monitor
+    end
+
+    REST --> Auth
+    Auth --> Reentrant
+    Reentrant --> Fencing
+    Fencing --> Deadlock
+    Deadlock --> Priority
+    Priority --> MemStore
+    Priority --> FileStore
+    Priority --> RaftStore
+    TTLCleaner -.-> MemStore
+    Heartbeat -.-> Reentrant
+    Reentrant --> SSE
 ```
 
 ### Lease Acquisition & Fencing Token Sequence Flow

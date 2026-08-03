@@ -77,34 +77,71 @@ docker run -p 8086:8086 ghcr.io/vyuvaraj/pranor-auth:latest
 
 ## Architecture
 
+```mermaid
+graph TD
+    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
+    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
+    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
+
+    subgraph Clients ["🌐 Auth Ceremony Clients"]
+        PasskeyClient["WebAuthn FIDO2 Passkey"] :::client
+        MFAClient["TOTP / SMS / Email OTP"] :::client
+        OIDCClient["OAuth2 / OIDC Client (PKCE)"] :::client
+    end
+
+    subgraph Core ["⚡ Core Identity Engine"]
+        SessionMgr["Session Manager & Rotation Engine"] :::engine
+        AdaptiveMFA["Adaptive Risk-Based Step-Up MFA<br/><i>(Enterprise EE)</i>"] :::engine
+        JWTProvider["JWT / OIDC Issuer (RS256 / JWKS)"] :::engine
+        RBACEngine["Granular RBAC / ABAC Policy Engine"] :::engine
+        SPIFFEExchange["SPIFFE/SPIRE SVID Token Exchanger<br/><i>(Enterprise EE)</i>"] :::engine
+    end
+
+    subgraph IdentityStores ["💾 Enterprise Identity Provider Federation"]
+        FederatedIdP["IdP Mapper (Okta / Azure AD SAML)"] :::storage
+        UserStore["User Credential Store"] :::storage
+    end
+
+    PasskeyClient --> SessionMgr
+    MFAClient --> AdaptiveMFA
+    OIDCClient --> JWTProvider
+    SessionMgr --> UserStore
+    AdaptiveMFA --> UserStore
+    JWTProvider --> RBACEngine
+    FederatedIdP --> SPIFFEExchange
 ```
-Client (Browser/App)
-    │
-    ├── Passkey Auth (WebAuthn ceremony)
-    ├── MFA Challenge (TOTP / SMS / Email)
-    ├── OAuth2 Authorization Code (PKCE)
-    │
-    ▼
-┌──────────────────────────────────────────────┐
-│                  Pranor Auth                     │
-│                                              │
-│  ┌───────────────┐  ┌──────────────────────┐ │
-│  │  WebAuthn     │  │  Session Manager     │ │
-│  │  FIDO2 Engine │  │  (rotate + track)    │ │
-│  └───────────────┘  └──────────────────────┘ │
-│                                              │
-│  ┌───────────────┐  ┌──────────────────────┐ │
-│  │  MFA Engine   │  │  JWT / OIDC Provider │ │
-│  │  TOTP/SMS/OTP │  │  RS256 + JWKS        │ │
-│  └───────────────┘  └──────────────────────┘ │
-│                                              │
-│  ┌───────────────────────────────────────┐   │
-│  │  RBAC Engine (roles + permissions)    │   │
-│  └───────────────────────────────────────┘   │
-└──────────────────────────────────────────────┘
-    │
-    └── Pranor Gate (enforces JWT + RBAC per route)
+
+### Workload Identity Exchange & Authentication Sequence Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant App as Client / Service Workload
+    participant Gate as Pranor Gate Ingress
+    participant Auth as Pranor Auth Engine
+    participant IdP as Okta / Azure AD (SAML)
+    participant SPIFFE as SPIFFE/SPIRE Issuer
+
+    App->>Auth: POST /api/v1/auth/login (Passkey / OAuth2 PKCE)
+    Auth->>IdP: Federated Identity Claim Exchange (SAML 2.0)
+    IdP-->>Auth: SAML Assertion (User Roles & Group Claims)
+    Auth->>SPIFFE: Issue Short-Lived x509 SVID Certificate
+    SPIFFE-->>Auth: Signed SVID Workload Identity
+    Auth-->>App: RS256 Signed JWT + SPIFFE SVID Certificate
+    App->>Gate: Access API (JWT Header + SVID mTLS)
+    Gate->>Auth: Introspect Token & Verify RBAC Claims
+    Auth-->>Gate: Token Validated & Permissions Granted
 ```
+
+### Ecosystem Cross-Module Integration
+
+Pranor Auth establishes zero-trust identity across all platform components:
+
+- **Pranor Gate**: Enforces route-level JWT signature checks, SAML attribute mapping, and SPIFFE/SPIRE workload authentication.
+- **Pranor Secret**: Uses authenticated user identities to authorize access to encrypted vault keys and environment secret maps.
+- **Pranor Notify**: Triggers multi-factor authentication (MFA) Email/SMS one-time passcodes during step-up login ceremonies.
+- **Pranor Console**: Managed via Auth RBAC roles, granting workspace administrators granular cluster control plane privileges.
 
 ---
 

@@ -49,33 +49,70 @@ docker run -p 8090:8090 ghcr.io/vyuvaraj/pranor-trace:latest
 
 ## Architecture
 
+```mermaid
+graph TD
+    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
+    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
+    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
+
+    subgraph Ingestion ["🌐 Telemetry Ingestion Layer"]
+        OTLP["OTLP / gRPC / HTTP Collector<br/><i>(:4317 / :4318)</i>"] :::client
+        eBPFProf["Kernel eBPF Continuous Profiler"] :::client
+    end
+
+    subgraph Processing ["⚡ Span Reassembly & AI Engine"]
+        Reassembly["Span Grouping & Trace ID Linker"] :::engine
+        CriticalPath["Critical Path Evaluator"] :::engine
+        AIAutoTune["Autonomous AI Anomaly Auto-Tuner<br/><i>(Enterprise EE)</i>"] :::engine
+        SLOEngine["SLO Burn Rate Alerting Engine"] :::engine
+    end
+
+    subgraph Storage ["💾 In-Memory & SIEM Storage"]
+        MemStore["In-Memory Evicting Trace Store"] :::storage
+        SIEMStreamer["Encrypted SIEM Streamer<br/><i>(Splunk / Datadog EE)</i>"] :::storage
+    end
+
+    OTLP --> Reassembly
+    eBPFProf --> Reassembly
+    Reassembly --> CriticalPath
+    CriticalPath --> AIAutoTune
+    AIAutoTune --> SLOEngine
+    SLOEngine --> MemStore
+    MemStore -.-> SIEMStreamer
 ```
-OTLP SDK (Go/Python/JS/...)
-     │ POST /v1/traces
-     ▼
-┌──────────────────────────────────────────┐
-│               Pranor Trace                   │
-│                                          │
-│  ┌────────────────────────────────────┐  │
-│  │   Span Ingestion & Reassembly      │  │
-│  │   (Group by TraceID, Link parents) │  │
-│  └─────────────┬──────────────────────┘  │
-│                │                         │
-│  ┌─────────────▼──────────────────────┐  │
-│  │  In-Memory Trace Store (evicting)  │  │
-│  └─────────────┬──────────────────────┘  │
-│                │                         │
-│  ┌─────────────▼──────────────────────┐  │
-│  │  Query Engine                      │  │
-│  │  Waterfall │ Critical Path │ Deps  │  │
-│  └────────────────────────────────────┘  │
-│                                          │
-│  ┌─────────────────────┐  ┌───────────┐  │
-│  │  eBPF Flamegraph    │  │  SLO Burn │  │
-│  │  Profiler + Correlat│  │  Rate Eng.│  │
-│  └─────────────────────┘  └───────────┘  │
-└──────────────────────────────────────────┘
+
+### Telemetry Processing & Flamegraph Correlation Sequence Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant SDK as Microservice OTLP SDK
+    participant Trace as Pranor Trace Collector
+    participant eBPF as Kernel eBPF Profiler
+    participant AI as AI Anomaly Engine
+    participant Console as Pranor Console UI
+
+    SDK->>Trace: POST /v1/traces (Span Tree + TraceID: 0x9918)
+    eBPF->>Trace: Push Kernel CPU Stack Samples
+    Trace->>Trace: Group Spans by TraceID & Link Parent-Child Tree
+    Trace->>AI: Evaluate Span Latency against Baseline
+    alt Latency Anomaly Detected
+        AI-->>Trace: Raise Burn Rate Alert & Identify Root-Cause Span
+        Trace->>Console: Stream Correlated Flamegraph + Log Evidence
+    else Standard Trace
+        Trace-->>Console: Update Live Waterfall Graph & Dependency Map
+    end
 ```
+
+### Ecosystem Cross-Module Integration
+
+Pranor Trace serves as the central telemetry and observability hub across the Pranor ecosystem:
+
+- **Pranor Gate**: Ingests W3C `traceparent` headers, attributing gateway latency and AI prompt token costs to backend trace spans.
+- **Pranor Flow**: Captures individual workflow step execution spans, linking saga compensation steps to root trace IDs.
+- **Pranor Console**: Renders live interactive CPU flamegraphs, distributed service dependency graphs, and SLO burn rate dashboards.
+- **Pranor Notify**: Triggers incident notifications to PagerDuty or Slack when SLO burn rates exceed fast/slow window thresholds.
 
 ---
 

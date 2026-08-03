@@ -18,7 +18,77 @@ Pranor Cache is the distributed, high-performance caching service for the Pranor
 
 ---
 
-## API Endpoints
+## Architecture
+
+```mermaid
+graph TD
+    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
+    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
+    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
+
+    subgraph Interface ["🌐 Cache Access Protocol"]
+        API["REST Cache Engine API<br/><i>(:8084 / :8088)</i>"] :::client
+        RedisProto["Redis Wire Protocol Adapter"] :::client
+    end
+
+    subgraph Core ["⚡ Core Cache Engine"]
+        MemGrid["Thread-Safe In-Memory Data Grid"] :::engine
+        SIMDVector["SIMD AVX-512 Vector Similarity Cache<br/><i>(Enterprise EE)</i>"] :::engine
+        BloomFilter["Probabilistic Bloom Filter Guard"] :::engine
+        MultiTenantPool["Multi-Tenant Isolation Memory Pool<br/><i>(Enterprise EE)</i>"] :::engine
+    end
+
+    subgraph Persistence ["💾 Pluggable Backends & DB Sync"]
+        RedisCluster["Redis / Valkey Cluster"] :::storage
+        ReadThrough["Read-Through & Write-Behind DB Sync"] :::storage
+        ActiveMirror["Active-Active Multi-Cluster Sync<br/><i>(Enterprise EE)</i>"] :::storage
+    end
+
+    API --> MemGrid
+    RedisProto --> MemGrid
+    MemGrid --> SIMDVector
+    SIMDVector --> BloomFilter
+    BloomFilter --> MultiTenantPool
+    MultiTenantPool --> RedisCluster
+    MultiTenantPool --> ReadThrough
+    MultiTenantPool -.-> ActiveMirror
+```
+
+### Read-Through & SIMD Vector Cache Sequence Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant App as Microservice / LLM Client
+    participant Cache as Pranor Cache Engine
+    participant SIMD as SIMD AVX-512 Vector Engine
+    participant DB as Backend Database / S3 Store
+
+    App->>Cache: GET /api/cache/prompt-embedding (Cosine Distance < 0.05)
+    Cache->>SIMD: Search In-Memory Vector Cache via SIMD AVX-512
+    alt Cache Hit (Vector Distance Match)
+        SIMD-->>Cache: Cached LLM Response Payload
+        Cache-->>App: 200 OK (Instant Cache Hit <50µs)
+    else Cache Miss
+        SIMD-->>Cache: Cache Miss / Entry Expired
+        Cache->>DB: Read-Through Fetch from Backend Storage
+        DB-->>Cache: Fresh Payload Data
+        Cache->>Cache: Asynchronously Populate Cache Entry & Update Bloom Filter
+        Cache-->>App: 200 OK (Read-Through Response)
+    end
+```
+
+### Ecosystem Cross-Module Integration
+
+Pranor Cache provides sub-millisecond data acceleration across all platform components:
+
+- **Pranor Gate**: Accelerates semantic prompt caching and API response caching for high-frequency ingress routes.
+- **Pranor Vault**: Caches HNSW vector graph nodes and S3 object metadata in memory for sub-5ms query performance.
+- **Pranor Auth**: Stores active user session tokens, OAuth2 authorization grants, and rate-limiting counters.
+- **Pranor Trace**: Exports cache hit/miss ratio metrics, memory pool allocations, and latency exemplars via OpenTelemetry.
+
+---
 
 ### 1. Health Checks
 - `GET /health` - Health probe showing cache readiness and connection status.

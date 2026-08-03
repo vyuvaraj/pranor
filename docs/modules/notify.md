@@ -63,16 +63,73 @@ docker run -p 8091:8091 ghcr.io/vyuvaraj/pranor-notify:latest
 
 ## Architecture
 
-```
-Outbound Flow:
-API Request → Template Render → Deliverability Check → SMTP Relay → Recipient
+```mermaid
+graph TD
+    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
+    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
+    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
 
-Inbound Flow:
-Inbound SMTP → DMARC/SPF/DKIM Check → Webhook Router → Your HTTP Endpoint
+    subgraph ChannelAdapters ["🌐 Multi-Channel Notification Ingress"]
+        EmailAPI["Transactional Email API<br/><i>(POST /api/v1/send)</i>"] :::client
+        PushAPI["WebPush & APNs Provider"] :::client
+        SMSAPI["Twilio & Multi-Carrier SMS Gateway"] :::client
+    end
 
-Event Callbacks:
-Bounce/Complaint Events → Suppression List + Webhook → Pranor Console Analytics
+    subgraph DispatchEngine ["⚡ Template & Deliverability Engine"]
+        TemplateEngine["HTML / DSL Template Rendering Engine"] :::engine
+        DMARCVal["DMARC / SPF / DKIM Inspector & Alignment"] :::engine
+        SuppressionList["Automatic Bounce & Suppression Filter"] :::engine
+        AIOptimizer["AI Deliverability & Send-Time Optimizer<br/><i>(Enterprise EE)</i>"] :::engine
+    end
+
+    subgraph Relays ["💾 Provider Relays & Analytics"]
+        SMTPRelay["Outbound SMTP Relay Pool"] :::storage
+        WebhookRouter["Inbound Webhook & RFC 8058 Unsubscribe Router"] :::storage
+    end
+
+    EmailAPI --> TemplateEngine
+    PushAPI --> TemplateEngine
+    SMSAPI --> TemplateEngine
+    TemplateEngine --> DMARCVal
+    DMARCVal --> SuppressionList
+    SuppressionList --> AIOptimizer
+    AIOptimizer --> SMTPRelay
+    SMTPRelay --> WebhookRouter
 ```
+
+### Notification Dispatch & Bounce Suppression Sequence Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant App as Application Microservice
+    participant Notify as Pranor Notify Engine
+    participant Suppression as Suppression List
+    participant Template as DSL Template Renderer
+    participant Gateway as SMTP / SMS / Push Gateway
+    participant Analytics as Pranor Console Analytics
+
+    App->>Notify: POST /api/v1/send/template (Template: "welcome-email", User Email)
+    Notify->>Suppression: Check Address against Hard-Bounce Suppression List
+    Suppression-->>Notify: Clean Record (Not Suppressed)
+    Notify->>Template: Inject Payload Variables into DSL Template
+    Template-->>Notify: Rendered HTML Body + List-Unsubscribe-Post Header
+    Notify->>Gateway: Relay Encrypted Payload via Outbound SMTP / Push Gateway
+    Gateway-->>Notify: Delivery Acknowledgment (Message ID: msg-7718)
+    Notify->>Analytics: Push Delivery Telemetry & Open/Click Trackers
+```
+
+### Ecosystem Cross-Module Integration
+
+Pranor Notify delivers multi-channel communications across the Pranor platform:
+
+- **Pranor Auth**: Sends one-time password (OTP) codes for multi-factor authentication (MFA) step-up login challenges.
+- **Pranor Trace**: Annotates notification dispatch events with OpenTelemetry traces, recording deliverability latency flamegraphs.
+- **Pranor Flow**: Triggers customer communication steps in saga workflows (e.g., order confirmation emails, shipment SMS alerts).
+- **Pranor Console**: Renders live deliverability analytics, bounce rate histograms, and template editor UI.
+
+---
 
 ---
 

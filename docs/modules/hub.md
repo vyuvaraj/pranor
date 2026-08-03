@@ -13,7 +13,74 @@ Pranor Hub is the lightweight, S3-backed community package hub and registry serv
 - **Token Authorization**: Supports JWT signature verification to protect package publication.
 - **Ecosystem Landing Dashboard**: Built-in web dashboard displaying active packages, sizes, and versions.
 
-## API Endpoints
+## Architecture
+
+```mermaid
+graph TD
+    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
+    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
+    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
+
+    subgraph PackageClients ["🌐 CLI & Package Registry API"]
+        CLI["pranor-cli Package Manager"] :::client
+        PublishAPI["REST Package Publishing API<br/><i>(POST /publish)</i>"] :::client
+        RegistryDash["Package Registry Landing UI"] :::client
+    end
+
+    subgraph RegistryCore ["⚡ Package Resolver & Security Engine"]
+        ManifestParser["pranor.toml Manifest Inspector"] :::engine
+        DepResolver["Dependency Graph Resolver Engine"] :::engine
+        CosignVerifier["Cosign / Sigstore Supply-Chain Verification<br/><i>(Enterprise EE)</i>"] :::engine
+        JWTAuth["JWT Signature & Publisher Verifier"] :::engine
+    end
+
+    subgraph StorageLayer ["💾 S3 & Vault Package Store"]
+        VaultStore["Pranor Vault S3 Bucket Tarball Storage"] :::storage
+        ColdArchive["Air-Gapped Private Package Mirror<br/><i>(Enterprise EE)</i>"] :::storage
+    end
+
+    CLI --> ManifestParser
+    PublishAPI --> ManifestParser
+    RegistryDash --> ManifestParser
+    ManifestParser --> DepResolver
+    DepResolver --> CosignVerifier
+    CosignVerifier --> JWTAuth
+    JWTAuth --> VaultStore
+    VaultStore -.-> ColdArchive
+```
+
+### Package Publish & Dependency Resolution Sequence Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Developer as Module Developer
+    participant Hub as Pranor Hub Registry
+    participant Auth as Pranor Auth / Cosign
+    participant Resolver as Dependency Tree Resolver
+    participant Vault as Pranor Vault S3
+
+    Developer->>Hub: POST /publish (Package Tarball + pranor.toml)
+    Hub->>Auth: Verify JWT Token & Cosign Supply-Chain Signature
+    Auth-->>Hub: Publisher Identity & Cryptographic Proof Verified
+    Hub->>Resolver: Parse Manifest Dependencies & Resolve DAG Tree
+    Resolver-->>Hub: Dependency Graph Validated (No Conflicts)
+    Hub->>Vault: Store Package Tarball (packages/foo-1.2.0.tar.gz)
+    Vault-->>Hub: S3 Blob Persisted
+    Hub-->>Developer: Package Published Successfully
+```
+
+### Ecosystem Cross-Module Integration
+
+Pranor Hub acts as the official artifact and WebAssembly module registry for the Pranor platform:
+
+- **Pranor Deploy**: Pulls signed WebAssembly security modules, OCI container images, and deployment manifests during canary rollouts.
+- **Pranor Gate**: Downloads compiled WASM dynamic policy plugins published to Hub repositories.
+- **Pranor Vault**: Serves as the high-availability S3 storage backend for all published package tarballs and signatures.
+- **Pranor Auth**: Enforces RBAC permissions for organization-scoped package publishing and team access control.
+
+---
 
 ### 1. Health Checks
 - `GET /healthz` - Health probe.

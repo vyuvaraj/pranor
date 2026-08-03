@@ -62,37 +62,71 @@ docker run -p 8094:8094 ghcr.io/vyuvaraj/pranor-pool:latest
 
 ## Architecture
 
+```mermaid
+graph TD
+    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
+    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
+    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
+
+    subgraph AppCallers ["🌐 Microservice Connection Request"]
+        App["Application Microservice Caller"] :::client
+        PoolClient["Pranor Pool Go/Python/Java Client"] :::client
+    end
+
+    subgraph PoolCore ["⚡ Core Connection Routing & Health Engine"]
+        RWRouter["Read/Write Query Router<br/><i>(SELECT → Replica | DML → Primary)</i>"] :::engine
+        HealthCheck["Pre-Checkout Validation Engine<br/><i>(Ping & Active Connection Evictor)</i>"] :::engine
+        LeakDetector["Connection Leak & Goroutine Stack Tracker"] :::engine
+        StmtCache["Per-Connection Prepared Statement Cache"] :::engine
+        VectorOffload["PostgreSQL pgvector Accelerator<br/><i>(Enterprise EE)</i>"] :::engine
+    end
+
+    subgraph DBClusters ["💾 Heterogeneous Relational DB Tier"]
+        PrimaryDB["Primary RDBMS<br/><i>(PostgreSQL / MySQL Writes)</i>"] :::storage
+        ReplicaPool["Weighted Replica Pool<br/><i>(70% Replica-1 / 30% Replica-2 Reads)</i>"] :::storage
+    end
+
+    App --> PoolClient
+    PoolClient --> RWRouter
+    RWRouter --> HealthCheck
+    HealthCheck --> LeakDetector
+    LeakDetector --> StmtCache
+    StmtCache --> VectorOffload
+    VectorOffload --> PrimaryDB
+    VectorOffload --> ReplicaPool
 ```
-Application Caller
-      │ checkout connection
-      ▼
-┌──────────────────────────────────────────────────┐
-│                   Pranor Pool                        │
-│                                                  │
-│  ┌─────────────────────────────────────────────┐ │
-│  │  Read/Write Router                          │ │
-│  │  SELECT → Replica Pool   │ DML → Primary    │ │
-│  └──────────┬──────────────────────────────────┘ │
-│             │                                    │
-│  ┌──────────▼─────────────────────────────────┐  │
-│  │  Pre-checkout Health Validator              │  │
-│  │  Ping + Validation Query → evict if fail   │  │
-│  └──────────┬─────────────────────────────────┘  │
-│             │                                    │
-│  ┌──────────▼─────────────────────────────────┐  │
-│  │  Leak Detector + Goroutine Tracker          │  │
-│  └─────────────────────────────────────────────┘  │
-│                                                  │
-│  ┌───────────────────┐  ┌──────────────────────┐ │
-│  │ Query Analytics   │  │ Prepared Stmt Cache  │ │
-│  │ (p99 histograms)  │  │ (per-connection)      │ │
-│  └───────────────────┘  └──────────────────────┘ │
-└──────────────────────────────────────────────────┘
-      │
-      ├── Primary DB (writes)
-      ├── Replica-1 DB (reads, weight: 70%)
-      └── Replica-2 DB (reads, weight: 30%)
+
+### Connection Checkout, Read/Write Split & Leak Detection Sequence Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant App as Application Microservice
+    participant Pool as Pranor Pool Manager
+    participant Leak as Goroutine Leak Tracker
+    participant Stmt as Prepared Statement Cache
+    participant DB as Target RDBMS (Primary / Replica)
+
+    App->>Pool: Checkout Connection (Query: "SELECT * FROM users WHERE id = $1")
+    Pool->>Pool: Inspect SQL Query Type (Read Query -> Route to Replica Pool)
+    Pool->>Leak: Register Goroutine Stack & Start 30s Max-Hold Timer
+    Pool->>Stmt: Lookup Cached Prepared Statement ("stmt_users_by_id")
+    Stmt-->>Pool: Prepared Statement Handle Ready
+    Pool->>DB: Execute Query on Replica DB Instance
+    DB-->>Pool: Query Result Set Returned (p99 latency: 1.2ms)
+    Pool->>Leak: Cancel Max-Hold Leak Timer & Return Connection to Pool
+    Pool-->>App: Connection Released & Stats Updated
 ```
+
+### Ecosystem Cross-Module Integration
+
+Pranor Pool provides intelligent database proxying across the Pranor ecosystem:
+
+- **Pranor Lock**: Coordinates zero-downtime online DDL schema migrations, holding exclusive fencing token leases during migrations.
+- **Pranor Trace**: Annotates SQL queries with OpenTelemetry spans, recording query normalization histograms and slow query stack traces.
+- **Pranor Vault**: Connects seamlessly to PostgreSQL `pgvector` instances, managing connection pools for S3 vector metadata storage.
+- **Pranor Console**: Displays real-time database connection saturation heatmaps, active wait-queue depth, and 1-click connection leak reclaims.
 
 ---
 

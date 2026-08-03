@@ -73,27 +73,77 @@ docker run -p 8083:8083 ghcr.io/vyuvaraj/pranor-console:latest
 
 ## Architecture
 
+```mermaid
+graph TD
+    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
+    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
+    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
+
+    subgraph UserInterface ["🌐 Glassmorphic Web & TUI Interface"]
+        SPA["React / WASM Glassmorphic SPA<br/><i>(Glass UI & Global ⌘K Search)</i>"] :::client
+        TUI["Terminal TUI Control Plane<br/><i>(Bubbletea Go Framework)</i>"] :::client
+        WSClient["WebSocket Live Telemetry Stream<br/><i>(/ws/feeds)</i>"] :::client
+    end
+
+    subgraph BackendCore ["⚡ Central Control Plane Backend"]
+        SearchEngine["Global Ecosystem ⌘K Indexer"] :::engine
+        ChaosControl["Chaos Experiment Orchestrator"] :::engine
+        IncidentEngine["Incident Triage & Alert Engine"] :::engine
+        AIAssistant["Autonomous AI Co-Pilot<br/><i>(Enterprise EE)</i>"] :::engine
+    end
+
+    subgraph ServiceIntegrations ["💾 Platform Services Monitoring Hub"]
+        GateSync["Pranor Gate API Sync"] :::storage
+        PulseSync["Pranor Pulse Queue & DLQ Sync"] :::storage
+        VaultSync["Pranor Vault Bucket & Vector Sync"] :::storage
+        TraceSync["Pranor Trace & eBPF Flamegraph Sync"] :::storage
+    end
+
+    SPA --> SearchEngine
+    TUI --> SearchEngine
+    WSClient --> SearchEngine
+    SearchEngine --> ChaosControl
+    SearchEngine --> IncidentEngine
+    SearchEngine --> AIAssistant
+    AIAssistant --> GateSync
+    AIAssistant --> PulseSync
+    AIAssistant --> VaultSync
+    AIAssistant --> TraceSync
 ```
-Browser
-  │
-  ├─── Glassmorphic UI (SPA)
-  │       ├─── Global ⌘K Search
-  │       ├─── Real-time WebSocket feeds
-  │       └─── Multi-tab navigation
-  │
-  ▼
-Pranor Console Backend (Go)
-  │
-  ├─── /api/v1/gateway/*    → Pranor Gate integration
-  ├─── /api/v1/queue/*      → Pranor Pulse integration
-  ├─── /api/v1/storage/*    → Pranor Vault integration
-  ├─── /api/v1/mesh/*       → Pranor Mesh integration
-  ├─── /api/v1/trace/*      → Pranor Trace integration
-  ├─── /api/v1/chaos/*      → Chaos control plane
-  ├─── /api/v1/incidents/*  → Incident management
-  ├─── /api/v1/search       → Global resource search
-  └─── WebSocket /ws/feeds  → Live topology & metrics
+
+### Real-Time WebSocket Telemetry Stream & Global Search Sequence Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Admin as Cluster Operator / Web UI
+    participant Console as Pranor Console Backend
+    participant Gate as Pranor Gate / Pulse / Vault
+    participant Trace as Pranor Trace Engine
+    participant AI as Autonomous AI Co-Pilot
+
+    Admin->>Console: Open Console Dashboard & Trigger ⌘K Search ("vector-index-01")
+    Console->>Console: Index & Match Cross-Module Resources in Memory
+    Console-->>Admin: Display Instant Search Matches (<5ms)
+    Console->>Gate: Subscribe to Live WebSocket Metrics Stream (/ws/feeds)
+    Gate-->>Console: Stream Throughput, Latency & Error Telemetry
+    Console->>Trace: Query High-Burn SLO Spans & eBPF Flamegraphs
+    Trace-->>Console: Correlated Flamegraph + Span Waterfall
+    Console->>AI: Analyze Cluster Anomaly & Suggest Auto-Remediation
+    AI-->>Admin: Render Remediation Action Card in Glassmorphic Panel
 ```
+
+### Ecosystem Cross-Module Integration
+
+Pranor Console provides single-pane-of-glass management for all platform components:
+
+- **Pranor Gate**: Inspects dynamic HTTP routes, hot-swaps WASM security modules, and monitors AI token costs.
+- **Pranor Pulse**: Browses topics, tracks consumer group partition lag, and performs 1-click DLQ message triage.
+- **Pranor Vault**: Visualizes HNSW vector graph indexes, browses S3 buckets, and manages CoW bucket branches.
+- **Pranor Trace**: Renders interactive eBPF CPU flamegraphs, distributed service dependency maps, and SLO burn rate dashboards.
+
+---
 
 ---
 

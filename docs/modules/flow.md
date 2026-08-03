@@ -74,33 +74,76 @@ docker run -p 8089:8089 ghcr.io/vyuvaraj/pranor-flow:latest
 }
 ```
 
-```
-Define Workflow (POST /api/workflows/define)
-  └── DAG Spec: steps, dependencies, compensations, WASM modules
+```mermaid
+graph TD
+    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
+    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
+    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
 
-Execute Workflow (POST /api/workflows/execute)
-  │
-  ▼
-┌────────────────────────────────────────────────────┐
-│                    Pranor Flow Engine                  │
-│                                                    │
-│  Topological Sort → Parallel Ready Steps           │
-│       │                                            │
-│  ┌────▼─────┐  ┌───────────┐  ┌─────────────────┐ │
-│  │ HTTP Step│  │ WASM Step │  │ Sub-workflow    │ │
-│  │ Executor │  │ Executor  │  │ Invoker         │ │
-│  └────┬─────┘  └─────┬─────┘  └────────┬────────┘ │
-│       └──────────────┼─────────────────┘           │
-│                      │                             │
-│  ┌───────────────────▼───────────────────────────┐ │
-│  │  Checkpoint Store (.state files)              │ │
-│  └───────────────────────────────────────────────┘ │
-│                      │                             │
-│  ┌───────────────────▼───────────────────────────┐ │
-│  │  On failure: Saga Compensator (reverse order) │ │
-│  └───────────────────────────────────────────────┘ │
-└────────────────────────────────────────────────────┘
+    subgraph API ["🌐 Workflow Control Interface"]
+        Define["REST DAG Definition API<br/><i>(POST /api/workflows/define)</i>"] :::client
+        Exec["Execution Manager API<br/><i>(POST /api/workflows/execute)</i>"] :::client
+    end
+
+    subgraph Core ["⚡ Core Distributed Saga Orchestrator"]
+        Topo["Topological Sort & Dependency Evaluator"] :::engine
+        HTTPExec["HTTP / REST Step Executor"] :::engine
+        WASMExec["WASM Sandbox Step Executor"] :::engine
+        SagaComp["Saga Reverse Compensation Handler"] :::engine
+    end
+
+    subgraph Storage ["💾 Durable State Persistence"]
+        WALStore["WAL Checkpoint Store<br/><i>(.state Files)</i>"] :::storage
+        DLWQ["Dead-Letter Workflow Queue<br/><i>(DLWQ)</i>"] :::storage
+        BFTConsensus["BFT Raft State Consensus<br/><i>(Enterprise EE)</i>"] :::storage
+    end
+
+    Define --> Topo
+    Exec --> Topo
+    Topo --> HTTPExec
+    Topo --> WASMExec
+    HTTPExec --> WALStore
+    WASMExec --> WALStore
+    WALStore -.->|On Failure| SagaComp
+    SagaComp -.->|Max Retries Exhausted| DLWQ
+    WALStore -.-> BFTConsensus
 ```
+
+### Saga Execution & Compensation Sequence Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Client as Client Application
+    participant Flow as Pranor Flow Orchestrator
+    participant Inventory as Inventory Service
+    participant Payment as Payment Gateway
+    participant Shipping as Shipping Service
+    participant WAL as WAL Checkpoint Store
+
+    Client->>Flow: Execute Workflow (Order Checkout DAG)
+    Flow->>Inventory: Step 1: POST /inventory/reserve
+    Inventory-->>Flow: 200 OK (Reserved)
+    Flow->>WAL: Checkpoint Step 1 Completed
+    Flow->>Payment: Step 2: POST /payment/charge
+    Payment-->>Flow: 500 Internal Error (Payment Failed)
+    Flow->>WAL: Log Step 2 Execution Failure
+    Note over Flow,Inventory: Trigger Reverse Compensation Rollback
+    Flow->>Inventory: Compensate Step 1: POST /inventory/release
+    Inventory-->>Flow: 200 OK (Inventory Unreserved)
+    Flow->>WAL: Saga Rollback Completed
+    Flow-->>Client: Workflow Execution Failed (Compensated)
+```
+
+### Ecosystem Cross-Module Integration
+
+Pranor Flow acts as the primary saga orchestrator across the Pranor ecosystem:
+
+- **Pranor Pulse**: Dispatches asynchronous event triggers and listens to topic completions during long-running saga steps.
+- **Pranor Trace**: Annotates every workflow execution and individual step with W3C traceparent headers, tracking LLM token costs and latency flamegraphs.
+- **Pranor Lock**: Acquires distributed fencing token leases to ensure saga execution steps are evaluated by a single leader node during failover.
+- **Pranor Console**: Provides a visual DAG designer, live workflow step progress tracking, and 1-click DLQ retry controls.
 
 ---
 

@@ -54,34 +54,75 @@ docker run -p 8088:8088 ghcr.io/vyuvaraj/pranor-deploy:latest
 
 ## Architecture
 
+```mermaid
+graph TD
+    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
+    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
+    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
+
+    subgraph Trigger ["🌐 Deployment Control API"]
+        GitOps["GitOps Webhook & Branch Trigger"] :::client
+        DeployAPI["REST Deployment API<br/><i>(POST /api/v1/deployments)</i>"] :::client
+    end
+
+    subgraph Orchestrator ["⚡ Core Deployment & FinOps Engine"]
+        StrategyMgr["Deployment Strategy Manager<br/><i>(Blue/Green, Canary, Direct)</i>"] :::engine
+        FinOps["AI FinOps Cloud Cost Optimizer<br/><i>(Spot Instance & Autoscaler EE)</i>"] :::engine
+        ChaosSuite["Automated DR Chaos Simulation Suite<br/><i>(Enterprise EE)</i>"] :::engine
+        GateReg["Pranor Gate Route Auto-Registrar"] :::engine
+    end
+
+    subgraph IsolatedEnvs ["💾 Environment Provisioning & Artifacts"]
+        ContainerIso["OCI / Docker Container Isolation Engine"] :::storage
+        PreviewMgr["Ephemeral Preview Environment Provisioner"] :::storage
+        AirgapHub["Air-Gapped Private Artifact Registry<br/><i>(Enterprise EE)</i>"] :::storage
+    end
+
+    GitOps --> StrategyMgr
+    DeployAPI --> StrategyMgr
+    StrategyMgr --> FinOps
+    FinOps --> ChaosSuite
+    ChaosSuite --> GateReg
+    GateReg --> ContainerIso
+    GateReg --> PreviewMgr
+    ContainerIso -.-> AirgapHub
 ```
-Developer API Request
-        │ POST /api/v1/deployments
-        ▼
-┌───────────────────────────────────────────────┐
-│                 Pranor Deploy                      │
-│                                               │
-│  ┌────────────────────────────────────────┐   │
-│  │  Deployment Orchestrator               │   │
-│  │  Build → Deploy → Health Check         │   │
-│  └───────────┬────────────────────────────┘   │
-│              │                                │
-│  ┌───────────▼────────────────────────────┐   │
-│  │  Strategy Manager                      │   │
-│  │  Direct │ Blue/Green │ Canary           │   │
-│  └───────────┬────────────────────────────┘   │
-│              │                                │
-│  ┌───────────▼────────────────────────────┐   │
-│  │  Pranor Gate Registration                 │   │
-│  │  (auto-register routes on deploy)      │   │
-│  └────────────────────────────────────────┘   │
-│                                               │
-│  ┌────────────────────┐  ┌─────────────────┐  │
-│  │  Log Streamer       │  │ Preview Env Mgr │  │
-│  │  (ring buffer)      │  │ (branch → env)  │  │
-│  └────────────────────┘  └─────────────────┘  │
-└───────────────────────────────────────────────┘
+
+### Canary Rollout & AI FinOps Promotion Sequence Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Developer as Developer / GitOps Pipeline
+    participant Deploy as Pranor Deploy Engine
+    participant FinOps as AI FinOps Optimizer
+    participant Gate as Pranor Gate Ingress
+    participant Pods as Canary / Blue-Green Pods
+
+    Developer->>Deploy: POST /api/v1/deployments (Canary 10% Traffic)
+    Deploy->>FinOps: Evaluate Node Allocation & Spot Instance Budgets
+    FinOps-->>Deploy: Optimal Node Topology Approved
+    Deploy->>Pods: Spin Up New Version (Canary Container Pods)
+    Deploy->>Gate: Update Weighted Route (10% Canary, 90% Stable)
+    Gate-->>Deploy: Traffic Splitting Active (Monitoring Latency/Errors)
+    alt Error Rate < 0.01% & Health Check Passed
+        Deploy->>Gate: Promote Canary to 100% Traffic (Cutover)
+        Gate-->>Deploy: Full Production Cutover Complete
+    else Latency Spike / Error Threshold Exceeded
+        Deploy->>Gate: Immediate Auto-Rollback to 0% Canary
+        Deploy-->>Developer: Deployment Aborted & Rollback Triggered
+    end
 ```
+
+### Ecosystem Cross-Module Integration
+
+Pranor Deploy automates release rollouts across all platform components:
+
+- **Pranor Gate**: Enforces zero-downtime weighted canary traffic splits, blue/green cutovers, and preview subdomain routing.
+- **Pranor Hub**: Pulls signed OCI container images, WebAssembly modules, and Helm charts for air-gapped deployments.
+- **Pranor Trace**: Monitors real-time error rate budgets and latency burn rates during progressive canary rollouts.
+- **Pranor Console**: Provides interactive multi-cluster deployment dashboards, 1-click rollback controls, and live container logs.
 
 ---
 

@@ -56,32 +56,68 @@ docker run -p 8085:8085 ghcr.io/vyuvaraj/pranor-chrono:latest
 
 ## Architecture
 
+```mermaid
+graph TD
+    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
+    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
+    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
+
+    subgraph API ["🌐 Scheduler Control & Cron-as-Code"]
+        CronAsCode["Pranor Language .pnr Watcher"] :::client
+        JobAPI["REST Scheduler API<br/><i>(POST /api/v1/jobs)</i>"] :::client
+    end
+
+    subgraph SchedulerCore ["⚡ Distributed Timer & DAG Engine"]
+        CronEvaluator["High-Precision Cron Evaluator<br/><i>(Sub-ms TimeWheel Grid)</i>"] :::engine
+        LeaderLock["Pranor Lock Fencing Token Leader"] :::engine
+        DAGRunner["DAG Topological Fan-Out & Join Engine"] :::engine
+        HTTPDispatcher["HTTP Callback Dispatcher<br/><i>(Traceparent Header Propagator)</i>"] :::engine
+    end
+
+    subgraph History ["💾 Audit Trail & Vault Storage"]
+        VaultS3["Pranor Vault S3 Job Registry & Audit Logs"] :::storage
+        RetryEngine["Exponential Backoff Retry Engine"] :::storage
+    end
+
+    CronAsCode --> CronEvaluator
+    JobAPI --> CronEvaluator
+    CronEvaluator --> LeaderLock
+    LeaderLock --> DAGRunner
+    DAGRunner --> HTTPDispatcher
+    HTTPDispatcher --> RetryEngine
+    RetryEngine --> VaultS3
 ```
-┌─────────────────────────────────────────────────────────┐
-│                      Pranor Chrono                            │
-│                                                         │
-│  ┌───────────────────────────────────────────────────┐  │
-│  │  Scheduler (interval + cron expression evaluator) │  │
-│  └────────────────────┬──────────────────────────────┘  │
-│                       │                                 │
-│  ┌────────────────────▼──────────────────────────────┐  │
-│  │  Leader Election (Redis-based distributed lock)   │  │
-│  │  → only one node fires each job per tick          │  │
-│  └────────────────────┬──────────────────────────────┘  │
-│                       │                                 │
-│  ┌────────────────────▼──────────────────────────────┐  │
-│  │  DAG Runner (topological sort + fan-out/join)     │  │
-│  └────────────────────┬──────────────────────────────┘  │
-│                       │                                 │
-│  ┌────────────────────▼──────────────────────────────┐  │
-│  │  HTTP Callback Dispatcher (with traceparent)      │  │
-│  └────────────────────┬──────────────────────────────┘  │
-│                       │                                 │
-│  ┌────────────────────▼──────────────────────────────┐  │
-│  │  Retry Engine + Audit Log (→ Pranor Vault S3)        │  │
-│  └───────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────┘
+
+### High-Precision Distributed Cron Trigger Sequence Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Chrono as Pranor Chrono Leader
+    participant Lock as Pranor Lock Manager
+    participant Service as Target Microservice
+    participant Vault as Pranor Vault S3
+    participant Trace as Pranor Trace
+
+    Chrono->>Lock: Acquire Job Execution Lease (Key: "cron/cleanup-db")
+    Lock-->>Chrono: Granted (Fencing Token = 2088)
+    Note over Chrono: Evaluate Cron Expression & Trigger Sub-ms TimeWheel
+    Chrono->>Service: POST /tasks/cleanup (Traceparent + Fencing Token)
+    Service-->>Chrono: 200 OK (Task Completed in 140ms)
+    Chrono->>Vault: Write Audit Execution Log (audit/cleanup-db_20260803.json)
+    Chrono->>Trace: Emit OTel Span with Job Execution Metrics
+    Chrono->>Lock: Release Job Lease (Token = 2088)
 ```
+
+### Ecosystem Cross-Module Integration
+
+Pranor Chrono manages high-precision job scheduling across all platform services:
+
+- **Pranor Lock**: Uses exclusive fencing token leases to guarantee job callbacks execute on exactly one node during multi-replica deployments.
+- **Pranor Vault**: Persists serialized `jobs.json` configurations and append-only execution audit logs (`audit/<jobID>_<timestamp>.json`).
+- **Pranor Flow**: Triggers scheduled workflow sagas and periodic maintenance DAGs.
+- **Pranor Trace**: Emits OpenTelemetry trace spans with `traceparent` context headers for every dispatched cron job.
 
 ---
 

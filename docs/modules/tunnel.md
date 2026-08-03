@@ -53,25 +53,72 @@ docker run -p 8092:8092 ghcr.io/vyuvaraj/pranor-tunnel:latest
 
 ## Architecture
 
+```mermaid
+graph TD
+    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
+    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
+    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
+
+    subgraph ExternalIngress ["🌐 Public Webhook & Browser Ingress"]
+        PublicClient["External Webhook Sender / Browser"] :::client
+        SubdomainRouter["Public Subdomain Ingress Router<br/><i>(*.pranor.net)</i>"] :::client
+    end
+
+    subgraph TunnelServer ["⚡ Tunnel Multiplexer & Inspection Engine"]
+        WSMux["WebSocket Connection Multiplexer<br/><i>(StreamID Framing)</i>"] :::engine
+        Inspections["Ring-Buffer Request Capturer & Inspection"] :::engine
+        E2EEncryption["Zero-Trust WireGuard E2E Encryption<br/><i>(Enterprise EE)</i>"] :::engine
+        ReplayEngine["Request Replay Engine"] :::engine
+    end
+
+    subgraph LocalMachine ["💾 Private Local Workload"]
+        TunnelClient["Pranor Tunnel Daemon CLI Client"] :::storage
+        LocalSvc["Local Microservice / Webhook Receiver<br/><i>(http://localhost:3000)</i>"] :::storage
+    end
+
+    PublicClient --> SubdomainRouter
+    SubdomainRouter --> WSMux
+    WSMux --> Inspections
+    Inspections --> E2EEncryption
+    E2EEncryption --> ReplayEngine
+    ReplayEngine --> TunnelClient
+    TunnelClient --> LocalSvc
 ```
-Browser / Webhook Sender
-         │ HTTPS request to myapp.pranor.net
-         ▼
-┌─────────────────────────┐
-│      Pranor Tunnel Server   │
-│                         │
-│  Subdomain Router        │
-│    myapp → Conn#1        │
-│  WS Multiplexer          │
-│    (StreamID framing)    │
-└──────────┬──────────────┘
-           │ WebSocket (multiplexed)
-           ▼
-Pranor Tunnel Client (local machine)
-           │
-           ▼
-Local Service (http://localhost:3000)
+
+### Public Webhook Proxying & Request Replay Sequence Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant External as Stripe / GitHub Webhook Sender
+    participant Server as Pranor Tunnel Server
+    participant Buffer as Inspection Ring Buffer
+    participant Client as Pranor Tunnel Local CLI
+    participant Local as Local Host Service (localhost:3000)
+
+    External->>Server: POST https://myapp.pranor.net/webhooks (Stripe Signature Header)
+    Server->>Buffer: Store Request Headers & Body Payload in Ring Buffer
+    Server->>Client: Forward Stream Payload over Multiplexed WebSocket
+    Client->>Local: HTTP POST http://localhost:3000/webhooks
+    Local-->>Client: 200 OK (Processed locally)
+    Client-->>Server: Forward Response Frame over WebSocket
+    Server-->>External: 200 OK (Proxy Complete)
+    Note over External,Local: Developer triggers manual 1-Click Request Replay
+    Client->>Server: POST /api/v1/tunnels/{id}/replay/{reqID}
+    Server->>Local: Replay Captured Request to Local Host
 ```
+
+### Ecosystem Cross-Module Integration
+
+Pranor Tunnel provides secure localhost exposure across the Pranor platform:
+
+- **Pranor Gate**: Relays public HTTPS ingress routes into multiplexed WebSocket tunnels for dev preview environments.
+- **Pranor Trace**: Generates `traceparent` OpenTelemetry headers, tracing requests from public webhooks through tunnels into local code.
+- **Pranor Deploy**: Exposes ephemeral branch preview environments (`feature-x.preview.pranor.net`) securely without public IP addresses.
+- **Pranor Console**: Renders the visual Request Inspector UI, enabling 1-click webhook replays and live packet inspection.
+
+---
 
 ---
 

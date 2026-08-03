@@ -11,7 +11,72 @@
 
 ---
 
-## Getting Started
+## Architecture
+
+```mermaid
+graph TD
+    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
+    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
+    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
+
+    subgraph Interface ["🌐 Secrets Access Protocol"]
+        API["REST Secret Engine API<br/><i>(:8091)</i>"] :::client
+        CLI["secretctl Secret CLI"] :::client
+    end
+
+    subgraph Core ["⚡ Cryptographic Key & Secret Engine"]
+        AESGCM["AES-256-GCM Envelope Encryption Engine"] :::engine
+        FIPS140["FIPS 140-3 Cryptographic HSM Adapter<br/><i>(Enterprise EE)</i>"] :::engine
+        KMSFed["Multi-Cloud KMS Federation Sync<br/><i>(AWS / GCP / Azure EE)</i>"] :::engine
+        MPC["Zero-Knowledge MPC Key Splitter<br/><i>(Enterprise EE)</i>"] :::engine
+    end
+
+    subgraph Persistence ["💾 Encrypted Secret Storage"]
+        FileStore["Encrypted Local Store<br/><i>(secrets.enc)</i>"] :::storage
+        VaultStore["Pranor Vault Encrypted Key Store"] :::storage
+    end
+
+    API --> AESGCM
+    CLI --> AESGCM
+    AESGCM --> FIPS140
+    FIPS140 --> KMSFed
+    KMSFed --> MPC
+    MPC --> FileStore
+    MPC --> VaultStore
+```
+
+### Cryptographic Secret Envelope & Key Unsealing Sequence Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant App as Microservice / Gateway
+    participant Secret as Pranor Secret Engine
+    participant HSM as FIPS 140-3 Hardware HSM
+    participant KMS as Multi-Cloud KMS Federation
+    participant Store as Encrypted Secrets Store
+
+    App->>Secret: GET /api/v1/secrets/database-password (X-Tenant-ID)
+    Secret->>HSM: Unseal Envelope Master Key via FIPS 140-3 Module
+    HSM->>KMS: Combine MPC Threshold Key Shares (2-of-3 quorum)
+    KMS-->>Secret: Reconstructed Decryption Key
+    Secret->>Store: Read Ciphertext Payload from secrets.enc
+    Store-->>Secret: Encrypted Data Ciphertext + AES-GCM Nonce
+    Secret->>Secret: Decrypt Payload in Memory-Isolated Buffer
+    Secret-->>App: Plaintext Secret Value + Dynamic Rotation TTL
+```
+
+### Ecosystem Cross-Module Integration
+
+Pranor Secret provides master key management and secret protection across all Pranor modules:
+
+- **Pranor Gate**: Dynamically provisions and auto-rotates TLS server certificates and client mTLS credentials without restarting proxy instances.
+- **Pranor Auth**: Secures private RSA/ECDSA JWT signing keys, WebAuthn passkey seeds, and OIDC client secrets.
+- **Pranor Vault**: Stores client-side envelope encryption keys and S3 cloud storage access credentials.
+- **Pranor Console**: Renders the visual Secret Management Webview, unsealing vaults and inspecting rotation policies securely.
+
+---
 
 ### Local Development
 

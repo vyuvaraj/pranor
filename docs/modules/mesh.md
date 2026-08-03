@@ -45,15 +45,70 @@ docker run -p 8095:8095 ghcr.io/vyuvaraj/pranor-mesh:latest
 
 ---
 
-## Architecture
+```mermaid
+graph TD
+    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef engine fill:#0f172a,stroke:#0d9488,stroke-width:2px,color:#fff;
+    classDef storage fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#fff;
+    classDef monitor fill:#1e293b,stroke:#64748b,stroke-width:1px,color:#fff;
 
+    subgraph ServiceTraffic ["🌐 Encrypted Service Connectivity"]
+        ClientService["Client Service Pod / Host"] :::client
+        mTLSSidecar["mTLS Auto-Inject Sidecar Proxy"] :::client
+        WireGuardMesh["WireGuard Private Network Mesh Overlay"] :::client
+    end
+
+    subgraph MeshCore ["⚡ Zero-Trust Control & Microsegmentation"]
+        P2CRouter["Power-of-Two-Choices (P2C) Load Balancer"] :::engine
+        Microseg["eBPF Layer 4/7 Microsegmentation Policy Engine<br/><i>(Enterprise EE)</i>"] :::engine
+        BFTRaft["Byzantine Fault Tolerant (BFT) Raft Control Plane<br/><i>(Enterprise EE)</i>"] :::engine
+        ChaosEngine["In-Situ Chaos Experiment Injector"] :::engine
+    end
+
+    subgraph PlatformSync ["💾 Ecosystem Sync & Observability"]
+        CacheLimit["Pranor Cache Shared Token Bucket"] :::storage
+        ConsoleTopology["Pranor Console Live Topology Emitter"] :::storage
+    end
+
+    ClientService --> mTLSSidecar
+    mTLSSidecar --> WireGuardMesh
+    WireGuardMesh --> P2CRouter
+    P2CRouter --> Microseg
+    Microseg --> BFTRaft
+    BFTRaft --> ChaosEngine
+    ChaosEngine --> CacheLimit
+    ChaosEngine -.-> ConsoleTopology
 ```
-Service A ──→ Pranor Mesh Router ──→ Service B (selected by P2C)
-                    │
-                    ├── Pranor Cache (distributed rate limit counters)
-                    ├── Chaos Engine (inject faults)
-                    └── Topology Emitter (→ Pranor Console WebSocket)
+
+### Power-of-Two-Choices (P2C) Routing & Microsegmentation Sequence Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Caller as Caller Service A
+    participant Mesh as Pranor Mesh Control Plane
+    participant eBPF as eBPF Microsegmentation Guard
+    participant Backend as Selected Target Service B
+
+    Caller->>Mesh: POST /api/v1/route (Service B, Locality Zone: "us-east-1a")
+    Mesh->>eBPF: Validate L4/L7 Zero-Trust Microsegmentation Policy
+    eBPF-->>Mesh: Traffic Authorized (Policy Passed)
+    Mesh->>Mesh: Pick 2 Random Candidate Endpoints & Evaluate p99 Latency (P2C)
+    Mesh->>Backend: Route Mutual TLS Request (WireGuard Overlay)
+    Backend-->>Mesh: Response Payload + Health Status
+    Mesh-->>Caller: Selected Endpoint Response (Sub-millisecond Latency)
 ```
+
+### Ecosystem Cross-Module Integration
+
+Pranor Mesh manages secure inter-service communication across all ecosystem components:
+
+- **Pranor Gate**: Acts as the external ingress target for Mesh WireGuard overlay tunnels and mTLS sidecar proxies.
+- **Pranor Cache**: Shares token bucket rate-limiting counters across all cluster Mesh nodes for global traffic shaping.
+- **Pranor Auth**: Enforces SPIFFE/SPIRE workload identities and mutual TLS (mTLS) certificate verification per service route.
+- **Pranor Console**: Renders live service topology dependency graphs, real-time latency heatmaps, and active chaos experiment controls.
+
+---
 
 ---
 

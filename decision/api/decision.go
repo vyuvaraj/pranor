@@ -40,8 +40,16 @@ const (
 	PriorityDefault = 6 // Default policy
 )
 
+type SimulationResult struct {
+	Request                DecisionRequest
+	ActualDecision         DecisionResult
+	RuleTrace              []string
+	WouldCommitSideEffects bool
+}
+
 type DecisionEngine interface {
 	Evaluate(ctx context.Context, req DecisionRequest) (DecisionResult, error)
+	Simulate(ctx context.Context, req DecisionRequest) (SimulationResult, error)
 }
 
 var (

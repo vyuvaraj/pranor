@@ -117,3 +117,50 @@ func TestDecisionEngine_SimulationMode(t *testing.T) {
 		t.Fatalf("expected prefix 'simulation: ' in reason, got %s", res.Reason)
 	}
 }
+
+func TestDecisionEngine_Simulate(t *testing.T) {
+	eng := engine.NewVetoLadderEngine(&mockGraphProvider{})
+	req := api.DecisionRequest{Capability: "EXCEEDS_BUDGET"}
+	res, err := eng.Simulate(context.Background(), req)
+	if err != api.ErrDecisionDenied {
+		t.Fatalf("expected ErrDecisionDenied, got %v", err)
+	}
+	if res.ActualDecision.Action != api.ActionDeny {
+		t.Fatalf("expected DENY action, got %v", res.ActualDecision.Action)
+	}
+	if res.ActualDecision.PriorityLevel != api.PriorityBudget {
+		t.Fatalf("expected PriorityBudget, got %d", res.ActualDecision.PriorityLevel)
+	}
+	if res.WouldCommitSideEffects {
+		t.Fatalf("expected WouldCommitSideEffects to be false")
+	}
+	
+	// Check trace
+	trace := strings.Join(res.RuleTrace, " -> ")
+	if !strings.Contains(trace, "Evaluate Priority 2: Budget") || !strings.Contains(trace, "Budget Exceeded") {
+		t.Fatalf("trace did not capture the budget failure appropriately: %s", trace)
+	}
+}
+
+func TestDecisionEngine_Simulate_Approve(t *testing.T) {
+	eng := engine.NewVetoLadderEngine(&mockGraphProvider{})
+	req := api.DecisionRequest{Capability: "ALLOWED"}
+	res, err := eng.Simulate(context.Background(), req)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if res.ActualDecision.Action != api.ActionApprove {
+		t.Fatalf("expected APPROVE action, got %v", res.ActualDecision.Action)
+	}
+	if res.ActualDecision.PriorityLevel != api.PriorityDefault {
+		t.Fatalf("expected PriorityDefault, got %d", res.ActualDecision.PriorityLevel)
+	}
+	if res.WouldCommitSideEffects {
+		t.Fatalf("expected WouldCommitSideEffects to be false")
+	}
+
+	trace := strings.Join(res.RuleTrace, " -> ")
+	if !strings.Contains(trace, "Evaluate Priority 6: Default Policy") || !strings.Contains(trace, "Default Approve") {
+		t.Fatalf("trace did not capture default approve appropriately: %s", trace)
+	}
+}

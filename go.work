@@ -8,6 +8,7 @@ use (
 	./core
 	./deploy
 	./flow
+	./graph
 	./gate
 	./hub
 	./lang

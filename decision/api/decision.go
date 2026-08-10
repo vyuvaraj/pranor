@@ -21,13 +21,14 @@ type DecisionResult struct {
 }
 
 type DecisionRequest struct {
-	AgentID    string
-	UserID     string
-	TenantID   string
-	RequestID  string
-	Capability string
-	Parameters map[string]any
-	Context    map[string]any
+	AgentID        string
+	UserID         string
+	TenantID       string
+	RequestID      string
+	Capability     string
+	Parameters     map[string]any
+	Context        map[string]any
+	SimulationMode bool
 }
 
 const (

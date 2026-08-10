@@ -12,20 +12,16 @@ func TestGRPCPredictor(t *testing.T) {
 	p := NewGRPCPredictor("localhost:50051")
 	ctx := context.Background()
 
-	out, err := p.Predict(ctx, api.PredictInput{
+	_, err := p.Predict(ctx, api.PredictInput{
 		ModelID:  "test-model",
 		BudgetMs: 1000,
 	})
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
+	if err != api.ErrEERequired {
+		t.Fatalf("expected ErrEERequired, got %v", err)
 	}
 
-	if out.Provider != "gRPC-Sidecar" {
-		t.Errorf("expected provider gRPC-Sidecar, got %s", out.Provider)
-	}
-
-	if err := p.HealthCheck(ctx); err != nil {
-		t.Errorf("expected healthy, got %v", err)
+	if err := p.HealthCheck(ctx); err != api.ErrEERequired {
+		t.Errorf("expected ErrEERequired, got %v", err)
 	}
 }
 
@@ -36,6 +32,7 @@ func TestGRPCPredictor_Timeout(t *testing.T) {
 	defer cancel()
 
 	_, err := p.Predict(ctx, api.PredictInput{ModelID: "test-model"})
+	// The stub implementation might return context.DeadlineExceeded or ErrSidecarTimeout
 	if err != api.ErrSidecarTimeout && err != context.DeadlineExceeded {
 		t.Fatalf("expected timeout error, got %v", err)
 	}

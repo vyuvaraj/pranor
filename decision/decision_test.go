@@ -3,6 +3,7 @@ package decision
 import (
 	"context"
 	"testing"
+	"strings"
 
 	"github.com/vyuvaraj/pranor/decision/api"
 	"github.com/vyuvaraj/pranor/decision/pkg/engine"
@@ -99,5 +100,20 @@ func TestDecisionEngine_LearnSoftAdvisory(t *testing.T) {
 	}
 	if res.PriorityLevel != api.PriorityDefault {
 		t.Fatalf("expected PriorityDefault, got %d", res.PriorityLevel)
+	}
+}
+
+func TestDecisionEngine_SimulationMode(t *testing.T) {
+	eng := engine.NewVetoLadderEngine(&mockGraphProvider{})
+	req := api.DecisionRequest{Capability: "FORBIDDEN_AUTH", SimulationMode: true}
+	res, err := eng.Evaluate(context.Background(), req)
+	if err != nil {
+		t.Fatalf("expected no error in simulation mode, got %v", err)
+	}
+	if res.Action != api.ActionDeny {
+		t.Fatalf("expected DENY action in simulation mode, got %v", res.Action)
+	}
+	if !strings.HasPrefix(res.Reason, "simulation: ") {
+		t.Fatalf("expected prefix 'simulation: ' in reason, got %s", res.Reason)
 	}
 }

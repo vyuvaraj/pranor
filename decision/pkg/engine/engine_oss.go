@@ -37,50 +37,72 @@ func (e *VetoLadderEngine) Evaluate(ctx context.Context, req api.DecisionRequest
 	}
 
 	// Priority 1: Auth (Hard DENY)
-	// OSS stub: always pass unless specifically requested to fail
 	if req.Capability == "FORBIDDEN_AUTH" {
-		return api.DecisionResult{
+		res := api.DecisionResult{
 			Action:        api.ActionDeny,
 			Reason:        "auth denied",
 			PriorityLevel: api.PriorityAuth,
-		}, api.ErrDecisionDenied
+		}
+		if req.SimulationMode {
+			res.Reason = "simulation: " + res.Reason
+			return res, nil
+		}
+		return res, api.ErrDecisionDenied
 	}
 
 	// Priority 2: Budget (Hard DENY)
 	if req.Capability == "EXCEEDS_BUDGET" {
-		return api.DecisionResult{
+		res := api.DecisionResult{
 			Action:        api.ActionDeny,
 			Reason:        "budget exceeded",
 			PriorityLevel: api.PriorityBudget,
-		}, api.ErrDecisionDenied
+		}
+		if req.SimulationMode {
+			res.Reason = "simulation: " + res.Reason
+			return res, nil
+		}
+		return res, api.ErrDecisionDenied
 	}
 
 	// Priority 3: Risk Engine (APPROVE/DENY)
 	if req.Capability == "HIGH_RISK" {
-		return api.DecisionResult{
+		res := api.DecisionResult{
 			Action:        api.ActionDeny,
 			Reason:        "risk too high",
 			PriorityLevel: api.PriorityRisk,
-		}, api.ErrDecisionDenied
+		}
+		if req.SimulationMode {
+			res.Reason = "simulation: " + res.Reason
+			return res, nil
+		}
+		return res, api.ErrDecisionDenied
 	}
 
 	// Priority 4: Custom Rules
 	if req.Capability == "NEEDS_TRANSFORM" {
-		return api.DecisionResult{
+		res := api.DecisionResult{
 			Action:        api.ActionTransform,
 			Reason:        "transformed by rules",
 			PriorityLevel: api.PriorityRules,
-		}, nil
+		}
+		if req.SimulationMode {
+			res.Reason = "simulation: " + res.Reason
+		}
+		return res, nil
 	}
 
 	// Priority 5: Learn (ML Advice - Soft Advisory)
 	// Soft advisory: if it fails or is unavailable, we skip it.
 	// In OSS, we don't do anything for ML Advice, it just passes through.
-	
+
 	// Priority 6: Default Policy
-	return api.DecisionResult{
+	res := api.DecisionResult{
 		Action:        api.ActionApprove,
 		Reason:        "default approve",
 		PriorityLevel: api.PriorityDefault,
-	}, nil
+	}
+	if req.SimulationMode {
+		res.Reason = "simulation: " + res.Reason
+	}
+	return res, nil
 }

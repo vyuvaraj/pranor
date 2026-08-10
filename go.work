@@ -13,6 +13,9 @@ use (
 	./gate
 	./hub
 	./lang
+	./learn/api
+	./learn/sidecar
+	./learn/wasm
 	./lock
 	./lockctl
 	./mesh

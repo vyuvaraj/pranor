@@ -1,0 +1,82 @@
+name: "Zero-CGO Build Invariant (V2.89.7)"
+
+# =============================================================================
+# Pranor Zero-CGO Build Invariant CI — Phase 89 / Sprint 1
+# Defined in: requirements_definitive.md §3.4
+#
+# Blocks any PR that introduces CGO dependencies into the Pranor core binary.
+# Runs three verification layers:
+#   1. Cross-compile matrix (linux/amd64, arm64, darwin/amd64, arm64, windows)
+#   2. Linux ldd static-link assertion
+#   3. go list CGO source file scan
+# =============================================================================
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  GO_VERSION: "1.26.3"
+
+jobs:
+  cgo-invariant:
+    name: "Zero-CGO Check: ${{ matrix.module }}"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module:
+          - gate
+          - flow
+          - trace
+          - graph
+          - decision
+          - lang
+          - cache
+          - pool
+          - vault
+          - pulse
+          - auth
+          - secret
+          - lock
+          - chrono
+          - notify
+          - tunnel
+          - deploy
+
+    steps:
+      - name: Check out codebase
+        uses: actions/checkout@v4
+
+      - name: Set up Go ${{ env.GO_VERSION }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Make check_cgo.sh executable
+        run: chmod +x scripts/check_cgo.sh
+
+      - name: Run Zero-CGO Invariant Check — ${{ matrix.module }}
+        run: bash scripts/check_cgo.sh ${{ matrix.module }}
+
+  # ── All-modules gate job ────────────────────────────────────────────────────
+  # This job runs after all matrix jobs succeed and acts as the single
+  # required status check for branch protection rules.
+  cgo-invariant-gate:
+    name: "✓ Zero-CGO Invariant Gate"
+    needs: cgo-invariant
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check all matrix jobs passed
+        run: |
+          if [ "${{ needs.cgo-invariant.result }}" != "success" ]; then
+            echo "❌ One or more modules failed the Zero-CGO invariant check."
+            echo "   Review the failing matrix jobs above."
+            exit 1
+          fi
+          echo "✓ All modules passed the Zero-CGO invariant check."

@@ -1,0 +1,45 @@
+// Copyright (c) Pranor Authors. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+//go:build !enterprise
+
+// Package {{PACKAGE}} provides the open-source implementation of the
+// {{MODULE_DESCRIPTION}} module.
+//
+// OSS Scope:
+//   {{OSS_SCOPE_DESCRIPTION}}
+//
+// Enterprise Extensions (EE):
+//   The following capabilities are available in Pranor Enterprise Edition
+//   and are gated behind the `enterprise` build tag:
+//   {{EE_SCOPE_DESCRIPTION}}
+//
+// Build tags:
+//   OSS binary : go build ./...                      (//go:build !enterprise)
+//   EE binary  : go build -tags enterprise ./...     (//go:build enterprise)
+package {{PACKAGE}}
+
+import "errors"
+
+// ErrEERequired is returned by OSS stubs when an enterprise-only capability
+// is invoked. The caller should handle this error gracefully and surface a
+// clear message to the operator.
+//
+// Example handler:
+//
+//	result, err := SomeEEFunction(ctx, input)
+//	if errors.Is(err, ErrEERequired) {
+//	    log.Warn("feature requires Pranor Enterprise Edition")
+//	    return defaultFallback, nil
+//	}
+var ErrEERequired = errors.New("pranor: this capability requires Pranor Enterprise Edition (build tag: enterprise)")
+
+// {{INTERFACE_NAME}}EE is the OSS stub for the Enterprise-only
+// {{INTERFACE_DESCRIPTION}} capability.
+//
+// In the OSS build this always returns ErrEERequired.
+// In the EE build (pranor-ee repo, //go:build enterprise), this is replaced
+// by the full implementation.
+func {{FUNCTION_NAME}}({{FUNCTION_PARAMS}}) ({{RETURN_TYPE}}, error) {
+	return {{ZERO_VALUE}}, ErrEERequired
+}

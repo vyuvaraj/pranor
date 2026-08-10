@@ -1,0 +1,39 @@
+// Copyright (c) Pranor Enterprise Authors. All rights reserved.
+// SPDX-License-Identifier: Pranor Commercial License
+
+//go:build enterprise
+
+// Package {{PACKAGE}} provides the Enterprise Edition implementation of the
+// {{MODULE_DESCRIPTION}} module.
+//
+// This file is part of the Pranor Enterprise Edition (pranor-ee repo).
+// It is compiled only when the `enterprise` build tag is set.
+//
+// EE Scope:
+//   {{EE_SCOPE_DESCRIPTION}}
+//
+// This file MUST:
+//   1. Be API-compatible with the OSS stub (same function signature).
+//   2. Import only from the shared interface file (no build tag) or stdlib.
+//   3. Never introduce CGO dependencies (CGO_ENABLED=0 invariant applies to EE).
+//   4. Reside in pranor-ee/src/{{EE_MODULE_DIR}}/ — never in the public pranor repo.
+//
+// Build:
+//   go build -tags enterprise ./...
+package {{PACKAGE}}
+
+import (
+	"context"
+	// Add required EE imports here
+)
+
+// {{FUNCTION_NAME}} is the Enterprise Edition implementation of
+// {{FUNCTION_DESCRIPTION}}.
+//
+// This replaces the OSS stub (ErrEERequired) with the full EE logic.
+func {{FUNCTION_NAME}}({{FUNCTION_PARAMS}}) ({{RETURN_TYPE}}, error) {
+	// TODO: Implement EE logic here.
+	// Ensure: no CGO, no global mutable state without sync primitives,
+	//         goroutine-safe, context-cancellation-aware.
+	panic("pranor-ee: {{FUNCTION_NAME}} not yet implemented")
+}

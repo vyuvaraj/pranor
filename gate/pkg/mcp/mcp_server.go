@@ -13,6 +13,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/vyuvaraj/pranor/gate/pkg/agentgov"
 )
 
 // ---- JSON-RPC 2.0 wire types ----
@@ -232,7 +234,7 @@ func (s *MCPServer) handleToolsList() interface{} {
 	}
 }
 
-// handleToolsCall dispatches a tool call to the registered handler.
+// handleToolsCall dispatches a tool call to the registered handler with Security Firewall governance.
 func (s *MCPServer) handleToolsCall(ctx context.Context, raw json.RawMessage) (*MCPToolResult, *MCPError) {
 	var callParams struct {
 		Name      string                 `json:"name"`
@@ -240,6 +242,29 @@ func (s *MCPServer) handleToolsCall(ctx context.Context, raw json.RawMessage) (*
 	}
 	if err := json.Unmarshal(raw, &callParams); err != nil {
 		return nil, &MCPError{Code: ErrInvalidParams, Message: "invalid tools/call params: " + err.Error()}
+	}
+
+	// 1. Construct Agent Security Chain & Evaluate Firewall Policy
+	chain := agentgov.AgentSecurityChain{
+		AgentID:      "mcp-agent-session",
+		UserID:       "user-mcp",
+		TenantID:     "tenant-default",
+		CapabilityID: callParams.Name,
+	}
+	toolCall := agentgov.ToolCallPayload{
+		ToolName:  callParams.Name,
+		Arguments: callParams.Arguments,
+	}
+
+	fw := agentgov.GetFirewall()
+	eval := fw.EvaluateToolCall(chain, toolCall)
+
+	if eval.Decision == agentgov.DecisionDeny {
+		return nil, &MCPError{Code: -32001, Message: "Tool execution DENIED by Agent Security Firewall: " + eval.Reason}
+	} else if eval.Decision == agentgov.DecisionApprove {
+		return nil, &MCPError{Code: -32002, Message: fmt.Sprintf("Tool execution paused for Human-In-The-Loop APPROVAL (Approval ID: %s): %s", eval.ApprovalID, eval.Reason)}
+	} else if eval.Decision == agentgov.DecisionTransform {
+		callParams.Arguments = eval.TransformedArguments
 	}
 
 	s.mu.RLock()
@@ -255,9 +280,16 @@ func (s *MCPServer) handleToolsCall(ctx context.Context, raw json.RawMessage) (*
 	executionMs := time.Since(start).Milliseconds()
 
 	isError := err != nil || result.IsError
+	fw.RecordTrajectoryStep(agentgov.TrajectoryStep{
+		Timestamp:   start,
+		Chain:       chain,
+		ToolCall:    toolCall,
+		ResultDecision: eval,
+		ExecutionMs: executionMs,
+	})
 	auditEntry := ToolCallAuditEntry{
 		Timestamp:   start.Format(time.RFC3339),
-		AgentID:     "mcp-agent-session",
+		AgentID:     chain.AgentID,
 		ToolName:    callParams.Name,
 		Arguments:   callParams.Arguments,
 		IsError:     isError,

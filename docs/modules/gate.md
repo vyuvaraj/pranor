@@ -58,6 +58,12 @@ Pranor Gate can run as:
 | **Structured Access Logs** | JSONL access logging with request/response metadata. |
 | **GitOps Config Sync** | Webhook-triggered git pull + config reload for GitOps workflows. |
 | **Dynamic Policy Engine** | ServPolicy integration for fine-grained authorization rules compiled to WASM. |
+| **AI Agent Security Firewall** | Programmable zero-trust execution boundary inspecting AI tool call intent, parameters, and risk score for `ALLOW / DENY / APPROVE / TRANSFORM` decisions. |
+| **Agent Security Chain** | First-class `Agent ID -> User ID -> Tenant ID -> Capability` identity tracking and delegation authorization. |
+| **Human-in-the-Loop (HITL)** | Asynchronous approval workflows (`Agent -> Gate -> Approval -> Gate -> Tool`) for high-risk capability execution. |
+| **Agent Trajectory Simulation** | Record execution steps and replay against candidate models/policies to simulate and diff execution outcomes prior to deployment. |
+| **Agent Budget & Blast-Radius** | Tool-invocation level limits (max tool calls/session, action rate limits, queue bounds). |
+| **Protocol-Agnostic Exposer** | Register capabilities once and auto-expose over MCP, gRPC, HTTP/REST, and WASM plugin adapters. |
 | **AI Token Billing** | Per-route and per-tenant LLM token usage tracking with budget enforcement. |
 | **Traffic Replay** | Record traffic to JSONL and replay against WASM middlewares or candidate backends. |
 

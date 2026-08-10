@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "marked": "^18.0.7",
+    "pdfkit": "^0.19.1"
+  }
+}

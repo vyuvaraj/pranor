@@ -16,12 +16,24 @@ Pranor implements defense-in-depth across all modules.
 Every request between modules is authenticated:
 
 ```
-Client → Gate (JWT validation)
+Client → Gate (JWT validation & Agent Security Chain)
+       → Agent Firewall (Intent, Risk & HITL Approval)
        → Mesh (mTLS between services)
-       → Target Service (RBAC enforcement)
+       → Target Service / Tool (Capability execution)
 ```
 
-No module trusts another implicitly. Mesh provides workload identity via SPIFFE.
+No module trusts another implicitly. Mesh provides workload identity via SPIFFE, while Gate enforces Agent Security Chains (`Agent ID -> User ID -> Tenant ID -> Capability ID`).
+
+## AI Agent Security & Governance
+
+| Feature | Mechanism | Scope |
+|---------|-----------|-------|
+| AI Agent Security Firewall | Inspects tool call intents, arguments & risk scores (`ALLOW/DENY/APPROVE/TRANSFORM`) | Gate |
+| Agent Security Chain | First-class `Agent ID -> User ID -> Tenant ID -> Capability` context propagation | Gate / Auth |
+| Human-in-the-Loop (HITL) | Asynchronous approval workflows (`Agent -> Gate -> Approval -> Gate -> Tool`) | Gate |
+| Trajectory Replay & Simulation | Replays recorded trajectory steps to simulate & diff policy changes | Gate |
+| Agent Blast-Radius & Budgets | Session-level and action-specific tool call rate limits | Gate |
+| Protocol-Agnostic Exposer | Exposes capabilities across MCP, gRPC, HTTP/REST, and WASM | Gate |
 
 ## Encryption
 

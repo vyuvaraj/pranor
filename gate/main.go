@@ -21,6 +21,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/vyuvaraj/pranor/gate/pkg/agentgov"
 	"github.com/vyuvaraj/pranor/gate/pkg/otel"
 	"github.com/vyuvaraj/pranor/gate/pkg/proxy"
 	"github.com/vyuvaraj/pranor/gate/pkg/wasm"
@@ -571,6 +572,67 @@ func main() {
 
 	mux.HandleFunc("/api/v1/admin/policy/reload", withAdminRateLimit(60, handlePolicyReload))
 	mux.HandleFunc("/api/v1/admin/policy/revoke", withAdminRateLimit(60, handlePolicyRevoke))
+
+	// EE.88.3: HITL Approvals Endpoints
+	handleHITLApprovals := func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		fw := agentgov.GetFirewall()
+
+		switch r.Method {
+		case http.MethodGet:
+			pending := fw.GetPendingApprovals()
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"status":  "success",
+				"pending": pending,
+			})
+		case http.MethodPost:
+			var req struct {
+				ApprovalID string `json:"approval_id"`
+				Approver   string `json:"approver"`
+				Approve    bool   `json:"approve"`
+			}
+			if err := json.NewDecoder(r.Body).Decode(&req); err != nil || req.ApprovalID == "" {
+				proxy.WriteJSONError(w, r, "Invalid payload", "ERR_INVALID_PAYLOAD", http.StatusBadRequest)
+				return
+			}
+			if req.Approver == "" {
+				req.Approver = "admin-user"
+			}
+			record, err := fw.ApprovePendingToolCall(req.ApprovalID, req.Approver, req.Approve)
+			if err != nil {
+				proxy.WriteJSONError(w, r, err.Error(), "ERR_APPROVAL_NOT_FOUND", http.StatusNotFound)
+				return
+			}
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"status": "success",
+				"record": record,
+			})
+		default:
+			proxy.WriteJSONError(w, r, "Method not allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+		}
+	}
+	mux.HandleFunc("/api/v1/admin/agent-approvals", withAdminRateLimit(60, handleHITLApprovals))
+
+	// EE.88.4: Agent Trajectory Simulation & Replay Endpoint
+	handleAgentSimulation := func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		if r.Method != http.MethodPost && r.Method != http.MethodGet {
+			proxy.WriteJSONError(w, r, "Method not allowed", "ERR_METHOD_NOT_ALLOWED", http.StatusMethodNotAllowed)
+			return
+		}
+		fw := agentgov.GetFirewall()
+		simReport := fw.SimulateTrajectoryReplay()
+		json.NewEncoder(w).Encode(simReport)
+	}
+	mux.HandleFunc("/api/v1/admin/agent-simulation", withAdminRateLimit(60, handleAgentSimulation))
+
+	// EE.88.9: Protocol-Agnostic Capability Exposer Endpoint
+	handleAgentCapabilities := func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		fw := agentgov.GetFirewall()
+		json.NewEncoder(w).Encode(fw.ProtocolAgnosticExposer())
+	}
+	mux.HandleFunc("/api/v1/admin/agent-capabilities", withAdminRateLimit(60, handleAgentCapabilities))
 
 	// AI Billing API endpoint
 	handleAIBilling := func(w http.ResponseWriter, r *http.Request) {

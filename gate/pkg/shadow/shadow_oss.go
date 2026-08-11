@@ -1,5 +1,3 @@
-//go:build !enterprise
-
 package shadow
 
 import (
@@ -13,7 +11,7 @@ type ossInterceptor struct {
 	registry capability.Registry
 }
 
-// NewOSSInterceptor creates an OSS Interceptor for Gate shadow mode side-effect isolation.
+// NewOSSInterceptor returns an Interceptor instance.
 func NewOSSInterceptor(reg capability.Registry) Interceptor {
 	if reg == nil {
 		reg = capability.DefaultRegistry

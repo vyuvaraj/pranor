@@ -1,5 +1,3 @@
-//go:build !enterprise
-
 package guardrails
 
 import (
@@ -15,6 +13,7 @@ import (
 
 type ossInspector struct{}
 
+// NewOSSInspector returns a standard Inspector instance.
 func NewOSSInspector() Inspector {
 	return &ossInspector{}
 }
@@ -26,8 +25,9 @@ func (i *ossInspector) InspectInput(ctx context.Context, ec *execctx.ExecutionCo
 		InspectedAt: time.Now().UTC(),
 	}
 
+	// 1. Prompt Injection Heuristics
 	lowerPrompt := strings.ToLower(prompt)
-	injectionHeuristics := []string{
+	injectionPatterns := []string{
 		"ignore previous instructions",
 		"ignore all prior instructions",
 		"disregard previous commands",
@@ -36,16 +36,17 @@ func (i *ossInspector) InspectInput(ctx context.Context, ec *execctx.ExecutionCo
 		"jailbreak",
 	}
 
-	for _, h := range injectionHeuristics {
-		if strings.Contains(lowerPrompt, h) {
-			res.InjectionRisk = 1.0
+	for _, pattern := range injectionPatterns {
+		if strings.Contains(lowerPrompt, pattern) {
 			res.Action = ActionBlock
-			res.BlockedReason = "Prompt injection pattern detected: " + h
+			res.InjectionRisk = 1.0
+			res.BlockedReason = "Prompt injection pattern detected: " + pattern
 			return res, ErrPromptInjectionBlocked
 		}
 	}
 
-	piiDetectors := map[PIIType]*regexp.Regexp{
+	// 2. PII Detection (Email, Phone, SSN, CreditCard)
+	piiRegexes := map[PIIType]*regexp.Regexp{
 		PIIEmail:      regexp.MustCompile(`[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}`),
 		PIIPhone:      regexp.MustCompile(`\b\d{3}[-.]?\d{3}[-.]?\d{4}\b`),
 		PIISSN:        regexp.MustCompile(`\b\d{3}-\d{2}-\d{4}\b`),
@@ -54,26 +55,27 @@ func (i *ossInspector) InspectInput(ctx context.Context, ec *execctx.ExecutionCo
 
 	var spans []PIISpan
 	maskedPrompt := prompt
-	for piiType, r := range piiDetectors {
-		matches := r.FindAllStringIndex(prompt, -1)
-		for _, m := range matches {
-			val := prompt[m[0]:m[1]]
+
+	for piiType, re := range piiRegexes {
+		matches := re.FindAllStringIndex(prompt, -1)
+		for _, match := range matches {
+			val := prompt[match[0]:match[1]]
 			spans = append(spans, PIISpan{
 				Type:  piiType,
-				Start: m[0],
-				End:   m[1],
+				Start: match[0],
+				End:   match[1],
 				Value: val,
 			})
-			if ec != nil && ec.RiskBudget < 0.3 {
-				res.Action = ActionMask
-				maskedPrompt = strings.ReplaceAll(maskedPrompt, val, "[REDACTED_"+string(piiType)+"]")
-			}
+			maskedPrompt = strings.ReplaceAll(maskedPrompt, val, "[REDACTED_"+string(piiType)+"]")
 		}
 	}
 
 	res.PIISpans = spans
-	if res.Action == ActionMask {
-		res.Prompt = maskedPrompt
+	if len(spans) > 0 {
+		if ec != nil && ec.RiskBudget < 0.3 {
+			res.Action = ActionMask
+			res.Prompt = maskedPrompt
+		}
 	}
 
 	return res, nil
@@ -86,32 +88,37 @@ func (i *ossInspector) ValidateOutput(ctx context.Context, ec *execctx.Execution
 		InspectedAt: time.Now().UTC(),
 	}
 
-	secretDetectors := []*regexp.Regexp{
-		regexp.MustCompile(`sk-[a-zA-Z0-9]{32,}`),
-		regexp.MustCompile(`AKIA[0-9A-Z]{16}`),
-		regexp.MustCompile(`ghp_[a-zA-Z0-9]{36}`),
-		regexp.MustCompile(`-----BEGIN PRIVATE KEY-----`),
+	// 1. Secret Leak Detection
+	secretPatterns := []string{
+		`sk-[a-zA-Z0-9]{32,}`,
+		`AKIA[0-9A-Z]{16}`,
+		`ghp_[a-zA-Z0-9]{36}`,
+		`-----BEGIN PRIVATE KEY-----`,
 	}
 
-	for _, r := range secretDetectors {
-		if r.MatchString(output) {
+	for _, pattern := range secretPatterns {
+		re := regexp.MustCompile(pattern)
+		if re.MatchString(output) {
 			res.Action = ActionBlock
+			res.SecretLeaks = append(res.SecretLeaks, pattern)
 			res.BlockedReason = "Secret leak detected"
 			return res, ErrSecretLeakBlocked
 		}
 	}
 
+	// 2. Schema Validation
 	if schema != nil && schema.OutputSchema == "json" {
 		trimmed := strings.TrimSpace(output)
-		if strings.HasPrefix(trimmed, "{") || strings.HasPrefix(trimmed, "[") {
-			if !json.Valid([]byte(trimmed)) {
-				res.Action = ActionBlock
-				res.BlockedReason = "Output schema validation failed"
-				return res, ErrOutputSchemaMismatch
-			}
-		} else {
+		if (!strings.HasPrefix(trimmed, "{") || !strings.HasSuffix(trimmed, "}")) &&
+			(!strings.HasPrefix(trimmed, "[") || !strings.HasSuffix(trimmed, "]")) {
 			res.Action = ActionBlock
-			res.BlockedReason = "Output schema validation failed"
+			res.BlockedReason = "Output is not valid JSON"
+			return res, ErrOutputSchemaMismatch
+		}
+		var js json.RawMessage
+		if err := json.Unmarshal([]byte(trimmed), &js); err != nil {
+			res.Action = ActionBlock
+			res.BlockedReason = "JSON unmarshal error: " + err.Error()
 			return res, ErrOutputSchemaMismatch
 		}
 	}

@@ -4,8 +4,11 @@ package graphctx
 
 import (
 	"context"
-	"sync"
+	"encoding/json"
 	"log"
+	"sort"
+	"strings"
+	"sync"
 
 	"github.com/vyuvaraj/pranor/graph/api"
 )
@@ -33,7 +36,7 @@ func (a *ThreeTierAssembler) Assemble(ctx context.Context, q api.ContextQuery) (
 		res.CacheHit = true
 		res.Tier = api.TierHot
 		res.LatencyMs = 0
-		return res, nil
+		return a.finalize(res, q), nil
 	}
 
 	// Record cache miss span / telemetry when hot cache misses
@@ -44,7 +47,7 @@ func (a *ThreeTierAssembler) Assemble(ctx context.Context, q api.ContextQuery) (
 	if err == nil {
 		warmRes.Tier = api.TierWarm
 		warmRes.CacheHit = false
-		return warmRes, nil
+		return a.finalize(warmRes, q), nil
 	}
 
 	a.recordMissTelemetry("warm_cache_miss", q)
@@ -54,13 +57,72 @@ func (a *ThreeTierAssembler) Assemble(ctx context.Context, q api.ContextQuery) (
 	if err == nil {
 		coldRes.Tier = api.TierCold
 		coldRes.CacheHit = false
-		return coldRes, nil
+		return a.finalize(coldRes, q), nil
 	}
 
 	a.recordMissTelemetry("cold_cache_miss", q)
 
 	// Fail-closed: ensure api.ErrGraphContextUnavailable is strictly returned when all tiers are exhausted
 	return api.ContextResult{}, api.ErrGraphContextUnavailable
+}
+
+func (a *ThreeTierAssembler) finalize(res api.ContextResult, q api.ContextQuery) api.ContextResult {
+	if res.Data != nil {
+		dataCopy := make(map[string]any)
+		for k, v := range res.Data {
+			dataCopy[k] = v
+		}
+		res.Data = dataCopy
+	}
+
+	if res.Data != nil {
+		b, _ := json.Marshal(res.Data)
+		res.TokenCount = len(b) / 4
+
+		if q.MaxTokenBudget > 0 && res.TokenCount > q.MaxTokenBudget {
+			keys := make([]string, 0, len(res.Data))
+			for k := range res.Data {
+				keys = append(keys, k)
+			}
+
+			if q.PruningStrategy == api.PruningStrategySemanticRelevance {
+				rank := func(k string) int {
+					kl := strings.ToLower(k)
+					if strings.Contains(kl, "debug") || strings.Contains(kl, "raw") || strings.Contains(kl, "history") {
+						return 0
+					}
+					if strings.Contains(kl, "user") || strings.Contains(kl, "intent") || strings.Contains(kl, "core") || strings.Contains(kl, "account") {
+						return 2
+					}
+					return 1
+				}
+				sort.Slice(keys, func(i, j int) bool {
+					ri := rank(keys[i])
+					rj := rank(keys[j])
+					if ri == rj {
+						return keys[i] < keys[j]
+					}
+					return ri < rj
+				})
+			} else {
+				sort.Strings(keys)
+			}
+
+			pruned := 0
+			for _, k := range keys {
+				delete(res.Data, k)
+				pruned++
+
+				b, _ := json.Marshal(res.Data)
+				res.TokenCount = len(b) / 4
+				if res.TokenCount <= q.MaxTokenBudget {
+					break
+				}
+			}
+			res.PrunedNodeCount = pruned
+		}
+	}
+	return res
 }
 
 func (a *ThreeTierAssembler) fetchWarmTier(ctx context.Context, q api.ContextQuery) (api.ContextResult, error) {

@@ -19,9 +19,9 @@
 
 - [VS Code Extension & LSP](./tooling.md)
 
-# Modules
+# Core Modules
 
-- [Gate — API Gateway](./modules/gate.md)
+- [Gate — API Gateway & Guardrails](./modules/gate.md)
 - [Pulse — Message Broker](./modules/pulse.md)
 - [Vault — Object Storage](./modules/vault.md)
 - [Chrono — Job Scheduler](./modules/chrono.md)
@@ -38,10 +38,18 @@
 - [Hub — Package Registry](./modules/hub.md)
 - [Lock — Distributed Locks](./modules/lock.md)
 - [Secret — Secret Management](./modules/secret.md)
-- [Graph — Entity Context Layer](./modules/graph.md)
+
+# v2.0 AI Execution Fabric (v2.0-dev)
+
+- [ExecutionContext — Context Propagation](./modules/execctx.md)
+- [Capability Registry — Governed Tools](./modules/capability.md)
+- [Agent — Identity & Lifecycle](./modules/agent.md)
+- [LLM Router — Model Gateway](./modules/llm.md)
+- [Guardrails — In-Line Safety](./modules/guardrails.md)
+- [Graph — Entity Context](./modules/graph.md)
 - [Decision — AI Governance Engine](./modules/decision.md)
-- [Learn — ML Inference Provider](./modules/learn.md)
-- [Eval — Agent Quality Scoring](./modules/eval.md)
+- [Learn — ML Provider Architecture](./modules/learn.md)
+- [Eval — Trajectory Scoring](./modules/eval.md)
 
 # Deployment
 
@@ -61,14 +69,6 @@
 
 - [Features](./enterprise/features.md)
 - [Licensing](./enterprise/licensing.md)
-
-# v2.0 AI Execution Fabric
-
-- [v2.0 Overview](./modules/graph.md)
-- [Graph — Entity Context](./modules/graph.md)
-- [Decision — Governed Execution](./modules/decision.md)
-- [Learn — ML Provider](./modules/learn.md)
-- [Eval — Trajectory Scoring](./modules/eval.md)
 
 ---
 

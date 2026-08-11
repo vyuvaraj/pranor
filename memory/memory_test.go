@@ -87,17 +87,15 @@ func TestEpisodicMemory_RecallSemantic(t *testing.T) {
 	em := memory.Episodic()
 
 	// Store episode with parallel vector [1.0, 0.0, 0.0]
-	entry1, err := em.StoreEpisode(ctx, ec, "s1", "user", "Payment processing query", []string{"payment"})
+	_, err := em.StoreEpisodeWithVector(ctx, ec, "s1", "user", "Payment processing query", []string{"payment"}, []float32{1.0, 0.0, 0.0})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	entry1.Vector = []float32{1.0, 0.0, 0.0}
 
 	// Store episode with orthogonal vector [0.0, 1.0, 0.0]
-	entry2, _ := em.StoreEpisode(ctx, ec, "s1", "user", "UI theme configuration", []string{"ui"})
-	entry2.Vector = []float32{0.0, 1.0, 0.0}
+	_, _ = em.StoreEpisodeWithVector(ctx, ec, "s1", "user", "UI theme configuration", []string{"ui"}, []float32{0.0, 1.0, 0.0})
 
-	// Query with vector close to entry1 [0.9, 0.1, 0.0]
+	// Query with vector close to entry 1 [0.9, 0.1, 0.0]
 	queryVec := []float32{0.9, 0.1, 0.0}
 	results, err := em.RecallSemantic(ctx, ec, queryVec, 2)
 	if err != nil {

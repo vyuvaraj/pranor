@@ -89,6 +89,10 @@ func newOSSEpisodicMemory() *ossEpisodicMemory {
 }
 
 func (m *ossEpisodicMemory) StoreEpisode(ctx context.Context, ec *execctx.ExecutionContext, sessionID, role, content string, tags []string) (api.MemoryEntry, error) {
+	return m.StoreEpisodeWithVector(ctx, ec, sessionID, role, content, tags, nil)
+}
+
+func (m *ossEpisodicMemory) StoreEpisodeWithVector(ctx context.Context, ec *execctx.ExecutionContext, sessionID, role, content string, tags []string, vector []float32) (api.MemoryEntry, error) {
 	tenantID, agentID := "", ""
 	if ec != nil {
 		tenantID = ec.TenantID
@@ -107,6 +111,7 @@ func (m *ossEpisodicMemory) StoreEpisode(ctx context.Context, ec *execctx.Execut
 		Content:   content,
 		Role:      role,
 		Tags:      tags,
+		Vector:    vector,
 		CreatedAt: time.Now(),
 	}
 	

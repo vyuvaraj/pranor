@@ -17,6 +17,11 @@ func Route(ctx context.Context, req api.ChatRequest) (api.ChatResponse, error) {
     return DefaultRouter.Route(ctx, req)
 }
 
+// RouteStream routes a chat request through DefaultRouter returning a stream.
+func RouteStream(ctx context.Context, req api.ChatRequest) (<-chan api.StreamChunk, error) {
+	return DefaultRouter.RouteStream(ctx, req)
+}
+
 // HealthCheck checks all providers in DefaultRouter.
 func HealthCheck(ctx context.Context) map[string]error {
     return DefaultRouter.HealthCheck(ctx)

@@ -3,11 +3,13 @@
 package providers
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/vyuvaraj/pranor/llm/api"
@@ -137,6 +139,127 @@ func (h *HTTPProvider) Chat(ctx context.Context, req api.ChatRequest) (api.ChatR
 		RequestID:    oResp.ID,
 		CreatedAt:    time.Now(),
 	}, nil
+}
+
+func (h *HTTPProvider) ChatStream(ctx context.Context, req api.ChatRequest) (<-chan api.StreamChunk, error) {
+	var cancel context.CancelFunc
+	if req.BudgetMs > 0 {
+		ctx, cancel = context.WithTimeout(ctx, time.Duration(req.BudgetMs)*time.Millisecond)
+	}
+
+	model := req.Model
+	if model == "" {
+		model = h.DefaultModel
+	}
+
+	oReq := openaiReq{
+		Model:       model,
+		Messages:    req.Messages,
+		MaxTokens:   req.MaxTokens,
+		Temperature: req.Temperature,
+		Stream:      true,
+		TopP:        req.TopP,
+		Stop:        req.StopWords,
+	}
+
+	body, err := json.Marshal(oReq)
+	if err != nil {
+		if cancel != nil {
+			cancel()
+		}
+		return nil, err
+	}
+
+	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, h.BaseURL+"/v1/chat/completions", bytes.NewReader(body))
+	if err != nil {
+		if cancel != nil {
+			cancel()
+		}
+		return nil, err
+	}
+
+	httpReq.Header.Set("Content-Type", "application/json")
+	if h.APIKey != "" {
+		httpReq.Header.Set("Authorization", "Bearer "+h.APIKey)
+	}
+
+	resp, err := h.client.Do(httpReq)
+	if err != nil {
+		if cancel != nil {
+			cancel()
+		}
+		return nil, err
+	}
+
+	if resp.StatusCode == http.StatusNotFound {
+		resp.Body.Close()
+		if cancel != nil {
+			cancel()
+		}
+		return nil, api.ErrModelUnavailable
+	}
+	if resp.StatusCode != http.StatusOK {
+		resp.Body.Close()
+		if cancel != nil {
+			cancel()
+		}
+		return nil, fmt.Errorf("http error: %d", resp.StatusCode)
+	}
+
+	ch := make(chan api.StreamChunk)
+
+	go func() {
+		defer resp.Body.Close()
+		defer close(ch)
+		if cancel != nil {
+			defer cancel()
+		}
+
+		scanner := bufio.NewScanner(resp.Body)
+		tokenIndex := 0
+
+		for scanner.Scan() {
+			line := scanner.Text()
+			if !strings.HasPrefix(line, "data: ") {
+				continue
+			}
+
+			data := strings.TrimPrefix(line, "data: ")
+			if data == "[DONE]" {
+				break
+			}
+
+			var streamResp struct {
+				Choices []struct {
+					Delta struct {
+						Content string `json:"content"`
+					} `json:"delta"`
+					FinishReason string `json:"finish_reason"`
+				} `json:"choices"`
+			}
+
+			if err := json.Unmarshal([]byte(data), &streamResp); err != nil {
+				ch <- api.StreamChunk{Error: err}
+				return
+			}
+
+			if len(streamResp.Choices) > 0 {
+				choice := streamResp.Choices[0]
+				ch <- api.StreamChunk{
+					Content:      choice.Delta.Content,
+					FinishReason: api.FinishReason(choice.FinishReason),
+					TokenIndex:   tokenIndex,
+				}
+				tokenIndex++
+			}
+		}
+
+		if err := scanner.Err(); err != nil {
+			ch <- api.StreamChunk{Error: err}
+		}
+	}()
+
+	return ch, nil
 }
 
 func (h *HTTPProvider) HealthCheck(ctx context.Context) error {

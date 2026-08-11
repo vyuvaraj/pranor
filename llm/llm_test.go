@@ -14,6 +14,7 @@ type errProvider struct{}
 func (e *errProvider) Name() string { return "err" }
 func (e *errProvider) Models() []string { return []string{"err-1"} }
 func (e *errProvider) Chat(_ context.Context, _ api.ChatRequest) (api.ChatResponse, error) { return api.ChatResponse{}, errors.New("provider error") }
+func (e *errProvider) ChatStream(_ context.Context, _ api.ChatRequest) (<-chan api.StreamChunk, error) { return nil, errors.New("provider error") }
 func (e *errProvider) HealthCheck(_ context.Context) error { return errors.New("unhealthy") }
 
 func TestEchoProvider_Chat(t *testing.T) {
@@ -26,6 +27,40 @@ func TestEchoProvider_Chat(t *testing.T) {
 	}
 	if resp.Content != "hello" {
 		t.Errorf("expected hello, got %s", resp.Content)
+	}
+}
+
+func TestEchoProvider_ChatStream(t *testing.T) {
+	p := providers.NewEchoProvider()
+	ch, err := p.ChatStream(context.Background(), api.ChatRequest{
+		Messages: []api.Message{{Content: "hello stream world"}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var tokens []string
+	var finish api.FinishReason
+
+	for chunk := range ch {
+		if chunk.Error != nil {
+			t.Fatal(chunk.Error)
+		}
+		tokens = append(tokens, chunk.Content)
+		if chunk.FinishReason != "" {
+			finish = chunk.FinishReason
+		}
+	}
+
+	if len(tokens) != 3 {
+		t.Errorf("expected 3 chunks, got %d", len(tokens))
+	} else {
+		if tokens[0] != "hello " || tokens[1] != "stream " || tokens[2] != "world" {
+			t.Errorf("unexpected tokens: %v", tokens)
+		}
+	}
+	if finish != api.FinishStop {
+		t.Errorf("expected finish_reason stop, got %v", finish)
 	}
 }
 
@@ -70,6 +105,23 @@ func TestRouter_EchoSuccess(t *testing.T) {
 	}
 	if resp.Content != "test" {
 		t.Errorf("expected test, got %s", resp.Content)
+	}
+}
+
+func TestRouter_EchoStreamSuccess(t *testing.T) {
+	r := router.NewOSSRouter()
+	r.Register(providers.NewEchoProvider())
+	r.SetFallbackChain([]string{"echo"})
+	ch, err := r.RouteStream(context.Background(), api.ChatRequest{Messages: []api.Message{{Content: "test stream"}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var res string
+	for chunk := range ch {
+		res += chunk.Content
+	}
+	if res != "test stream" {
+		t.Errorf("expected 'test stream', got '%s'", res)
 	}
 }
 

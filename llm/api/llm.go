@@ -58,10 +58,21 @@ type ChatResponse struct {
     CreatedAt    time.Time
 }
 
+// StreamChunk represents a single chunk of a streamed response.
+type StreamChunk struct {
+	Content      string
+	FinishReason FinishReason
+	TokenIndex   int
+	CostUSD      float64
+	Error        error
+}
+
 // ChatProvider is the interface every LLM provider driver must implement.
 type ChatProvider interface {
     // Chat performs a synchronous chat completion.
     Chat(ctx context.Context, req ChatRequest) (ChatResponse, error)
+    // ChatStream returns a channel of chunks for streaming responses.
+    ChatStream(ctx context.Context, req ChatRequest) (<-chan StreamChunk, error)
     // Name returns the provider name (e.g. "openai", "anthropic", "echo").
     Name() string
     // Models returns the list of model IDs this provider supports.
@@ -74,6 +85,8 @@ type ChatProvider interface {
 type Router interface {
     // Route selects a provider based on the request and routing strategy, with fallback.
     Route(ctx context.Context, req ChatRequest) (ChatResponse, error)
+    // RouteStream routes a chat request and returns a stream of chunks.
+    RouteStream(ctx context.Context, req ChatRequest) (<-chan StreamChunk, error)
     // Register adds a ChatProvider to the router.
     Register(p ChatProvider)
     // SetFallbackChain specifies provider priority order by name.

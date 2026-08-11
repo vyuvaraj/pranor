@@ -35,6 +35,15 @@ jobs:
           - gate
           - flow
           - trace
+          - graph
+          - decision
+          - learn/api
+          - learn/wasm
+          - learn/sidecar
+          - eval
+          - agent
+          - llm
+          - memory
           - lang
           - cache
           - pool

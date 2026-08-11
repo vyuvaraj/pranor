@@ -17,6 +17,7 @@ use (
 	./learn/api
 	./learn/sidecar
 	./learn/wasm
+	./llm
 	./lock
 	./lockctl
 	./mesh

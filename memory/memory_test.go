@@ -80,6 +80,38 @@ func TestEpisodicMemory_StoreAndRecall(t *testing.T) {
 	}
 }
 
+func TestEpisodicMemory_RecallSemantic(t *testing.T) {
+	ctx := context.Background()
+	ec := execctx.New(ctx, "tenant-1", "agent-vector", "user-1")
+
+	em := memory.Episodic()
+
+	// Store episode with parallel vector [1.0, 0.0, 0.0]
+	entry1, err := em.StoreEpisode(ctx, ec, "s1", "user", "Payment processing query", []string{"payment"})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	entry1.Vector = []float32{1.0, 0.0, 0.0}
+
+	// Store episode with orthogonal vector [0.0, 1.0, 0.0]
+	entry2, _ := em.StoreEpisode(ctx, ec, "s1", "user", "UI theme configuration", []string{"ui"})
+	entry2.Vector = []float32{0.0, 1.0, 0.0}
+
+	// Query with vector close to entry1 [0.9, 0.1, 0.0]
+	queryVec := []float32{0.9, 0.1, 0.0}
+	results, err := em.RecallSemantic(ctx, ec, queryVec, 2)
+	if err != nil {
+		t.Fatalf("unexpected error on RecallSemantic: %v", err)
+	}
+
+	if len(results) == 0 {
+		t.Fatalf("expected semantic recall results, got 0")
+	}
+	if results[0].Content != "Payment processing query" {
+		t.Errorf("expected closest vector content 'Payment processing query', got '%s'", results[0].Content)
+	}
+}
+
 func TestTenantIsolation(t *testing.T) {
 	ctx := context.Background()
 	ecTenantA := execctx.New(ctx, "tenant-a", "agent-1", "user-1")

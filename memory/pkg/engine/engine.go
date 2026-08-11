@@ -3,6 +3,7 @@ package engine
 import (
 	"context"
 	"fmt"
+	"math"
 	"sort"
 	"strings"
 	"sync"
@@ -165,6 +166,70 @@ func (m *ossEpisodicMemory) Recall(ctx context.Context, ec *execctx.ExecutionCon
 	}
 	
 	return scoredEntries, nil
+}
+
+func cosineSimilarity(a, b []float32) float64 {
+	if len(a) != len(b) || len(a) == 0 {
+		return 0.0
+	}
+	var dotProduct, normA, normB float64
+	for i := 0; i < len(a); i++ {
+		dotProduct += float64(a[i]) * float64(b[i])
+		normA += float64(a[i]) * float64(a[i])
+		normB += float64(b[i]) * float64(b[i])
+	}
+	if normA == 0 || normB == 0 {
+		return 0.0
+	}
+	return dotProduct / (math.Sqrt(normA) * math.Sqrt(normB))
+}
+
+func (m *ossEpisodicMemory) RecallSemantic(ctx context.Context, ec *execctx.ExecutionContext, queryVector []float32, topK int) ([]api.MemoryEntry, error) {
+	tenantID, agentID := "", ""
+	if ec != nil {
+		tenantID = ec.TenantID
+		agentID = ec.AgentID
+	}
+	
+	var scoredEntries []api.MemoryEntry
+	
+	m.mu.RLock()
+	for _, entry := range m.entries {
+		if entry.TenantID != tenantID || entry.AgentID != agentID {
+			continue
+		}
+		
+		if len(entry.Vector) > 0 {
+			sim := cosineSimilarity(queryVector, entry.Vector)
+			// Need a local copy to modify the score safely without race conditions
+			scoredEntry := entry
+			scoredEntry.Score = sim
+			scoredEntries = append(scoredEntries, scoredEntry)
+		}
+	}
+	m.mu.RUnlock()
+	
+	sort.Slice(scoredEntries, func(i, j int) bool {
+		return scoredEntries[i].Score > scoredEntries[j].Score
+	})
+	
+	if len(scoredEntries) > topK {
+		scoredEntries = scoredEntries[:topK]
+	}
+	
+	return scoredEntries, nil
+}
+
+// SetVectorForTest is a helper method used for testing vector recall.
+func (m *ossEpisodicMemory) SetVectorForTest(id string, vec []float32) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	for i := range m.entries {
+		if m.entries[i].ID == id {
+			m.entries[i].Vector = vec
+			break
+		}
+	}
 }
 
 func (m *ossEpisodicMemory) Purge(ctx context.Context, ec *execctx.ExecutionContext) error {

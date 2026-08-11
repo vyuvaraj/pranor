@@ -1,6 +1,8 @@
 package memory
 
 import (
+	"context"
+	"github.com/vyuvaraj/pranor/core/pkg/execctx"
 	"github.com/vyuvaraj/pranor/memory/api"
 	"github.com/vyuvaraj/pranor/memory/pkg/engine"
 )
@@ -13,4 +15,8 @@ func Working() api.WorkingMemory {
 
 func Episodic() api.EpisodicMemory {
 	return DefaultEngine.Episodic()
+}
+
+func RecallSemantic(ctx context.Context, ec *execctx.ExecutionContext, queryVector []float32, topK int) ([]api.MemoryEntry, error) {
+	return DefaultEngine.Episodic().RecallSemantic(ctx, ec, queryVector, topK)
 }

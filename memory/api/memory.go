@@ -27,12 +27,14 @@ type MemoryEntry struct {
 	Tags      []string
 	CreatedAt time.Time
 	Score     float64           // computed relevance score during recall
+	Vector    []float32         // embeddings for semantic recall
 }
 
 // EpisodicMemory provides cross-session structured memory recall.
 type EpisodicMemory interface {
 	StoreEpisode(ctx context.Context, ec *execctx.ExecutionContext, sessionID, role, content string, tags []string) (MemoryEntry, error)
 	Recall(ctx context.Context, ec *execctx.ExecutionContext, query string, topK int) ([]MemoryEntry, error)
+	RecallSemantic(ctx context.Context, ec *execctx.ExecutionContext, queryVector []float32, topK int) ([]MemoryEntry, error)
 	Purge(ctx context.Context, ec *execctx.ExecutionContext) error
 }
 

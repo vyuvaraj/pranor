@@ -12,7 +12,7 @@ name: Deploy Documentation (Versioned v1.0 & v2.0 with SEO & Sitemaps)
 
 on:
   push:
-    branches: [main, v2.0-dev]
+    branches: [main]
     paths:
       - 'docs/**'
   workflow_dispatch:

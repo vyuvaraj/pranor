@@ -1,5 +1,3 @@
-//go:build !enterprise
-
 package hitl
 
 func (q *ApprovalQueue) NotifySlack(req ApprovalRequest) error {

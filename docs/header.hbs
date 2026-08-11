@@ -1,0 +1,28 @@
+<div id="version-banner" style="background: #1e293b; border-bottom: 1px solid #334155; padding: 0.5rem 1rem; text-align: center; font-size: 0.875rem; color: #94a3b8; margin-bottom: 1.5rem; border-radius: 0.5rem;">
+  <span style="background: #0284c7; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.75rem; margin-right: 8px;">DOCS VERSION</span>
+  <span id="version-text">You are viewing <strong>Pranor Documentation</strong>.</span>
+  <a id="version-link" href="/pranor/v2.0/" style="color: #38bdf8; margin-left: 0.75rem; font-weight: 600; text-decoration: underline;">
+    Switch to Pranor v2.0 AI Execution Fabric Docs &rarr;
+  </a>
+</div>
+
+<script>
+(function() {
+  var path = window.location.pathname;
+  var bannerText = document.getElementById("version-text");
+  var bannerLink = document.getElementById("version-link");
+  if (path.indexOf("/v2.0/") !== -1) {
+    if (bannerText) bannerText.innerHTML = "You are viewing <strong>Pranor v2.0 AI Execution Fabric Docs</strong>.";
+    if (bannerLink) {
+      bannerLink.href = "/pranor/v1.0/";
+      bannerLink.innerHTML = "Switch to Stable v1.0 Docs &rarr;";
+    }
+  } else if (path.indexOf("/v1.0/") !== -1) {
+    if (bannerText) bannerText.innerHTML = "You are viewing <strong>Pranor v1.0 Stable Docs</strong>.";
+    if (bannerLink) {
+      bannerLink.href = "/pranor/v2.0/";
+      bannerLink.innerHTML = "Switch to v2.0 AI Execution Fabric Docs &rarr;";
+    }
+  }
+})();
+</script>

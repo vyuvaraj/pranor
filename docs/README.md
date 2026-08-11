@@ -2,6 +2,11 @@
 
 Welcome to the Pranor documentation. Pranor is a unified, modular backend infrastructure engine with its own programming language, designed to build high-performance microservices with zero glue code.
 
+> 💡 **Documentation Version Selector**
+> - 📘 **[Pranor v1.0 (Stable Docs)](/pranor/v1.0/)** — Core 16 Infrastructure Modules (Gate, Pulse, Vault, Auth, Mesh, etc.)
+> - 🚀 **[Pranor v2.0 (AI Execution Fabric Docs)](/pranor/v2.0/)** — Governed AI Agent Execution Layer (`std/graph`, `std/decision`, `std/agent`, `std/memory`, `std/eval`, `std/flow`)
+
+
 ## Quick Navigation
 
 | Section | Description |

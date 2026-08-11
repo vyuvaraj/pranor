@@ -70,6 +70,18 @@ jobs:
           mdbook build docs/
           cp -r docs/_site/* ../site_out/v2.0/
 
+      - name: Inject Version Notification Banners into Generated HTML Pages
+        run: |
+          V1_BANNER='<div style="background: #1e293b; border-bottom: 2px solid #0284c7; padding: 0.75rem 1rem; text-align: center; font-size: 0.875rem; color: #94a3b8; font-family: system-ui, -apple-system, sans-serif;"><span style="background: #0284c7; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.75rem; margin-right: 8px;">STABLE RELEASE</span>You are viewing <strong>Pranor v1.0 Documentation</strong>. A newer version is available: <a href="/pranor/v2.0/" style="color: #38bdf8; margin-left: 0.75rem; font-weight: 600; text-decoration: underline;">Switch to Pranor v2.0 AI Execution Fabric Docs &rarr;</a></div>'
+          find site_out/v1.0 -name "*.html" | while read -r file; do
+            sed -i "s|<body>|<body>${V1_BANNER}|g" "$file"
+          done
+
+          V2_BANNER='<div style="background: #0f172a; border-bottom: 2px solid #38bdf8; padding: 0.75rem 1rem; text-align: center; font-size: 0.875rem; color: #94a3b8; font-family: system-ui, -apple-system, sans-serif;"><span style="background: #38bdf8; color: #0f172a; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.75rem; margin-right: 8px;">v2.0 AI EXECUTION FABRIC</span>You are viewing <strong>Pranor v2.0 Documentation</strong>. <a href="/pranor/v1.0/" style="color: #38bdf8; margin-left: 0.75rem; font-weight: 600; text-decoration: underline;">Switch to Stable v1.0 Docs &rarr;</a></div>'
+          find site_out/v2.0 -name "*.html" | while read -r file; do
+            sed -i "s|<body>|<body>${V2_BANNER}|g" "$file"
+          done
+
       - name: Generate SEO robots.txt and sitemap.xml
         run: |
           # 1. Create robots.txt

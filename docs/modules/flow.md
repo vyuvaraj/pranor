@@ -436,3 +436,41 @@ Structured JSON logs with fields: `level`, `timestamp`, `trace_id`, `instance_id
 2. Review step timeout configuration in workflow definition
 3. Check WASM module for infinite loops or excessive memory allocation
 4. Monitor `pranor_flow_step_duration_ms` histogram for WASM steps
+
+## v2.0 AgentStep & Saga Engine
+
+In v2.0, Pranor Flow extends with a Saga runner for governed AI agent step execution.
+
+### AgentStep Interface
+```go
+type AgentStep interface {
+    Execute(ctx context.Context, input StepInput) (StepOutput, error)
+    Compensate(ctx context.Context, input StepInput) error
+    Name() string
+}
+```
+
+### SagaConfig Defaults
+| Field | Default | Description |
+|-------|---------|-------------|
+| MaxSteps | 25 | Maximum steps before LimitPolicy triggers |
+| StepTimeout | 30s | Per-step execution timeout |
+| TotalTimeout | 10m | Total saga timeout |
+| OnStepLimitHit | LimitPolicyCompensate | Action when MaxSteps exceeded |
+
+### Limit Policies
+- `LimitPolicyCompensate`: Automatically unwinds completed steps in reverse order
+- `LimitPolicyPauseForHITL`: Pauses and routes to HITL Approval Queue (EE: Slack/Teams/Email)
+
+### Compensation Contract
+On step failure, Saga calls `Compensate` on all previously completed steps in **reverse order**. Partial compensation failures are recorded in `SagaResult.CompensatedSteps` but do not prevent the result from being returned.
+
+### HITL Approval Queue
+The `flow/pkg/hitl` package provides an in-memory approval queue:
+- `Submit(req ApprovalRequest) (string, error)` — enqueue for review
+- `Approve(id string, note string) error` — mark approved
+- `Reject(id string, reason string) error` — mark rejected with reason
+- `ListPending() []ApprovalRequest` — list outstanding approvals
+
+EE extends with Slack, Microsoft Teams, and Email integrations with SLA timer escalation.
+

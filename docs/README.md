@@ -56,3 +56,18 @@ git clone https://github.com/vyuvaraj/pranor && cd pranor/lang && go build -o pr
 ```bash
 pranor init myapp && cd myapp && pranor run main.pnr --watch
 ```
+
+## v2.0 AI Execution Fabric *(v2.0-dev — merges post v1.0 release)*
+
+Pranor v2.0 extends the ecosystem with a governed AI agent execution layer built on top of the existing infrastructure. All v2.0 modules are CGO-free (`CGO_ENABLED=0`) and follow the OSS/EE build-tag convention.
+
+| Module | Path | Description |
+|--------|------|-------------|
+| **Pranor Graph** | `std/graph` | Virtual entity context assembly — Hot/Warm/Cold 3-tier with fail-closed contract |
+| **Pranor Decision** | `std/decision` | 6-level priority veto ladder: Auth > Budget > Risk > Rules > Learn > Default |
+| **Pranor Learn** | `std/learn` | Pluggable ML inference provider (wazero WASM + gRPC sidecar) |
+| **Pranor Eval** | `std/eval` | Trajectory replay and quality scoring — 4 evaluators (accuracy, latency, cost, safety) |
+| **Trace Schema** | `std/trace` | Canonical OTLP span hierarchy + mandatory attribute contract for all modules |
+| **Flow AgentStep** | `std/flow` | AgentStep interface + Saga runner + HITL approval queue |
+
+> **Branch:** All v2.0 features live on `v2.0-dev`. See [v2.0 modules docs](./modules/graph.md) for full API reference.

@@ -38,6 +38,10 @@
 - [Hub — Package Registry](./modules/hub.md)
 - [Lock — Distributed Locks](./modules/lock.md)
 - [Secret — Secret Management](./modules/secret.md)
+- [Graph — Entity Context Layer](./modules/graph.md)
+- [Decision — AI Governance Engine](./modules/decision.md)
+- [Learn — ML Inference Provider](./modules/learn.md)
+- [Eval — Agent Quality Scoring](./modules/eval.md)
 
 # Deployment
 
@@ -57,6 +61,14 @@
 
 - [Features](./enterprise/features.md)
 - [Licensing](./enterprise/licensing.md)
+
+# v2.0 AI Execution Fabric
+
+- [v2.0 Overview](./modules/graph.md)
+- [Graph — Entity Context](./modules/graph.md)
+- [Decision — Governed Execution](./modules/decision.md)
+- [Learn — ML Provider](./modules/learn.md)
+- [Eval — Trajectory Scoring](./modules/eval.md)
 
 ---
 

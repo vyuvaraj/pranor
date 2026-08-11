@@ -1,12 +1,13 @@
-name: Deploy Documentation (Versioned v1.0 & v2.0)
+name: Deploy Documentation (Versioned v1.0 & v2.0 with SEO & Sitemaps)
 
 # =============================================================================
-# Pranor Versioned Documentation Pipeline
+# Pranor Versioned & SEO-Optimized Documentation Pipeline
 #
 # Builds versioned mdBook documentation for GitHub Pages:
-#   - /pranor/       -> Redirects to /pranor/v1.0/
+#   - /pranor/       -> SEO Landing page + Redirect to /pranor/v1.0/
 #   - /pranor/v1.0/  -> Built from v1.0.0 release tag (Stable v1.0 docs)
 #   - /pranor/v2.0/  -> Built from v2.0-dev branch (v2.0 AI Execution Fabric docs)
+#   - robots.txt & sitemap.xml for Google/Bing indexing
 # =============================================================================
 
 on:
@@ -55,7 +56,8 @@ jobs:
       - name: Build v1.0 Stable Documentation
         run: |
           cd repo-v1
-          # Configure mdBook site-url for /pranor/v1.0/
+          # Copy custom head.hbs for SEO meta tags
+          cp ../repo-v2/docs/head.hbs docs/head.hbs 2>/dev/null || true
           sed -i 's|site-url = "/pranor/"|site-url = "/pranor/v1.0/"|g' docs/book.toml
           mdbook build docs/
           cp -r docs/_site/* ../site_out/v1.0/
@@ -63,32 +65,111 @@ jobs:
       - name: Build v2.0 Preview Documentation
         run: |
           cd repo-v2
-          # Configure mdBook site-url for /pranor/v2.0/
           sed -i 's|site-url = "/pranor/"|site-url = "/pranor/v2.0/"|g' docs/book.toml
           mdbook build docs/
           cp -r docs/_site/* ../site_out/v2.0/
 
-      - name: Create Root Redirect (index.html)
+      - name: Generate SEO robots.txt and sitemap.xml
+        run: |
+          # 1. Create robots.txt
+          cat << 'EOF' > site_out/robots.txt
+          User-agent: *
+          Allow: /
+          Sitemap: https://vyuvaraj.github.io/pranor/sitemap.xml
+          EOF
+
+          # 2. Generate XML Sitemap listing all HTML documentation pages
+          cat << 'EOF' > site_out/sitemap.xml
+          <?xml version="1.0" encoding="UTF-8"?>
+          <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+            <url>
+              <loc>https://vyuvaraj.github.io/pranor/</loc>
+              <changefreq>daily</changefreq>
+              <priority>1.0</priority>
+            </url>
+            <url>
+              <loc>https://vyuvaraj.github.io/pranor/v1.0/</loc>
+              <changefreq>weekly</changefreq>
+              <priority>0.9</priority>
+            </url>
+            <url>
+              <loc>https://vyuvaraj.github.io/pranor/v2.0/</loc>
+              <changefreq>daily</changefreq>
+              <priority>0.9</priority>
+            </url>
+          EOF
+
+          # Dynamically append all generated .html pages to sitemap
+          cd site_out
+          find v1.0 v2.0 -name "*.html" | sort | while read -r file; do
+            echo "  <url>" >> sitemap.xml
+            echo "    <loc>https://vyuvaraj.github.io/pranor/${file}</loc>" >> sitemap.xml
+            echo "    <changefreq>weekly</changefreq>" >> sitemap.xml
+            echo "    <priority>0.8</priority>" >> sitemap.xml
+            echo "  </url>" >> sitemap.xml
+          done
+          echo "</urlset>" >> sitemap.xml
+          cd ..
+
+      - name: Create SEO Landing Page & Root Redirect (index.html)
         run: |
           cat << 'EOF' > site_out/index.html
           <!DOCTYPE html>
           <html lang="en">
           <head>
               <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Pranor Documentation — Governed AI Agent Execution Fabric</title>
+              <meta name="description" content="Official documentation for Pranor — Governed AI Agent Execution Fabric & High-Performance Microservices Runtime in Go. Zero-CGO, 6-level veto ladder, memory engine, OTLP tracing.">
+              <meta name="keywords" content="Pranor, AI Agent Governance, Go Microservices, Zero-CGO, Agent Saga Engine, LLM Router, Execution Context, API Gateway">
+              <meta name="robots" content="index, follow">
+              <link rel="canonical" href="https://vyuvaraj.github.io/pranor/v1.0/">
+
+              <!-- OpenGraph -->
+              <meta property="og:type" content="website">
+              <meta property="og:site_name" content="Pranor Documentation">
+              <meta property="og:title" content="Pranor Documentation — Governed AI Agent Execution Fabric">
+              <meta property="og:description" content="High-Performance Microservices Runtime & Governed AI Agent Execution Fabric in Pure Go (CGO_ENABLED=0).">
+              <meta property="og:url" content="https://vyuvaraj.github.io/pranor/">
+
+              <!-- Auto-redirect to stable v1.0 after 0s -->
               <meta http-equiv="refresh" content="0; url=/pranor/v1.0/">
               <script>window.location.href = "/pranor/v1.0/";</script>
-              <title>Pranor Documentation</title>
+
               <style>
-                  body { font-family: system-ui, sans-serif; background: #0f172a; color: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-                  .container { text-align: center; }
-                  a { color: #38bdf8; text-decoration: none; font-weight: bold; }
+                  body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 2rem; box-sizing: border-box; }
+                  .card { background: #1e293b; border: 1px solid #334155; border-radius: 1rem; padding: 2.5rem; max-width: 600px; width: 100%; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+                  h1 { font-size: 1.875rem; margin-top: 0; color: #38bdf8; }
+                  p { color: #94a3b8; line-height: 1.6; }
+                  .btn-group { display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; }
+                  .btn { padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+                  .btn-primary { background: #0284c7; color: white; }
+                  .btn-primary:hover { background: #0369a1; }
+                  .btn-secondary { background: #334155; color: #f8fafc; }
+                  .btn-secondary:hover { background: #475569; }
               </style>
+
+              <script type="application/ld+json">
+              {
+                "@context": "https://schema.org",
+                "@type": "SoftwareSourceCode",
+                "name": "Pranor",
+                "abstract": "Governed AI Agent Execution Fabric & High-Performance Microservices Runtime in Go",
+                "programmingLanguage": "Go",
+                "license": "https://github.com/vyuvaraj/pranor/blob/main/LICENSE",
+                "codeRepository": "https://github.com/vyuvaraj/pranor"
+              }
+              </script>
           </head>
           <body>
-              <div class="container">
-                  <h2>Redirecting to Pranor Documentation...</h2>
-                  <p>If you are not redirected automatically, select a version:</p>
-                  <p><a href="/pranor/v1.0/">v1.0 (Stable Release)</a> | <a href="/pranor/v2.0/">v2.0 (AI Execution Fabric Dev)</a></p>
+              <div class="card">
+                  <h1>Pranor Documentation</h1>
+                  <p>Redirecting to the official Pranor documentation...</p>
+                  <p>Pranor is a high-performance microservices runtime and governed AI agent execution fabric built in pure Go (<code>CGO_ENABLED=0</code>).</p>
+                  <div class="btn-group">
+                      <a href="/pranor/v1.0/" class="btn btn-primary">v1.0 (Stable Release)</a>
+                      <a href="/pranor/v2.0/" class="btn btn-secondary">v2.0 (AI Execution Fabric)</a>
+                  </div>
               </div>
           </body>
           </html>

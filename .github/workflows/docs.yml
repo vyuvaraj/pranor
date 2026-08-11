@@ -56,8 +56,11 @@ jobs:
       - name: Build v1.0 Stable Documentation
         run: |
           cd repo-v1
-          # Copy custom head.hbs for SEO meta tags
+          # Copy v2.0 module docs and templates into repo-v1 for complete documentation
+          cp -r ../repo-v2/docs/modules/* docs/modules/ 2>/dev/null || true
           cp ../repo-v2/docs/head.hbs docs/head.hbs 2>/dev/null || true
+          cp ../repo-v2/docs/header.hbs docs/header.hbs 2>/dev/null || true
+          cp ../repo-v2/docs/SUMMARY.md docs/SUMMARY.md 2>/dev/null || true
           sed -i 's|site-url = "/pranor/"|site-url = "/pranor/v1.0/"|g' docs/book.toml
           mdbook build docs/
           cp -r docs/_site/* ../site_out/v1.0/

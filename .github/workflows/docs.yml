@@ -12,7 +12,6 @@ name: Deploy Documentation (Versioned v1.0 & v2.0)
 on:
   push:
     branches: [main, v2.0-dev]
-    tags: ["v*.*.*"]
     paths:
       - 'docs/**'
   workflow_dispatch:

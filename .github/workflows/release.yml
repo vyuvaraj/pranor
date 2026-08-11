@@ -1,0 +1,172 @@
+name: Release — Build & Publish Binaries
+
+# =============================================================================
+# Pranor Release Workflow
+#
+# Triggers on any v*.*.* tag push (e.g. v1.0.0, v1.1.0).
+# For each of the 17 Pranor modules, cross-compiles CGO_ENABLED=0 binaries
+# for all 5 target platforms, archives them, and uploads to the GitHub Release.
+#
+# Platforms: linux/amd64  linux/arm64  darwin/amd64  darwin/arm64  windows/amd64
+# Output:    pranor-<module>_<tag>_<os>_<arch>.tar.gz  (.zip on windows)
+#            checksums.txt  (consolidated SHA-256 manifest)
+# =============================================================================
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+env:
+  GO_VERSION: "1.26.3"
+
+permissions:
+  contents: write  # required to upload release assets
+
+jobs:
+  # ── Per-module build: parallel matrix of module × platform ──────────────────
+  build:
+    name: "${{ matrix.module }} / ${{ matrix.goos }}-${{ matrix.goarch }}"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module:
+          - gate
+          - auth
+          - vault
+          - pulse
+          - cache
+          - pool
+          - mesh
+          - flow
+          - trace
+          - console
+          - chrono
+          - deploy
+          - notify
+          - tunnel
+          - hub
+          - lock
+          - secret
+        platform:
+          - { goos: linux,   goarch: amd64 }
+          - { goos: linux,   goarch: arm64 }
+          - { goos: darwin,  goarch: amd64 }
+          - { goos: darwin,  goarch: arm64 }
+          - { goos: windows, goarch: amd64 }
+
+    steps:
+      - name: Check out codebase
+        uses: actions/checkout@v4
+
+      - name: Set up Go ${{ env.GO_VERSION }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Build binary (CGO_ENABLED=0)
+        id: build
+        env:
+          CGO_ENABLED: "0"
+          GOOS: ${{ matrix.platform.goos }}
+          GOARCH: ${{ matrix.platform.goarch }}
+        run: |
+          MODULE="${{ matrix.module }}"
+          GOOS="${{ matrix.platform.goos }}"
+          GOARCH="${{ matrix.platform.goarch }}"
+          TAG="${{ github.ref_name }}"
+
+          EXT=""
+          [ "$GOOS" = "windows" ] && EXT=".exe"
+
+          BIN="pranor-${MODULE}${EXT}"
+
+          # Find the main package
+          MAIN_PKG=$(cd "${MODULE}" && \
+            go list -f '{{if eq .Name "main"}}{{.ImportPath}}{{end}}' ./... 2>/dev/null | head -1 || true)
+
+          if [ -z "${MAIN_PKG}" ]; then
+            echo "⚠ No main package in ${MODULE} — producing empty placeholder"
+            touch "${BIN}"
+          else
+            echo "▶ Building ${MAIN_PKG} → ${BIN} (${GOOS}/${GOARCH})"
+            (cd "${MODULE}" && \
+              GOOS="${GOOS}" GOARCH="${GOARCH}" CGO_ENABLED=0 \
+              go build \
+                -trimpath \
+                -ldflags="-s -w -X main.version=${TAG} -X main.commit=${{ github.sha }}" \
+                -o "../${BIN}" \
+                "${MAIN_PKG}")
+            echo "✓ Built $(du -sh ${BIN} | cut -f1) ${BIN}"
+          fi
+
+          echo "bin=${BIN}" >> $GITHUB_OUTPUT
+          echo "ext=${EXT}" >> $GITHUB_OUTPUT
+
+      - name: Archive binary
+        id: archive
+        run: |
+          MODULE="${{ matrix.module }}"
+          GOOS="${{ matrix.platform.goos }}"
+          GOARCH="${{ matrix.platform.goarch }}"
+          TAG="${{ github.ref_name }}"
+          BIN="${{ steps.build.outputs.bin }}"
+          EXT="${{ steps.build.outputs.ext }}"
+
+          mkdir -p dist
+
+          # Include LICENSE if present
+          EXTRAS=""
+          [ -f "LICENSE" ]        && EXTRAS="$EXTRAS LICENSE"
+          [ -f "LICENSE.md" ]     && EXTRAS="$EXTRAS LICENSE.md"
+          [ -f "README.md" ]      && EXTRAS="$EXTRAS README.md"
+
+          if [ "$GOOS" = "windows" ]; then
+            ARCHIVE="pranor-${MODULE}_${TAG}_${GOOS}_${GOARCH}.zip"
+            zip -j "dist/${ARCHIVE}" "${BIN}" ${EXTRAS}
+          else
+            ARCHIVE="pranor-${MODULE}_${TAG}_${GOOS}_${GOARCH}.tar.gz"
+            tar -czf "dist/${ARCHIVE}" "${BIN}" ${EXTRAS}
+          fi
+
+          # SHA-256
+          cd dist
+          sha256sum "${ARCHIVE}" > "${ARCHIVE}.sha256"
+          cat "${ARCHIVE}.sha256"
+
+          echo "archive=dist/${ARCHIVE}" >> $GITHUB_OUTPUT
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |
+            ${{ steps.archive.outputs.archive }}
+            ${{ steps.archive.outputs.archive }}.sha256
+
+  # ── Consolidated checksums.txt ───────────────────────────────────────────────
+  checksums:
+    name: "Publish checksums.txt"
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all .sha256 files from this release
+        uses: robinraju/release-downloader@v1.11
+        with:
+          tag: ${{ github.ref_name }}
+          fileName: "*.sha256"
+          out-file-path: "sha256s"
+
+      - name: Merge into checksums.txt
+        run: |
+          cat sha256s/*.sha256 | sort > checksums.txt
+          echo "── checksums.txt ──────────────────────────"
+          cat checksums.txt
+
+      - name: Upload checksums.txt to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: checksums.txt

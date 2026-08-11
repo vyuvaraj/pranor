@@ -1,19 +1,28 @@
 go 1.26.3
 
 use (
+	./agent
 	./auth
 	./cache
 	./chrono
 	./console
 	./core
 	./deploy
+	./eval
+	./decision
 	./flow
+	./graph
 	./gate
 	./hub
 	./lang
+	./learn/api
+	./learn/sidecar
+	./learn/wasm
+	./llm
 	./lock
 	./lockctl
 	./mesh
+	./memory
 	./notify
 	./platform
 	./pool
@@ -21,6 +30,7 @@ use (
 	./secret
 	./secretctl
 	./tools/terraform-provider-pranor
+	./tools/agentctl
 	./trace
 	./tunnel
 	./vault

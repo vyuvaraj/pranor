@@ -19,7 +19,7 @@
 
 - [VS Code Extension & LSP](./tooling.md)
 
-# Modules
+# Core Infrastructure Modules (v1.0)
 
 - [Gate — API Gateway](./modules/gate.md)
 - [Pulse — Message Broker](./modules/pulse.md)
@@ -38,6 +38,23 @@
 - [Hub — Package Registry](./modules/hub.md)
 - [Lock — Distributed Locks](./modules/lock.md)
 - [Secret — Secret Management](./modules/secret.md)
+
+# v2.0 AI Execution Fabric (Phases 89–93)
+
+- [ExecutionContext — Context Propagation](./modules/execctx.md)
+- [Capability Registry — Governed Tools](./modules/capability.md)
+- [Agent — Identity & Lifecycle](./modules/agent.md)
+- [A2A — Delegation Protocol](./modules/a2a.md)
+- [LLM Router — Model Gateway](./modules/llm.md)
+- [Guardrails — In-Line Safety](./modules/guardrails.md)
+- [Gate Shadow Execution — Side-Effect Isolation](./modules/shadow.md)
+- [Memory — Working & Episodic Engine](./modules/memory.md)
+- [Graph — Entity Context & Budget Pruning](./modules/graph.md)
+- [Decision — AI Governance Engine](./modules/decision.md)
+- [Learn — ML Provider Architecture](./modules/learn.md)
+- [Eval — Trajectory Scoring](./modules/eval.md)
+- [Tenant — Multi-Tenant Sandboxing](./modules/tenant.md)
+- [agentctl — Developer CLI Tool](./modules/agentctl.md)
 
 # Deployment
 

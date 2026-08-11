@@ -421,3 +421,42 @@ Structured JSON logs with fields: `level`, `timestamp`, `trace_id`, `service`, `
 3. If store is full, eviction adds overhead — increase capacity
 4. Consider sampling at the SDK level to reduce volume
 5. Review if SIEM streaming is creating backpressure
+
+## v2.0 OTLP Span Schema (std/trace)
+
+In v2.0, Pranor Trace defines a canonical span name hierarchy and mandatory attributes for all ecosystem modules.
+
+### Canonical Span Names
+| Constant | Span Name | Module |
+|----------|-----------|--------|
+| SpanAgentExecution | pranor.agent_execution | — |
+| SpanGateInspect | pranor.gate.inspect | gate |
+| SpanGraphContext | pranor.graph.context | graph |
+| SpanGraphCache | pranor.graph.cache | graph |
+| SpanGraphSQL | pranor.graph.sql | graph |
+| SpanDecisionEvaluate | pranor.decision.evaluate | decision |
+| SpanDecisionAuth | pranor.decision.auth | decision |
+| SpanDecisionBudget | pranor.decision.budget | decision |
+| SpanDecisionRisk | pranor.decision.risk | decision |
+| SpanDecisionRules | pranor.decision.rules | decision |
+| SpanDecisionLearn | pranor.decision.learn | decision |
+| SpanFlowSaga | pranor.flow.saga | flow |
+| SpanFlowStep | pranor.flow.step | flow |
+| SpanLearnPredict | pranor.learn.predict | learn |
+
+### Mandatory Span Attributes
+| Attribute | Key | Description |
+|-----------|-----|-------------|
+| Agent ID | pranor.agent_id | Executing agent identifier |
+| User ID | pranor.user_id | Authenticated user |
+| Tenant ID | pranor.tenant_id | Tenant/org isolation |
+| Request ID | pranor.request_id | Correlation ID across modules |
+| Module | pranor.module | Emitting module name |
+| Outcome | pranor.outcome | ALLOW / DENY / APPROVE / TRANSFORM / ERROR |
+
+### Fault Contract
+- Span emission is **best-effort and non-blocking** (fire-and-forget goroutine)
+- Failed writes log a warning to stderr and continue — never on the critical path
+- OSS: JSON lines to stderr via `stdoutEmitter`; EE: full OTLP export to Pranor Trace collector
+- Attribute values truncated to 256 bytes per `TruncateAttr(v string) string`
+

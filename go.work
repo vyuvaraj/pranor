@@ -30,6 +30,7 @@ use (
 	./secret
 	./secretctl
 	./tools/terraform-provider-pranor
+	./tools/agentctl
 	./trace
 	./tunnel
 	./vault
